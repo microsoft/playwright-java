@@ -424,20 +424,17 @@ public class Utils {
       JsonObject jsonCert = new JsonObject();
       jsonCert.addProperty("origin", cert.origin);
       try {
-        if (cert.certPath != null) {
-          byte[] bytes = readAllBytes(cert.certPath);
-          String base64 = Base64.getEncoder().encodeToString(bytes);
-          jsonCert.addProperty("cert",  base64);
+        String certBase64 = base64Buffer(cert.cert, cert.certPath);
+        if (certBase64 != null) {
+          jsonCert.addProperty("cert",  certBase64);
         }
-        if (cert.keyPath != null) {
-          byte[] bytes = readAllBytes(cert.keyPath);
-          String base64 = Base64.getEncoder().encodeToString(bytes);
-          jsonCert.addProperty("key", base64);
+        String keyBase64 = base64Buffer(cert.key, cert.keyPath);
+        if (keyBase64 != null) {
+          jsonCert.addProperty("key", keyBase64);
         }
-        if (cert.pfxPath != null) {
-          byte[] bytes = readAllBytes(cert.pfxPath);
-          String base64 = Base64.getEncoder().encodeToString(bytes);
-          params.addProperty("pfx", base64);
+        String pfxBase64 = base64Buffer(cert.pfx, cert.pfxPath);
+        if (pfxBase64 != null) {
+          params.addProperty("pfx", pfxBase64);
         }
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
@@ -449,5 +446,15 @@ public class Utils {
     }
     params.remove("clientCertificates");
     params.add("clientCertificates", clientCertificates);
+  }
+
+  private static String base64Buffer(byte[] bytes, Path path) throws IOException {
+    if (path != null) {
+      bytes = readAllBytes(path);
+    }
+    if (bytes == null) {
+      return null;
+    }
+    return Base64.getEncoder().encodeToString(bytes);
   }
 }

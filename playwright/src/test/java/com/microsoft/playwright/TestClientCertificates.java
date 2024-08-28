@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 
 import static com.microsoft.playwright.Utils.nextFreePort;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -160,6 +161,26 @@ public class TestClientCertificates extends TestBase {
         new ClientCertificate(customServer.origin)
           .setCertPath(asset("client-certificates/client/trusted/cert.pem"))
           .setKeyPath(asset("client-certificates/client/trusted/key.pem"))));
+
+    try (Page page = browser.newPage(options)) {
+      assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));
+      assertThrows(PlaywrightException.class, () -> page.request().get(customServer.crossOrigin));
+      page.navigate(customServer.url);
+      assertThat(page.getByText("Hello CN=Alice")).isVisible();
+      APIResponse response = page.request().get(customServer.url);
+      assertTrue(response.text().contains("Hello CN=Alice"), response.text());
+    }
+  }
+
+  @Test
+  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
+  public void shouldWorkWithBrowserNewPageWhenPassingAsContent() throws IOException {
+    Browser.NewPageOptions options = new Browser.NewPageOptions()
+      .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
+      .setClientCertificates(asList(
+        new ClientCertificate(customServer.origin)
+          .setCert(readAllBytes(asset("client-certificates/client/trusted/cert.pem")))
+          .setKey(readAllBytes(asset("client-certificates/client/trusted/key.pem")))));
 
     try (Page page = browser.newPage(options)) {
       assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));

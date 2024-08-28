@@ -46,10 +46,10 @@ public interface APIRequest {
      *
      * <p> <strong>Details</strong>
      *
-     * <p> An array of client certificates to be used. Each certificate object must have both {@code certPath} and {@code keyPath}
-     * or a single {@code pfxPath} to load the client certificate. Optionally, {@code passphrase} property should be provided
-     * if the certficiate is encrypted. The {@code origin} property should be provided with an exact match to the request
-     * origin that the certificate is valid for.
+     * <p> An array of client certificates to be used. Each certificate object must have either both {@code certPath} and {@code
+     * keyPath}, a single {@code pfxPath}, or their corresponding direct value equivalents ({@code cert} and {@code key}, or
+     * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
+     * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
      *
      * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
      *
@@ -121,10 +121,10 @@ public interface APIRequest {
      *
      * <p> <strong>Details</strong>
      *
-     * <p> An array of client certificates to be used. Each certificate object must have both {@code certPath} and {@code keyPath}
-     * or a single {@code pfxPath} to load the client certificate. Optionally, {@code passphrase} property should be provided
-     * if the certficiate is encrypted. The {@code origin} property should be provided with an exact match to the request
-     * origin that the certificate is valid for.
+     * <p> An array of client certificates to be used. Each certificate object must have either both {@code certPath} and {@code
+     * keyPath}, a single {@code pfxPath}, or their corresponding direct value equivalents ({@code cert} and {@code key}, or
+     * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
+     * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
      *
      * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
      *

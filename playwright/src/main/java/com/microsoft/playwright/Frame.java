@@ -1661,7 +1661,7 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * @deprecated This option will default to {@code true} in the future.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1686,7 +1686,7 @@ public interface Frame {
       return this;
     }
     /**
-     * @deprecated This option will default to {@code true} in the future.
+     * @deprecated This option has no effect.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;

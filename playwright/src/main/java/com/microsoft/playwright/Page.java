@@ -2421,7 +2421,7 @@ public interface Page extends AutoCloseable {
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
-     * full}.
+     * minimal}.
      */
     public HarMode updateMode;
     /**
@@ -2461,7 +2461,7 @@ public interface Page extends AutoCloseable {
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
-     * full}.
+     * minimal}.
      */
     public RouteFromHAROptions setUpdateMode(HarMode updateMode) {
       this.updateMode = updateMode;
@@ -2691,7 +2691,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * @deprecated This option will default to {@code true} in the future.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -2716,7 +2716,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * @deprecated This option will default to {@code true} in the future.
+     * @deprecated This option has no effect.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -3767,6 +3767,12 @@ public interface Page extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
    *
+   * <p> <strong>Bundling</strong>
+   *
+   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
+   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
+   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
+   *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
@@ -3793,6 +3799,12 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via {@link com.microsoft.playwright.BrowserContext#addInitScript
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
+   *
+   * <p> <strong>Bundling</strong>
+   *
+   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
+   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
+   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
    *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
@@ -4791,7 +4803,7 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param selector A selector to use when resolving DOM element.
-   * @since v1.17
+   * @since v1.17↵regular [`Locator`] instead.
    */
   FrameLocator frameLocator(String selector);
   /**

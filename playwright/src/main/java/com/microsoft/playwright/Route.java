@@ -348,7 +348,7 @@ public interface Route {
    */
   void abort(String errorCode);
   /**
-   * Continues route's request with optional overrides.
+   * Sends route's request to the network with optional overrides.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -367,6 +367,10 @@ public interface Route {
    * results in a redirect, overrides will not be applied to the new redirected request. If you want to propagate a header
    * through redirects, use the combination of {@link com.microsoft.playwright.Route#fetch Route.fetch()} and {@link
    * com.microsoft.playwright.Route#fulfill Route.fulfill()} instead.
+   *
+   * <p> {@link com.microsoft.playwright.Route#resume Route.resume()} will immediately send the request to the network, other
+   * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
+   * next matching handler in the chain to be invoked.
    *
    * @since v1.8
    */
@@ -374,7 +378,7 @@ public interface Route {
     resume(null);
   }
   /**
-   * Continues route's request with optional overrides.
+   * Sends route's request to the network with optional overrides.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -394,16 +398,23 @@ public interface Route {
    * through redirects, use the combination of {@link com.microsoft.playwright.Route#fetch Route.fetch()} and {@link
    * com.microsoft.playwright.Route#fulfill Route.fulfill()} instead.
    *
+   * <p> {@link com.microsoft.playwright.Route#resume Route.resume()} will immediately send the request to the network, other
+   * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
+   * next matching handler in the chain to be invoked.
+   *
    * @since v1.8
    */
   void resume(ResumeOptions options);
   /**
-   * When several routes match the given pattern, they run in the order opposite to their registration. That way the last
+   * Continues route's request with optional overrides. The method is similar to {@link com.microsoft.playwright.Route#resume
+   * Route.resume()} with the difference that other matching handlers will be invoked before sending the request.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> When several routes match the given pattern, they run in the order opposite to their registration. That way the last
    * registered route can always override all the previous ones. In the example below, request will be handled by the
    * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
    * registered route.
-   *
-   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Runs last.
@@ -456,6 +467,9 @@ public interface Route {
    *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * <p> Use {@link com.microsoft.playwright.Route#resume Route.resume()} to immediately send the request to the network, other
+   * matching handlers won't be invoked in that case.
    *
    * @since v1.23
    */
@@ -463,12 +477,15 @@ public interface Route {
     fallback(null);
   }
   /**
-   * When several routes match the given pattern, they run in the order opposite to their registration. That way the last
+   * Continues route's request with optional overrides. The method is similar to {@link com.microsoft.playwright.Route#resume
+   * Route.resume()} with the difference that other matching handlers will be invoked before sending the request.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> When several routes match the given pattern, they run in the order opposite to their registration. That way the last
    * registered route can always override all the previous ones. In the example below, request will be handled by the
    * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
    * registered route.
-   *
-   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Runs last.
@@ -521,6 +538,9 @@ public interface Route {
    *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * <p> Use {@link com.microsoft.playwright.Route#resume Route.resume()} to immediately send the request to the network, other
+   * matching handlers won't be invoked in that case.
    *
    * @since v1.23
    */
