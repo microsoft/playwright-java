@@ -132,7 +132,7 @@ public class TestBrowserContextFetch extends TestBase {
     context.request().get(server.EMPTY_PAGE + "?p1=foo",
       RequestOptions.create().setQueryParam("p1", "v1").setQueryParam("парам2", "знач2"));
     assertNotNull(req.get());
-    assertEquals("/empty.html?p1=v1&%D0%BF%D0%B0%D1%80%D0%B0%D0%BC2=%D0%B7%D0%BD%D0%B0%D1%872", req.get().url);
+    assertEquals("/empty.html?p1=foo&p1=v1&%D0%BF%D0%B0%D1%80%D0%B0%D0%BC2=%D0%B7%D0%BD%D0%B0%D1%872", req.get().url);
   }
 
   ;
