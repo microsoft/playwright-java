@@ -4,13 +4,13 @@
 
 This project uses GitHub issues to track bugs and feature requests. Please search the [existing issues][gh-issues] before filing new ones to avoid duplicates. For new issues, file your bug or feature request as a new issue using corresponding template.
 
-For help and questions about using this project, please see the [docs site for Playwright][docs].
+For help and questions about using this project, please see the [docs site for Playwright for Java][docs].
 
 Join our community [Discord Server][discord-server] to connect with other developers using Playwright and ask questions in our 'help-playwright' forum.
 
 ## Microsoft Support Policy
 
-Support for Playwright Java is limited to the resources listed above.
+Support for Playwright for Java is limited to the resources listed above.
 
 [gh-issues]: https://github.com/microsoft/playwright-java/issues/
 [docs]: https://playwright.dev/java/
