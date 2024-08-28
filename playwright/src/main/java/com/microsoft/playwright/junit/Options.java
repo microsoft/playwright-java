@@ -16,10 +16,9 @@
 
 package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.APIRequest;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
+
+import java.nio.file.Path;
 
 /**
  * <strong>NOTE:</strong> this API is experimental and is subject to changes.
@@ -47,6 +46,26 @@ public class Options {
   // If this is set, BrowserType.connect will be used.  Otherwise, BrowserType.launch will be used.
   public String wsEndpoint;
   public BrowserType.ConnectOptions connectOptions;
+  // The dir where test artifacts will be stored
+  public Path outputDir;
+  // When to record traces.  Default is OFF.
+  public Trace trace = Trace.OFF;
+
+  public enum Trace {
+    OFF,
+    ON,
+    RETAIN_ON_FAILURE;
+  }
+
+  public Options setTrace(Trace trace) {
+    this.trace = trace;
+    return this;
+  }
+
+  public Options setOutputDir(Path outputDir) {
+    this.outputDir = outputDir;
+    return this;
+  }
 
   public Options setWsEndpoint(String wsEndpoint) {
     this.wsEndpoint = wsEndpoint;

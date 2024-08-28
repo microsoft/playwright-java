@@ -81,7 +81,7 @@ jobs:
       - name: Install MS Edge
         if: matrix.browser-channel == 'msedge' && matrix.os == 'macos-latest'
         shell: bash
-        run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge" -f playwright/pom.xml 
+        run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge" -f playwright/pom.xml
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:

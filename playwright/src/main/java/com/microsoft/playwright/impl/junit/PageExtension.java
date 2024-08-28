@@ -22,17 +22,8 @@ import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
-public class PageExtension implements ParameterResolver, AfterEachCallback {
-  private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
-
-  @Override
-  public void afterEach(ExtensionContext extensionContext) {
-    Page page = threadLocalPage.get();
-    threadLocalPage.remove();
-    if (page != null) {
-      page.close();
-    }
-  }
+public class PageExtension implements ParameterResolver {
+   private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -47,6 +38,7 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
   /**
    * Returns the Page that belongs to the current test.  Will be created if it doesn't already exist.
    * <strong>NOTE:</strong> this method is subject to change.
+   *
    * @param extensionContext the context in which the current test or container is being executed.
    * @return The Page that belongs to the current test.
    */
@@ -60,5 +52,9 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
     page = browserContext.newPage();
     threadLocalPage.set(page);
     return page;
+  }
+
+  static void cleanUpPage() {
+    threadLocalPage.remove();
   }
 }
