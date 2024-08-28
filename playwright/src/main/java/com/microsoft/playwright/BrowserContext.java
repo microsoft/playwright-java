@@ -30,8 +30,9 @@ import java.util.regex.Pattern;
  * <p> If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's browser
  * context.
  *
- * <p> Playwright allows creating "incognito" browser contexts with {@link com.microsoft.playwright.Browser#newContext
- * Browser.newContext()} method. "Incognito" browser contexts don't write any browsing data to disk.
+ * <p> Playwright allows creating isolated non-persistent browser contexts with {@link
+ * com.microsoft.playwright.Browser#newContext Browser.newContext()} method. Non-persistent browser contexts don't write
+ * any browsing data to disk.
  * <pre>{@code
  * // Create a new incognito browser context
  * BrowserContext context = browser.newContext();
@@ -540,6 +541,12 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
    *
+   * <p> <strong>Bundling</strong>
+   *
+   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
+   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
+   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
+   *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
@@ -566,6 +573,12 @@ public interface BrowserContext extends AutoCloseable {
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via {@link com.microsoft.playwright.BrowserContext#addInitScript
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
+   *
+   * <p> <strong>Bundling</strong>
+   *
+   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
+   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
+   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
    *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
