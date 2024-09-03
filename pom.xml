@@ -130,7 +130,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.10.0</version>
           <configuration>
             <additionalOptions>--allow-script-in-comments</additionalOptions>
             <failOnError>false</failOnError>
@@ -141,7 +141,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>3.5.0</version>
           <configuration>
             <properties>
               <configurationParameters>
