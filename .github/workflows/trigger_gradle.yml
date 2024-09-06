@@ -1,0 +1,31 @@
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "The environment to deploy to."
+        required: true
+        type: choice
+        options:
+          - cert
+          - staging
+          - prod
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Write environment to config.properties
+        run: echo "tier=${{ github.event.inputs.environment }}" > config.properties
+
+      - name: Run JUnit tests with Gradle
+        run: |
+          gradle test
