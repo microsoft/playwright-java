@@ -136,8 +136,8 @@ public class ServerWithClientCertificate implements HttpHandler {
   public void handle(HttpExchange exchange) throws IOException {
     SSLSession sslSession = ((HttpsExchange) exchange).getSSLSession();
     String response = div("servername", sslSession.getPeerHost());
-    Certificate[] certs = sslSession.getPeerCertificates();
-    if (certs.length > 0 && certs[0] instanceof X509Certificate) {
+    try {
+      Certificate[] certs = sslSession.getPeerCertificates();
       X509Certificate cert = (X509Certificate) certs[0];
       exchange.getResponseHeaders().add("Content-Type", "text/html");
       if (validateCertChain(certs)) {
@@ -149,7 +149,7 @@ public class ServerWithClientCertificate implements HttpHandler {
           cert.getSubjectX500Principal().getName(), cert.getIssuerX500Principal().getName()));
         exchange.sendResponseHeaders(403, 0);
       }
-    } else {
+    } catch (SSLPeerUnverifiedException e) {
       response += div("message", "Sorry, but you need to provide a client certificate to continue.");
       exchange.sendResponseHeaders(401, 0);
     }

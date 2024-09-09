@@ -61,8 +61,8 @@ public class TestClientCertificates extends TestBase {
   public void shouldFailWithNoClientCertificatesProvided() {
     APIRequestContext request = playwright.request().newContext(
         new APIRequest.NewContextOptions().setIgnoreHTTPSErrors(true));
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(customServer.url));
-    assertTrue(e.getMessage().contains("Error: socket hang up"), e.getMessage());
+    APIResponse response = request.get(customServer.url);
+    assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."), response.text());
     request.dispose();
   }
 
@@ -136,8 +136,14 @@ public class TestClientCertificates extends TestBase {
 
     try (BrowserContext context = browser.newContext(options)) {
       Page page = context.newPage();
-      assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));
-      assertThrows(PlaywrightException.class, () -> page.request().get(customServer.crossOrigin));
+      {
+        APIResponse response = page.request().get(customServer.crossOrigin);
+        assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."), response.text());
+      }
+      {
+        page.navigate(customServer.crossOrigin);
+        assertThat(page.getByTestId("message")).hasText("Sorry, but you need to provide a client certificate to continue.");
+      }
       page.navigate(customServer.url);
       assertThat(page.getByText("Hello CN=Alice")).isVisible();
       APIResponse response = page.request().get(customServer.url);
@@ -156,8 +162,14 @@ public class TestClientCertificates extends TestBase {
           .setKeyPath(asset("client-certificates/client/trusted/key.pem"))));
 
     try (Page page = browser.newPage(options)) {
-      assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));
-      assertThrows(PlaywrightException.class, () -> page.request().get(customServer.crossOrigin));
+      {
+        page.navigate(customServer.crossOrigin);
+        assertThat(page.getByTestId("message")).hasText("Sorry, but you need to provide a client certificate to continue.");
+      }
+      {
+        APIResponse response = page.request().get(customServer.crossOrigin);
+        assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."), response.text());
+      }
       page.navigate(customServer.url);
       assertThat(page.getByText("Hello CN=Alice")).isVisible();
       APIResponse response = page.request().get(customServer.url);
@@ -176,8 +188,14 @@ public class TestClientCertificates extends TestBase {
           .setKey(readAllBytes(asset("client-certificates/client/trusted/key.pem")))));
 
     try (Page page = browser.newPage(options)) {
-      assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));
-      assertThrows(PlaywrightException.class, () -> page.request().get(customServer.crossOrigin));
+       {
+        page.navigate(customServer.crossOrigin);
+        assertThat(page.getByTestId("message")).hasText("Sorry, but you need to provide a client certificate to continue.");
+      }
+      {
+        APIResponse response = page.request().get(customServer.crossOrigin);
+        assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."), response.text());
+      }
       page.navigate(customServer.url);
       assertThat(page.getByText("Hello CN=Alice")).isVisible();
       APIResponse response = page.request().get(customServer.url);
@@ -197,8 +215,14 @@ public class TestClientCertificates extends TestBase {
 
     try (BrowserContext context = browser.browserType().launchPersistentContext(tmpDir.resolve("profile") , options)) {
       Page page = context.pages().get(0);
-      assertThrows(PlaywrightException.class, () -> page.navigate(customServer.crossOrigin));
-      assertThrows(PlaywrightException.class, () -> page.request().get(customServer.crossOrigin));
+      {
+        page.navigate(customServer.crossOrigin);
+        assertThat(page.getByTestId("message")).hasText("Sorry, but you need to provide a client certificate to continue.");
+      }
+      {
+        APIResponse response = page.request().get(customServer.crossOrigin);
+        assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."), response.text());
+      }
       page.navigate(customServer.url);
       assertThat(page.getByText("Hello CN=Alice")).isVisible();
       APIResponse response = page.request().get(customServer.url);

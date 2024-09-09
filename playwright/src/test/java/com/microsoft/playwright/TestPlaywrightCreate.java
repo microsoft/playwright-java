@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPlaywrightCreate {
   @Test
   void shouldSupportEnvSkipBrowserDownload(@TempDir Path browsersDir) throws IOException, NoSuchFieldException, IllegalAccessException {
-    System.err.println("shouldSupportEnvSkipBrowserDownload PLAYWRIGHT_BROWSERS_PATH = " + browsersDir);
     Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString(),
       "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1");
     Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env);

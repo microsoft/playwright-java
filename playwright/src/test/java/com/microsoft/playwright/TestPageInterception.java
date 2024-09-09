@@ -81,7 +81,6 @@ public class TestPageInterception extends TestBase {
   void shouldFulfillInterceptedResponseUsingAlias() {
     page.route("**/*", route -> {
       APIResponse response = route.fetch();
-      System.out.println(response.headers().get("content-type"));
       route.fulfill(new Route.FulfillOptions().setResponse(response));
     });
     Response response = page.navigate(server.PREFIX + "/empty.html");
