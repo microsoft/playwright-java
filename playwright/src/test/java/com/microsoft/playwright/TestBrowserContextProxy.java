@@ -29,31 +29,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextProxy extends TestBase {
-
-  @Override
-  @BeforeAll
-  // Hide base class method to provide extra option.
-  void launchBrowser() {
-    BrowserType.LaunchOptions options = createLaunchOptions();
-    options.setProxy(new Proxy("per-context"));
-    launchBrowser(options);
-  }
-
-  static boolean isChromiumWindows() {
-    return isChromium() && isWindows;
-  }
-
-  @Test
-  @EnabledIf(value="isChromiumWindows", disabledReason="Platform-specific")
-  void shouldThrowForMissingGlobalProxyOnChromiumWindows() {
-    try (Browser browser = browserType.launch(createLaunchOptions())) {
-      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
-        browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
-      });
-      assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
-    }
-  }
-
   void shouldThrowForBadServerValue() {
     // Enforced by compiler in Java
   }

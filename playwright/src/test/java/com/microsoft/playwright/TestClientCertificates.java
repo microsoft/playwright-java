@@ -57,13 +57,6 @@ public class TestClientCertificates extends TestBase {
     super.stopServer();
   }
 
-  @BeforeAll
-  @Override
-  void launchBrowser() {
-    // TODO: remove once Chromium Stable tests pass without it on Windows.
-    launchBrowser(createLaunchOptions().setProxy(new Proxy("per-context")));
-  }
-
   @Test
   public void shouldFailWithNoClientCertificatesProvided() {
     APIRequestContext request = playwright.request().newContext(
