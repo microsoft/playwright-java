@@ -43,8 +43,8 @@ class HttpsConfiguratorImpl extends HttpsConfigurator {
   public void configure(HttpsParameters params) {
     SSLContext sslContext = getSSLContext();
     SSLParameters sslParams = sslContext.getDefaultSSLParameters();
-    sslParams.setNeedClientAuth(true);
-    params.setNeedClientAuth(true);
+    sslParams.setWantClientAuth(true);
+    params.setWantClientAuth(true);
     params.setSSLParameters(sslParams);
   }
 
