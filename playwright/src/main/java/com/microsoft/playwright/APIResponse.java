@@ -43,8 +43,8 @@ public interface APIResponse {
    */
   Map<String, String> headers();
   /**
-   * An array with all the request HTTP headers associated with this response. Header names are not lower-cased. Headers with
-   * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
+   * An array with all the response HTTP headers associated with this response. Header names are not lower-cased. Headers
+   * with multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
    *
    * @since v1.16
    */
