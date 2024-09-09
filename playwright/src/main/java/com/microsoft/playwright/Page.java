@@ -3767,12 +3767,6 @@ public interface Page extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
    *
-   * <p> <strong>Bundling</strong>
-   *
-   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
-   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
-   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
-   *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
@@ -3799,12 +3793,6 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via {@link com.microsoft.playwright.BrowserContext#addInitScript
    * BrowserContext.addInitScript()} and {@link com.microsoft.playwright.Page#addInitScript Page.addInitScript()} is not
    * defined.
-   *
-   * <p> <strong>Bundling</strong>
-   *
-   * <p> If you have a complex script split into several files, it needs to be bundled into a single file first. We recommend
-   * running <a href="https://esbuild.github.io/">{@code esbuild}</a> or <a href="https://webpack.js.org/">{@code
-   * webpack}</a> to produce a commonjs module and pass {@code path} and {@code arg}.
    *
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
@@ -4803,7 +4791,7 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param selector A selector to use when resolving DOM element.
-   * @since v1.17↵regular [`Locator`] instead.
+   * @since v1.17
    */
   FrameLocator frameLocator(String selector);
   /**
