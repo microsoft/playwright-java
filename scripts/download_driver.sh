@@ -45,7 +45,7 @@ do
   fi
   URL=$URL/$FILE_NAME
   echo "Using url: $URL"
-  curl -O $URL
+  wget $URL
   unzip $FILE_NAME -d .
   rm $FILE_NAME
 

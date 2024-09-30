@@ -10,6 +10,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-21-jdk \
     # Install utilities required for downloading browsers
     curl \
+    # Use wget as per https://github.com/microsoft/playwright-java/issues/1678
+    wget \
     # Install utilities required for downloading driver
     unzip \
     # For the MSEdge install script
@@ -42,6 +44,8 @@ COPY . /tmp/pw-java
 
 RUN cd /tmp/pw-java && \
     ./scripts/download_driver.sh && \
+    # Remove wget as per https://github.com/microsoft/playwright-java/issues/1678
+    apt-get remove -y wget && \
     mvn install -D skipTests --no-transfer-progress && \
     DEBIAN_FRONTEND=noninteractive mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
