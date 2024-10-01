@@ -22,10 +22,10 @@ import java.util.regex.Pattern;
 /**
  * FrameLocator represents a view to the {@code iframe} on the page. It captures the logic sufficient to retrieve the
  * {@code iframe} and locate elements in that iframe. FrameLocator can be created with either {@link
- * com.microsoft.playwright.Page#frameLocator Page.frameLocator()} or {@link com.microsoft.playwright.Locator#frameLocator
- * Locator.frameLocator()} method.
+ * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()}, {@link com.microsoft.playwright.Page#frameLocator
+ * Page.frameLocator()} or {@link com.microsoft.playwright.Locator#frameLocator Locator.frameLocator()} method.
  * <pre>{@code
- * Locator locator = page.frameLocator("#my-frame").getByText("Submit");
+ * Locator locator = page.locator("#my-frame").contentFrame().getByText("Submit");
  * locator.click();
  * }</pre>
  *
@@ -35,10 +35,10 @@ import java.util.regex.Pattern;
  * a given selector.
  * <pre>{@code
  * // Throws if there are several frames in DOM:
- * page.frame_locator(".result-frame").getByRole(AriaRole.BUTTON).click();
+ * page.locator(".result-frame").contentFrame().getByRole(AriaRole.BUTTON).click();
  *
  * // Works because we explicitly tell locator to pick the first frame:
- * page.frame_locator(".result-frame").first().getByRole(AriaRole.BUTTON).click();
+ * page.locator(".result-frame").first().contentFrame().getByRole(AriaRole.BUTTON).click();
  * }</pre>
  *
  * <p> <strong>Converting Locator to FrameLocator</strong>
@@ -383,7 +383,8 @@ public interface FrameLocator {
     }
   }
   /**
-   * Returns locator to the first matching frame.
+   * @deprecated Use {@link com.microsoft.playwright.Locator#first Locator.first()} followed by {@link
+   * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()} instead.
    *
    * @since v1.17
    */
@@ -953,7 +954,8 @@ public interface FrameLocator {
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
-   * Returns locator to the last matching frame.
+   * @deprecated Use {@link com.microsoft.playwright.Locator#last Locator.last()} followed by {@link
+   * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()} instead.
    *
    * @since v1.17
    */
@@ -1003,7 +1005,8 @@ public interface FrameLocator {
    */
   Locator locator(Locator selectorOrLocator, LocatorOptions options);
   /**
-   * Returns locator to the n-th matching frame. It's zero based, {@code nth(0)} selects the first frame.
+   * @deprecated Use {@link com.microsoft.playwright.Locator#nth Locator.nth()} followed by {@link
+   * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()} instead.
    *
    * @since v1.17
    */
@@ -1018,7 +1021,7 @@ public interface FrameLocator {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * FrameLocator frameLocator = page.frameLocator("iframe[name=\"embedded\"]");
+   * FrameLocator frameLocator = page.locator("iframe[name=\"embedded\"]").contentFrame();
    * // ...
    * Locator locator = frameLocator.owner();
    * assertThat(locator).isVisible();

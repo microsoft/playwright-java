@@ -48,6 +48,7 @@ public class PageImpl extends ChannelOwner implements Page {
   final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
+  private final WebSocketRouter webSocketRoutes = new WebSocketRouter();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final Map<Integer, LocatorHandler> locatorHandlers = new HashMap<>();
 
@@ -211,6 +212,11 @@ public class PageImpl extends ChannelOwner implements Page {
       }
       if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
         browserContext.handleRoute(route);
+      }
+    } else if ("webSocketRoute".equals(event)) {
+      WebSocketRouteImpl route = connection.getExistingObject(params.getAsJsonObject("webSocketRoute").get("guid").getAsString());
+      if (!webSocketRoutes.handle(route)) {
+        browserContext.handleWebSocketRoute(route);
       }
     } else if ("video".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
@@ -928,6 +934,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void requestGC() {
+    withLogging("Page.requestGC", () -> sendMessage("requestGC"));
+  }
+
+  @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
     return withLogging("Page.navigate", () -> mainFrame.navigateImpl(url, convertType(options, Frame.NavigateOptions.class)));
   }
@@ -1126,6 +1137,28 @@ public class PageImpl extends ChannelOwner implements Page {
     withLogging("Page.route", () -> {
       routes.add(matcher, handler, options == null ? null : options.times);
       updateInterceptionPatterns();
+    });
+  }
+
+    @Override
+  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(browserContext.baseUrl, url), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(pattern), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(predicate), handler);
+  }
+
+  private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
+    withLogging("Page.routeWebSocket", () -> {
+      webSocketRoutes.add(matcher, handler);
+      updateWebSocketInterceptionPatterns();
     });
   }
 
@@ -1354,6 +1387,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   private void updateInterceptionPatterns() {
     sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns());
+  }
+
+  private void updateWebSocketInterceptionPatterns() {
+    sendMessage("setWebSocketInterceptionPatterns", webSocketRoutes.interceptionPatterns());
   }
 
   @Override

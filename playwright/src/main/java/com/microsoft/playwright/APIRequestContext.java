@@ -129,8 +129,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
-   * multipart} parameter:
+   * multipart/form-data} encoding, by specifiying the {@code multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -167,8 +166,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
-   * multipart} parameter:
+   * multipart/form-data} encoding, by specifiying the {@code multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -204,8 +202,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
-   * multipart} parameter:
+   * multipart/form-data} encoding, by specifiying the {@code multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -242,8 +239,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
-   * multipart} parameter:
+   * multipart/form-data} encoding, by specifiying the {@code multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");

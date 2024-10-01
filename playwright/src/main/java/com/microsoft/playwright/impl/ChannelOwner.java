@@ -35,6 +35,7 @@ class ChannelOwner extends LoggingSupport {
   final String guid;
   final JsonObject initializer;
   private boolean wasCollected;
+  private boolean isInternalType;
 
   protected ChannelOwner(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     this(parent.connection, parent, type, guid, initializer);
@@ -56,6 +57,10 @@ class ChannelOwner extends LoggingSupport {
     if (parent != null) {
       parent.objects.put(guid, this);
     }
+  }
+
+  void markAsInternalType() {
+    isInternalType = true;
   }
 
   void disposeChannelOwner(boolean wasGarbageCollected) {
@@ -84,12 +89,19 @@ class ChannelOwner extends LoggingSupport {
 
   @Override
   <T> T withLogging(String apiName, Supplier<T> code) {
+    if (isInternalType) {
+      apiName = null;
+    }
     String previousApiName = connection.setApiName(apiName);
     try {
       return super.withLogging(apiName, code);
     } finally {
       connection.setApiName(previousApiName);
     }
+  }
+
+  WaitableResult<JsonElement> sendMessageAsync(String method) {
+    return sendMessageAsync(method, new JsonObject());
   }
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {

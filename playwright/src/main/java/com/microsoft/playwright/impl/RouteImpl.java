@@ -38,6 +38,7 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    markAsInternalType();
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 
@@ -47,7 +48,6 @@ public class RouteImpl extends ChannelOwner implements Route {
     withLogging("Route.abort", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("errorCode", errorCode);
-      params.addProperty("requestUrl", request.initializer.get("url").getAsString());
       sendMessageAsync("abort", params);
     });
   }
@@ -135,7 +135,6 @@ public class RouteImpl extends ChannelOwner implements Route {
         params.addProperty("postData", base64);
       }
     }
-    params.addProperty("requestUrl", request.initializer.get("url").getAsString());
     params.addProperty("isFallback", isFallback);
     sendMessageAsync("continue", params);
   }
@@ -231,7 +230,6 @@ public class RouteImpl extends ChannelOwner implements Route {
     if (fetchResponseUid != null) {
       params.addProperty("fetchResponseUid", fetchResponseUid);
     }
-    params.addProperty("requestUrl", request.initializer.get("url").getAsString());
     sendMessageAsync("fulfill", params);
   }
 

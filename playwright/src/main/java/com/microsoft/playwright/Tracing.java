@@ -39,8 +39,8 @@ public interface Tracing {
   class StartOptions {
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
-     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
+     * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
+     * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
      * Tracing.stop()} instead.
      */
     public String name;
@@ -69,8 +69,8 @@ public interface Tracing {
 
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
-     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
+     * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
+     * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
      * Tracing.stop()} instead.
      */
     public StartOptions setName(String name) {
@@ -115,8 +115,8 @@ public interface Tracing {
   class StartChunkOptions {
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
-     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
+     * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
+     * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
      * Tracing.stopChunk()} instead.
      */
     public String name;
@@ -127,8 +127,8 @@ public interface Tracing {
 
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
-     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
+     * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
+     * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
      * Tracing.stopChunk()} instead.
      */
     public StartChunkOptions setName(String name) {

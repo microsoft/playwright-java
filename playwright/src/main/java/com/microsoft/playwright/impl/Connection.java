@@ -384,6 +384,9 @@ public class Connection {
       case "WebSocket":
         result = new WebSocketImpl(parent, type, guid, initializer);
         break;
+      case "WebSocketRoute":
+        result = new WebSocketRouteImpl(parent, type, guid, initializer);
+        break;
       case "Worker":
         result = new WorkerImpl(parent, type, guid, initializer);
         break;

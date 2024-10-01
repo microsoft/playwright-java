@@ -33,6 +33,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    markAsInternalType();
   }
 
   private void stopChunkImpl(Path path) {

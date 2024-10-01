@@ -21,13 +21,18 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.microsoft.playwright.Utils.nextFreePort;
 
 class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   volatile ClientHandshake lastClientHandshake;
+  private volatile CompletableFuture<WebSocket> futureWebSocket;
+  private volatile CompletableFuture<String> futureMessage;
   private final Semaphore startSemaphore = new Semaphore(0);
 
   static WebSocketServerImpl create() throws InterruptedException {
@@ -44,6 +49,26 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
     super(address, 1);
   }
 
+  synchronized void reset() {
+    futureMessage = null;
+    futureWebSocket = null;
+  }
+
+  Future<org.java_websocket.WebSocket> waitForWebSocket() {
+    System.out.println("waitForWebSocket");
+    if (futureWebSocket == null) {
+      futureWebSocket = new CompletableFuture<>();
+    }
+    return futureWebSocket;
+  }
+
+  Future<String> waitForMessage() {
+    if (futureMessage == null) {
+      futureMessage = new CompletableFuture<>();
+    }
+    return futureMessage;
+  }
+
   @Override
   public void close() throws Exception {
     this.stop();
@@ -52,6 +77,12 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   @Override
   public void onOpen(org.java_websocket.WebSocket webSocket, ClientHandshake clientHandshake) {
     lastClientHandshake = clientHandshake;
+    System.out.println("onOpen" + futureWebSocket);
+    if (futureWebSocket != null) {
+      futureWebSocket.complete(webSocket);
+      futureWebSocket = null;
+      return;
+    }
     webSocket.send("incoming");
   }
 
@@ -61,7 +92,19 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
 
   @Override
   public void onMessage(org.java_websocket.WebSocket webSocket, String s) {
+    if (futureMessage != null) {
+      futureMessage.complete(s);
+      futureMessage = null;
+    }
   }
+
+  public void onMessage(WebSocket conn, ByteBuffer message) {
+    if (futureMessage != null) {
+      futureMessage.complete(new String(message.array(), StandardCharsets.UTF_8));
+      futureMessage = null;
+    }
+  }
+
 
   @Override
   public void onError(WebSocket webSocket, Exception e) {

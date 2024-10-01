@@ -927,7 +927,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -983,7 +983,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -1037,7 +1037,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -1093,7 +1093,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -1147,7 +1147,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -1203,7 +1203,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by
    * Service Worker. See <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling
-   * Service Workers when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * Service Workers when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>Usage</strong>
    *
@@ -1257,7 +1257,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
@@ -1272,13 +1272,94 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
    * @since v1.23
    */
   void routeFromHAR(Path har, RouteFromHAROptions options);
+  /**
+   * This method allows to modify websocket connections that are made by any page in the browser context.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before creating any pages.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple handler that blocks some websocket messages. See {@code WebSocketRoute} for more details
+   * and examples.
+   * <pre>{@code
+   * context.routeWebSocket("/ws", ws -> {
+   *   ws.routeSend(message -> {
+   *     if ("to-be-blocked".equals(message))
+   *       return;
+   *     ws.send(message);
+   *   });
+   *   ws.connect();
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(String url, Consumer<WebSocketRoute> handler);
+  /**
+   * This method allows to modify websocket connections that are made by any page in the browser context.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before creating any pages.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple handler that blocks some websocket messages. See {@code WebSocketRoute} for more details
+   * and examples.
+   * <pre>{@code
+   * context.routeWebSocket("/ws", ws -> {
+   *   ws.routeSend(message -> {
+   *     if ("to-be-blocked".equals(message))
+   *       return;
+   *     ws.send(message);
+   *   });
+   *   ws.connect();
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(Pattern url, Consumer<WebSocketRoute> handler);
+  /**
+   * This method allows to modify websocket connections that are made by any page in the browser context.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before creating any pages.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple handler that blocks some websocket messages. See {@code WebSocketRoute} for more details
+   * and examples.
+   * <pre>{@code
+   * context.routeWebSocket("/ws", ws -> {
+   *   ws.routeSend(message -> {
+   *     if ("to-be-blocked".equals(message))
+   *       return;
+   *     ws.send(message);
+   *   });
+   *   ws.connect();
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(Predicate<String> url, Consumer<WebSocketRoute> handler);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
    * <ul>

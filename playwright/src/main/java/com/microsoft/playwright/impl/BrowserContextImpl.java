@@ -50,6 +50,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final List<PageImpl> backgroundPages = new ArrayList<>();
 
   final Router routes = new Router();
+  final WebSocketRouter webSocketRoutes = new WebSocketRouter();
   private boolean closeWasCalled;
   private final WaitableEvent<EventType, ?> closePromise;
   final Map<String, BindingCallback> bindings = new HashMap<>();
@@ -514,6 +515,28 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     });
   }
 
+  @Override
+  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(baseUrl, url), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(pattern), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
+    routeWebSocketImpl(new UrlMatcher(predicate), handler);
+  }
+
+  private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
+    withLogging("BrowserContext.routeWebSocket", () -> {
+      webSocketRoutes.add(matcher, handler);
+      updateWebSocketInterceptionPatterns();
+    });
+  }
+
   void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options) {
     JsonObject params = new JsonObject();
     if (page != null) {
@@ -681,6 +704,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns());
   }
 
+  private void updateWebSocketInterceptionPatterns() {
+    sendMessage("setWebSocketInterceptionPatterns", webSocketRoutes.interceptionPatterns());
+  }
+
   void handleRoute(RouteImpl route) {
     Router.HandleResult handled = routes.handle(route);
     if (handled != Router.HandleResult.NoMatchingHandler) {
@@ -688,6 +715,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
       route.resume(null, true);
+    }
+  }
+
+  void handleWebSocketRoute(WebSocketRouteImpl route) {
+    if (!webSocketRoutes.handle(route)) {
+      route.connectToServer();
     }
   }
 
@@ -730,6 +763,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       route.browserContext = this;
       handleRoute(route);
+    } else if ("webSocketRoute".equals(event)) {
+      WebSocketRouteImpl route = connection.getExistingObject(params.getAsJsonObject("webSocketRoute").get("guid").getAsString());
+      handleWebSocketRoute(route);
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
       pages.add(page);
