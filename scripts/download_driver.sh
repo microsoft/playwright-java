@@ -45,7 +45,13 @@ do
   fi
   URL=$URL/$FILE_NAME
   echo "Using url: $URL"
-  curl -O $URL
+  # Ubuntu 24.04-arm64 emulated via qemu has a bug, so we prefer wget over curl.
+  # See https://github.com/microsoft/playwright-java/issues/1678.
+  if command -v wget &> /dev/null; then
+      wget $URL
+  else
+      curl -O $URL
+  fi
   unzip $FILE_NAME -d .
   rm $FILE_NAME
 

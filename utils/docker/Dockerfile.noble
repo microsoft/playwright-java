@@ -9,7 +9,7 @@ ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-nob
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-21-jdk \
     # Install utilities required for downloading browsers
-    curl \
+    wget \
     # Install utilities required for downloading driver
     unzip \
     # For the MSEdge install script
@@ -21,7 +21,7 @@ RUN apt-get update && \
 # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
 # Java 21, so we install latest Maven from Apache instead.
 RUN VERSION=3.9.6 && \
-    curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
+    wget -O - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
