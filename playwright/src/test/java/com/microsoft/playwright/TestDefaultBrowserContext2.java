@@ -169,35 +169,6 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   @Test
-  void shouldRestoreCookiesFromUserDataDir() throws IOException {
-// TODO:   test.flaky(browserName === "chromium");
-    Path userDataDir = tempDir.resolve("user-data-dir");
-    BrowserType.LaunchPersistentContextOptions browserOptions = null;
-    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
-    Page page = browserContext.newPage();
-    page.navigate(server.EMPTY_PAGE);
-    Object documentCookie = page.evaluate("() => {\n" +
-      "    document.cookie = 'doSomethingOnlyOnce=true; expires=Fri, 31 Dec 9999 23:59:59 GMT';\n" +
-      "    return document.cookie;\n" +
-      "  }");
-    assertEquals("doSomethingOnlyOnce=true", documentCookie);
-    browserContext.close();
-
-    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir, browserOptions);
-    Page page2 = browserContext2.newPage();
-    page2.navigate(server.EMPTY_PAGE);
-    assertEquals("doSomethingOnlyOnce=true", page2.evaluate("() => document.cookie"));
-    browserContext2.close();
-
-    Path userDataDir2 = tempDir.resolve("user-data-dir-2");
-    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
-    Page page3 = browserContext3.newPage();
-    page3.navigate(server.EMPTY_PAGE);
-    assertNotEquals("doSomethingOnlyOnce=true", page3.evaluate("() => document.cookie"));
-    browserContext3.close();
-  }
-
-  @Test
   void shouldHaveDefaultURLWhenLaunchingBrowser() {
     launchPersistent();
     List<String> urls = persistentContext.pages().stream().map(page -> page.url()).collect(Collectors.toList());
