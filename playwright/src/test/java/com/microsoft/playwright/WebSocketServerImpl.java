@@ -55,7 +55,6 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   }
 
   Future<org.java_websocket.WebSocket> waitForWebSocket() {
-    System.out.println("waitForWebSocket");
     if (futureWebSocket == null) {
       futureWebSocket = new CompletableFuture<>();
     }
@@ -77,7 +76,6 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   @Override
   public void onOpen(org.java_websocket.WebSocket webSocket, ClientHandshake clientHandshake) {
     lastClientHandshake = clientHandshake;
-    System.out.println("onOpen" + futureWebSocket);
     if (futureWebSocket != null) {
       futureWebSocket.complete(webSocket);
       futureWebSocket = null;

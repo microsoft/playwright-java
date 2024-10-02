@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.net.MalformedURLException;
@@ -25,6 +27,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.globToRegex;
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
   final Object rawSource;

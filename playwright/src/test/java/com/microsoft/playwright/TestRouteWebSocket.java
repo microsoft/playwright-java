@@ -3,7 +3,10 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.java_websocket.WebSocket;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -87,7 +90,6 @@ public class TestRouteWebSocket {
     }
   }
 
-  @Test
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
   public void shouldWorkWithTextMessage(String mock, Page page) throws Exception {
@@ -130,7 +132,6 @@ public class TestRouteWebSocket {
   }
 
 
-  @Test
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
   public void shouldWorkWithBinaryTypeBlob(String mock, Page page) throws Exception {
@@ -154,7 +155,6 @@ public class TestRouteWebSocket {
     assertEquals("hi", messagePromise.get());
   }
 
-  @Test
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
   public void shouldWorkWithBinaryTypeArrayBuffer(String mock, Page page) throws Exception {
