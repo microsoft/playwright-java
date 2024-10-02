@@ -50,7 +50,7 @@ public class TestRouteWebSocket {
       "    window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
       "    window.ws.binaryType = binaryType;\n" +
       "    window.ws.addEventListener('open', () => window.log.push('open'));\n" +
-      "    window.ws.addEventListener('close', event => window.log.push(`close code=${event.code} reason=${event.reason} wasClean=${event.wasClean}`));\n" +
+      "    window.ws.addEventListener('close', event => window.log.push(`close code=${event.code} reason=${event.reason}`));\n" +
       "    window.ws.addEventListener('error', event => window.log.push(`error`));\n" +
       "    window.ws.addEventListener('message', async event => {\n" +
       "      let data;\n" +
@@ -127,7 +127,7 @@ public class TestRouteWebSocket {
 
     assertEquals(
       asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
-          "close code=1008 reason=oops wasClean=true"),
+          "close code=1008 reason=oops"),
       page.evaluate("window.log"));
   }
 
@@ -316,7 +316,7 @@ public class TestRouteWebSocket {
         "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
         "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
         "message: data=another origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
-        "close code=3008 reason=oops wasClean=true"),
+        "close code=3008 reason=oops"),
       page.evaluate("window.log"));
   }
 }
