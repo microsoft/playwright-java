@@ -235,7 +235,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -312,7 +313,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public ClickOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -358,7 +360,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -428,7 +431,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public DblclickOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -1059,7 +1063,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -1115,7 +1120,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public HoverOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -1882,7 +1888,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -1938,7 +1945,8 @@ public interface Locator {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public TapOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -2137,10 +2145,9 @@ public interface Locator {
    * When the locator points to a list of elements, this returns an array of locators, pointing to their respective elements.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Locator#all Locator.all()} does not wait for elements to match the locator, and instead
-   * immediately returns whatever is present in the page.  When the list of elements changes dynamically, {@link
-   * com.microsoft.playwright.Locator#all Locator.all()} will produce unpredictable and flaky results.  When the list of
-   * elements is stable, but loaded dynamically, wait for the full list to finish loading before calling {@link
-   * com.microsoft.playwright.Locator#all Locator.all()}.
+   * immediately returns whatever is present in the page.When the list of elements changes dynamically, {@link com.microsoft.playwright.Locator#all Locator.all()} will produce
+   * unpredictable and flaky results.When the list of elements is stable, but loaded dynamically, wait for the full list to finish loading before calling
+   * {@link com.microsoft.playwright.Locator#all Locator.all()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4077,7 +4084,10 @@ public interface Locator {
    */
   Locator nth(int index);
   /**
-   * Creates a locator that matches either of the two locators.
+   * Creates a locator matching all elements that match one or both of the two locators.
+   *
+   * <p> Note that when both locators match something, the resulting locator will have multiple matches and violate <a
+   * href="https://playwright.dev/java/docs/locators#strictness">locator strictness</a> guidelines.
    *
    * <p> <strong>Usage</strong>
    *

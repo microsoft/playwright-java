@@ -465,8 +465,6 @@ public interface BrowserType {
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
      *
-     * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
-     *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
@@ -767,8 +765,6 @@ public interface BrowserType {
      * keyPath}, a single {@code pfxPath}, or their corresponding direct value equivalents ({@code cert} and {@code key}, or
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
-     *
-     * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
      *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.

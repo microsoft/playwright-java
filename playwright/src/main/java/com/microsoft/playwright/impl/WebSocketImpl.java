@@ -21,9 +21,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.WebSocket;
 import com.microsoft.playwright.WebSocketFrame;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -149,28 +147,6 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
-  }
-
-  private static class WebSocketFrameImpl implements WebSocketFrame {
-    private final byte[] bytes;
-
-    WebSocketFrameImpl(String payload, boolean isBase64) {
-      if (isBase64) {
-        bytes = Base64.getDecoder().decode(payload);
-      } else {
-        bytes = payload.getBytes();
-      }
-    }
-
-    @Override
-    public byte[] binary() {
-      return bytes;
-    }
-
-    @Override
-    public String text() {
-      return new String(bytes, StandardCharsets.UTF_8);
-    }
   }
 
   @Override

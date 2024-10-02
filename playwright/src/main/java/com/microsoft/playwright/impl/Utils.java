@@ -457,4 +457,29 @@ public class Utils {
     }
     return Base64.getEncoder().encodeToString(bytes);
   }
+
+  static JsonObject interceptionPatterns(List<UrlMatcher> matchers) {
+    JsonArray jsonPatterns = new JsonArray();
+    for (UrlMatcher matcher: matchers) {
+      JsonObject jsonPattern = new JsonObject();
+      Object urlFilter = matcher.rawSource;
+      if (urlFilter instanceof String) {
+        jsonPattern.addProperty("glob", (String) urlFilter);
+      } else if (urlFilter instanceof Pattern) {
+        Pattern pattern = (Pattern) urlFilter;
+        jsonPattern.addProperty("regexSource", pattern.pattern());
+        jsonPattern.addProperty("regexFlags", toJsRegexFlags(pattern));
+      } else {
+        // Match all requests.
+        jsonPattern.addProperty("glob", "**/*");
+        jsonPatterns = new JsonArray();
+        jsonPatterns.add(jsonPattern);
+        break;
+      }
+      jsonPatterns.add(jsonPattern);
+    }
+    JsonObject result = new JsonObject();
+    result.add("patterns", jsonPatterns);
+    return result;
+  }
 }

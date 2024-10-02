@@ -35,6 +35,7 @@ public class TestWorkers extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Started failing since last driver roll, flaky upstream")
   void pageWorkers() {
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     assertTrue(worker.url().contains("worker.js"));
@@ -150,6 +151,7 @@ public class TestWorkers extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Started failing since last driver roll, flaky upstream")
   void shouldReportNetworkActivity() {
     Assumptions.assumeFalse(isFirefox() && browserMajorVersion() < 114);
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));

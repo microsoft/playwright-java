@@ -560,7 +560,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -645,7 +646,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public ClickOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -723,7 +725,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -801,7 +804,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public DblclickOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -1591,7 +1595,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -1655,7 +1660,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public HoverOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -2962,7 +2968,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public Boolean trial;
 
@@ -3026,7 +3033,8 @@ public interface Page extends AutoCloseable {
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
-     * performing it.
+     * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
+     * elements which are only visible when those keys are pressed.
      */
     public TapOptions setTrial(boolean trial) {
       this.trial = trial;
@@ -5415,6 +5423,25 @@ public interface Page extends AutoCloseable {
    */
   Response goForward(GoForwardOptions options);
   /**
+   * Request the page to perform garbage collection. Note that there is no guarantee that all unreachable objects will be
+   * collected.
+   *
+   * <p> This is useful to help detect memory leaks. For example, if your page has a large object {@code "suspect"} that might be
+   * leaked, you can check that it does not leak by using a <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakRef">{@code WeakRef}</a>.
+   * <pre>{@code
+   * // 1. In your page, save a WeakRef for the "suspect".
+   * page.evaluate("globalThis.suspectWeakRef = new WeakRef(suspect)");
+   * // 2. Request garbage collection.
+   * page.requestGC();
+   * // 3. Check that weak ref does not deref to the original object.
+   * assertTrue(page.evaluate("!globalThis.suspectWeakRef.deref()"));
+   * }</pre>
+   *
+   * @since v1.48
+   */
+  void requestGC();
+  /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the first
    * non-redirect response.
    *
@@ -5773,8 +5800,7 @@ public interface Page extends AutoCloseable {
    * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script from
    * the place it was paused.
    *
-   * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy {@code headless} value in the {@link
-   * com.microsoft.playwright.BrowserType#launch BrowserType.launch()}.
+   * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy {@code headless} option.
    *
    * @since v1.9
    */
@@ -6041,15 +6067,13 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Running the handler will alter your page state mid-test. For example it will change the currently focused element and
    * move the mouse. Make sure that actions that run after the handler are self-contained and do not rely on the focus and
-   * mouse state being unchanged. <br /> <br /> For example, consider a test that calls {@link
-   * com.microsoft.playwright.Locator#focus Locator.focus()} followed by {@link com.microsoft.playwright.Keyboard#press
-   * Keyboard.press()}. If your handler clicks a button between these two actions, the focused element most likely will be
-   * wrong, and key press will happen on the unexpected element. Use {@link com.microsoft.playwright.Locator#press
-   * Locator.press()} instead to avoid this problem. <br /> <br /> Another example is a series of mouse actions, where {@link
-   * com.microsoft.playwright.Mouse#move Mouse.move()} is followed by {@link com.microsoft.playwright.Mouse#down
-   * Mouse.down()}. Again, when the handler runs between these two actions, the mouse position will be wrong during the mouse
-   * down. Prefer self-contained actions like {@link com.microsoft.playwright.Locator#click Locator.click()} that do not rely
-   * on the state being unchanged by a handler.
+   * mouse state being unchanged.For example, consider a test that calls {@link com.microsoft.playwright.Locator#focus Locator.focus()} followed by
+   * {@link com.microsoft.playwright.Keyboard#press Keyboard.press()}. If your handler clicks a button between these two
+   * actions, the focused element most likely will be wrong, and key press will happen on the unexpected element. Use {@link
+   * com.microsoft.playwright.Locator#press Locator.press()} instead to avoid this problem.Another example is a series of mouse actions, where {@link com.microsoft.playwright.Mouse#move Mouse.move()} is followed
+   * by {@link com.microsoft.playwright.Mouse#down Mouse.down()}. Again, when the handler runs between these two actions, the
+   * mouse position will be wrong during the mouse down. Prefer self-contained actions like {@link
+   * com.microsoft.playwright.Locator#click Locator.click()} that do not rely on the state being unchanged by a handler.
    *
    * <p> <strong>Usage</strong>
    *
@@ -6135,15 +6159,13 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Running the handler will alter your page state mid-test. For example it will change the currently focused element and
    * move the mouse. Make sure that actions that run after the handler are self-contained and do not rely on the focus and
-   * mouse state being unchanged. <br /> <br /> For example, consider a test that calls {@link
-   * com.microsoft.playwright.Locator#focus Locator.focus()} followed by {@link com.microsoft.playwright.Keyboard#press
-   * Keyboard.press()}. If your handler clicks a button between these two actions, the focused element most likely will be
-   * wrong, and key press will happen on the unexpected element. Use {@link com.microsoft.playwright.Locator#press
-   * Locator.press()} instead to avoid this problem. <br /> <br /> Another example is a series of mouse actions, where {@link
-   * com.microsoft.playwright.Mouse#move Mouse.move()} is followed by {@link com.microsoft.playwright.Mouse#down
-   * Mouse.down()}. Again, when the handler runs between these two actions, the mouse position will be wrong during the mouse
-   * down. Prefer self-contained actions like {@link com.microsoft.playwright.Locator#click Locator.click()} that do not rely
-   * on the state being unchanged by a handler.
+   * mouse state being unchanged.For example, consider a test that calls {@link com.microsoft.playwright.Locator#focus Locator.focus()} followed by
+   * {@link com.microsoft.playwright.Keyboard#press Keyboard.press()}. If your handler clicks a button between these two
+   * actions, the focused element most likely will be wrong, and key press will happen on the unexpected element. Use {@link
+   * com.microsoft.playwright.Locator#press Locator.press()} instead to avoid this problem.Another example is a series of mouse actions, where {@link com.microsoft.playwright.Mouse#move Mouse.move()} is followed
+   * by {@link com.microsoft.playwright.Mouse#down Mouse.down()}. Again, when the handler runs between these two actions, the
+   * mouse position will be wrong during the mouse down. Prefer self-contained actions like {@link
+   * com.microsoft.playwright.Locator#click Locator.click()} that do not rely on the state being unchanged by a handler.
    *
    * <p> <strong>Usage</strong>
    *
@@ -6240,7 +6262,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6299,7 +6321,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6356,7 +6378,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6415,7 +6437,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6472,7 +6494,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6531,7 +6553,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
-   * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * when using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
    * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
@@ -6585,7 +6607,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
@@ -6600,13 +6622,88 @@ public interface Page extends AutoCloseable {
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   * using request interception by setting {@code serviceWorkers} to {@code "block"}.
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
    * @since v1.23
    */
   void routeFromHAR(Path har, RouteFromHAROptions options);
+  /**
+   * This method allows to modify websocket connections that are made by the page.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before navigating the page.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple mock that responds to a single message. See {@code WebSocketRoute} for more details and
+   * examples.
+   * <pre>{@code
+   * page.routeWebSocket("/ws", ws -> {
+   *   ws.onMessage(message -> {
+   *     if ("request".equals(message))
+   *       ws.send("response");
+   *   });
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(String url, Consumer<WebSocketRoute> handler);
+  /**
+   * This method allows to modify websocket connections that are made by the page.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before navigating the page.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple mock that responds to a single message. See {@code WebSocketRoute} for more details and
+   * examples.
+   * <pre>{@code
+   * page.routeWebSocket("/ws", ws -> {
+   *   ws.onMessage(message -> {
+   *     if ("request".equals(message))
+   *       ws.send("response");
+   *   });
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(Pattern url, Consumer<WebSocketRoute> handler);
+  /**
+   * This method allows to modify websocket connections that are made by the page.
+   *
+   * <p> Note that only {@code WebSocket}s created after this method was called will be routed. It is recommended to call this
+   * method before navigating the page.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Below is an example of a simple mock that responds to a single message. See {@code WebSocketRoute} for more details and
+   * examples.
+   * <pre>{@code
+   * page.routeWebSocket("/ws", ws -> {
+   *   ws.onMessage(message -> {
+   *     if ("request".equals(message))
+   *       ws.send("response");
+   *   });
+   * });
+   * }</pre>
+   *
+   * @param url Only WebSockets with the url matching this pattern will be routed. A string pattern can be relative to the {@code
+   * baseURL} context option.
+   * @param handler Handler function to route the WebSocket.
+   * @since v1.48
+   */
+  void routeWebSocket(Predicate<String> url, Consumer<WebSocketRoute> handler);
   /**
    * Returns the buffer with the captured screenshot.
    *
@@ -7256,6 +7353,8 @@ public interface Page extends AutoCloseable {
    * page.navigate("https://example.com");
    * }</pre>
    *
+   * @param width Page width in pixels.
+   * @param height Page height in pixels.
    * @since v1.8
    */
   void setViewportSize(int width, int height);

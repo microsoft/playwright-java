@@ -134,6 +134,18 @@ abstract class Element {
           out.add(line.getAsString());
         }
         out.add("}</pre>");
+      } else if ("note".equals(type)) {
+        StringBuilder paragraph = new StringBuilder();
+        if (!out.isEmpty())
+          paragraph.append("\n<p> ");
+        paragraph.append("<strong>NOTE:</strong> ");
+        for (JsonElement text : node.getAsJsonArray("children")) {
+          if (!"text".equals(text.getAsJsonObject().get("type").getAsString())) {
+            continue;
+          }
+          paragraph.append(beautify(text.getAsJsonObject().get("text").getAsString()));
+        }
+        out.add(paragraph.toString());
       } else {
         String paragraph = node.get("text").getAsString();
         Matcher matcher = Pattern.compile("^\\*\\*(.+)\\*\\*$").matcher(paragraph);
@@ -143,9 +155,6 @@ abstract class Element {
           paragraph = "<strong>" + title + "</strong>";
         } else {
           paragraph = beautify(paragraph);
-          if ("note".equals(type)) {
-            paragraph = "<strong>NOTE:</strong> " + paragraph;
-          }
         }
         if (!out.isEmpty())
           paragraph = "\n<p> " + paragraph;
@@ -531,6 +540,9 @@ class TypeRef extends Element {
           default:
             throw new RuntimeException("Missing mapping for " + jsonPath);
         }
+      }
+      if ("WebSocketRoute.onClose.handler".equals(jsonPath)) {
+        return "BiConsumer<Integer, String>";
       }
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
@@ -989,7 +1001,10 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
       output.add("import java.util.*;");
     }
-    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker", "CDPSession").contains(jsonName)) {
+    if (asList("WebSocketRoute").contains(jsonName)) {
+      output.add("import java.util.function.BiConsumer;");
+    }
+    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker", "CDPSession", "WebSocketRoute").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "BrowserContext").contains(jsonName)) {

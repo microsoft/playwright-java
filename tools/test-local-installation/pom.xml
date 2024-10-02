@@ -9,10 +9,10 @@
   <description>Runs Playwright test suite (copied from playwright module) against locally cached Playwright</description>
   <properties>
     <compiler.version>1.8</compiler.version>
-    <gson.version>2.10.1</gson.version>
-    <junit.version>5.10.2</junit.version>
+    <gson.version>2.11.0</gson.version>
+    <junit.version>5.11.0</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <websocket.version>1.5.6</websocket.version>
+    <websocket.version>1.5.7</websocket.version>
   </properties>
   <dependencies>
     <dependency>
@@ -35,6 +35,12 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
