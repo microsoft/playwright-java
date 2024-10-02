@@ -3,15 +3,15 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.java_websocket.WebSocket;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
@@ -100,7 +100,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
       return result;
-    }, new Page.WaitForConditionOptions().setTimeout(10_000));
+    });
     assertEquals(asList("open"), page.evaluate("window.log"));
 
     org.java_websocket.WebSocket ws = wsPromise.get();
@@ -108,7 +108,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
       return result;
-    }, new Page.WaitForConditionOptions().setTimeout(10_000));
+    });
 
     assertEquals(
       asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
@@ -123,7 +123,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> {
       Integer result = (Integer) page.evaluate("window.ws.readyState");
       return result == 3;
-    }, new Page.WaitForConditionOptions().setTimeout(10_000));
+    });
 
     assertEquals(
       asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
@@ -143,7 +143,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
       return result;
-    }, new Page.WaitForConditionOptions().setTimeout(10_000));
+    });
 
     assertEquals(
         asList("open", "message: data=blob:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
@@ -166,7 +166,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
       return result;
-    }, new Page.WaitForConditionOptions().setTimeout(10_000));
+    });
 
     assertEquals(
       asList("open", "message: data=arraybuffer:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
@@ -176,5 +176,147 @@ public class TestRouteWebSocket {
     // Without this the blob message is not sent in pass-through!
     assertEquals(1, page.evaluate("window.ws.readyState"));
     assertEquals("hi", messagePromise.get());
+  }
+
+  @Test
+  public void shouldWorkWithServer(Page page) throws ExecutionException, InterruptedException {
+    WebSocketRoute[] wsRoute = new WebSocketRoute[]{null};
+    page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
+      WebSocketRoute server = ws.connectToServer();
+      ws.onMessage(frame -> {
+        String message = frame.text();
+        switch (message) {
+          case "to-respond":
+            ws.send("response");
+            break;
+          case "to-block":
+            break;
+          case "to-modify":
+            server.send("modified");
+            break;
+          default:
+            server.send(message);
+        }
+      });
+      server.onMessage(frame -> {
+        String message = frame.text();
+        switch (message) {
+          case "to-block":
+            break;
+          case "to-modify":
+            ws.send("modified");
+            break;
+          default:
+            ws.send(message);
+        }
+      });
+      server.send("fake");
+      wsRoute[0] = ws;
+    });
+
+    Future<WebSocket> ws = webSocketServer.waitForWebSocket();
+    setupWS(page, webSocketServer.getPort(), "blob");
+    page.waitForCondition(() -> webSocketServer.logCopy().size() >= 1);
+    assertEquals(
+      asList("message: fake"),
+      webSocketServer.logCopy());
+
+    ws.get().send("to-modify");
+    ws.get().send("to-block");
+    ws.get().send("pass-server");
+    page.waitForCondition(() -> (Boolean) page.evaluate("() => window.log.length >= 3"));
+    assertEquals(
+      asList(
+        "open",
+        "message: data=modified origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=pass-server origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+      page.evaluate("window.log"));
+
+    page.evaluate("async () => {\n" +
+      "    window.ws.send('to-respond');\n" +
+      "    window.ws.send('to-modify');\n" +
+      "    window.ws.send('to-block');\n" +
+      "    window.ws.send('pass-client');\n" +
+      "  }");
+    page.waitForCondition(() -> webSocketServer.logCopy().size() >= 3);
+    assertEquals(
+      asList("message: fake", "message: modified", "message: pass-client"),
+      webSocketServer.logCopy());
+
+    page.waitForCondition(() -> (Boolean) page.evaluate("() => window.log.length >= 4"));
+    assertEquals(
+      asList(
+        "open",
+        "message: data=modified origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=pass-server origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+      page.evaluate("window.log"));
+
+    wsRoute[0].send("another");
+    page.waitForCondition(() -> (Boolean) page.evaluate("() => window.log.length >= 5"));
+    assertEquals(
+      asList(
+        "open",
+        "message: data=modified origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=pass-server origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=another origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+      page.evaluate("window.log"));
+
+    page.evaluate("window.ws.send('pass-client-2');");
+    page.waitForCondition(() -> webSocketServer.logCopy().size() >= 4);
+    assertEquals(
+      asList("message: fake", "message: modified", "message: pass-client", "message: pass-client-2"),
+      webSocketServer.logCopy());
+
+    page.evaluate("window.ws.close(3009, 'problem');");
+    page.waitForCondition(() -> webSocketServer.logCopy().size() >= 5);
+    assertEquals(
+      asList("message: fake", "message: modified", "message: pass-client", "message: pass-client-2", "close: code=3009 reason=problem"),
+      webSocketServer.logCopy());
+  }
+
+  @Test
+  public void shouldWorkWithoutServer(Page page) {
+    WebSocketRoute[] wsRoute = new WebSocketRoute[]{ null };
+    page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
+      ws.onMessage(frame -> {
+        String message = frame.text();
+        if ("to-respond".equals(message)) {
+          ws.send("response");
+        }
+      });
+      wsRoute[0] = ws;
+    });
+    setupWS(page, webSocketServer.getPort(), "blob");
+
+    page.evaluate("async () => {\n" +
+      "    await window.wsOpened;\n" +
+      "    window.ws.send('to-respond');\n" +
+      "    window.ws.send('to-block');\n" +
+      "    window.ws.send('to-respond');\n" +
+      "  }");
+
+    page.waitForCondition(() -> (Boolean) page.evaluate("() => window.log.length >= 3"));
+    assertEquals(
+      asList(
+        "open",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+      page.evaluate("window.log"));
+
+
+    wsRoute[0].send("another");
+    wsRoute[0].close(new WebSocketRoute.CloseOptions().setCode(3008).setReason("oops"));
+
+    page.waitForCondition(() -> (Boolean) page.evaluate("() => window.log.length >= 5"));
+    assertEquals(
+      asList(
+        "open",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=response origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "message: data=another origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+        "close code=3008 reason=oops wasClean=true"),
+      page.evaluate("window.log"));
   }
 }
