@@ -148,8 +148,8 @@ public class TestRouteWebSocket {
         page.evaluate("window.log"));
     Future<String> messagePromise = webSocketServer.waitForMessage();
     page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
-    // Without this the blob message is not sent in pass-through!
-    assertEquals(1, page.evaluate("window.ws.readyState"));
+    // Dispatch messages until web socket route is received.
+    page.waitForCondition(() -> messagePromise.isDone());
     assertEquals("hi", messagePromise.get());
   }
 
@@ -171,8 +171,8 @@ public class TestRouteWebSocket {
       page.evaluate("window.log"));
     Future<String> messagePromise = webSocketServer.waitForMessage();
     page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
-    // Without this the blob message is not sent in pass-through!
-    assertEquals(1, page.evaluate("window.ws.readyState"));
+    // Dispatch messages until web socket route is received.
+    page.waitForCondition(() -> messagePromise.isDone());
     assertEquals("hi", messagePromise.get());
   }
 
