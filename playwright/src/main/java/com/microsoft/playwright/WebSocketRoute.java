@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * <p> By default, the routed WebSocket will not connect to the server. This way, you can mock entire communcation over the
  * WebSocket. Here is an example that responds to a {@code "request"} with a {@code "response"}.
  * <pre>{@code
- * page.routeWebSocket("/ws", ws -> {
+ * page.routeWebSocket("wss://example.com/ws", ws -> {
  *   ws.onMessage(message -> {
  *     if ("request".equals(message))
  *       ws.send("response");
@@ -41,6 +41,20 @@ import java.util.function.Consumer;
  * <p> Since we do not call {@link com.microsoft.playwright.WebSocketRoute#connectToServer WebSocketRoute.connectToServer()}
  * inside the WebSocket route handler, Playwright assumes that WebSocket will be mocked, and opens the WebSocket inside the
  * page automatically.
+ *
+ * <p> Here is another example that handles JSON messages:
+ * <pre>{@code
+ * page.routeWebSocket("wss://example.com/ws", ws -> {
+ *   ws.onMessage(message -> {
+ *     JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+ *     if ("question".equals(json.get("request").getAsString())) {
+ *       Map<String, String> result = new HashMap();
+ *       result.put("response", "answer");
+ *       ws.send(gson.toJson(result));
+ *     }
+ *   });
+ * });
+ * }</pre>
  *
  * <p> <strong>Intercepting</strong>
  *
