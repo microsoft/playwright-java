@@ -95,7 +95,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
 
   private void cleanup(Options options) {
     closeBrowserContext();
-    if(options.closeBrowserAfterEachTest) {
+    if(options.closeBrowserAfterEachTest != null && options.closeBrowserAfterEachTest) {
       BrowserExtension.closeBrowser();
     }
   }
