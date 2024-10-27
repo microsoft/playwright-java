@@ -50,11 +50,19 @@ public class Options {
   public Path outputDir;
   // When to record traces.  Default is OFF.
   public Trace trace = Trace.OFF;
+  // This should only be used if a new Browser object is needed for each test.
+  // Usually only necessary when using a cloud testing service
+  public Boolean closeBrowserAfterEachTest;
 
   public enum Trace {
     OFF,
     ON,
     RETAIN_ON_FAILURE;
+  }
+
+  public Options setCloseBrowserAfterEachTest(Boolean closeBrowser) {
+    this.closeBrowserAfterEachTest = closeBrowser;
+    return this;
   }
 
   public Options setTrace(Trace trace) {

@@ -48,6 +48,16 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     return getOrCreateBrowser(extensionContext);
   }
 
+  static void closeBrowser() {
+    Browser browser = threadLocalBrowser.get();
+    if(browser == null) {
+      return;
+    }
+
+    browser.close();
+    threadLocalBrowser.remove();
+  }
+
   /**
    * Returns the Browser that belongs to the current test.  Will be created if it doesn't already exist.
    * <strong>NOTE:</strong> this method is subject to change.

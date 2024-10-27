@@ -75,13 +75,13 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   @Override
   public void testSuccessful(ExtensionContext extensionContext) {
     saveTraceWhenOn(extensionContext);
-    closeBrowserContext();
+    cleanup(OptionsExtension.getOptions(extensionContext));
   }
 
   @Override
   public void testAborted(ExtensionContext extensionContext, Throwable cause) {
     saveTraceWhenOn(extensionContext);
-    closeBrowserContext();
+    cleanup(OptionsExtension.getOptions(extensionContext));
   }
 
   @Override
@@ -90,7 +90,14 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     if (shouldRecordTrace(options)) {
       saveTrace(extensionContext);
     }
+    cleanup(options);
+  }
+
+  private void cleanup(Options options) {
     closeBrowserContext();
+    if(options.closeBrowserAfterEachTest) {
+      BrowserExtension.closeBrowser();
+    }
   }
 
   private static void saveTraceWhenOn(ExtensionContext extensionContext) {
