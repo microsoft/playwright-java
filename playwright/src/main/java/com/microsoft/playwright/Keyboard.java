@@ -48,10 +48,7 @@ import com.microsoft.playwright.options.*;
  *
  * <p> An example to trigger select-all with the keyboard
  * <pre>{@code
- * // on Windows and Linux
- * page.keyboard().press("Control+A");
- * // on macOS
- * page.keyboard().press("Meta+A");
+ * page.keyboard().press("ControlOrMeta+A");
  * }</pre>
  */
 public interface Keyboard {
@@ -164,7 +161,7 @@ public interface Keyboard {
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
    * page.keyboard().press("A");
-   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png"));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png")));
    * page.keyboard().press("ArrowLeft");
    * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("ArrowLeft.png")));
    * page.keyboard().press("Shift+O");
@@ -211,7 +208,7 @@ public interface Keyboard {
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
    * page.keyboard().press("A");
-   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png"));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png")));
    * page.keyboard().press("ArrowLeft");
    * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("ArrowLeft.png")));
    * page.keyboard().press("Shift+O");

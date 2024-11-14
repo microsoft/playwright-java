@@ -31,8 +31,8 @@ import java.util.function.Consumer;
  * WebSocket. Here is an example that responds to a {@code "request"} with a {@code "response"}.
  * <pre>{@code
  * page.routeWebSocket("wss://example.com/ws", ws -> {
- *   ws.onMessage(message -> {
- *     if ("request".equals(message))
+ *   ws.onMessage(frame -> {
+ *     if ("request".equals(frame.text()))
  *       ws.send("response");
  *   });
  * });
@@ -45,8 +45,8 @@ import java.util.function.Consumer;
  * <p> Here is another example that handles JSON messages:
  * <pre>{@code
  * page.routeWebSocket("wss://example.com/ws", ws -> {
- *   ws.onMessage(message -> {
- *     JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+ *   ws.onMessage(frame -> {
+ *     JsonObject json = new JsonParser().parse(frame.text()).getAsJsonObject();
  *     if ("question".equals(json.get("request").getAsString())) {
  *       Map<String, String> result = new HashMap();
  *       result.put("response", "answer");
@@ -67,11 +67,11 @@ import java.util.function.Consumer;
  * <pre>{@code
  * page.routeWebSocket("/ws", ws -> {
  *   WebSocketRoute server = ws.connectToServer();
- *   ws.onMessage(message -> {
- *     if ("request".equals(message))
+ *   ws.onMessage(frame -> {
+ *     if ("request".equals(frame.text()))
  *       server.send("request2");
  *     else
- *       server.send(message);
+ *       server.send(frame.text());
  *   });
  * });
  * }</pre>
@@ -92,13 +92,13 @@ import java.util.function.Consumer;
  * <pre>{@code
  * page.routeWebSocket("/ws", ws -> {
  *   WebSocketRoute server = ws.connectToServer();
- *   ws.onMessage(message -> {
- *     if (!"blocked-from-the-page".equals(message))
- *       server.send(message);
+ *   ws.onMessage(frame -> {
+ *     if (!"blocked-from-the-page".equals(frame.text()))
+ *       server.send(frame.text());
  *   });
- *   server.onMessage(message -> {
- *     if (!"blocked-from-the-server".equals(message))
- *       ws.send(message);
+ *   server.onMessage(frame -> {
+ *     if (!"blocked-from-the-server".equals(frame.text()))
+ *       ws.send(frame.text());
  *   });
  * });
  * }</pre>

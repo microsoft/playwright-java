@@ -86,6 +86,25 @@ class TracingImpl extends ChannelOwner implements Tracing {
     tracingStartChunk(options.name, options.title);
   }
 
+  @Override
+  public void group(String name, GroupOptions options) {
+    withLogging("Tracing.group", () -> groupImpl(name, options));
+  }
+
+  private void groupImpl(String name, GroupOptions options) {
+    if (options == null) {
+      options = new GroupOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("name", name);
+    sendMessage("tracingGroup", params);
+  }
+
+  @Override
+  public void groupEnd() {
+    withLogging("Tracing.groupEnd", () -> sendMessage("tracingGroupEnd"));
+  }
+
   private void tracingStartChunk(String name, String title) {
     JsonObject params = new JsonObject();
     if (name != null) {

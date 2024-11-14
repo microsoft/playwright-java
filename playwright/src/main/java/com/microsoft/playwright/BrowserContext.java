@@ -701,7 +701,7 @@ public interface BrowserContext extends AutoCloseable {
    * public class Example {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
-   *       BrowserType webkit = playwright.webkit()
+   *       BrowserType webkit = playwright.webkit();
    *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
    *       BrowserContext context = browser.newContext();
    *       context.exposeBinding("pageURL", (source, args) -> source.page().url());
@@ -748,7 +748,7 @@ public interface BrowserContext extends AutoCloseable {
    * public class Example {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
-   *       BrowserType webkit = playwright.webkit()
+   *       BrowserType webkit = playwright.webkit();
    *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
    *       BrowserContext context = browser.newContext();
    *       context.exposeBinding("pageURL", (source, args) -> source.page().url());
@@ -797,8 +797,9 @@ public interface BrowserContext extends AutoCloseable {
    * public class Example {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
-   *       BrowserType webkit = playwright.webkit()
+   *       BrowserType webkit = playwright.webkit();
    *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
+   *       BrowserContext context = browser.newContext();
    *       context.exposeFunction("sha256", args -> {
    *         String text = (String) args[0];
    *         MessageDigest crypto;

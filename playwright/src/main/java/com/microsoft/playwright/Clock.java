@@ -227,6 +227,10 @@ public interface Clock {
   /**
    * Makes {@code Date.now} and {@code new Date()} return fixed fake time at all times, keeps all the timers running.
    *
+   * <p> Use this method for simple scenarios where you only need to test with a predefined time. For more advanced scenarios,
+   * use {@link com.microsoft.playwright.Clock#install Clock.install()} instead. Read docs on <a
+   * href="https://playwright.dev/java/docs/clock">clock emulation</a> to learn more.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.clock().setFixedTime(new Date());
@@ -240,6 +244,10 @@ public interface Clock {
   void setFixedTime(long time);
   /**
    * Makes {@code Date.now} and {@code new Date()} return fixed fake time at all times, keeps all the timers running.
+   *
+   * <p> Use this method for simple scenarios where you only need to test with a predefined time. For more advanced scenarios,
+   * use {@link com.microsoft.playwright.Clock#install Clock.install()} instead. Read docs on <a
+   * href="https://playwright.dev/java/docs/clock">clock emulation</a> to learn more.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -255,6 +263,10 @@ public interface Clock {
   /**
    * Makes {@code Date.now} and {@code new Date()} return fixed fake time at all times, keeps all the timers running.
    *
+   * <p> Use this method for simple scenarios where you only need to test with a predefined time. For more advanced scenarios,
+   * use {@link com.microsoft.playwright.Clock#install Clock.install()} instead. Read docs on <a
+   * href="https://playwright.dev/java/docs/clock">clock emulation</a> to learn more.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.clock().setFixedTime(new Date());
@@ -267,7 +279,8 @@ public interface Clock {
    */
   void setFixedTime(Date time);
   /**
-   * Sets current system time but does not trigger any timers.
+   * Sets system time, but does not trigger any timers. Use this to test how the web page reacts to a time shift, for example
+   * switching from summer to winter time, or changing time zones.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -281,7 +294,8 @@ public interface Clock {
    */
   void setSystemTime(long time);
   /**
-   * Sets current system time but does not trigger any timers.
+   * Sets system time, but does not trigger any timers. Use this to test how the web page reacts to a time shift, for example
+   * switching from summer to winter time, or changing time zones.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -295,7 +309,8 @@ public interface Clock {
    */
   void setSystemTime(String time);
   /**
-   * Sets current system time but does not trigger any timers.
+   * Sets system time, but does not trigger any timers. Use this to test how the web page reacts to a time shift, for example
+   * switching from summer to winter time, or changing time zones.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

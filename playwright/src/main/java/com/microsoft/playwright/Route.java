@@ -363,10 +363,8 @@ public interface Route {
    *
    * <p> <strong>Details</strong>
    *
-   * <p> Note that any overrides such as {@code url} or {@code headers} only apply to the request being routed. If this request
-   * results in a redirect, overrides will not be applied to the new redirected request. If you want to propagate a header
-   * through redirects, use the combination of {@link com.microsoft.playwright.Route#fetch Route.fetch()} and {@link
-   * com.microsoft.playwright.Route#fulfill Route.fulfill()} instead.
+   * <p> The {@code headers} option applies to both the routed request and any redirects it initiates. However, {@code url},
+   * {@code method}, and {@code postData} only apply to the original request and are not carried over to redirected requests.
    *
    * <p> {@link com.microsoft.playwright.Route#resume Route.resume()} will immediately send the request to the network, other
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
@@ -393,10 +391,8 @@ public interface Route {
    *
    * <p> <strong>Details</strong>
    *
-   * <p> Note that any overrides such as {@code url} or {@code headers} only apply to the request being routed. If this request
-   * results in a redirect, overrides will not be applied to the new redirected request. If you want to propagate a header
-   * through redirects, use the combination of {@link com.microsoft.playwright.Route#fetch Route.fetch()} and {@link
-   * com.microsoft.playwright.Route#fulfill Route.fulfill()} instead.
+   * <p> The {@code headers} option applies to both the routed request and any redirects it initiates. However, {@code url},
+   * {@code method}, and {@code postData} only apply to the original request and are not carried over to redirected requests.
    *
    * <p> {@link com.microsoft.playwright.Route#resume Route.resume()} will immediately send the request to the network, other
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want

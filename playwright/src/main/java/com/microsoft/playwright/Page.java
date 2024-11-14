@@ -959,8 +959,10 @@ public interface Page extends AutoCloseable {
   }
   class EmulateMediaOptions {
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. Passing {@code null} disables color scheme emulation.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. Passing {@code null} disables color scheme emulation.
+     * {@code "no-preference"} is deprecated.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -980,8 +982,10 @@ public interface Page extends AutoCloseable {
     public Optional<ReducedMotion> reducedMotion;
 
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. Passing {@code null} disables color scheme emulation.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. Passing {@code null} disables color scheme emulation.
+     * {@code "no-preference"} is deprecated.
      */
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -4151,9 +4155,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * page.dragAndDrop("#source", '#target');
+   * page.dragAndDrop("#source", "#target");
    * // or specify exact positions relative to the top-left corners of the elements:
-   * page.dragAndDrop("#source", '#target', new Page.DragAndDropOptions()
+   * page.dragAndDrop("#source", "#target", new Page.DragAndDropOptions()
    *   .setSourcePosition(34, 7).setTargetPosition(10, 20));
    * }</pre>
    *
@@ -4172,9 +4176,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * page.dragAndDrop("#source", '#target');
+   * page.dragAndDrop("#source", "#target");
    * // or specify exact positions relative to the top-left corners of the elements:
-   * page.dragAndDrop("#source", '#target', new Page.DragAndDropOptions()
+   * page.dragAndDrop("#source", "#target", new Page.DragAndDropOptions()
    *   .setSourcePosition(34, 7).setTargetPosition(10, 20));
    * }</pre>
    *
@@ -4214,8 +4218,6 @@ public interface Page extends AutoCloseable {
    * // → true
    * page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches");
    * // → false
-   * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
-   * // → false
    * }</pre>
    *
    * @since v1.8
@@ -4251,8 +4253,6 @@ public interface Page extends AutoCloseable {
    * page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches");
    * // → true
    * page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches");
-   * // → false
-   * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
    * // → false
    * }</pre>
    *
@@ -4560,7 +4560,7 @@ public interface Page extends AutoCloseable {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
    *       BrowserType webkit = playwright.webkit();
-   *       Browser browser = webkit.launch({ headless: false });
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
    *       BrowserContext context = browser.newContext();
    *       Page page = context.newPage();
    *       page.exposeBinding("pageURL", (source, args) -> source.page().url());
@@ -4610,7 +4610,7 @@ public interface Page extends AutoCloseable {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
    *       BrowserType webkit = playwright.webkit();
-   *       Browser browser = webkit.launch({ headless: false });
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
    *       BrowserContext context = browser.newContext();
    *       Page page = context.newPage();
    *       page.exposeBinding("pageURL", (source, args) -> source.page().url());
@@ -4662,26 +4662,27 @@ public interface Page extends AutoCloseable {
    *   public static void main(String[] args) {
    *     try (Playwright playwright = Playwright.create()) {
    *       BrowserType webkit = playwright.webkit();
-   *       Browser browser = webkit.launch({ headless: false });
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
    *       Page page = browser.newPage();
    *       page.exposeFunction("sha256", args -> {
-   *         String text = (String) args[0];
-   *         MessageDigest crypto;
    *         try {
-   *           crypto = MessageDigest.getInstance("SHA-256");
+   *           String text = (String) args[0];
+   *           MessageDigest crypto = MessageDigest.getInstance("SHA-256");
+   *           byte[] token = crypto.digest(text.getBytes(StandardCharsets.UTF_8));
+   *           return Base64.getEncoder().encodeToString(token);
    *         } catch (NoSuchAlgorithmException e) {
    *           return null;
    *         }
-   *         byte[] token = crypto.digest(text.getBytes(StandardCharsets.UTF_8));
-   *         return Base64.getEncoder().encodeToString(token);
    *       });
-   *       page.setContent("<script>\n" +
+   *       page.setContent(
+   *         "<script>\n" +
    *         "  async function onClick() {\n" +
    *         "    document.querySelector('div').textContent = await window.sha256('PLAYWRIGHT');\n" +
    *         "  }\n" +
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
-   *         "<div></div>\n");
+   *         "<div></div>"
+   *       );
    *       page.click("button");
    *     }
    *   }
@@ -4757,7 +4758,7 @@ public interface Page extends AutoCloseable {
    * Frame frame = page.frame("frame-name");
    * }</pre>
    * <pre>{@code
-   * Frame frame = page.frameByUrl(Pattern.compile(".*domain.*");
+   * Frame frame = page.frameByUrl(Pattern.compile(".*domain.*"));
    * }</pre>
    *
    * @param name Frame name specified in the {@code iframe}'s {@code name} attribute.
@@ -5163,19 +5164,19 @@ public interface Page extends AutoCloseable {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -5205,19 +5206,19 @@ public interface Page extends AutoCloseable {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -5245,19 +5246,19 @@ public interface Page extends AutoCloseable {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -5287,19 +5288,19 @@ public interface Page extends AutoCloseable {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -6080,24 +6081,24 @@ public interface Page extends AutoCloseable {
    * <p> An example that closes a "Sign up to the newsletter" dialog when it appears:
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () => {
+   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () -> {
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("No thanks")).click();
    * });
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
    * <p> An example that skips the "Confirm your security details" page when it is shown:
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.getByText("Confirm your security details")), () => {
+   * page.addLocatorHandler(page.getByText("Confirm your security details"), () -> {
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remind me later")).click();
    * });
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
@@ -6106,19 +6107,19 @@ public interface Page extends AutoCloseable {
    * handler does not hide the {@code <body>} element.
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.locator("body")), () => {
+   * page.addLocatorHandler(page.locator("body"), () -> {
    *   page.evaluate("window.removeObstructionsForTestIfNeeded()");
-   * }, new Page.AddLocatorHandlerOptions.setNoWaitAfter(true));
+   * }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true));
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
    * <p> Handler takes the original locator as an argument. You can also automatically remove the handler after a number of
    * invocations by setting {@code times}:
    * <pre>{@code
-   * page.addLocatorHandler(page.getByLabel("Close"), locator => {
+   * page.addLocatorHandler(page.getByLabel("Close"), locator -> {
    *   locator.click();
    * }, new Page.AddLocatorHandlerOptions().setTimes(1));
    * }</pre>
@@ -6172,24 +6173,24 @@ public interface Page extends AutoCloseable {
    * <p> An example that closes a "Sign up to the newsletter" dialog when it appears:
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () => {
+   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () -> {
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("No thanks")).click();
    * });
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
    * <p> An example that skips the "Confirm your security details" page when it is shown:
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.getByText("Confirm your security details")), () => {
+   * page.addLocatorHandler(page.getByText("Confirm your security details"), () -> {
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remind me later")).click();
    * });
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
@@ -6198,19 +6199,19 @@ public interface Page extends AutoCloseable {
    * handler does not hide the {@code <body>} element.
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.locator("body")), () => {
+   * page.addLocatorHandler(page.locator("body"), () -> {
    *   page.evaluate("window.removeObstructionsForTestIfNeeded()");
-   * }, new Page.AddLocatorHandlerOptions.setNoWaitAfter(true));
+   * }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true));
    *
    * // Write the test as usual.
-   * page.goto("https://example.com");
+   * page.navigate("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
    * }</pre>
    *
    * <p> Handler takes the original locator as an argument. You can also automatically remove the handler after a number of
    * invocations by setting {@code times}:
    * <pre>{@code
-   * page.addLocatorHandler(page.getByLabel("Close"), locator => {
+   * page.addLocatorHandler(page.getByLabel("Close"), locator -> {
    *   locator.click();
    * }, new Page.AddLocatorHandlerOptions().setTimes(1));
    * }</pre>
@@ -6641,8 +6642,8 @@ public interface Page extends AutoCloseable {
    * examples.
    * <pre>{@code
    * page.routeWebSocket("/ws", ws -> {
-   *   ws.onMessage(message -> {
-   *     if ("request".equals(message))
+   *   ws.onMessage(frame -> {
+   *     if ("request".equals(frame.text()))
    *       ws.send("response");
    *   });
    * });
@@ -6666,8 +6667,8 @@ public interface Page extends AutoCloseable {
    * examples.
    * <pre>{@code
    * page.routeWebSocket("/ws", ws -> {
-   *   ws.onMessage(message -> {
-   *     if ("request".equals(message))
+   *   ws.onMessage(frame -> {
+   *     if ("request".equals(frame.text()))
    *       ws.send("response");
    *   });
    * });
@@ -6691,8 +6692,8 @@ public interface Page extends AutoCloseable {
    * examples.
    * <pre>{@code
    * page.routeWebSocket("/ws", ws -> {
-   *   ws.onMessage(message -> {
-   *     if ("request".equals(message))
+   *   ws.onMessage(frame -> {
+   *     if ("request".equals(frame.text()))
    *       ws.send("response");
    *   });
    * });

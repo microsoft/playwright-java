@@ -39,8 +39,8 @@ import java.util.*;
  * });
  *
  * // Deconstruct console.log arguments
- * msg.args().get(0).jsonValue() // hello
- * msg.args().get(1).jsonValue() // 42
+ * msg.args().get(0).jsonValue(); // hello
+ * msg.args().get(1).jsonValue(); // 42
  * }</pre>
  */
 public interface ConsoleMessage {

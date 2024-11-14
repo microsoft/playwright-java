@@ -470,9 +470,11 @@ public interface BrowserType {
      */
     public List<ClientCertificate> clientCertificates;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -774,9 +776,11 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);

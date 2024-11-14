@@ -30,14 +30,13 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  *
  * <p> Consider the following example:
  * <pre>{@code
- * ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
  *
  * public class TestExample {
- *   ...
+ *   // ...
  *   @Test
  *   void statusBecomesSubmitted() {
- *     ...
+ *     // ...
  *     page.locator("#submit-button").click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }

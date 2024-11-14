@@ -120,6 +120,18 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public String ariaSnapshot() {
+    return frame.withLogging("Locator.ariaSnapshot", () -> ariaSnapshotImpl());
+  }
+
+  private String ariaSnapshotImpl() {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonObject result = frame.sendMessage("ariaSnapshot", params).getAsJsonObject();
+    return result.get("snapshot").getAsString();
+  }
+
+  @Override
   public void blur(BlurOptions options) {
     frame.withLogging("Locator.blur", () -> blurImpl(options));
   }
@@ -650,9 +662,6 @@ class LocatorImpl implements Locator {
   }
 
   private FrameExpectResult expectImpl(String expression, FrameExpectOptions options) {
-    if (options == null) {
-      options = new FrameExpectOptions();
-    }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", expression);
