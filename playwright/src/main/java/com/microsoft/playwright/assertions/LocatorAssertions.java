@@ -485,6 +485,20 @@ public interface LocatorAssertions {
       return this;
     }
   }
+  class MatchesAriaSnapshotOptions {
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public MatchesAriaSnapshotOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   /**
    * Makes the assertion check for the opposite condition. For example, this code tests that the Locator doesn't contain text
    * {@code "error"}:
@@ -2172,6 +2186,24 @@ public interface LocatorAssertions {
    *
    * @since v1.49
    */
-  void matchesAriaSnapshot(String expected);
+  default void matchesAriaSnapshot(String expected) {
+    matchesAriaSnapshot(expected, null);
+  }
+  /**
+   * Asserts that the target element matches the given <a
+   * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.navigate("https://demo.playwright.dev/todomvc/");
+   * assertThat(page.locator("body")).matchesAriaSnapshot("""
+   *   - heading "todos"
+   *   - textbox "What needs to be done?"
+   * """);
+   * }</pre>
+   *
+   * @since v1.49
+   */
+  void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
 }
 

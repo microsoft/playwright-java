@@ -327,10 +327,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
-  public void matchesAriaSnapshot(String expected) {
-    // expected = unshift(expected);
-    // TODO: timeout
-    FrameExpectOptions options = new FrameExpectOptions();
+  public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions snapshotOptions) {
+    FrameExpectOptions options = convertType(snapshotOptions, FrameExpectOptions.class);
     options.expectedValue = serializeArgument(expected);
     expectImpl("to.match.aria", options, expected,"Locator expected to match Aria snapshot");
   }

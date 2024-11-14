@@ -73,8 +73,9 @@ public class TestPageAriaSnapshot {
   @Test
   void shouldAllowTextNodes(Page page) {
     page.setContent("<h1>Microsoft</h1><div>Open source projects and samples from Microsoft</div>");
-    checkAndMatchSnapshot(page.locator("body"), "- heading \"Microsoft\" [level=1]\n" +
-      "- text: Open source projects and samples from Microsoft");
+    checkAndMatchSnapshot(page.locator("body"), "" +
+      "    - heading \"Microsoft\" [level=1]\n" +
+      "    - text: Open source projects and samples from Microsoft");
   }
 
   @Test

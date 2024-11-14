@@ -120,12 +120,15 @@ class LocatorImpl implements Locator {
   }
 
   @Override
-  public String ariaSnapshot() {
-    return frame.withLogging("Locator.ariaSnapshot", () -> ariaSnapshotImpl());
+  public String ariaSnapshot(AriaSnapshotOptions options) {
+    return frame.withLogging("Locator.ariaSnapshot", () -> ariaSnapshotImpl(options));
   }
 
-  private String ariaSnapshotImpl() {
-    JsonObject params = new JsonObject();
+  private String ariaSnapshotImpl(AriaSnapshotOptions options) {
+    if (options == null) {
+      options = new AriaSnapshotOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject result = frame.sendMessage("ariaSnapshot", params).getAsJsonObject();
     return result.get("snapshot").getAsString();
