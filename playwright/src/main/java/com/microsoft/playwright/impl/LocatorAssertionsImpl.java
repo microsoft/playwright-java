@@ -328,6 +328,9 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions snapshotOptions) {
+    if (snapshotOptions == null) {
+      snapshotOptions = new MatchesAriaSnapshotOptions();
+    }
     FrameExpectOptions options = convertType(snapshotOptions, FrameExpectOptions.class);
     options.expectedValue = serializeArgument(expected);
     expectImpl("to.match.aria", options, expected,"Locator expected to match Aria snapshot");

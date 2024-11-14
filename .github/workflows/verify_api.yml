@@ -26,7 +26,7 @@ jobs:
       - name: Regenerate APIs
         run: scripts/generate_api.sh
       - name: Install browsers
-        run: mvn compile exec:java -f playwright/pom.xml -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps"
+        run: mvn compile exec:java --no-transfer-progress -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml
       - name: Update browser versions in README
         run: scripts/update_readme.sh
       - name: Verify API is up to date
