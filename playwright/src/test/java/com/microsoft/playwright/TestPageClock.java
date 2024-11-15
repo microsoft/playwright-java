@@ -290,8 +290,9 @@ public class TestPageClock {
     Page popup = page.waitForPopup(() -> {
       page.evaluate("url => window.open(url)", server.PREFIX + "/popup.html");
     });
+    popup.waitForURL(server.PREFIX + "/popup.html");
     Double popupTime = (Double) popup.evaluate("time");
-    assertTrue(popupTime >= 2000);
+    assertTrue(popupTime >= 2000, "popupTime = " + popupTime);
   }
 
   @Test
@@ -310,6 +311,7 @@ public class TestPageClock {
     Page popup = page.waitForPopup(() -> {
       page.evaluate("url => window.open(url)", server.PREFIX + "/popup.html");
     });
+    popup.waitForURL(server.PREFIX + "/popup.html");
     Object popupTime = popup.evaluate("time");
     assertEquals(1000, popupTime);
   }
