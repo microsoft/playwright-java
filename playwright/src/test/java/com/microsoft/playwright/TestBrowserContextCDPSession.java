@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,12 @@ public class TestBrowserContextCDPSession extends TestBase {
     cdpSession.send("Network.enable");
 
     List<JsonElement> events = new ArrayList<>();
-    cdpSession.on("Network.requestWillBeSent", events::add);
+    cdpSession.on("Network.requestWillBeSent", (JsonObject jsonObject) -> {
+      // Only register main request, ignore favicon requests.
+      if ("Document".equals(jsonObject.get("type").getAsString())) {
+        events.add(jsonObject);
+      }
+    });
     page.navigate(server.EMPTY_PAGE);
 
     assertEquals(1, events.size());
@@ -136,8 +142,14 @@ public class TestBrowserContextCDPSession extends TestBase {
     cdpSession.send("Network.enable");
 
     List<JsonObject> events = new ArrayList<>();
-    cdpSession.on("Network.requestWillBeSent", events::add);
-    cdpSession.on("Network.requestWillBeSent", events::add);
+    Consumer<JsonObject> listener1 = (JsonObject jsonObject) -> {
+      // Only register main request, ignore favicon requests.
+      if ("Document".equals(jsonObject.get("type").getAsString())) {
+        events.add(jsonObject);
+      }
+    };
+    cdpSession.on("Network.requestWillBeSent", listener1);
+    cdpSession.on("Network.requestWillBeSent", listener1);
 
     page.navigate(server.EMPTY_PAGE);
     assertEquals(2, events.size());
@@ -149,9 +161,15 @@ public class TestBrowserContextCDPSession extends TestBase {
     cdpSession.send("Network.enable");
 
     List<JsonObject> events = new ArrayList<>();
-    Consumer<JsonObject> listener1 = events::add;
+    Consumer<JsonObject> listener1 = (JsonObject jsonObject) -> {
+      // Only register main request, ignore favicon requests.
+      if ("Document".equals(jsonObject.get("type").getAsString())) {
+        events.add(jsonObject);
+      }
+    };
+    Consumer<JsonObject> listener2 = listener1::accept;
     cdpSession.on("Network.requestWillBeSent", listener1);
-    cdpSession.on("Network.requestWillBeSent", events::add);
+    cdpSession.on("Network.requestWillBeSent", listener2);
 
     page.navigate(server.EMPTY_PAGE);
     assertEquals(2, events.size());
@@ -160,6 +178,6 @@ public class TestBrowserContextCDPSession extends TestBase {
     events.clear();
 
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(1, events.size());
+    assertEquals(1, events.size(), new Gson().toJson(events));
   }
 }

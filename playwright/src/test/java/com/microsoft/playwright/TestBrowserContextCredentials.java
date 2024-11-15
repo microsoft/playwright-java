@@ -29,6 +29,13 @@ public class TestBrowserContextCredentials extends TestBase {
     return isChromium() && isHeadful();
   }
 
+  static boolean isChromiumChannel() {
+    // net::ERR_INVALID_AUTH_CREDENTIALS is thrown in --headless=new which
+    // is the default in all Chromium channels.
+    return isChromium() && getBrowserChannelFromEnv() != null;
+  }
+
+
   @Test
   @DisabledIf(value="isChromiumHeadful", disabledReason="fail")
   void shouldFailWithoutCredentials() {
