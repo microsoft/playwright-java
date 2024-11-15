@@ -69,6 +69,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
   WebSocketRouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    markAsInternalType();
   }
 
     @Override

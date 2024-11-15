@@ -3499,19 +3499,19 @@ public interface Frame {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3541,19 +3541,19 @@ public interface Frame {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3581,19 +3581,19 @@ public interface Frame {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3623,19 +3623,19 @@ public interface Frame {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>

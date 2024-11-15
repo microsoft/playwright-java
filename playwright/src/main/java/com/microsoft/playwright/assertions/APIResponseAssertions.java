@@ -21,15 +21,15 @@ package com.microsoft.playwright.assertions;
  * The {@code APIResponseAssertions} class provides assertion methods that can be used to make assertions about the {@code
  * APIResponse} in the tests.
  * <pre>{@code
- * ...
+ * // ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
  *
  * public class TestPage {
- *   ...
+ *   // ...
  *   @Test
  *   void navigatesToLoginPage() {
- *     ...
- *     APIResponse response = page.request().get('https://playwright.dev');
+ *     // ...
+ *     APIResponse response = page.request().get("https://playwright.dev");
  *     assertThat(response).isOK();
  *   }
  * }

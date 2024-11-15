@@ -327,6 +327,16 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
+  public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions snapshotOptions) {
+    if (snapshotOptions == null) {
+      snapshotOptions = new MatchesAriaSnapshotOptions();
+    }
+    FrameExpectOptions options = convertType(snapshotOptions, FrameExpectOptions.class);
+    options.expectedValue = serializeArgument(expected);
+    expectImpl("to.match.aria", options, expected,"Locator expected to match Aria snapshot");
+  }
+
+  @Override
   public void isChecked(IsCheckedOptions options) {
     boolean unchecked = options != null && options.checked != null && !options.checked;
     String expression = unchecked ? "to.be.unchecked" : "to.be.checked";

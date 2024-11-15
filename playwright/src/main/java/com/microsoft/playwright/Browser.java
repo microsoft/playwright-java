@@ -29,15 +29,15 @@ import java.util.regex.Pattern;
  * import com.microsoft.playwright.*;
  *
  * public class Example {
- *   public static void main(String[] args) {
- *     try (Playwright playwright = Playwright.create()) {
- *       BrowserType firefox = playwright.firefox()
- *       Browser browser = firefox.launch();
- *       Page page = browser.newPage();
- *       page.navigate('https://example.com');
- *       browser.close();
- *     }
- *   }
+ *  public static void main(String[] args) {
+ *    try (Playwright playwright = Playwright.create()) {
+ *      BrowserType firefox = playwright.firefox();
+ *      Browser browser = firefox.launch();
+ *      Page page = browser.newPage();
+ *      page.navigate("https://example.com");
+ *      browser.close();
+ *    }
+ *  }
  * }
  * }</pre>
  */
@@ -111,9 +111,11 @@ public interface Browser extends AutoCloseable {
      */
     public List<ClientCertificate> clientCertificates;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -323,9 +325,11 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -660,9 +664,11 @@ public interface Browser extends AutoCloseable {
      */
     public List<ClientCertificate> clientCertificates;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -872,9 +878,11 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
-     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
+     * Emulates <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
+     * feature, supported values are {@code "light"} and {@code "dark"}. See {@link com.microsoft.playwright.Page#emulateMedia
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
+     * "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -1289,7 +1297,7 @@ public interface Browser extends AutoCloseable {
    * BrowserContext context = browser.newContext();
    * // Create a new page in a pristine context.
    * Page page = context.newPage();
-   * page.navigate('https://example.com');
+   * page.navigate("https://example.com");
    *
    * // Graceful close up everything
    * context.close();
@@ -1316,7 +1324,7 @@ public interface Browser extends AutoCloseable {
    * BrowserContext context = browser.newContext();
    * // Create a new page in a pristine context.
    * Page page = context.newPage();
-   * page.navigate('https://example.com');
+   * page.navigate("https://example.com");
    *
    * // Graceful close up everything
    * context.close();
@@ -1364,7 +1372,7 @@ public interface Browser extends AutoCloseable {
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
-   * page.goto('https://www.google.com');
+   * page.navigate("https://www.google.com");
    * browser.stopTracing();
    * }</pre>
    *
@@ -1388,7 +1396,7 @@ public interface Browser extends AutoCloseable {
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
-   * page.goto('https://www.google.com');
+   * page.navigate("https://www.google.com");
    * browser.stopTracing();
    * }</pre>
    *
@@ -1411,7 +1419,7 @@ public interface Browser extends AutoCloseable {
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
-   * page.goto('https://www.google.com');
+   * page.navigate("https://www.google.com");
    * browser.stopTracing();
    * }</pre>
    *

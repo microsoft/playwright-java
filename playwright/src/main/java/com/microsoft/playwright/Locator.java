@@ -29,6 +29,26 @@ import java.util.regex.Pattern;
  * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
  */
 public interface Locator {
+  class AriaSnapshotOptions {
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public Double timeout;
+
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public AriaSnapshotOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class BlurOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
@@ -2151,7 +2171,7 @@ public interface Locator {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * for (Locator li : page.getByRole('listitem').all())
+   * for (Locator li : page.getByRole("listitem").all())
    *   li.click();
    * }</pre>
    *
@@ -2202,6 +2222,66 @@ public interface Locator {
    * @since v1.34
    */
   Locator and(Locator locator);
+  /**
+   * Captures the aria snapshot of the given element. Read more about <a
+   * href="https://playwright.dev/java/docs/aria-snapshots">aria snapshots</a> and {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#matchesAriaSnapshot LocatorAssertions.matchesAriaSnapshot()} for
+   * the corresponding assertion.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).ariaSnapshot();
+   * }</pre>
+   *
+   * <p> <strong>Details</strong>
+   *
+   * <p> This method captures the aria snapshot of the given element. The snapshot is a string that represents the state of the
+   * element and its children. The snapshot can be used to assert the state of the element in the test, or to compare it to
+   * state in the future.
+   *
+   * <p> The ARIA snapshot is represented using <a href="https://yaml.org/spec/1.2.2/">YAML</a> markup language:
+   * <ul>
+   * <li> The keys of the objects are the roles and optional accessible names of the elements.</li>
+   * <li> The values are either text content or an array of child elements.</li>
+   * <li> Generic static text can be represented with the {@code text} key.</li>
+   * </ul>
+   *
+   * <p> Below is the HTML markup and the respective ARIA snapshot:
+   *
+   * @since v1.49
+   */
+  default String ariaSnapshot() {
+    return ariaSnapshot(null);
+  }
+  /**
+   * Captures the aria snapshot of the given element. Read more about <a
+   * href="https://playwright.dev/java/docs/aria-snapshots">aria snapshots</a> and {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#matchesAriaSnapshot LocatorAssertions.matchesAriaSnapshot()} for
+   * the corresponding assertion.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).ariaSnapshot();
+   * }</pre>
+   *
+   * <p> <strong>Details</strong>
+   *
+   * <p> This method captures the aria snapshot of the given element. The snapshot is a string that represents the state of the
+   * element and its children. The snapshot can be used to assert the state of the element in the test, or to compare it to
+   * state in the future.
+   *
+   * <p> The ARIA snapshot is represented using <a href="https://yaml.org/spec/1.2.2/">YAML</a> markup language:
+   * <ul>
+   * <li> The keys of the objects are the roles and optional accessible names of the elements.</li>
+   * <li> The values are either text content or an array of child elements.</li>
+   * <li> Generic static text can be represented with the {@code text} key.</li>
+   * </ul>
+   *
+   * <p> Below is the HTML markup and the respective ARIA snapshot:
+   *
+   * @since v1.49
+   */
+  String ariaSnapshot(AriaSnapshotOptions options);
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/blur">blur</a> on the element.
    *
@@ -3455,19 +3535,19 @@ public interface Locator {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3497,19 +3577,19 @@ public interface Locator {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3537,19 +3617,19 @@ public interface Locator {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>
@@ -3579,19 +3659,19 @@ public interface Locator {
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
    * // Matches <span>
-   * page.getByText("world")
+   * page.getByText("world");
    *
    * // Matches first <div>
-   * page.getByText("Hello world")
+   * page.getByText("Hello world");
    *
    * // Matches second <div>
-   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true));
    *
    * // Matches both <div>s
-   * page.getByText(Pattern.compile("Hello"))
+   * page.getByText(Pattern.compile("Hello"));
    *
    * // Matches second <div>
-   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE));
    * }</pre>
    *
    * <p> <strong>Details</strong>

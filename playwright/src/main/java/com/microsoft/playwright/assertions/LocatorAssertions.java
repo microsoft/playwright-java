@@ -23,14 +23,14 @@ import com.microsoft.playwright.options.AriaRole;
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code
  * Locator} state in the tests.
  * <pre>{@code
- * ...
+ * // ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
  *
  * public class TestLocator {
- *   ...
+ *   // ...
  *   @Test
  *   void statusBecomesSubmitted() {
- *     ...
+ *     // ...
  *     page.getByRole(AriaRole.BUTTON).click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }
@@ -481,6 +481,20 @@ public interface LocatorAssertions {
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasValuesOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class MatchesAriaSnapshotOptions {
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public MatchesAriaSnapshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2097,7 +2111,7 @@ public interface LocatorAssertions {
    *
    * <p> For example, given the following element:
    * <pre>{@code
-   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * page.locator("id=favorite-colors").selectOption(new String[]{"R", "G"});
    * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
    * }</pre>
    *
@@ -2115,7 +2129,7 @@ public interface LocatorAssertions {
    *
    * <p> For example, given the following element:
    * <pre>{@code
-   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * page.locator("id=favorite-colors").selectOption(new String[]{"R", "G"});
    * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
    * }</pre>
    *
@@ -2131,7 +2145,7 @@ public interface LocatorAssertions {
    *
    * <p> For example, given the following element:
    * <pre>{@code
-   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * page.locator("id=favorite-colors").selectOption(new String[]{"R", "G"});
    * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
    * }</pre>
    *
@@ -2149,7 +2163,7 @@ public interface LocatorAssertions {
    *
    * <p> For example, given the following element:
    * <pre>{@code
-   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * page.locator("id=favorite-colors").selectOption(new String[]{"R", "G"});
    * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
    * }</pre>
    *
@@ -2157,5 +2171,39 @@ public interface LocatorAssertions {
    * @since v1.23
    */
   void hasValues(Pattern[] values, HasValuesOptions options);
+  /**
+   * Asserts that the target element matches the given <a
+   * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.navigate("https://demo.playwright.dev/todomvc/");
+   * assertThat(page.locator("body")).matchesAriaSnapshot("""
+   *   - heading "todos"
+   *   - textbox "What needs to be done?"
+   * """);
+   * }</pre>
+   *
+   * @since v1.49
+   */
+  default void matchesAriaSnapshot(String expected) {
+    matchesAriaSnapshot(expected, null);
+  }
+  /**
+   * Asserts that the target element matches the given <a
+   * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.navigate("https://demo.playwright.dev/todomvc/");
+   * assertThat(page.locator("body")).matchesAriaSnapshot("""
+   *   - heading "todos"
+   *   - textbox "What needs to be done?"
+   * """);
+   * }</pre>
+   *
+   * @since v1.49
+   */
+  void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
 }
 
