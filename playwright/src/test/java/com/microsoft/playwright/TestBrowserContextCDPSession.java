@@ -132,7 +132,7 @@ public class TestBrowserContextCDPSession extends TestBase {
     page.close();
 
     PlaywrightException exception = assertThrows(PlaywrightException.class, session::detach);
-    assertTrue(exception.getMessage().contains("Target page, context or browser has been closed"));
+    assertTrue(exception.getMessage().contains("Target page, context or browser has been closed"), exception.getMessage());
     context.close();
   }
 
