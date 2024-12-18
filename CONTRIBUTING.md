@@ -29,7 +29,7 @@ scripts/download_driver.sh
 ### Building and running the tests with Maven
 
 ```bash
-mvn compile
+mvn -B install -D skipTest
 mvn test
 # Executing a single test
 BROWSER=chromium mvn test --projects=playwright -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
