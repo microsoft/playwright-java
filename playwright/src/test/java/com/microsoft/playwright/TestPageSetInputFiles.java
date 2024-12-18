@@ -471,10 +471,10 @@ public class TestPageSetInputFiles extends TestBase {
   }
 
   @Test
-  void shouldUploadAFolderAndThrowForMultipleDirectories() throws IOException {
+  void shouldUploadAFolderAndThrowForMultipleDirectories(@TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
-    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Path dir = tmpDir.resolve("file-upload-test");
     Files.createDirectories(dir.resolve("folder1"));
     writeFile(dir.resolve("folder1").resolve("file1.txt"), "file1 content");
     Files.createDirectories(dir.resolve("folder2"));
@@ -485,11 +485,11 @@ public class TestPageSetInputFiles extends TestBase {
   }
 
   @Test
-  void shouldThrowIfADirectoryAndFilesArePassed() throws IOException {
+  void shouldThrowIfADirectoryAndFilesArePassed(@TempDir Path tmpDir) throws IOException {
     // Skipping conditions based on environment not directly translatable to Java; needs custom implementation
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
-    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Path dir = tmpDir.resolve("file-upload-test");
     Files.createDirectories(dir.resolve("folder1"));
     writeFile(dir.resolve("folder1").resolve("file1.txt"), "file1 content");
     PlaywrightException e = assertThrows(PlaywrightException.class,
@@ -498,10 +498,10 @@ public class TestPageSetInputFiles extends TestBase {
   }
 
   @Test
-  void shouldThrowWhenUploadingAFolderInANormalFileUploadInput() throws IOException {
+  void shouldThrowWhenUploadingAFolderInANormalFileUploadInput(@TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
-    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Path dir = tmpDir.resolve("file-upload-test");
     Files.createDirectories(dir);
     writeFile(dir.resolve("file1.txt"), "file1 content");
     PlaywrightException e = assertThrows(PlaywrightException.class,
