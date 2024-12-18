@@ -474,7 +474,7 @@ public class TestPageSetInputFiles extends TestBase {
   void shouldUploadAFolderAndThrowForMultipleDirectories(@TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
-    Path dir = tmpDir.resolve("file-upload-test"); // Adjust path as necessary
+    Path dir = tmpDir.resolve("file-upload-test");
     Files.createDirectories(dir.resolve("folder1"));
     writeFile(dir.resolve("folder1").resolve("file1.txt"), "file1 content");
     Files.createDirectories(dir.resolve("folder2"));
