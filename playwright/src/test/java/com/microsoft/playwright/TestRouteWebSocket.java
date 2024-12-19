@@ -9,8 +9,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.mapOf;
@@ -316,5 +318,45 @@ public class TestRouteWebSocket {
         "message: data=another origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
         "close code=3008 reason=oops"),
       page.evaluate("window.log"));
+  }
+
+  @Test
+  public void shouldWorkWithNoTrailingSlash(Page page) throws Exception {  
+    List<String> log = new ArrayList<>();
+    
+    // No trailing slash in the route pattern
+    page.routeWebSocket("ws://localhost:" + webSocketServer.getPort(), ws -> {
+      ws.onMessage(message -> {
+        log.add(message.text());
+        ws.send("response");
+      });
+    });
+
+    page.navigate("about:blank");
+    page.evaluate("({ port }) => {\n" +
+      "    window.log = [];\n" +
+      "    // No trailing slash in WebSocket URL\n" +
+      "    window.ws = new WebSocket('ws://localhost:' + port);\n" +
+      "    window.ws.addEventListener('message', event => window.log.push(event.data));\n" +
+      "}", mapOf("port", webSocketServer.getPort()));
+
+    // Wait for WebSocket to be ready (readyState === 1)
+    page.waitForCondition(() -> {
+      Integer result = (Integer) page.evaluate("() => window.ws.readyState");
+      return result == 1;
+    });
+
+    page.evaluate("() => window.ws.send('query')");
+    
+    // Wait and verify server received message
+    page.waitForCondition(() -> log.size() >= 1);
+    assertEquals(asList("query"), log);
+
+    // Wait and verify client received response 
+    page.waitForCondition(() -> {
+      Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
+      return result;
+    });
+    assertEquals(asList("response"), page.evaluate("window.log"));
   }
 }

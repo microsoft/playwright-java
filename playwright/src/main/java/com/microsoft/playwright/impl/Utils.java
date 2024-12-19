@@ -462,13 +462,11 @@ public class Utils {
     JsonArray jsonPatterns = new JsonArray();
     for (UrlMatcher matcher: matchers) {
       JsonObject jsonPattern = new JsonObject();
-      Object urlFilter = matcher.rawSource;
-      if (urlFilter instanceof String) {
-        jsonPattern.addProperty("glob", (String) urlFilter);
-      } else if (urlFilter instanceof Pattern) {
-        Pattern pattern = (Pattern) urlFilter;
-        jsonPattern.addProperty("regexSource", pattern.pattern());
-        jsonPattern.addProperty("regexFlags", toJsRegexFlags(pattern));
+      if (matcher.glob != null) {
+        jsonPattern.addProperty("glob", matcher.glob);
+      } else if (matcher.pattern != null) {
+        jsonPattern.addProperty("regexSource", matcher.pattern.pattern());
+        jsonPattern.addProperty("regexFlags", toJsRegexFlags(matcher.pattern));
       } else {
         // Match all requests.
         jsonPattern.addProperty("glob", "**/*");

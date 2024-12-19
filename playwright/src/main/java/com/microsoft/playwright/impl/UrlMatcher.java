@@ -16,34 +16,29 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  final Object rawSource;
-  private final Predicate<String> predicate;
-
-  private static Predicate<String> toPredicate(Pattern pattern) {
-    return s -> pattern.matcher(s).find();
-  }
-
-  static UrlMatcher any() {
-    return new UrlMatcher((Object) null, null);
-  }
+  private final URL baseURL;
+  public final String glob;
+  public final Pattern pattern;
+  public final Predicate<String> predicate;
 
   static UrlMatcher forOneOf(URL baseUrl, Object object) {
     if (object == null) {
-      return UrlMatcher.any();
+      return new UrlMatcher(baseUrl, (String) null);
     }
     if (object instanceof String) {
       return new UrlMatcher(baseUrl, (String) object);
@@ -58,6 +53,16 @@ class UrlMatcher {
   }
 
   static String resolveUrl(URL baseUrl, String spec) {
+    try {
+      URL specURL = new URL(spec);
+      // We want to follow HTTP spec, so we enforce a slash if there is no path.
+      if (specURL.getPath().isEmpty()) {
+        spec = specURL.toString() + "/";
+      }
+    } catch (MalformedURLException e) {
+      // Ignore - we end up here if spec is e.g. a relative path.
+    }
+
     if (baseUrl == null) {
       return spec;
     }
@@ -68,24 +73,73 @@ class UrlMatcher {
     }
   }
 
-  UrlMatcher(URL base, String url) {
-    this(url, toPredicate(Pattern.compile(globToRegex(resolveUrl(base, url)))).or(s -> url == null || url.equals(s)));
+  static private String normaliseUrl(String url) {
+    URI parsedUrl;
+    try {
+      parsedUrl = new URI(url);
+    } catch (URISyntaxException e) {
+      return url;
+    }
+    // Align with the Node.js URL parser which automatically adds a slash to the path if it is empty.
+    if (parsedUrl.getScheme() != null && (
+      parsedUrl.getScheme().equals("http") || parsedUrl.getScheme().equals("https") ||
+      parsedUrl.getScheme().equals("ws") || parsedUrl.getScheme().equals("wss")
+    ) && parsedUrl.getPath().isEmpty()) {
+      try {
+        return new URI(parsedUrl.getScheme(), parsedUrl.getAuthority(), "/", parsedUrl.getQuery(), parsedUrl.getFragment()).toString();
+      } catch (URISyntaxException e) {
+        return url;
+      }
+    }
+    return url;
+  }
+
+  UrlMatcher(URL baseURL, String glob) {
+    this(baseURL, null, null, glob);
   }
 
   UrlMatcher(Pattern pattern) {
-    this(pattern, toPredicate(pattern));
-  }
-  UrlMatcher(Predicate<String> predicate) {
-    this(predicate, predicate);
+    this(null, pattern, null, null);
   }
 
-  private UrlMatcher(Object rawSource, Predicate<String> predicate) {
-    this.rawSource = rawSource;
+  UrlMatcher(Predicate<String> predicate) {
+    this(null, null, predicate, null);
+  }
+
+  private UrlMatcher(URL baseURL, Pattern pattern, Predicate<String> predicate, String glob) {
+    this.baseURL = baseURL;
+    this.pattern = pattern;
     this.predicate = predicate;
+    this.glob = glob;
   }
 
   boolean test(String value) {
-    return predicate == null || predicate.test(value);
+    return testImpl(baseURL, pattern, predicate, glob, value);
+  }
+
+  private static boolean testImpl(URL baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
+    if (pattern != null) {
+      return pattern.matcher(value).find();
+    }
+    if (predicate != null) {
+      return predicate.test(value);
+    }
+    if (glob != null) {
+      if (!glob.startsWith("*")) {
+        glob = normaliseUrl(glob);
+        // Allow http(s) baseURL to match ws(s) urls.
+        if (baseURL != null && Pattern.compile("^https?://").matcher(baseURL.getProtocol()).find() && Pattern.compile("^wss?://").matcher(value).find()) {
+          try {
+            baseURL = new URL(baseURL.toString().replaceFirst("^http", "ws"));
+          } catch (MalformedURLException e) {
+            // Handle exception
+          }
+        }
+        glob = resolveUrl(baseURL, glob);
+      }
+      return Pattern.compile(globToRegex(glob)).matcher(value).find();
+    }
+    return true;
   }
 
   @Override
@@ -93,25 +147,39 @@ class UrlMatcher {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UrlMatcher that = (UrlMatcher) o;
-    if (rawSource instanceof Pattern && that.rawSource instanceof Pattern) {
-      Pattern a = (Pattern) rawSource;
-      Pattern b = (Pattern) that.rawSource;
-      return a.pattern().equals(b.pattern()) && a.flags() == b.flags();
+    List<Boolean> matches = new ArrayList<>();
+    if (baseURL != null && that.baseURL != null) {
+      matches.add(baseURL.equals(that.baseURL));
     }
-    return Objects.equals(rawSource, that.rawSource);
+    if (pattern != null && that.pattern != null) {
+      matches.add(pattern.pattern().equals(that.pattern.pattern()) && pattern.flags() == that.pattern.flags());
+    }
+    if (predicate != null && that.predicate != null) {
+      matches.add(predicate.equals(that.predicate));
+    }
+    if (glob != null && that.glob != null) {
+      matches.add(glob.equals(that.glob));
+    }
+    return matches.stream().allMatch(m -> m);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(rawSource);
+    if (pattern != null) {
+      return pattern.hashCode();
+    }
+    if (predicate != null) {
+      return predicate.hashCode();
+    }
+    return glob.hashCode();
   }
 
   @Override
   public String toString() {
-    if (rawSource == null)
-      return "<any>";
-    if (rawSource instanceof Predicate)
-      return "matching predicate";
-    return rawSource.toString();
+    if (pattern != null)
+      return String.format("<regex pattern=\"%s\" flags=\"%s\">", pattern.pattern(), toJsRegexFlags(pattern));
+    if (predicate != null)
+      return "<predicate>";
+    return String.format("<glob pattern=\"%s\">", glob);
   }
 }
