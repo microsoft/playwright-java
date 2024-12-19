@@ -84,10 +84,6 @@ class UrlMatcher {
   }
 
   boolean test(String value) {
-    return testImpl(baseURL, pattern, predicate, glob, value);
-  }
-
-  private static boolean testImpl(URL baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
@@ -105,14 +101,14 @@ class UrlMatcher {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UrlMatcher that = (UrlMatcher) o;
-    if (pattern != null && !pattern.pattern().equals(that.pattern.pattern()) && pattern.flags() == that.pattern.flags()) {
-      return false;
+    if (pattern != null) {
+      return that.pattern != null && pattern.pattern().equals(that.pattern.pattern()) && pattern.flags() == that.pattern.flags();
     }
-    if (predicate != null && !predicate.equals(that.predicate)) {
-      return false;
+    if (predicate != null) {
+      return predicate.equals(that.predicate);
     }
-    if (glob != null && !glob.equals(that.glob)) {
-      return false;
+    if (glob != null) {
+      return glob.equals(that.glob);
     }
     return true;
   }
@@ -125,7 +121,10 @@ class UrlMatcher {
     if (predicate != null) {
       return predicate.hashCode();
     }
-    return glob.hashCode();
+    if (glob != null) {
+      return glob.hashCode();
+    }
+    return super.hashCode();
   }
 
   @Override
