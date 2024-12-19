@@ -20,6 +20,7 @@ import java.util.Collection;
 
 class WaitableRace<T> implements Waitable<T> {
   private final Collection<Waitable<T>> waitables;
+  private Waitable<T> firstReady;
 
   WaitableRace(Collection<Waitable<T>> waitables) {
     this.waitables = waitables;
@@ -27,8 +28,12 @@ class WaitableRace<T> implements Waitable<T> {
 
   @Override
   public boolean isDone() {
-    for (Waitable w : waitables) {
+    if (firstReady != null) {
+      return true;
+    }
+    for (Waitable<T> w : waitables) {
       if (w.isDone()) {
+        firstReady = w;
         return true;
       }
     }
@@ -37,14 +42,11 @@ class WaitableRace<T> implements Waitable<T> {
 
   @Override
   public T get() {
-    assert isDone();
-    dispose();
-    for (Waitable<T> w : waitables) {
-      if (w.isDone()) {
-        return w.get();
-      }
+    try {
+      return firstReady.get();
+    } finally {
+      dispose();
     }
-    throw new IllegalStateException("At least one element must be ready");
   }
 
   @Override

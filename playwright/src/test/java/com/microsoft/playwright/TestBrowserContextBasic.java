@@ -300,6 +300,13 @@ public class TestBrowserContextBasic {
   }
 
   @Test
+  void waitForConditionThatMayChangeToFalse(BrowserContext context) {
+    int[] var = {0};
+    context.waitForCondition(() -> ++var[0] == 1);
+    assertEquals(1, var[0], "The predicate should be called only once.");
+  }
+
+  @Test
   void shouldPropagateCloseReasonToPendingActions(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
