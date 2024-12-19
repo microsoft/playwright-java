@@ -124,7 +124,7 @@ class UrlMatcher {
     if (glob != null) {
       return glob.hashCode();
     }
-    return super.hashCode();
+    return 0;
   }
 
   @Override
