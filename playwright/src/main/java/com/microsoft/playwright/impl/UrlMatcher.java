@@ -110,7 +110,7 @@ class UrlMatcher {
     if (glob != null) {
       return glob.equals(that.glob);
     }
-    return true;
+    return that.pattern == null  && that.predicate == null && that.glob == null;
   }
 
   @Override
