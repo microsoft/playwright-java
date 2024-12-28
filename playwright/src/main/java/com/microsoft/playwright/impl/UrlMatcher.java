@@ -22,6 +22,8 @@ import com.microsoft.playwright.PlaywrightException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -30,20 +32,14 @@ import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  final Object rawSource;
-  private final Predicate<String> predicate;
-
-  private static Predicate<String> toPredicate(Pattern pattern) {
-    return s -> pattern.matcher(s).find();
-  }
-
-  static UrlMatcher any() {
-    return new UrlMatcher((Object) null, null);
-  }
+  private final URL baseURL;
+  public final String glob;
+  public final Pattern pattern;
+  public final Predicate<String> predicate;
 
   static UrlMatcher forOneOf(URL baseUrl, Object object) {
     if (object == null) {
-      return UrlMatcher.any();
+      return new UrlMatcher(null, null, null, null);
     }
     if (object instanceof String) {
       return new UrlMatcher(baseUrl, (String) object);
@@ -68,24 +64,36 @@ class UrlMatcher {
     }
   }
 
-  UrlMatcher(URL base, String url) {
-    this(url, toPredicate(Pattern.compile(globToRegex(resolveUrl(base, url)))).or(s -> url == null || url.equals(s)));
+  UrlMatcher(URL baseURL, String glob) {
+    this(baseURL, glob, null, null);
   }
 
   UrlMatcher(Pattern pattern) {
-    this(pattern, toPredicate(pattern));
-  }
-  UrlMatcher(Predicate<String> predicate) {
-    this(predicate, predicate);
+    this(null, null, pattern, null);
   }
 
-  private UrlMatcher(Object rawSource, Predicate<String> predicate) {
-    this.rawSource = rawSource;
+  UrlMatcher(Predicate<String> predicate) {
+    this(null, null, null, predicate);
+  }
+
+  private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
+    this.baseURL = baseURL;
+    this.glob = glob;
+    this.pattern = pattern;
     this.predicate = predicate;
   }
 
   boolean test(String value) {
-    return predicate == null || predicate.test(value);
+    if (pattern != null) {
+      return pattern.matcher(value).find();
+    }
+    if (predicate != null) {
+      return predicate.test(value);
+    }
+    if (glob != null) {
+      return Pattern.compile(globToRegex(resolveUrl(baseURL, glob))).matcher(value).find();
+    }
+    return true;
   }
 
   @Override
@@ -93,25 +101,38 @@ class UrlMatcher {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UrlMatcher that = (UrlMatcher) o;
-    if (rawSource instanceof Pattern && that.rawSource instanceof Pattern) {
-      Pattern a = (Pattern) rawSource;
-      Pattern b = (Pattern) that.rawSource;
-      return a.pattern().equals(b.pattern()) && a.flags() == b.flags();
+    if (pattern != null) {
+      return that.pattern != null && pattern.pattern().equals(that.pattern.pattern()) && pattern.flags() == that.pattern.flags();
     }
-    return Objects.equals(rawSource, that.rawSource);
+    if (predicate != null) {
+      return predicate.equals(that.predicate);
+    }
+    if (glob != null) {
+      return glob.equals(that.glob);
+    }
+    return that.pattern == null  && that.predicate == null && that.glob == null;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(rawSource);
+    if (pattern != null) {
+      return pattern.hashCode();
+    }
+    if (predicate != null) {
+      return predicate.hashCode();
+    }
+    if (glob != null) {
+      return glob.hashCode();
+    }
+    return 0;
   }
 
   @Override
   public String toString() {
-    if (rawSource == null)
-      return "<any>";
-    if (rawSource instanceof Predicate)
-      return "matching predicate";
-    return rawSource.toString();
+    if (pattern != null)
+      return String.format("<regex pattern=\"%s\" flags=\"%s\">", pattern.pattern(), toJsRegexFlags(pattern));
+    if (this.predicate != null)
+      return "<predicate>";
+    return String.format("<glob pattern=\"%s\">", glob);
   }
 }
