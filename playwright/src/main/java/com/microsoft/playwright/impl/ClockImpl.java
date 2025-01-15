@@ -12,18 +12,22 @@ class ClockImpl implements Clock {
     this.browserContext = browserContext;
   }
 
+  private void sendMessageWithLogging(String method, JsonObject params) {
+    browserContext.withLogging("BrowserContext." + method, () -> browserContext.sendMessage(method, params));
+  }
+
   @Override
   public void fastForward(long ticks) {
     JsonObject params = new JsonObject();
     params.addProperty("ticksNumber", ticks);
-    browserContext.sendMessage("clockFastForward", params);
+    sendMessageWithLogging("clockFastForward", params);
   }
 
   @Override
   public void fastForward(String ticks) {
     JsonObject params = new JsonObject();
     params.addProperty("ticksString", ticks);
-    browserContext.sendMessage("clockFastForward", params);
+    sendMessageWithLogging("clockFastForward", params);
   }
 
   @Override
@@ -32,89 +36,89 @@ class ClockImpl implements Clock {
     if (options != null) {
       parseTime(options.time, params);
     }
-    browserContext.sendMessage("clockInstall", params);
+    sendMessageWithLogging("clockInstall", params);
   }
 
   @Override
   public void runFor(long ticks) {
     JsonObject params = new JsonObject();
     params.addProperty("ticksNumber", ticks);
-    browserContext.sendMessage("clockRunFor", params);
+    sendMessageWithLogging("clockRunFor", params);
   }
 
   @Override
   public void runFor(String ticks) {
     JsonObject params = new JsonObject();
     params.addProperty("ticksString", ticks);
-    browserContext.sendMessage("clockRunFor", params);
+    sendMessageWithLogging("clockRunFor", params);
   }
 
   @Override
   public void pauseAt(long time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time);
-    browserContext.sendMessage("clockPauseAt", params);
+    sendMessageWithLogging("clockPauseAt", params);
   }
 
   @Override
   public void pauseAt(String time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeString", time);
-    browserContext.sendMessage("clockPauseAt", params);
+    sendMessageWithLogging("clockPauseAt", params);
   }
 
   @Override
   public void pauseAt(Date time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time.getTime());
-    browserContext.sendMessage("clockPauseAt", params);
+    sendMessageWithLogging("clockPauseAt", params);
   }
 
   @Override
   public void resume() {
-    browserContext.sendMessage("clockResume");
+    sendMessageWithLogging("clockResume", new JsonObject());
   }
 
   @Override
   public void setFixedTime(long time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time);
-    browserContext.sendMessage("clockSetFixedTime", params);
+    sendMessageWithLogging("clockSetFixedTime", params);
   }
 
   @Override
   public void setFixedTime(String time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeString", time);
-    browserContext.sendMessage("clockSetFixedTime", params);
+    sendMessageWithLogging("clockSetFixedTime", params);
   }
 
   @Override
   public void setFixedTime(Date time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time.getTime());
-    browserContext.sendMessage("clockSetFixedTime", params);
+    sendMessageWithLogging("clockSetFixedTime", params);
   }
 
   @Override
   public void setSystemTime(long time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time);
-    browserContext.sendMessage("clockSetSystemTime", params);
+    sendMessageWithLogging("clockSetSystemTime", params);
   }
 
   @Override
   public void setSystemTime(String time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeString", time);
-    browserContext.sendMessage("clockSetSystemTime", params);
+    sendMessageWithLogging("clockSetSystemTime", params);
   }
 
   @Override
   public void setSystemTime(Date time) {
     JsonObject params = new JsonObject();
     params.addProperty("timeNumber", time.getTime());
-    browserContext.sendMessage("clockSetSystemTime", params);
+    sendMessageWithLogging("clockSetSystemTime", params);
   }
 
   private static void parseTime(Object time, JsonObject params) {
