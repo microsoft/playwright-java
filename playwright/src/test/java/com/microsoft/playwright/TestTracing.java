@@ -18,7 +18,10 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
+import com.microsoft.playwright.options.MouseButton;
+
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -202,6 +205,68 @@ public class TestTracing extends TestBase {
     List<TraceEvent> events = parseTraceEvents(traceFile1);
     List<String> calls = events.stream().filter(e -> e.apiName != null).map(e -> e.apiName).collect(Collectors.toList());
     assertEquals(asList("outer group", "Page.navigate", "inner group 1", "Frame.click", "inner group 2", "Page.isVisible"), calls);
+  }
+
+  @Test
+  void shouldTraceVariousAPIs(@TempDir Path tempDir) throws Exception {
+    context.tracing().start(new Tracing.StartOptions());
+
+    page.clock().install();
+
+    page.setContent("<input type='text' />");
+    page.locator("input").click(new Locator.ClickOptions().setButton(MouseButton.RIGHT));
+    page.getByRole(AriaRole.TEXTBOX).click();
+    page.keyboard().type("Hello world this is a very long string what happens when it overflows?");
+    page.keyboard().press("Control+c");
+    page.keyboard().down("Shift");
+    page.keyboard().insertText("Hello world");
+    page.keyboard().up("Shift");
+    page.mouse().move(0, 0);
+    page.mouse().down();
+    page.mouse().move(100, 200);
+    page.mouse().wheel(5, 7);
+    page.mouse().up();
+    page.clock().fastForward(1000);
+    page.clock().fastForward("30:00");
+    page.clock().pauseAt("2050-02-02");
+    page.clock().runFor(10);
+    page.clock().setFixedTime("2050-02-02");
+    page.clock().setSystemTime("2050-02-02");
+
+    page.clock().resume();
+
+    page.locator("input").click(new Locator.ClickOptions().setButton(MouseButton.RIGHT));
+
+    Path traceFile1 = tempDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
+
+    List<TraceEvent> events = parseTraceEvents(traceFile1);
+    List<String> calls = events.stream().filter(e -> e.apiName != null).map(e -> e.apiName)
+        .collect(Collectors.toList());
+    assertEquals(asList(
+        "Clock.install",
+        "Page.setContent",
+        "Frame.click",
+        "Frame.click",
+        "Keyboard.type",
+        "Keyboard.press",
+        "Keyboard.down",
+        "Keyboard.insertText",
+        "Keyboard.up",
+        "Mouse.move",
+        "Mouse.down",
+        "Mouse.move",
+        "Mouse.wheel",
+        "Mouse.up",
+        "Clock.fastForward",
+        "Clock.fastForward",
+        "Clock.pauseAt",
+        "Clock.runFor",
+        "Clock.setFixedTime",
+        "Clock.setSystemTime",
+        "Clock.resume",
+        "Frame.click"),
+        calls);
   }
 
   private static class TraceEvent {
