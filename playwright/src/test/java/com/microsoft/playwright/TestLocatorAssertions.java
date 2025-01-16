@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
@@ -787,6 +786,14 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
     assertThat(locator).not().isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false));
+  }
+
+  @Test
+  void isEditableThrowsOnNonInputElement() {
+    page.setContent("<button>");
+    Locator locator = page.locator("button");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> assertThat(locator).isEditable());
+    assertTrue(e.getMessage().contains("Element is not an <input>, <textarea>, <select> or [contenteditable] and does not have a role allowing [aria-readonly]"), e.getMessage());
   }
 
   @Test

@@ -306,10 +306,10 @@ public interface Tracing {
    * <pre>{@code
    * // All actions between group and groupEnd
    * // will be shown in the trace viewer as a group.
-   * page.context().tracing.group("Open Playwright.dev > API");
+   * page.context().tracing().group("Open Playwright.dev > API");
    * page.navigate("https://playwright.dev/");
    * page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("API")).click();
-   * page.context().tracing.groupEnd();
+   * page.context().tracing().groupEnd();
    * }</pre>
    *
    * @param name Group name shown in the trace viewer.
@@ -329,10 +329,10 @@ public interface Tracing {
    * <pre>{@code
    * // All actions between group and groupEnd
    * // will be shown in the trace viewer as a group.
-   * page.context().tracing.group("Open Playwright.dev > API");
+   * page.context().tracing().group("Open Playwright.dev > API");
    * page.navigate("https://playwright.dev/");
    * page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("API")).click();
-   * page.context().tracing.groupEnd();
+   * page.context().tracing().groupEnd();
    * }</pre>
    *
    * @param name Group name shown in the trace viewer.

@@ -40,6 +40,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    markAsInternalType();
     headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
     request.timing = gson().fromJson(initializer.get("timing"), Timing.class);
