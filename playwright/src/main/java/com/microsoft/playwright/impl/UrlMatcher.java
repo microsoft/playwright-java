@@ -16,15 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -32,7 +28,7 @@ import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  private final URL baseURL;
+  private final String baseURL;
   public final String glob;
   public final Pattern pattern;
   public final Predicate<String> predicate;
@@ -54,12 +50,17 @@ class UrlMatcher {
   }
 
   static String resolveUrl(URL baseUrl, String spec) {
+    return resolveUrl(baseUrl.toString(), spec);
+  }
+
+  private static String resolveUrl(String baseUrl, String spec) {
     if (baseUrl == null) {
       return spec;
     }
     try {
-      return new URL(baseUrl, spec).toString();
-    } catch (MalformedURLException e) {
+      // Join using URI instead of URL since URL doesn't handle ws(s) protocols.
+      return new URI(baseUrl).resolve(spec).toString();
+    } catch (URISyntaxException e) {
       return spec;
     }
   }
@@ -77,13 +78,17 @@ class UrlMatcher {
   }
 
   private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
-    this.baseURL = baseURL;
+    this.baseURL = baseURL != null ? baseURL.toString() : null;
     this.glob = glob;
     this.pattern = pattern;
     this.predicate = predicate;
   }
 
   boolean test(String value) {
+    return testImpl(baseURL, pattern, predicate, glob, value);
+  }
+
+  private static boolean testImpl(String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
@@ -91,7 +96,14 @@ class UrlMatcher {
       return predicate.test(value);
     }
     if (glob != null) {
-      return Pattern.compile(globToRegex(resolveUrl(baseURL, glob))).matcher(value).find();
+      if (!glob.startsWith("*")) {
+        // Allow http(s) baseURL to match ws(s) urls.
+        if (baseURL != null && Pattern.compile("^https?://").matcher(baseURL).find() && Pattern.compile("^wss?://").matcher(value).find()) {
+          baseURL = baseURL.replaceFirst("^http", "ws");
+        }
+        glob = resolveUrl(baseURL, glob);
+      }
+      return Pattern.compile(globToRegex(glob)).matcher(value).find();
     }
     return true;
   }

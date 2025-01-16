@@ -317,4 +317,38 @@ public class TestRouteWebSocket {
         "close code=3008 reason=oops"),
       page.evaluate("window.log"));
   }
+
+  @Test
+  public void shouldWorkWithBaseURL(Browser browser) throws Exception {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBaseURL("http://localhost:" + webSocketServer.getPort()));
+    Page newPage = context.newPage();
+
+    newPage.routeWebSocket("/ws", ws -> {
+      ws.onMessage(message -> {
+        if (message.text() != null) {
+          System.out.println("ws handler: message: " + message.text());
+          ws.send(message.text());
+        } else {
+          System.out.println("ws handler: message: " + message.binary());
+          ws.send(message.binary());
+        }
+      });
+    });
+
+    setupWS(newPage, webSocketServer.getPort(), "blob");
+
+    newPage.evaluate("async () => {\n" +
+      "    await window.wsOpened;\n" +
+      "    window.ws.send('echo');\n" +
+      "  }");
+
+    newPage.waitForCondition(() -> {
+      Boolean result = (Boolean) newPage.evaluate("() => window.log.length >= 2");
+      return result;
+    });
+
+    assertEquals(
+      asList("open", "message: data=echo origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+      newPage.evaluate("window.log"));
+  }
 }
