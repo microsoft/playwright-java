@@ -2329,31 +2329,5 @@ public interface LocatorAssertions {
    * @since v1.49
    */
   void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
-  /**
-   * Asserts that the target element matches the given <a
-   * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
-   *
-   * <p> <strong>Usage</strong>
-   * <pre>{@code
-   * assertThat(page.locator("body")).matchesAriaSnapshot(new LocatorAssertions.MatchesAriaSnapshotOptions().setPath("/path/to/snapshot.yml"));
-   * }</pre>
-   *
-   * @since v1.50
-   */
-  default void matchesAriaSnapshot() {
-    matchesAriaSnapshot((MatchesAriaSnapshotOptions) null);
-  }
-  /**
-   * Asserts that the target element matches the given <a
-   * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
-   *
-   * <p> <strong>Usage</strong>
-   * <pre>{@code
-   * assertThat(page.locator("body")).matchesAriaSnapshot(new LocatorAssertions.MatchesAriaSnapshotOptions().setPath("/path/to/snapshot.yml"));
-   * }</pre>
-   *
-   * @since v1.50
-   */
-  void matchesAriaSnapshot(MatchesAriaSnapshotOptions options);
 }
 

@@ -360,11 +360,6 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
-  public void matchesAriaSnapshot(MatchesAriaSnapshotOptions options) {
-
-  }
-
-  @Override
   public void isChecked(IsCheckedOptions options) {
     if (options == null) {
       options = new IsCheckedOptions();
