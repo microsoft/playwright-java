@@ -47,7 +47,6 @@ class AssertionsBase {
       options = new FrameExpectOptions();
     }
     options.expectedText = expectedText;
-    options.isNot = isNot;
     expectImpl(expression, options, expected, message);
   }
 
@@ -55,13 +54,14 @@ class AssertionsBase {
     if (expectOptions.timeout == null) {
       expectOptions.timeout = AssertionsTimeout.defaultTimeout;
     }
-    if (expectOptions.isNot) {
+    expectOptions.isNot = isNot;
+    if (isNot) {
       message = message.replace("expected to", "expected not to");
     }
     FrameExpectResult result = actualLocator.expect(expression, expectOptions);
     if (result.matches == isNot) {
       Object actual = result.received == null ? null : Serialization.deserialize(result.received);
-      String log = String.join("\n", result.log);
+      String log = (result.log == null) ? "" : String.join("\n", result.log);
       if (!log.isEmpty()) {
         log = "\nCall log:\n" + log;
       }
