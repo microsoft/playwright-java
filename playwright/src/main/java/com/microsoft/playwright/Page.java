@@ -5809,8 +5809,6 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the PDF buffer.
    *
-   * <p> <strong>NOTE:</strong> Generating a pdf is currently only supported in Chromium headless.
-   *
    * <p> {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen}
    * media, call {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} before calling {@code page.pdf()}:
    *
@@ -5868,8 +5866,6 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Returns the PDF buffer.
-   *
-   * <p> <strong>NOTE:</strong> Generating a pdf is currently only supported in Chromium headless.
    *
    * <p> {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen}
    * media, call {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} before calling {@code page.pdf()}:
@@ -7194,7 +7190,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()} takes priority over
    * {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}.
    *
-   * @param timeout Maximum time in milliseconds
+   * @param timeout Maximum time in milliseconds. Pass {@code 0} to disable timeout.
    * @since v1.8
    */
   void setDefaultTimeout(double timeout);

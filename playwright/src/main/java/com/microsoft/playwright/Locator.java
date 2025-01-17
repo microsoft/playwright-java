@@ -2630,7 +2630,6 @@ public interface Locator {
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <pre>{@code
-   * // Note you can only create DataTransfer in Chromium and Firefox
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
@@ -2679,7 +2678,6 @@ public interface Locator {
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <pre>{@code
-   * // Note you can only create DataTransfer in Chromium and Firefox
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
@@ -2727,7 +2725,6 @@ public interface Locator {
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <pre>{@code
-   * // Note you can only create DataTransfer in Chromium and Firefox
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
@@ -3968,7 +3965,9 @@ public interface Locator {
    */
   boolean isDisabled(IsDisabledOptions options);
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>. If the
+   * target element is not an {@code <input>}, {@code <textarea>}, {@code <select>}, {@code [contenteditable]} and does not
+   * have a role allowing {@code [aria-readonly]}, this method throws an error.
    *
    * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link
    * com.microsoft.playwright.assertions.LocatorAssertions#isEditable LocatorAssertions.isEditable()} to avoid flakiness. See
@@ -3985,7 +3984,9 @@ public interface Locator {
     return isEditable(null);
   }
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>. If the
+   * target element is not an {@code <input>}, {@code <textarea>}, {@code <select>}, {@code [contenteditable]} and does not
+   * have a role allowing {@code [aria-readonly]}, this method throws an error.
    *
    * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link
    * com.microsoft.playwright.assertions.LocatorAssertions#isEditable LocatorAssertions.isEditable()} to avoid flakiness. See
@@ -4166,17 +4167,21 @@ public interface Locator {
   /**
    * Creates a locator matching all elements that match one or both of the two locators.
    *
-   * <p> Note that when both locators match something, the resulting locator will have multiple matches and violate <a
-   * href="https://playwright.dev/java/docs/locators#strictness">locator strictness</a> guidelines.
+   * <p> Note that when both locators match something, the resulting locator will have multiple matches, potentially causing a <a
+   * href="https://playwright.dev/java/docs/locators#strictness">locator strictness</a> violation.
    *
    * <p> <strong>Usage</strong>
    *
    * <p> Consider a scenario where you'd like to click on a "New email" button, but sometimes a security settings dialog shows up
    * instead. In this case, you can wait for either a "New email" button, or a dialog and act accordingly.
+   *
+   * <p> <strong>NOTE:</strong> If both "New email" button and security dialog appear on screen, the "or" locator will match both of them, possibly
+   * throwing the <a href="https://playwright.dev/java/docs/locators#strictness">"strict mode violation" error</a>. In this
+   * case, you can use {@link com.microsoft.playwright.Locator#first Locator.first()} to only match one of them.
    * <pre>{@code
    * Locator newEmail = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("New"));
    * Locator dialog = page.getByText("Confirm security settings");
-   * assertThat(newEmail.or(dialog)).isVisible();
+   * assertThat(newEmail.or(dialog).first()).isVisible();
    * if (dialog.isVisible())
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Dismiss")).click();
    * newEmail.click();

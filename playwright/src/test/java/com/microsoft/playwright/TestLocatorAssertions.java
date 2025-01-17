@@ -18,9 +18,9 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
+import org.opentest4j.ValueWrapper;
 
 import java.util.regex.Pattern;
 
@@ -657,9 +657,9 @@ public class TestLocatorAssertions extends TestBase {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be checked"), e.getMessage());
+    assertEquals("checked", e.getExpected().getStringRepresentation());
+    assertEquals("unchecked", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to be: checked"), e.getMessage());
   }
 
   @Test
@@ -669,9 +669,10 @@ public class TestLocatorAssertions extends TestBase {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be checked"), e.getMessage());
+
+    assertEquals("checked", e.getExpected().getStringRepresentation());
+    assertEquals("checked", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected not to be: checked"), e.getMessage());
   }
 
   @Test
@@ -687,7 +688,7 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be unchecked"), error.getMessage());
+    assertTrue(error.getMessage().contains("Locator expected to be: unchecked"), error.getMessage());
   }
 
   @Test
@@ -787,6 +788,14 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
     assertThat(locator).not().isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false));
+  }
+
+  @Test
+  void isEditableThrowsOnNonInputElement() {
+    page.setContent("<button>");
+    Locator locator = page.locator("button");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> assertThat(locator).isEditable());
+    assertTrue(e.getMessage().contains("Element is not an <input>, <textarea>, <select> or [contenteditable] and does not have a role allowing [aria-readonly]"), e.getMessage());
   }
 
   @Test

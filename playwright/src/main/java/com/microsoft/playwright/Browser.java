@@ -1225,10 +1225,10 @@ public interface Browser extends AutoCloseable {
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
    *
-   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link
-   * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext}'s you explicitly
-   * created earlier with {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before** calling {@link
-   * com.microsoft.playwright.Browser#close Browser.close()}.
+   * <p> <strong>NOTE:</strong> This is similar to force-quitting the browser. To close pages gracefully and ensure you receive page close events, call
+   * {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext} instances you
+   * explicitly created earlier using {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before**
+   * calling {@link com.microsoft.playwright.Browser#close Browser.close()}.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    *
@@ -1244,10 +1244,10 @@ public interface Browser extends AutoCloseable {
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
    *
-   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link
-   * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext}'s you explicitly
-   * created earlier with {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before** calling {@link
-   * com.microsoft.playwright.Browser#close Browser.close()}.
+   * <p> <strong>NOTE:</strong> This is similar to force-quitting the browser. To close pages gracefully and ensure you receive page close events, call
+   * {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext} instances you
+   * explicitly created earlier using {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before**
+   * calling {@link com.microsoft.playwright.Browser#close Browser.close()}.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    *

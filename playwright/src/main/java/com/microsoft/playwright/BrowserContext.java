@@ -834,10 +834,14 @@ public interface BrowserContext extends AutoCloseable {
    * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
    * specified.
    *
-   * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
+   * @param permissions A list of permissions to grant.
+   *
+   * <p> <strong>NOTE:</strong> Supported permissions differ between browsers, and even between different versions of the same browser. Any permission
+   * may stop working after an update.
+   *
+   * <p> Here are some permissions that may be supported by some browsers:
    * <ul>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "accessibility-events"}</li>
    * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "background-sync"}</li>
    * <li> {@code "camera"}</li>
@@ -862,10 +866,14 @@ public interface BrowserContext extends AutoCloseable {
    * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
    * specified.
    *
-   * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
+   * @param permissions A list of permissions to grant.
+   *
+   * <p> <strong>NOTE:</strong> Supported permissions differ between browsers, and even between different versions of the same browser. Any permission
+   * may stop working after an update.
+   *
+   * <p> Here are some permissions that may be supported by some browsers:
    * <ul>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "accessibility-events"}</li>
    * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "background-sync"}</li>
    * <li> {@code "camera"}</li>
@@ -1388,7 +1396,7 @@ public interface BrowserContext extends AutoCloseable {
    * com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()} take
    * priority over {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
    *
-   * @param timeout Maximum time in milliseconds
+   * @param timeout Maximum time in milliseconds. Pass {@code 0} to disable timeout.
    * @since v1.8
    */
   void setDefaultTimeout(double timeout);

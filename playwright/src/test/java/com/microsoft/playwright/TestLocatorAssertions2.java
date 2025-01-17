@@ -73,9 +73,9 @@ public class TestLocatorAssertions2 extends TestBase {
   void isAttachedEventually() {
     page.setContent("<div></div>");
     Locator locator = page.locator("span");
-      page.evalOnSelector("div", "div => setTimeout(() => {\n" +
-        "      div.innerHTML = '<span>Hello</span>'\n" +
-        "    }, 100)");
+    page.evalOnSelector("div", "div => setTimeout(() => {\n" +
+      "      div.innerHTML = '<span>Hello</span>'\n" +
+      "    }, 100)");
     assertThat(locator).isAttached();
   }
 
@@ -83,9 +83,9 @@ public class TestLocatorAssertions2 extends TestBase {
   void isAttachedEventuallyWithNot() {
     page.setContent("<div><span>Hello</span></div>");
     Locator locator = page.locator("span");
-      page.evalOnSelector("div",  "div => setTimeout(() => {\n" +
-        "      div.textContent = '';\n" +
-        "    }, 0)");
+    page.evalOnSelector("div", "div => setTimeout(() => {\n" +
+      "      div.textContent = '';\n" +
+      "    }, 0)");
     assertThat(locator).not().isAttached();
   }
 
@@ -129,6 +129,9 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(page.locator("div")).hasAccessibleName(Pattern.compile("ell\\w"));
     assertThat(page.locator("div")).not().hasAccessibleName(Pattern.compile("hello"));
     assertThat(page.locator("div")).hasAccessibleName(Pattern.compile("hello"), new LocatorAssertions.HasAccessibleNameOptions().setIgnoreCase(true));
+
+    page.setContent("<button>foo&nbsp;bar\nbaz</button>");
+    assertThat(page.locator("button")).hasAccessibleName("foo bar baz");
   }
 
   @Test
@@ -141,6 +144,10 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(page.locator("div")).hasAccessibleDescription(Pattern.compile("ell\\w"));
     assertThat(page.locator("div")).not().hasAccessibleDescription(Pattern.compile("hello"));
     assertThat(page.locator("div")).hasAccessibleDescription(Pattern.compile("hello"), new LocatorAssertions.HasAccessibleDescriptionOptions().setIgnoreCase(true));
+
+    page.setContent("<div role=\"button\" aria-describedby=\"desc\"></div>\n" +
+      "    <span id=\"desc\">foo&nbsp;bar\nbaz</span>");
+    assertThat(page.locator("div")).hasAccessibleDescription("foo bar baz");
   }
 
   @Test
@@ -149,5 +156,68 @@ public class TestLocatorAssertions2 extends TestBase {
 
     assertThat(page.locator("div")).hasRole(AriaRole.BUTTON);
     assertThat(page.locator("div")).not().hasRole(AriaRole.CHECKBOX);
+  }
+
+  @Test
+  void toHaveAccessibleErrorMessage() {
+    page.setContent("<form>" +
+      "<input role=\"textbox\" aria-invalid=\"true\" aria-errormessage=\"error-message\" />" +
+      "<div id=\"error-message\">Hello</div>" +
+      "<div id=\"irrelevant-error\">This should not be considered.</div>" +
+      "</form>");
+
+    Locator locator = page.locator("input[role=\"textbox\"]");
+    assertThat(locator).hasAccessibleErrorMessage("Hello");
+    assertThat(locator).not().hasAccessibleErrorMessage("hello");
+    assertThat(locator).hasAccessibleErrorMessage("hello", new LocatorAssertions.HasAccessibleErrorMessageOptions().setIgnoreCase(true));
+    assertThat(locator).hasAccessibleErrorMessage(Pattern.compile("ell\\w"));
+    assertThat(locator).not().hasAccessibleErrorMessage(Pattern.compile("hello"));
+    assertThat(locator).hasAccessibleErrorMessage(Pattern.compile("hello"), new LocatorAssertions.HasAccessibleErrorMessageOptions().setIgnoreCase(true));
+    assertThat(locator).not().hasAccessibleErrorMessage("This should not be considered.");
+  }
+
+  @Test
+  void toHaveAccessibleErrorMessageShouldHandleMultipleAriaErrorMessageReferences() {
+    page.setContent("<form>\n" +
+      "  <input role=\"textbox\" aria-invalid=\"true\" aria-errormessage=\"error1 error2\" />\n" +
+      "  <div id=\"error1\">First error message.</div>\n" +
+      "  <div id=\"error2\">Second error message.</div>\n" +
+      "  <div id=\"irrelevant-error\">This should not be considered.</div>\n" +
+      "</form>");
+
+    Locator locator = page.locator("input[role=\"textbox\"]");
+
+    assertThat(locator).hasAccessibleErrorMessage("First error message. Second error message.");
+    assertThat(locator).hasAccessibleErrorMessage(Pattern.compile("first error message.", Pattern.CASE_INSENSITIVE));
+    assertThat(locator).hasAccessibleErrorMessage(Pattern.compile("second error message.", Pattern.CASE_INSENSITIVE));
+    assertThat(locator).not().hasAccessibleErrorMessage(Pattern.compile("This should not be considered.", Pattern.CASE_INSENSITIVE));
+  }
+
+  @Test
+  void toBeEditableWithIndeterminateTrue() {
+    page.setContent("<input type=checkbox></input>");
+    page.locator("input").evaluate("e => e.indeterminate = true");
+    Locator locator = page.locator("input");
+    assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true));
+  }
+
+  @Test
+  void toBeEditableWithIndeterminateTrueAndChecked() {
+    page.setContent("<input type=checkbox></input>");
+    page.locator("input").evaluate("e => e.indeterminate = true");
+    Locator locator = page.locator("input");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () ->
+      assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true).setChecked(false)));
+    assertTrue(e.getMessage().contains("Can't assert indeterminate and checked at the same time"), e.getMessage());
+  }
+
+  @Test
+  void toBeEditableFailWithIndeterminateTrue() {
+    page.setContent("<input type=checkbox></input>");
+    Locator locator = page.locator("input");
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () ->
+      assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true).setTimeout(1000)));
+    // TODO: should be "assertThat().isChecked() with timeout 1000ms"
+    assertTrue(e.getMessage().contains("Locator.expect with timeout 1000ms"), e.getMessage());
   }
 }
