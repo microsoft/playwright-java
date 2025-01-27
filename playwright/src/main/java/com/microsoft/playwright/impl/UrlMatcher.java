@@ -21,6 +21,7 @@ import com.microsoft.playwright.PlaywrightException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -65,6 +66,21 @@ class UrlMatcher {
     }
   }
 
+  private static String normaliseUrl(String spec) {
+    try {
+      // Align with the Node.js URL parser which automatically adds a slash to the path if it is empty.
+      URI url = new URI(spec);
+      if (url.getScheme() != null &&
+        Arrays.asList("http", "https", "ws", "wss").contains(url.getScheme()) &&
+        url.getPath().isEmpty()) {
+        return new URI(url.getScheme(), url.getAuthority(), "/", url.getQuery(), url.getFragment()).toString();
+      }
+      return url.toString();
+    } catch (URISyntaxException e) {
+      return spec;
+    }
+  }
+
   UrlMatcher(URL baseURL, String glob) {
     this(baseURL, glob, null, null);
   }
@@ -101,7 +117,7 @@ class UrlMatcher {
         if (baseURL != null && Pattern.compile("^https?://").matcher(baseURL).find() && Pattern.compile("^wss?://").matcher(value).find()) {
           baseURL = baseURL.replaceFirst("^http", "ws");
         }
-        glob = resolveUrl(baseURL, glob);
+        glob = normaliseUrl(resolveUrl(baseURL, glob));
       }
       return Pattern.compile(globToRegex(glob)).matcher(value).find();
     }
