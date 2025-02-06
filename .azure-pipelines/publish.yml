@@ -25,7 +25,12 @@ extends:
     stages:
     - stage: Stage
       jobs:
-      - job: HostJob
+      - job: Build
+        templateContext:
+          outputs:
+          - output: pipelineArtifact
+            path: $(Build.ArtifactStagingDirectory)/esrp-build
+            artifact: esrp-build
         steps:
         - bash: |
             if [[ ! "$CURRENT_BRANCH" =~ ^release-.* ]]; then
@@ -50,28 +55,39 @@ extends:
         - bash: ./scripts/download_driver.sh
           displayName: 'Download driver'
         
-        - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
+        - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(Build.ArtifactStagingDirectory)/esrp-build
           displayName: 'Build and deploy to a local directory'
           env:
             GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
-        
-        - task: EsrpRelease@7
+
+      - job: Publish
+        dependsOn: Build
+        templateContext:
+          type: releaseJob
+          isProduction: true
           inputs:
-            connectedservicename: 'Playwright-ESRP-Azure'
-            keyvaultname: 'pw-publishing-secrets'
-            authcertname: 'ESRP-Release-Auth'
-            signcertname: 'ESRP-Release-Sign'
-            clientid: '13434a40-7de4-4c23-81a3-d843dc81c2c5'
-            intent: 'PackageDistribution'
-            contenttype: 'Maven'
-            # Keeping it commented out as a workaround for:
-            # https://portal.microsofticm.com/imp/v3/incidents/incident/499972482/summary
-            # contentsource: 'folder'
-            folderlocation: './local-build'
-            waitforreleasecompletion: true
-            owners: 'yurys@microsoft.com'
-            approvers: 'maxschmitt@microsoft.com'
-            serviceendpointurl: 'https://api.esrp.microsoft.com'
-            mainpublisher: 'Playwright'
-            domaintenantid: '72f988bf-86f1-41af-91ab-2d7cd011db47'
-          displayName: 'ESRP Release to Maven'
+          - input: pipelineArtifact
+            artifactName: esrp-build
+            targetPath: $(Build.ArtifactStagingDirectory)/esrp-build
+        steps:
+          - checkout: none
+          - task: EsrpRelease@7
+            inputs:
+              connectedservicename: 'Playwright-ESRP-Azure'
+              keyvaultname: 'pw-publishing-secrets'
+              authcertname: 'ESRP-Release-Auth'
+              signcertname: 'ESRP-Release-Sign'
+              clientid: '13434a40-7de4-4c23-81a3-d843dc81c2c5'
+              intent: 'PackageDistribution'
+              contenttype: 'Maven'
+              # Keeping it commented out as a workaround for:
+              # https://portal.microsofticm.com/imp/v3/incidents/incident/499972482/summary
+              # contentsource: 'folder'
+              folderlocation: '$(Build.ArtifactStagingDirectory)/esrp-build'
+              waitforreleasecompletion: true
+              owners: 'yurys@microsoft.com'
+              approvers: 'maxschmitt@microsoft.com'
+              serviceendpointurl: 'https://api.esrp.microsoft.com'
+              mainpublisher: 'Playwright'
+              domaintenantid: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+            displayName: 'ESRP Release to Maven'
