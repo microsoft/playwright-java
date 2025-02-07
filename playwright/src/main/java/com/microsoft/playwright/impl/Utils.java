@@ -434,7 +434,7 @@ public class Utils {
         }
         String pfxBase64 = base64Buffer(cert.pfx, cert.pfxPath);
         if (pfxBase64 != null) {
-          params.addProperty("pfx", pfxBase64);
+          jsonCert.addProperty("pfx", pfxBase64);
         }
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);

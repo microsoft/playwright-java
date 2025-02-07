@@ -1,7 +1,6 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.ClientCertificate;
-import com.microsoft.playwright.options.Proxy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -109,6 +108,25 @@ public class TestClientCertificates extends TestBase {
         new ClientCertificate(customServer.origin)
           .setCertPath(asset("client-certificates/client/trusted/cert.pem"))
           .setKeyPath(asset("client-certificates/client/trusted/key.pem"))));
+
+    APIRequestContext request = playwright.request().newContext(requestOptions);
+    APIResponse response = request.get(customServer.url);
+
+    assertEquals(customServer.url, response.url());
+    assertEquals(200, response.status());
+    assertTrue(response.text().contains("Hello CN=Alice, your certificate was issued by O=Client Certificate Demo,CN=localhost!"), response.text());
+
+    request.dispose();
+  }
+
+  @Test
+  public void passWithTrustedClientCertificatesPfx() {
+    APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
+      .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
+      .setClientCertificates(asList(
+        new ClientCertificate(customServer.origin)
+          .setPfxPath(asset("client-certificates/client/trusted/client_keystore.p12"))
+          .setPassphrase("passphrase")));
 
     APIRequestContext request = playwright.request().newContext(requestOptions);
     APIResponse response = request.get(customServer.url);
