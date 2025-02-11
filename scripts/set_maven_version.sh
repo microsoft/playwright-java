@@ -19,3 +19,8 @@ POM_FILES=(
   tools/*/pom.xml
   examples/pom.xml
 )
+
+for name in ${POM_FILES[*]};
+do
+  mvn versions:set -D generateBackupPoms=false -D newVersion=$VERSION -f $name
+done
