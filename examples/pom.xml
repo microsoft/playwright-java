@@ -10,12 +10,13 @@
   <name>Playwright Client Examples</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <playwright.version>1.49.0</playwright.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>1.41.0</version>
+      <version>${playwright.version}</version>
     </dependency>
   </dependencies>
   <build>

@@ -25,3 +25,13 @@ fi;
 
 ./generate_api.sh
 ./update_readme.sh
+
+node -e "$(cat <<EOF
+  let [majorVersion, minorVersion] = process.argv[1].split('-')[0].split('.').map(part => parseInt(part, 10));
+  minorVersion[1]--;
+  const previousMajorVersion = majorVersion + '.' + minorVersion + '.0';
+  fs.writeFileSync('../examples/pom.xml', fs.readFileSync('../examples/pom.xml', 'utf8')
+    .replace(/<playwright\.version>.*<\/playwright\.version>/, '<playwright\.version>' + previousMajorVersion + '</playwright\.version>')
+  );
+EOF
+)" $NEW_VERSION
