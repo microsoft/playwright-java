@@ -60,6 +60,10 @@ public interface APIRequest {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
+     * Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
+     */
+    public Boolean failOnStatusCode;
+    /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
@@ -136,6 +140,13 @@ public interface APIRequest {
      */
     public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
+      return this;
+    }
+    /**
+     * Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
+     */
+    public NewContextOptions setFailOnStatusCode(boolean failOnStatusCode) {
+      this.failOnStatusCode = failOnStatusCode;
       return this;
     }
     /**

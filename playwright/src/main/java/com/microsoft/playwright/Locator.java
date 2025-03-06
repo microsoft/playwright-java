@@ -715,6 +715,10 @@ public interface Locator {
      * <article><div>Playwright</div></article>}.
      */
     public Object hasText;
+    /**
+     * Only matches visible or invisible elements.
+     */
+    public Boolean visible;
 
     /**
      * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
@@ -775,6 +779,13 @@ public interface Locator {
      */
     public FilterOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Only matches visible or invisible elements.
+     */
+    public FilterOptions setVisible(boolean visible) {
+      this.visible = visible;
       return this;
     }
   }
@@ -1519,7 +1530,9 @@ public interface Locator {
     public ScreenshotCaret caret;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public List<Locator> mask;
     /**
@@ -1593,7 +1606,9 @@ public interface Locator {
     }
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public ScreenshotOptions setMask(List<Locator> mask) {
       this.mask = mask;
@@ -2840,10 +2855,6 @@ public interface Locator {
    * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> <strong>Usage</strong>
-   * <pre>{@code
-   * Locator tweets = page.locator(".tweet .retweets");
-   * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
-   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -2868,10 +2879,6 @@ public interface Locator {
    * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> <strong>Usage</strong>
-   * <pre>{@code
-   * Locator tweets = page.locator(".tweet .retweets");
-   * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
-   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -2895,10 +2902,6 @@ public interface Locator {
    * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> <strong>Usage</strong>
-   * <pre>{@code
-   * Locator tweets = page.locator(".tweet .retweets");
-   * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
-   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -5212,7 +5215,9 @@ public interface Locator {
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
-   * Perform a tap gesture on the element matching the locator.
+   * Perform a tap gesture on the element matching the locator. For examples of emulating other gestures by manually
+   * dispatching touch events, see the <a href="https://playwright.dev/java/docs/touch-events">emulating legacy touch
+   * events</a> page.
    *
    * <p> <strong>Details</strong>
    *
@@ -5238,7 +5243,9 @@ public interface Locator {
     tap(null);
   }
   /**
-   * Perform a tap gesture on the element matching the locator.
+   * Perform a tap gesture on the element matching the locator. For examples of emulating other gestures by manually
+   * dispatching touch events, see the <a href="https://playwright.dev/java/docs/touch-events">emulating legacy touch
+   * events</a> page.
    *
    * <p> <strong>Details</strong>
    *

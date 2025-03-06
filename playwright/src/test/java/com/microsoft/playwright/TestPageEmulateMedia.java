@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.ForcedColors;
 import com.microsoft.playwright.options.ReducedMotion;
 import org.junit.jupiter.api.Test;
@@ -170,5 +171,18 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: active)').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions().setForcedColors(null));
     assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
+  }
+
+  @Test
+  void shouldEmulateContrast() {
+    assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setContrast(Contrast.NO_PREFERENCE));
+    assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));
+    assertEquals(false, page.evaluate("matchMedia('(prefers-contrast: more)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setContrast(Contrast.MORE));
+    assertEquals(false, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));
+    assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: more)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setContrast(null));
+    assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));
   }
 }

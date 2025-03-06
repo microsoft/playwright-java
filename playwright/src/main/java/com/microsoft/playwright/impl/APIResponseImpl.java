@@ -46,22 +46,20 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public byte[] body() {
-    return context.withLogging("APIResponse.body", () -> {
-      try {
-        JsonObject params = new JsonObject();
-        params.addProperty("fetchUid", fetchUid());
-        JsonObject json = context.sendMessage("fetchResponseBody", params).getAsJsonObject();
-        if (!json.has("binary")) {
-          throw new PlaywrightException("Response has been disposed");
-        }
-        return Base64.getDecoder().decode(json.get("binary").getAsString());
-      } catch (PlaywrightException e) {
-        if (isSafeCloseError(e)) {
-          throw new PlaywrightException("Response has been disposed");
-        }
-        throw e;
+    try {
+      JsonObject params = new JsonObject();
+      params.addProperty("fetchUid", fetchUid());
+      JsonObject json = context.sendMessage("fetchResponseBody", params).getAsJsonObject();
+      if (!json.has("binary")) {
+        throw new PlaywrightException("Response has been disposed");
       }
-    });
+      return Base64.getDecoder().decode(json.get("binary").getAsString());
+    } catch (PlaywrightException e) {
+      if (isSafeCloseError(e)) {
+        throw new PlaywrightException("Response has been disposed");
+      }
+      throw e;
+    }
   }
 
   @Override

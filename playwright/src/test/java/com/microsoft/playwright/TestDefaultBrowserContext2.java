@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
@@ -28,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -282,4 +284,22 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals(1, fields.size());
     assertEquals("200MB.zip", fields.get(0).filename);
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
-  }}
+  }
+
+  @Test
+  void shouldSupportContrastOption() {
+    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setContrast(Contrast.MORE));
+    assertEquals(true, page.evaluate("() => matchMedia('(prefers-contrast: more)').matches"));
+    assertEquals(false, page.evaluate("() => matchMedia('(prefers-contrast: no-preference)').matches"));
+  }
+
+  @Test
+  void shouldAcceptRelativeUserDataDir(@TempDir Path tmpDir) throws Exception {
+    Path userDataDir = tempDir.resolve("user-data-dir");
+    Path cwd = Paths.get("").toAbsolutePath();
+    Path relativePath = cwd.relativize(userDataDir);
+    BrowserContext context = browserType.launchPersistentContext(relativePath);
+    assertTrue(Files.list(userDataDir).count() > 0);
+    context.close();
+  }
+}

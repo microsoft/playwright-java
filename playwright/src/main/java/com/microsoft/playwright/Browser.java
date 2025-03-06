@@ -119,6 +119,12 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public Optional<Contrast> contrast;
+    /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
@@ -333,6 +339,15 @@ public interface Browser extends AutoCloseable {
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
+      return this;
+    }
+    /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public NewContextOptions setContrast(Contrast contrast) {
+      this.contrast = Optional.ofNullable(contrast);
       return this;
     }
     /**
@@ -672,6 +687,12 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public Optional<Contrast> contrast;
+    /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
@@ -886,6 +907,15 @@ public interface Browser extends AutoCloseable {
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
+      return this;
+    }
+    /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public NewPageOptions setContrast(Contrast contrast) {
+      this.contrast = Optional.ofNullable(contrast);
       return this;
     }
     /**

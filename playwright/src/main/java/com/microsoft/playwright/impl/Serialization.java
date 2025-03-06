@@ -47,6 +47,7 @@ class Serialization {
     .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
     .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
+    .registerTypeAdapter(Contrast.class, new ToLowerCaseAndDashSerializer<Contrast>())
     .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
     .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
     .registerTypeAdapter(HttpCredentialsSend.class, new ToLowerCaseSerializer<HttpCredentialsSend>())
@@ -425,6 +426,7 @@ class Serialization {
     private static boolean isSupported(Type type) {
       return new TypeToken<Optional<Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<Contrast>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ForcedColors>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ReducedMotion>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ViewportSize>>() {}.getType().getTypeName().equals(type.getTypeName());

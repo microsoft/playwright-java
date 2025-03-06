@@ -966,6 +966,11 @@ public interface Page extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. Passing
+     * {@code null} disables contrast emulation.
+     */
+    public Optional<Contrast> contrast;
+    /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"} and {@code "none"}. Passing {@code
      * null} disables forced colors emulation.
      */
@@ -989,6 +994,14 @@ public interface Page extends AutoCloseable {
      */
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
+      return this;
+    }
+    /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. Passing
+     * {@code null} disables contrast emulation.
+     */
+    public EmulateMediaOptions setContrast(Contrast contrast) {
+      this.contrast = Optional.ofNullable(contrast);
       return this;
     }
     /**
@@ -2522,7 +2535,9 @@ public interface Page extends AutoCloseable {
     public Boolean fullPage;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public List<Locator> mask;
     /**
@@ -2617,7 +2632,9 @@ public interface Page extends AutoCloseable {
     }
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public ScreenshotOptions setMask(List<Locator> mask) {
       this.mask = mask;

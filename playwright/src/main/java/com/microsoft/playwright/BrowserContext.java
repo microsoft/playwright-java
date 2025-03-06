@@ -408,11 +408,30 @@ public interface BrowserContext extends AutoCloseable {
   }
   class StorageStateOptions {
     /**
+     * Set to {@code true} to include <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a> in
+     * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
+     * Authentication, enable this.
+     *
+     * <p> <strong>NOTE:</strong> IndexedDBs with typed arrays are currently not supported.
+     */
+    public Boolean indexedDB;
+    /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
     public Path path;
 
+    /**
+     * Set to {@code true} to include <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a> in
+     * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
+     * Authentication, enable this.
+     *
+     * <p> <strong>NOTE:</strong> IndexedDBs with typed arrays are currently not supported.
+     */
+    public StorageStateOptions setIndexedDB(boolean indexedDB) {
+      this.indexedDB = indexedDB;
+      return this;
+    }
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
@@ -1435,7 +1454,7 @@ public interface BrowserContext extends AutoCloseable {
    */
   void setOffline(boolean offline);
   /**
-   * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   * Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB snapshot.
    *
    * @since v1.8
    */
@@ -1443,7 +1462,7 @@ public interface BrowserContext extends AutoCloseable {
     return storageState(null);
   }
   /**
-   * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   * Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB snapshot.
    *
    * @since v1.8
    */
