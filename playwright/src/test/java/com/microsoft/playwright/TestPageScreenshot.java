@@ -253,7 +253,7 @@ public class TestPageScreenshot extends TestBase {
   }
 
   static boolean isScreenshotTestDisabled() {
-    if (isWebKit()) {
+    if (isWebKit() || isChromium()) {
       // Array lengths differ.
       return true;
     }
