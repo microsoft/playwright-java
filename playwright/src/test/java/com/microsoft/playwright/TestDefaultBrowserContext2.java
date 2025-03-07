@@ -293,7 +293,12 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-contrast: no-preference)').matches"));
   }
 
+  static boolean tempDirCanBeOnDifferentRoot() {
+    return isMac;
+  }
+
   @Test
+  @DisabledIf(value="tempDirCanBeOnDifferentRoot", disabledReason="IllegalArgument 'other' has different root on GitHub Actions.")
   void shouldAcceptRelativeUserDataDir(@TempDir Path tmpDir) throws Exception {
     Path userDataDir = tempDir.resolve("user-data-dir");
     Path cwd = Paths.get("").toAbsolutePath();

@@ -31,6 +31,10 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextCookies extends TestBase {
+  static boolean isWebkitWindows() {
+    return isWebKit() && isWindows;
+  }
+
   @Test
   void shouldGetACookie() {
     page.navigate(server.EMPTY_PAGE);
@@ -94,10 +98,6 @@ public class TestBrowserContextCookies extends TestBase {
     List<Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
     assertTrue(cookies.get(0).httpOnly);
-  }
-
-  static boolean isWebKitWindows() {
-    return isWebKit() && getOS() == Utils.OS.WINDOWS;
   }
 
   @Test
@@ -190,10 +190,6 @@ public class TestBrowserContextCookies extends TestBase {
       "  secure: true,\n" +
       "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}]", cookies);
-  }
-
-  static boolean isWebkitWindows() {
-    return isWebKit() && isWindows;
   }
 
   @Test
