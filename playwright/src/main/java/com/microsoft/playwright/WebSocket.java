@@ -20,7 +20,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * The {@code WebSocket} class represents websocket connections in the page.
+ * The {@code WebSocket} class represents WebSocket connections within a page. It provides the ability to inspect and
+ * manipulate the data being transmitted and received.
+ *
+ * <p> If you want to intercept or modify WebSocket frames, consider using {@code WebSocketRoute}.
  */
 public interface WebSocket {
 

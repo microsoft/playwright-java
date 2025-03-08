@@ -20,6 +20,9 @@ package com.microsoft.playwright;
 /**
  * The Touchscreen class operates in main-frame CSS pixels relative to the top-left corner of the viewport. Methods on the
  * touchscreen can only be used in browser contexts that have been initialized with {@code hasTouch} set to true.
+ *
+ * <p> This class is limited to emulating tap gestures. For examples of other gestures simulated by manually dispatching touch
+ * events, see the <a href="https://playwright.dev/java/docs/touch-events">emulating legacy touch events</a> page.
  */
 public interface Touchscreen {
   /**

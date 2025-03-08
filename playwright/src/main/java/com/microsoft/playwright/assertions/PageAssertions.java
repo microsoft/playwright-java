@@ -54,7 +54,7 @@ public interface PageAssertions {
   class HasURLOptions {
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
-     * expression flag if specified.
+     * expression parameter if specified. A provided predicate ignores this flag.
      */
     public Boolean ignoreCase;
     /**
@@ -64,7 +64,7 @@ public interface PageAssertions {
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
-     * expression flag if specified.
+     * expression parameter if specified. A provided predicate ignores this flag.
      */
     public HasURLOptions setIgnoreCase(boolean ignoreCase) {
       this.ignoreCase = ignoreCase;

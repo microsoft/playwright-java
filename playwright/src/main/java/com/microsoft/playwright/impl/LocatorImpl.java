@@ -21,29 +21,25 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class LocatorImpl implements Locator {
   final FrameImpl frame;
   final String selector;
 
-  LocatorImpl(FrameImpl frame, String frameSelector) {
-    this(frame, frameSelector, null);
+  LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
+    this(frame, selector, options, null);
   }
 
-  public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
+  private LocatorImpl(FrameImpl frame, String selector, LocatorOptions options, Boolean visible) {
     this.frame = frame;
     if (options != null) {
       if (options.hasText != null) {
@@ -64,6 +60,9 @@ class LocatorImpl implements Locator {
           throw new Error("Inner 'hasNot' locator must belong to the same frame.");
         selector += " >> internal:has-not=" + gson().toJson(locator.selector);
       }
+    }
+    if (visible != null) {
+      selector += " >> visible=" + visible;
     }
     this.selector = selector;
   }
@@ -252,7 +251,8 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator filter(FilterOptions options) {
-    return new LocatorImpl(frame, selector, convertType(options,LocatorOptions.class));
+    Boolean visible = (options == null) ? null : options.visible;
+    return new LocatorImpl(frame, selector, convertType(options, LocatorOptions.class), visible);
   }
 
   @Override

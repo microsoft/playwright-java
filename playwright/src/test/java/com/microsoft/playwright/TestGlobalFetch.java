@@ -548,4 +548,36 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(4, requestCount[0]);
     requestContext.dispose();
   }
+
+  @Test
+  public void shouldThrowWhenFailOnStatusCodeIsSetToTrue() {
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setFailOnStatusCode(true));
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().set("Content-Length", "10");
+      exchange.getResponseHeaders().set("Content-type", "text/plain");
+      exchange.sendResponseHeaders(404, 10);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Not found.");
+      }
+    });
+    PlaywrightException error = assertThrows(PlaywrightException.class, () -> {
+      request.get(server.EMPTY_PAGE);
+    });
+    assertTrue(error.getMessage().contains("404 Not Found"));
+  }
+
+  @Test
+  public void shouldNotThrowWhenFailOnStatusCodeIsSetToFalse() {
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setFailOnStatusCode(false));
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().set("Content-Length", "10");
+      exchange.getResponseHeaders().set("Content-type", "text/plain");
+      exchange.sendResponseHeaders(404, 10);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Not found.");
+      }
+    });
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertEquals(404, response.status());
+  }
 }

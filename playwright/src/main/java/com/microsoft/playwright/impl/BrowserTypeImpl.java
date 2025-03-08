@@ -26,6 +26,7 @@ import com.microsoft.playwright.options.HarContentPolicy;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
@@ -196,6 +197,10 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    if (!userDataDir.isAbsolute() && !userDataDir.toString().isEmpty()) {
+      Path cwd = Paths.get("").toAbsolutePath();
+      userDataDir = cwd.resolve(userDataDir);
+    }
     params.addProperty("userDataDir", userDataDir.toString());
     if (recordHar != null) {
       params.add("recordHar", recordHar);

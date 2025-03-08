@@ -29,6 +29,7 @@ import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBrowserContextStorageState extends TestBase {
@@ -168,5 +169,98 @@ public class TestBrowserContextStorageState extends TestBase {
       "    value: '" + (char)65533 + "'\n" +
       "  }]\n" +
       "}]}", new Gson().fromJson(storageState, JsonObject.class));
+  }
+
+  @Test
+  void shouldSupportIndexedDB() {
+    page.navigate(server.PREFIX + "/to-do-notifications/index.html");
+    page.locator("label:has-text('Task title')").fill("Pet the cat");
+    page.locator("label:has-text('Hours')").fill("1");
+    page.locator("label:has-text('Mins')").fill("1");
+    page.locator("text=Add Task").click();
+
+    String storageState = page.context().storageState(new BrowserContext.StorageStateOptions().setIndexedDB(true));
+    assertJsonEquals("{\"cookies\":[],\"origins\":[\n" +
+      "  {\n" +
+      "    \"origin\": \"" + server.PREFIX + "\",\n" +
+      "    \"localStorage\": [],\n" +
+      "    \"indexedDB\": [\n" +
+      "      {\n" +
+      "        \"name\": \"toDoList\",\n" +
+      "        \"version\": 4,\n" +
+      "        \"stores\": [\n" +
+      "          {\n" +
+      "            \"name\": \"toDoList\",\n" +
+      "            \"autoIncrement\": false,\n" +
+      "            \"keyPath\": \"taskTitle\",\n" +
+      "            \"records\": [\n" +
+      "              {\n" +
+      "                \"value\": {\n" +
+      "                  \"day\": \"01\",\n" +
+      "                  \"hours\": \"1\",\n" +
+      "                  \"minutes\": \"1\",\n" +
+      "                  \"month\": \"January\",\n" +
+      "                  \"notified\": \"no\",\n" +
+      "                  \"taskTitle\": \"Pet the cat\",\n" +
+      "                  \"year\": \"2025\"\n" +
+      "                }\n" +
+      "              }\n" +
+      "            ],\n" +
+      "            \"indexes\": [\n" +
+      "              {\n" +
+      "                \"name\": \"day\",\n" +
+      "                \"keyPath\": \"day\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              },\n" +
+      "              {\n" +
+      "                \"name\": \"hours\",\n" +
+      "                \"keyPath\": \"hours\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              },\n" +
+      "              {\n" +
+      "                \"name\": \"minutes\",\n" +
+      "                \"keyPath\": \"minutes\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              },\n" +
+      "              {\n" +
+      "                \"name\": \"month\",\n" +
+      "                \"keyPath\": \"month\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              },\n" +
+      "              {\n" +
+      "                \"name\": \"notified\",\n" +
+      "                \"keyPath\": \"notified\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              },\n" +
+      "              {\n" +
+      "                \"name\": \"year\",\n" +
+      "                \"keyPath\": \"year\",\n" +
+      "                \"multiEntry\": false,\n" +
+      "                \"unique\": false\n" +
+      "              }\n" +
+      "            ]\n" +
+      "          }\n" +
+      "        ]\n" +
+      "      }\n" +
+      "    ]\n" +
+      "  }\n" +
+      "]}", new Gson().fromJson(storageState, JsonObject.class));
+
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setStorageState(storageState));
+    assertEquals(storageState, context.storageState(new BrowserContext.StorageStateOptions().setIndexedDB(true)));
+
+    Page recreatedPage = context.newPage();
+    recreatedPage.navigate(server.PREFIX + "/to-do-notifications/index.html");
+    assertThat(recreatedPage.locator("#task-list")).matchesAriaSnapshot("\n" +
+      "    - list:\n" +
+      "      - listitem:\n" +
+      "        - text: /Pet the cat/\n");
+    assertEquals("{\"cookies\":[],\"origins\":[]}", context.storageState(
+      new BrowserContext.StorageStateOptions().setIndexedDB(false)));
   }
 }

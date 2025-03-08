@@ -136,6 +136,6 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator owner() {
-    return new LocatorImpl(frame, frameSelector);
+    return new LocatorImpl(frame, frameSelector, null);
   }
 }

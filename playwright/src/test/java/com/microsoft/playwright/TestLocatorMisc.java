@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLocatorMisc extends TestBase{
@@ -122,5 +123,21 @@ public class TestLocatorMisc extends TestBase{
     page.setContent("<input type='text' />");
     page.locator("input").pressSequentially("hello");
     assertEquals("hello", page.evalOnSelector("input", "input => input.value"));
+  }
+
+  @Test
+  public void shouldSupportFilterVisible() {
+    page.setContent("<div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data0</div>\n" +
+      "  <div class=\"item\">visible data1</div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data1</div>\n" +
+      "  <div class=\"item\">visible data2</div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data2</div>\n" +
+      "  <div class=\"item\">visible data3</div>\n" +
+      "</div>");
+    Locator locator = page.locator(".item").filter(new Locator.FilterOptions().setVisible(true)).nth(1);
+    assertThat(locator).hasText("visible data2");
+    assertThat(page.locator(".item").filter(new Locator.FilterOptions().setVisible(true)).getByText("data3")).hasText("visible data3");
+    assertThat(page.locator(".item").filter(new Locator.FilterOptions().setVisible(false)).getByText("data1")).hasText("Hidden data1");
   }
 }

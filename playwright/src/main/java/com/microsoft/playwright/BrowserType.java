@@ -498,6 +498,12 @@ public interface BrowserType {
      */
     public Optional<ColorScheme> colorScheme;
     /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public Optional<Contrast> contrast;
+    /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
@@ -814,6 +820,15 @@ public interface BrowserType {
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
+      return this;
+    }
+    /**
+     * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
+     * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
+     */
+    public LaunchPersistentContextOptions setContrast(Contrast contrast) {
+      this.contrast = Optional.ofNullable(contrast);
       return this;
     }
     /**
@@ -1197,22 +1212,24 @@ public interface BrowserType {
     }
   }
   /**
-   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via {@code
-   * BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
-   * compatible with 1.2.x).
+   * This method attaches Playwright to an existing browser instance created via {@code BrowserType.launchServer} in Node.js.
    *
-   * @param wsEndpoint A browser websocket endpoint to connect to.
+   * <p> <strong>NOTE:</strong> The major and minor version of the Playwright instance that connects needs to match the version of Playwright that
+   * launches the browser (1.2.3 → is compatible with 1.2.x).
+   *
+   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
    * @since v1.8
    */
   default Browser connect(String wsEndpoint) {
     return connect(wsEndpoint, null);
   }
   /**
-   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via {@code
-   * BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
-   * compatible with 1.2.x).
+   * This method attaches Playwright to an existing browser instance created via {@code BrowserType.launchServer} in Node.js.
    *
-   * @param wsEndpoint A browser websocket endpoint to connect to.
+   * <p> <strong>NOTE:</strong> The major and minor version of the Playwright instance that connects needs to match the version of Playwright that
+   * launches the browser (1.2.3 → is compatible with 1.2.x).
+   *
+   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
    * @since v1.8
    */
   Browser connect(String wsEndpoint, ConnectOptions options);
@@ -1222,6 +1239,11 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link com.microsoft.playwright.Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * <p> <strong>NOTE:</strong> This connection is significantly lower fidelity than the Playwright protocol connection via {@link
+   * com.microsoft.playwright.BrowserType#connect BrowserType.connect()}. If you are experiencing issues or attempting to use
+   * advanced functionality, you probably want to use {@link com.microsoft.playwright.BrowserType#connect
+   * BrowserType.connect()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -1243,6 +1265,11 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link com.microsoft.playwright.Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * <p> <strong>NOTE:</strong> This connection is significantly lower fidelity than the Playwright protocol connection via {@link
+   * com.microsoft.playwright.BrowserType#connect BrowserType.connect()}. If you are experiencing issues or attempting to use
+   * advanced functionality, you probably want to use {@link com.microsoft.playwright.BrowserType#connect
+   * BrowserType.connect()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

@@ -599,7 +599,9 @@ public interface ElementHandle extends JSHandle {
     public ScreenshotCaret caret;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public List<Locator> mask;
     /**
@@ -673,7 +675,9 @@ public interface ElementHandle extends JSHandle {
     }
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
+     * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
+     * visible elements</a> to disable that.
      */
     public ScreenshotOptions setMask(List<Locator> mask) {
       this.mask = mask;
