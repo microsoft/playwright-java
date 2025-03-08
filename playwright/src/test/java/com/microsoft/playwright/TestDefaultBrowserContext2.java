@@ -294,7 +294,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   static boolean tempDirCanBeOnDifferentRoot() {
-    return isMac;
+    return isWindows;
   }
 
   @Test
