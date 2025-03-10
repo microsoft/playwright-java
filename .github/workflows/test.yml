@@ -8,6 +8,8 @@ on:
     branches:
       - main
       - release-*
+env:
+  PW_MAX_RETRIES: 3
 jobs:
   dev:
     timeout-minutes: 30

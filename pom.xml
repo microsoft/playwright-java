@@ -159,6 +159,7 @@
               </configurationParameters>
             </properties>
             <failIfNoTests>false</failIfNoTests>
+            <rerunFailingTestsCount>${env.PW_MAX_RETRIES}</rerunFailingTestsCount>
             <!-- Activate the use of TCP to transmit events to the plugin and avoid
             [WARNING] Corrupted STDOUT by directly writing to native stream in forked JVM -->
             <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
