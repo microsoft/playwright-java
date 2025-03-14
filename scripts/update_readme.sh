@@ -15,3 +15,6 @@ mvn install --no-transfer-progress -D skipTests
 
 echo "Updating browser versions in README.md"
 mvn compile exec:java --f ./tools/update-docs-version -D exec.mainClass=com.microsoft.playwright.tools.UpdateBrowserVersions
+
+echo "Updating Playwright dependency version in README.md"
+mvn compile exec:java --f ./tools/update-docs-version -D exec.mainClass=com.microsoft.playwright.tools.UpdatePlaywrightVersion
