@@ -218,7 +218,7 @@ public class Server implements HttpHandler {
     }
     long contentLength = body.size();
     // -1 means no body, 0 means chunked encoding.
-    exchange.sendResponseHeaders(200, contentLength == 0 ? -1 : contentLength);
+    exchange.sendResponseHeaders(200, (contentLength == 0 || exchange.getRequestMethod().equals("HEAD")) ? -1 : contentLength);
     if (contentLength > 0) {
       exchange.getResponseBody().write(body.toByteArray());
     }

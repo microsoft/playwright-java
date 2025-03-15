@@ -87,8 +87,10 @@ public class DriverJar extends Driver {
     }
     ProcessBuilder pb = createProcessBuilder();
     pb.command().add("install");
-    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-    pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    if (System.getenv("PW_JAVA_INTERNAL_SILENT_INSTALL") != null) {
+      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+      pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    }
     Process p = pb.start();
     boolean result = p.waitFor(10, TimeUnit.MINUTES);
     if (!result) {

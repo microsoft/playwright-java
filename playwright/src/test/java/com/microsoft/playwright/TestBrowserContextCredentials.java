@@ -33,7 +33,6 @@ public class TestBrowserContextCredentials extends TestBase {
   @Test
   @DisabledIf(value="isChromiumHeadedLike", disabledReason="fail")
   void shouldFailWithoutCredentials() {
-    System.out.println("channel2 " + getBrowserChannelFromEnv());
     server.setAuth("/empty.html", "user", "pass");
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(401, response.status());

@@ -74,6 +74,7 @@ public class TestInstall {
     // Make sure the browsers are not installed yet by pointing at an empty dir.
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
     env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
+    env.put("PW_JAVA_INTERNAL_SILENT_INSTALL", "true");
 
     RuntimeException exception = assertThrows(RuntimeException.class, () -> Driver.createAndInstall(env, true));
     String message = exception.getMessage();
