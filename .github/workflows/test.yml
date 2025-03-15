@@ -20,9 +20,9 @@ jobs:
         browser: [chromium, firefox, webkit]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up JDK 1.8
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
         distribution: zulu
         java-version: 8
@@ -52,7 +52,7 @@ jobs:
         java -jar target/test-spring-boot*.jar
 
   stable:
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -65,13 +65,13 @@ jobs:
             browser-channel: msedge
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install Media Pack
         if: matrix.os == 'windows-latest'
         shell: powershell
         run: Install-WindowsFeature Server-Media-Foundation
       - name: Set up JDK 1.8
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 8
@@ -93,16 +93,16 @@ jobs:
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
 
   Java_21:
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up JDK 21
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: adopt
           java-version: 21
