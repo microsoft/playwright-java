@@ -20,7 +20,11 @@ import com.microsoft.playwright.options.HarContentPolicy;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import com.microsoft.playwright.options.RouteFromHarUpdateContentPolicy;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -44,6 +48,16 @@ import static com.microsoft.playwright.options.HarContentPolicy.EMBED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextHar extends TestBase {
+  @BeforeEach
+  void BeforeEach(TestInfo testInfo) {
+    System.out.println("BeforeEach::displayName = " + testInfo.getDisplayName());
+  }
+
+  @AfterEach
+  void AfterEach(TestInfo testInfo) {
+    System.out.println("AfterEach::displayName = " + testInfo.getDisplayName());
+  }
+
   @Test
   void shouldContextRouteFromHARMatchingTheMethodAndFollowingRedirects() {
     Path path = Paths.get("src/test/resources/har-fulfill.har");

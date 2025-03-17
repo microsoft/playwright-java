@@ -19,6 +19,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         browser: [chromium, firefox, webkit]
     runs-on: ${{ matrix.os }}
+    env:
+      DEBUG: pw:api
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 1.8
