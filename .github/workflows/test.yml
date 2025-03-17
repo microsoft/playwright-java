@@ -17,8 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         browser: [webkit,webkit,webkit,webkit,webkit,webkit,webkit]
-    env:
-      DEBUG: pw:api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
