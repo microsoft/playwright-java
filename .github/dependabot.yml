@@ -17,3 +17,11 @@ updates:
     allow:
       - dependency-type: "direct" # Optional: Only update direct dependencies
       - dependency-type: "indirect" # Optional: Only update indirect (transitive) dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions:
+        patterns:
+          - "*" 
