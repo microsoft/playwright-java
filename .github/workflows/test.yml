@@ -100,6 +100,8 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
+    env:
+      DEBUG: pw:api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
