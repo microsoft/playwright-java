@@ -218,15 +218,25 @@ public class TestBrowserContextHar extends TestBase {
   @Test
   void shouldGoBackToRedirectedNavigation() {
     Path path = Paths.get("src/test/resources/har-redirect.har");
+    System.err.println("shouldGoBackToRedirectedNavigation#1");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));
+    System.err.println("shouldGoBackToRedirectedNavigation#2");
     Page page = context.newPage();
+    System.err.println("shouldGoBackToRedirectedNavigation#3");
     page.navigate("https://theverge.com/");
+    System.err.println("shouldGoBackToRedirectedNavigation#4");
     page.navigate(server.EMPTY_PAGE);
+    System.err.println("shouldGoBackToRedirectedNavigation#5");
     assertThat(page).hasURL(server.EMPTY_PAGE);
+    System.err.println("shouldGoBackToRedirectedNavigation#6");
     Response response = page.goBack();
+    System.err.println("shouldGoBackToRedirectedNavigation#7");
     assertThat(page).hasURL("https://www.theverge.com/");
+    System.err.println("shouldGoBackToRedirectedNavigation#8");
     assertEquals("https://www.theverge.com/", response.request().url());
+    System.err.println("shouldGoBackToRedirectedNavigation#9");
     assertEquals("https://www.theverge.com/", page.evaluate("location.href"));
+    System.err.println("shouldGoBackToRedirectedNavigation#10");
   }
 
   @Test
