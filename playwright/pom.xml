@@ -57,6 +57,15 @@
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
     </dependency>
+    <!-- 
+      The following slf4j-simple dependency resolves the warning:
+      'SLF4J(W): No SLF4J providers were found.'
+      This warning is produced by the org.java-websocket library.
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

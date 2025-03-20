@@ -48,6 +48,7 @@
     <junit.version>5.12.1</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <websocket.version>1.6.0</websocket.version>
+    <slf4j.version>2.0.17</slf4j.version>
     <opentest4j.version>1.3.0</opentest4j.version>
   </properties>
 
@@ -89,6 +90,17 @@
         <groupId>org.java-websocket</groupId>
         <artifactId>Java-WebSocket</artifactId>
         <version>${websocket.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- 
+        The following slf4j-simple dependency resolves the warning:
+        'SLF4J(W): No SLF4J providers were found.'
+        This warning is produced by the org.java-websocket library.
+      -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
