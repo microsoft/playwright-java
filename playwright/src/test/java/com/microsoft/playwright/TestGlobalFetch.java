@@ -337,7 +337,7 @@ public class TestGlobalFetch extends TestBase {
     for (String method : new String[] {"head", "put", "trace"}) {
       server.setRoute("/empty.html", exchange -> {
         exchange.getResponseHeaders().set("Content-type", "text/plain");
-        exchange.sendResponseHeaders(404, 10);
+        exchange.sendResponseHeaders(404, exchange.getRequestMethod().equals("HEAD") ? -1 : 10);
         try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
           writer.write("Not found.");
         }
