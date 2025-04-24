@@ -27,24 +27,23 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  private final LocalUtils localUtils;
   private final String baseURL;
   public final String glob;
   public final Pattern pattern;
   public final Predicate<String> predicate;
 
-  static UrlMatcher forOneOf(LocalUtils localUtils, URL baseUrl, Object object) {
+  static UrlMatcher forOneOf(URL baseUrl, Object object, LocalUtils localUtils, boolean isWebSocketUrl) {
     if (object == null) {
-      return new UrlMatcher(localUtils, null, null, null, null);
+      return new UrlMatcher(null, null, null, null);
     }
     if (object instanceof String) {
-      return new UrlMatcher(localUtils, baseUrl, (String) object);
+      return UrlMatcher.forGlob(baseUrl, (String) object, localUtils, isWebSocketUrl);
     }
     if (object instanceof Pattern) {
-      return new UrlMatcher(localUtils, (Pattern) object);
+      return new UrlMatcher((Pattern) object);
     }
     if (object instanceof Predicate) {
-      return new UrlMatcher(localUtils, (Predicate<String>) object);
+      return new UrlMatcher((Predicate<String>) object);
     }
     throw new PlaywrightException("Url must be String, Pattern or Predicate<String>, found: " + object.getClass().getTypeName());
   }
@@ -65,43 +64,36 @@ class UrlMatcher {
     }
   }
 
-  UrlMatcher(LocalUtils localUtils, URL baseURL, String glob) {
-    this(localUtils, baseURL, glob, null, null);
+  static UrlMatcher forGlob(URL baseURL, String glob, LocalUtils localUtils, boolean isWebSocketUrl) {
+    Pattern pattern = localUtils.globToRegex(glob, baseURL != null ? baseURL.toString() : null, isWebSocketUrl);
+    return new UrlMatcher(baseURL, glob, pattern, null);
   }
 
-  UrlMatcher(LocalUtils localUtils, Pattern pattern) {
-    this(localUtils, null, null, pattern, null);
+  UrlMatcher(Pattern pattern) {
+    this(null, null, pattern, null);
   }
 
-  UrlMatcher(LocalUtils localUtils, Predicate<String> predicate) {
-    this(localUtils, null, null, null, predicate);
+  UrlMatcher(Predicate<String> predicate) {
+    this(null, null, null, predicate);
   }
 
-  private UrlMatcher(LocalUtils localUtils, URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
+  private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
     this.baseURL = baseURL != null ? baseURL.toString() : null;
     this.glob = glob;
     this.pattern = pattern;
     this.predicate = predicate;
-    this.localUtils = localUtils;
   }
 
   boolean test(String value) {
-    return testImpl(localUtils, baseURL, pattern, predicate, glob, value, false);
+    return testImpl(baseURL, pattern, predicate, glob, value);
   }
 
-  boolean testWebsocket(String value) {
-    return testImpl(localUtils, baseURL, pattern, predicate, glob, value, true);
-  }
-
-  private static boolean testImpl(LocalUtils localUtils, String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value, boolean isWebSocket) {
+  private static boolean testImpl(String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
     if (predicate != null) {
       return predicate.test(value);
-    }
-    if (glob != null) {
-      return localUtils.globToRegex(glob, baseURL, isWebSocket).matcher(value).find();
     }
     return true;
   }

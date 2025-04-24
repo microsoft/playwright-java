@@ -480,17 +480,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(this.connection.localUtils, baseUrl, url), handler, options);
+    route(UrlMatcher.forGlob(baseUrl, url, this.connection.localUtils, false), handler, options);
   }
 
   @Override
   public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(this.connection.localUtils, url), handler, options);
+    route(new UrlMatcher(url), handler, options);
   }
 
   @Override
   public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(this.connection.localUtils, url), handler, options);
+    route(new UrlMatcher(url), handler, options);
   }
 
   @Override
@@ -502,7 +502,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       recordIntoHar(null, har, options);
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(this.connection.localUtils, baseUrl, options.url);
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url, this.connection.localUtils, false);
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
@@ -517,17 +517,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, baseUrl, url), handler);
+    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl, url, this.connection.localUtils, true), handler);
   }
 
   @Override
   public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, pattern), handler);
+    routeWebSocketImpl(new UrlMatcher(pattern), handler);
   }
 
   @Override
   public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, predicate), handler);
+    routeWebSocketImpl(new UrlMatcher(predicate), handler);
   }
 
   private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
@@ -656,17 +656,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(this.connection.localUtils, this.baseUrl, url), handler);
+    unroute(UrlMatcher.forGlob(this.baseUrl, url, this.connection.localUtils, false), handler);
   }
 
   @Override
   public void unroute(Pattern url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(this.connection.localUtils, url), handler);
+    unroute(new UrlMatcher(url), handler);
   }
 
   @Override
   public void unroute(Predicate<String> url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(this.connection.localUtils, url), handler);
+    unroute(new UrlMatcher(url), handler);
   }
 
   @Override
