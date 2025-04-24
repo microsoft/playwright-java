@@ -785,17 +785,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Frame frameByUrl(String glob) {
-    return frameFor(new UrlMatcher(browserContext.baseUrl, glob));
+    return frameFor(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, glob));
   }
 
   @Override
   public Frame frameByUrl(Pattern pattern) {
-    return frameFor(new UrlMatcher(pattern));
+    return frameFor(new UrlMatcher(this.connection.localUtils, pattern));
   }
 
   @Override
   public Frame frameByUrl(Predicate<String> predicate) {
-    return frameFor(new UrlMatcher(predicate));
+    return frameFor(new UrlMatcher(this.connection.localUtils, predicate));
   }
 
   @Override
@@ -1105,17 +1105,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(browserContext.baseUrl, url), handler, options);
+    route(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, url), handler, options);
   }
 
   @Override
   public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
+    route(new UrlMatcher(this.connection.localUtils, url), handler, options);
   }
 
   @Override
   public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
+    route(new UrlMatcher(this.connection.localUtils, url), handler, options);
   }
 
   @Override
@@ -1127,7 +1127,7 @@ public class PageImpl extends ChannelOwner implements Page {
       browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class));
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl, options.url);
+    UrlMatcher matcher = UrlMatcher.forOneOf(this.connection.localUtils, browserContext.baseUrl, options.url);
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
@@ -1142,17 +1142,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(browserContext.baseUrl, url), handler);
+    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, url), handler);
   }
 
   @Override
   public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(pattern), handler);
+    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, pattern), handler);
   }
 
   @Override
   public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(predicate), handler);
+    routeWebSocketImpl(new UrlMatcher(this.connection.localUtils, predicate), handler);
   }
 
   private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
@@ -1365,17 +1365,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(browserContext.baseUrl, url), handler);
+    unroute(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, url), handler);
   }
 
   @Override
   public void unroute(Pattern url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
+    unroute(new UrlMatcher(this.connection.localUtils, url), handler);
   }
 
   @Override
   public void unroute(Predicate<String> url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
+    unroute(new UrlMatcher(this.connection.localUtils, url), handler);
   }
 
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
@@ -1508,12 +1508,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(new UrlMatcher(browserContext.baseUrl, urlGlob), null, options, code);
+    return waitForRequest(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, urlGlob), null, options, code);
   }
 
   @Override
   public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(new UrlMatcher(urlPattern), null, options, code);
+    return waitForRequest(new UrlMatcher(this.connection.localUtils, urlPattern), null, options, code);
   }
 
   @Override
@@ -1553,12 +1553,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(new UrlMatcher(browserContext.baseUrl, urlGlob), null, options, code);
+    return waitForResponse(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, urlGlob), null, options, code);
   }
 
   @Override
   public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(new UrlMatcher(urlPattern), null, options, code);
+    return waitForResponse(new UrlMatcher(this.connection.localUtils, urlPattern), null, options, code);
   }
 
   @Override
@@ -1606,17 +1606,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(browserContext.baseUrl, url), options);
+    waitForURL(new UrlMatcher(this.connection.localUtils, browserContext.baseUrl, url), options);
   }
 
   @Override
   public void waitForURL(Pattern url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(this.connection.localUtils, url), options);
   }
 
   @Override
   public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(this.connection.localUtils, url), options);
   }
 
   private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {

@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -58,5 +59,18 @@ class LocalUtils extends ChannelOwner {
     params.addProperty("traceName", traceName);
     JsonObject json = connection.localUtils().sendMessage("tracingStarted", params).getAsJsonObject();
     return json.get("stacksId").getAsString();
+  }
+
+  Pattern globToRegex(String glob, String baseUrl, String websocketUrl) {
+    JsonObject params = new JsonObject();
+    params.addProperty("glob", glob);
+    if (baseUrl != null) {
+      params.addProperty("baseUrl", baseUrl);
+    }
+    if (websocketUrl != null) {
+      params.addProperty("websocketUrl", websocketUrl);
+    }
+    JsonObject json = connection.localUtils().sendMessage("globToRegex", params).getAsJsonObject();
+    return Pattern.compile(json.get("regex").getAsString());
   }
 }

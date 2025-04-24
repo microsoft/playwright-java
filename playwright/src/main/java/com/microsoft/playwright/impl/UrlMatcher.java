@@ -21,31 +21,30 @@ import com.microsoft.playwright.PlaywrightException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
+  private final LocalUtils localUtils;
   private final String baseURL;
   public final String glob;
   public final Pattern pattern;
   public final Predicate<String> predicate;
 
-  static UrlMatcher forOneOf(URL baseUrl, Object object) {
+  static UrlMatcher forOneOf(LocalUtils localUtils, URL baseUrl, Object object) {
     if (object == null) {
-      return new UrlMatcher(null, null, null, null);
+      return new UrlMatcher(localUtils, null, null, null, null);
     }
     if (object instanceof String) {
-      return new UrlMatcher(baseUrl, (String) object);
+      return new UrlMatcher(localUtils, baseUrl, (String) object);
     }
     if (object instanceof Pattern) {
-      return new UrlMatcher((Pattern) object);
+      return new UrlMatcher(localUtils, (Pattern) object);
     }
     if (object instanceof Predicate) {
-      return new UrlMatcher((Predicate<String>) object);
+      return new UrlMatcher(localUtils, (Predicate<String>) object);
     }
     throw new PlaywrightException("Url must be String, Pattern or Predicate<String>, found: " + object.getClass().getTypeName());
   }
@@ -66,45 +65,31 @@ class UrlMatcher {
     }
   }
 
-  private static String normaliseUrl(String spec) {
-    try {
-      // Align with the Node.js URL parser which automatically adds a slash to the path if it is empty.
-      URI url = new URI(spec);
-      if (url.getScheme() != null &&
-        Arrays.asList("http", "https", "ws", "wss").contains(url.getScheme()) &&
-        url.getPath().isEmpty()) {
-        return new URI(url.getScheme(), url.getAuthority(), "/", url.getQuery(), url.getFragment()).toString();
-      }
-      return url.toString();
-    } catch (URISyntaxException e) {
-      return spec;
-    }
+  UrlMatcher(LocalUtils localUtils, URL baseURL, String glob) {
+    this(localUtils, baseURL, glob, null, null);
   }
 
-  UrlMatcher(URL baseURL, String glob) {
-    this(baseURL, glob, null, null);
+  UrlMatcher(LocalUtils localUtils, Pattern pattern) {
+    this(localUtils, null, null, pattern, null);
   }
 
-  UrlMatcher(Pattern pattern) {
-    this(null, null, pattern, null);
+  UrlMatcher(LocalUtils localUtils, Predicate<String> predicate) {
+    this(localUtils, null, null, null, predicate);
   }
 
-  UrlMatcher(Predicate<String> predicate) {
-    this(null, null, null, predicate);
-  }
-
-  private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
+  private UrlMatcher(LocalUtils localUtils, URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
     this.baseURL = baseURL != null ? baseURL.toString() : null;
     this.glob = glob;
     this.pattern = pattern;
     this.predicate = predicate;
+    this.localUtils = localUtils;
   }
 
   boolean test(String value) {
-    return testImpl(baseURL, pattern, predicate, glob, value);
+    return testImpl(localUtils, baseURL, pattern, predicate, glob, value);
   }
 
-  private static boolean testImpl(String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
+  private static boolean testImpl(LocalUtils localUtils, String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
@@ -112,14 +97,7 @@ class UrlMatcher {
       return predicate.test(value);
     }
     if (glob != null) {
-      if (!glob.startsWith("*")) {
-        // Allow http(s) baseURL to match ws(s) urls.
-        if (baseURL != null && Pattern.compile("^https?://").matcher(baseURL).find() && Pattern.compile("^wss?://").matcher(value).find()) {
-          baseURL = baseURL.replaceFirst("^http", "ws");
-        }
-        glob = normaliseUrl(resolveUrl(baseURL, glob));
-      }
-      return Pattern.compile(globToRegex(glob)).matcher(value).find();
+      return localUtils.globToRegex(glob, baseURL, null).matcher(value).find();
     }
     return true;
   }
