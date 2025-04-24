@@ -129,10 +129,12 @@ class UrlMatcher {
 
   @Override
   public String toString() {
+    if (glob != null)
+      return String.format("<glob pattern=\"%s\">", glob);  
     if (pattern != null)
       return String.format("<regex pattern=\"%s\" flags=\"%s\">", pattern.pattern(), toJsRegexFlags(pattern));
     if (this.predicate != null)
       return "<predicate>";
-    return String.format("<glob pattern=\"%s\">", glob);
+    return "<true>";
   }
 }
