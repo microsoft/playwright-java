@@ -195,14 +195,18 @@ public class TestBrowserContextStorageState extends TestBase {
       "            \"keyPath\": \"taskTitle\",\n" +
       "            \"records\": [\n" +
       "              {\n" +
-      "                \"value\": {\n" +
-      "                  \"day\": \"01\",\n" +
-      "                  \"hours\": \"1\",\n" +
-      "                  \"minutes\": \"1\",\n" +
-      "                  \"month\": \"January\",\n" +
-      "                  \"notified\": \"no\",\n" +
-      "                  \"taskTitle\": \"Pet the cat\",\n" +
-      "                  \"year\": \"2025\"\n" +
+      "                \"valueEncoded\": {\n" +
+      "                  \"id\": 1,\n" +
+      "                  \"o\": [\n" +
+      "                    {\"k\": \"taskTitle\", \"v\": \"Pet the cat\"},\n" +
+      "                    {\"k\": \"hours\", \"v\": \"1\"},\n" +
+      "                    {\"k\": \"minutes\", \"v\": \"1\"},\n" +
+      "                    {\"k\": \"day\", \"v\": \"01\"},\n" +
+      "                    {\"k\": \"month\", \"v\": \"January\"},\n" +
+      "                    {\"k\": \"year\", \"v\": \"2025\"},\n" +
+      "                    {\"k\": \"notified\", \"v\": \"no\"},\n" +
+      "                    {\"k\": \"signature\", \"v\": { \"ta\": {\"b\":\"c2lnbmVkIGJ5IHNpbW9u\",\"k\":\"ui8\"}}}\n" +
+      "                  ]\n" +
       "                }\n" +
       "              }\n" +
       "            ],\n" +

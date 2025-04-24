@@ -20,8 +20,8 @@ import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-import org.opentest4j.ValueWrapper;
 
+import static java.util.Arrays.asList;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.mapOf;
@@ -29,6 +29,23 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLocatorAssertions extends TestBase {
+  @Test
+  void containsClass() {
+    page.setContent("<div id=node class='foo bar'></div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).containsClass("foo");
+    assertThat(locator).containsClass("foo bar");
+    assertThat(locator).containsClass("bar foo");
+    assertThat(locator).not().containsClass("foo bar baz");
+  }
+
+  @Test
+  void containsClassArray() {
+    page.setContent("<div class=foo>foo</div><div class=bar>bar</div>");
+    Locator locator = page.locator("div");
+    assertThat(locator).containsClass(asList("foo", "bar"));
+  }
+
   @Test
   void containsTextWRegexPass() {
     page.setContent("<div id=node>Text   content</div>");

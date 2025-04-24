@@ -77,4 +77,18 @@ public class TestPageRequestContinue extends TestBase {
       e.getMessage().contains("frame was detached"), e.getMessage());
     assertTrue(done[0]);
   }
+
+  @Test
+  void shouldNotOverrideCookieHeader() throws ExecutionException, InterruptedException {
+    // https://github.com/microsoft/playwright/issues/35168
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    page.route(server.EMPTY_PAGE, route -> {
+      Map<String, String> headers = route.request().allHeaders();
+      headers.put("Cookie", "foo=bar");
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    assertNull(serverRequest.get().headers.get("Cookie"));
+  }
 }

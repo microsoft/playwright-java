@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.APIRequest.NewContextOptions;
 import com.microsoft.playwright.options.HttpCredentials;
 import com.microsoft.playwright.options.HttpCredentialsSend;
 import com.microsoft.playwright.options.HttpHeader;
@@ -368,6 +369,26 @@ public class TestGlobalFetch extends TestBase {
       }
     }
     request.dispose();
+  }
+
+  @Test
+  void shouldThrowAnErrorWhenMaxRedirectsOnContextIsExceeded() {
+    server.setRedirect("/a/redirect1", "/b/c/redirect2");
+    server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
+    server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
+    server.setRedirect("/b/c/redirect4", "/simple.json");
+
+    for (String method : new String[] {"GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH"}) {
+      for (int maxRedirects = 1; maxRedirects < 4; maxRedirects++) {
+        int currMaxRedirects = maxRedirects;
+        APIRequestContext request = playwright.request().newContext(new NewContextOptions().setMaxRedirects(currMaxRedirects));
+        PlaywrightException exception = assertThrows(PlaywrightException.class,
+          () -> request.fetch(server.PREFIX + "/a/redirect1",
+          RequestOptions.create().setMethod(method)));
+        assertTrue(exception.getMessage().contains("Max redirect count exceeded"), exception.getMessage());
+        request.dispose();
+      }
+    }
   }
 
   @Test

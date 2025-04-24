@@ -411,8 +411,6 @@ public interface BrowserContext extends AutoCloseable {
      * Set to {@code true} to include <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a> in
      * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
      * Authentication, enable this.
-     *
-     * <p> <strong>NOTE:</strong> IndexedDBs with typed arrays are currently not supported.
      */
     public Boolean indexedDB;
     /**
@@ -425,8 +423,6 @@ public interface BrowserContext extends AutoCloseable {
      * Set to {@code true} to include <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a> in
      * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
      * Authentication, enable this.
-     *
-     * <p> <strong>NOTE:</strong> IndexedDBs with typed arrays are currently not supported.
      */
     public StorageStateOptions setIndexedDB(boolean indexedDB) {
       this.indexedDB = indexedDB;
@@ -996,8 +992,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8
@@ -1052,8 +1048,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8
@@ -1106,8 +1102,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8
@@ -1162,8 +1158,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8
@@ -1216,8 +1212,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8
@@ -1272,8 +1268,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
-   * context options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern, or predicate that receives a [URL] to match during routing. If {@code baseURL} is set in
+   * the context options and the provided URL is a string that does not start with {@code *}, it is resolved using the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    * @since v1.8

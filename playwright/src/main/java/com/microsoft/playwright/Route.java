@@ -370,6 +370,10 @@ public interface Route {
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
    * next matching handler in the chain to be invoked.
    *
+   * <p> <strong>NOTE:</strong> The {@code Cookie} header cannot be overridden using this method. If a value is provided, it will be ignored, and the
+   * cookie will be loaded from the browser's cookie store. To set custom cookies, use {@link
+   * com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
+   *
    * @since v1.8
    */
   default void resume() {
@@ -397,6 +401,10 @@ public interface Route {
    * <p> {@link com.microsoft.playwright.Route#resume Route.resume()} will immediately send the request to the network, other
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
    * next matching handler in the chain to be invoked.
+   *
+   * <p> <strong>NOTE:</strong> The {@code Cookie} header cannot be overridden using this method. If a value is provided, it will be ignored, and the
+   * cookie will be loaded from the browser's cookie store. To set custom cookies, use {@link
+   * com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
    *
    * @since v1.8
    */

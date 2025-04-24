@@ -226,8 +226,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
-     * unless the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -368,8 +368,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
-     * unless the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -564,8 +564,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
-     * unless the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -934,8 +934,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
-     * unless the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -1365,11 +1365,15 @@ public interface BrowserType {
    * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. Pass an empty string to
+   * create a temporary directory.
+   *
+   * <p> More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
-   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
-   * an empty string to use a temporary directory instead.
+   * href="https://wiki.mozilla.org/Firefox/CommandLineOptions#User_profile">Firefox</a>. Chromium's user data directory is
+   * the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   *
+   * <p> Note that browsers do not allow launching multiple instances with the same User Data Directory.
    * @since v1.8
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
@@ -1381,11 +1385,15 @@ public interface BrowserType {
    * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. Pass an empty string to
+   * create a temporary directory.
+   *
+   * <p> More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
-   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
-   * an empty string to use a temporary directory instead.
+   * href="https://wiki.mozilla.org/Firefox/CommandLineOptions#User_profile">Firefox</a>. Chromium's user data directory is
+   * the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   *
+   * <p> Note that browsers do not allow launching multiple instances with the same User Data Directory.
    * @since v1.8
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);

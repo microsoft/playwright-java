@@ -1,5 +1,6 @@
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.Locator.AriaSnapshotOptions;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
 @UsePlaywright
@@ -67,7 +70,13 @@ public class TestPageAriaSnapshot {
   @Test
   void shouldSnapshotComplex(Page page) {
     page.setContent("<ul><li><a href='about:blank'>link</a></li></ul>");
-    checkAndMatchSnapshot(page.locator("body"), "- list:\n  - listitem:\n    - link \"link\"");
+    checkAndMatchSnapshot(page.locator("body"), "- list:\n  - listitem:\n    - link \"link\":\n      - /url: about:blank");
+  }
+
+  @Test
+  void shouldSnapshotRef(Page page) {
+    page.setContent("<ul><li>foo</li></ul>");
+    assertEquals(unshift("- list [ref=s1e3]:\n  - listitem [ref=s1e4]: foo"), page.locator("body").ariaSnapshot(new AriaSnapshotOptions().setRef(true)));
   }
 
   @Test
@@ -82,5 +91,16 @@ public class TestPageAriaSnapshot {
   void shouldSnapshotDetailsVisibility(Page page) {
     page.setContent("<details><summary>Summary</summary><div>Details</div></details>");
     checkAndMatchSnapshot(page.locator("body"), "- group: Summary");
+  }
+
+  @Test
+  void shouldSnapshotChildren(Page page) {
+    page.setContent("<ul><li><img />One</li><li>Two</li><li>Three</li></ul>");
+    assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: equal\n  - listitem\n  - listitem: Two\n  - listitem: Three");
+    assertThat(page.locator("body")).not().matchesAriaSnapshot("- list:\n  - /children: equal\n  - listitem\n  - listitem: Two");
+
+    assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - img\n    - text: One\n  - listitem: Two\n  - listitem: Three");
+    assertThat(page.locator("body")).not().matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - text: One\n  - listitem: Two\n  - listitem: Three");
+    assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - /children: contain\n    - text: One\n  - listitem: Two\n  - listitem: Three");
   }
 }

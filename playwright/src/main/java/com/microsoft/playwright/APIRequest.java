@@ -73,6 +73,12 @@ public interface APIRequest {
      */
     public Boolean ignoreHTTPSErrors;
     /**
+     * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
+     * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects. This can be overwritten for each request
+     * individually.
+     */
+    public Integer maxRedirects;
+    /**
      * Network proxy settings.
      */
     public Proxy proxy;
@@ -169,6 +175,15 @@ public interface APIRequest {
      */
     public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
+      return this;
+    }
+    /**
+     * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
+     * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects. This can be overwritten for each request
+     * individually.
+     */
+    public NewContextOptions setMaxRedirects(int maxRedirects) {
+      this.maxRedirects = maxRedirects;
       return this;
     }
     /**
