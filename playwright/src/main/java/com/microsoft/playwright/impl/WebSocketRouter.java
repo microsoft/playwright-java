@@ -32,7 +32,7 @@ public class WebSocketRouter {
 
   boolean handle(WebSocketRouteImpl route) {
     for (RouteInfo routeInfo: routes) {
-      if (routeInfo.matcher.test(route.url())) {
+      if (routeInfo.matcher.testWebsocket(route.url())) {
         routeInfo.handle(route);
         return true;
       }

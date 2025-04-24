@@ -86,10 +86,14 @@ class UrlMatcher {
   }
 
   boolean test(String value) {
-    return testImpl(localUtils, baseURL, pattern, predicate, glob, value);
+    return testImpl(localUtils, baseURL, pattern, predicate, glob, value, false);
   }
 
-  private static boolean testImpl(LocalUtils localUtils, String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
+  boolean testWebsocket(String value) {
+    return testImpl(localUtils, baseURL, pattern, predicate, glob, value, true);
+  }
+
+  private static boolean testImpl(LocalUtils localUtils, String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value, boolean isWebSocket) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
@@ -97,7 +101,7 @@ class UrlMatcher {
       return predicate.test(value);
     }
     if (glob != null) {
-      return localUtils.globToRegex(glob, baseURL, null).matcher(value).find();
+      return localUtils.globToRegex(glob, baseURL, isWebSocket).matcher(value).find();
     }
     return true;
   }

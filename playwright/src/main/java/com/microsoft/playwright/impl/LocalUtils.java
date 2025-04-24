@@ -61,15 +61,13 @@ class LocalUtils extends ChannelOwner {
     return json.get("stacksId").getAsString();
   }
 
-  Pattern globToRegex(String glob, String baseUrl, String websocketUrl) {
+  Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     JsonObject params = new JsonObject();
     params.addProperty("glob", glob);
-    if (baseUrl != null) {
-      params.addProperty("baseUrl", baseUrl);
+    if (baseURL != null) {
+      params.addProperty("baseURL", baseURL);
     }
-    if (websocketUrl != null) {
-      params.addProperty("websocketUrl", websocketUrl);
-    }
+    params.addProperty("webSocketUrl", webSocketUrl);
     JsonObject json = connection.localUtils().sendMessage("globToRegex", params).getAsJsonObject();
     return Pattern.compile(json.get("regex").getAsString());
   }
