@@ -139,7 +139,7 @@ public class TestPageRoute extends TestBase {
     assertTrue(page.content().contains("index-no-hello"), page.content());
 
     page.navigate(server.PREFIX + "/index1hello");
-    assertTrue(page.content().contains("intercepted any character"), page.content());
+    assertFalse(page.content().contains("intercepted any character"), page.content());
 
     page.navigate(server.PREFIX + "/index123hello");
     assertTrue(page.content().contains("index123hello"), page.content());

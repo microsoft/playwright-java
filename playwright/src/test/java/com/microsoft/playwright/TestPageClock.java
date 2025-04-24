@@ -391,8 +391,8 @@ public class TestPageClock {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
     page.clock().pauseAt(1000);
-    page.waitForTimeout(1000);
-    page.clock().resume();
+    // Internally wait to make sure the clock is paused and not running.
+    page.waitForTimeout(1111);
     int now = (int) page.evaluate("() => Date.now()");
     assertTrue(now >= 0 && now <= 1000);
   }
