@@ -27,14 +27,13 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  private final String baseURL;
   public final String glob;
   public final Pattern pattern;
   public final Predicate<String> predicate;
 
   static UrlMatcher forOneOf(URL baseUrl, Object object, LocalUtils localUtils, boolean isWebSocketUrl) {
     if (object == null) {
-      return new UrlMatcher(null, null, null, null);
+      return new UrlMatcher(null, null, null);
     }
     if (object instanceof String) {
       return UrlMatcher.forGlob(baseUrl, (String) object, localUtils, isWebSocketUrl);
@@ -66,29 +65,28 @@ class UrlMatcher {
 
   static UrlMatcher forGlob(URL baseURL, String glob, LocalUtils localUtils, boolean isWebSocketUrl) {
     Pattern pattern = localUtils.globToRegex(glob, baseURL != null ? baseURL.toString() : null, isWebSocketUrl);
-    return new UrlMatcher(baseURL, glob, pattern, null);
+    return new UrlMatcher(glob, pattern, null);
   }
 
   UrlMatcher(Pattern pattern) {
-    this(null, null, pattern, null);
+    this(null, pattern, null);
   }
 
   UrlMatcher(Predicate<String> predicate) {
-    this(null, null, null, predicate);
+    this(null, null, predicate);
   }
 
-  private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
-    this.baseURL = baseURL != null ? baseURL.toString() : null;
+  private UrlMatcher(String glob, Pattern pattern, Predicate<String> predicate) {
     this.glob = glob;
     this.pattern = pattern;
     this.predicate = predicate;
   }
 
   boolean test(String value) {
-    return testImpl(baseURL, pattern, predicate, glob, value);
+    return testImpl(pattern, predicate, glob, value);
   }
 
-  private static boolean testImpl(String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
+  private static boolean testImpl(Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
