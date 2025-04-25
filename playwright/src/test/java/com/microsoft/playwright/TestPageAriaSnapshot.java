@@ -103,4 +103,12 @@ public class TestPageAriaSnapshot {
     assertThat(page.locator("body")).not().matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - text: One\n  - listitem: Two\n  - listitem: Three");
     assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - /children: contain\n    - text: One\n  - listitem: Two\n  - listitem: Three");
   }
+
+  @Test
+  void shouldMatchUrl(Page page) {
+    page.setContent("<a href='https://example.com'>Link</a>");
+    assertThat(page.locator("body")).matchesAriaSnapshot("" +
+      "- link:\n" +
+      "  - /url: /.*example.com/");
+  }
 }

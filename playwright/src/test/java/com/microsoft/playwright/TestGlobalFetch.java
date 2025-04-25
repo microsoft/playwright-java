@@ -38,6 +38,8 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGlobalFetch extends TestBase {
+  private static final List<String> HTTP_METHODS = asList("GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH");
+
   @Test
   void shouldHaveJavaInDefaultUesrAgent() throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions());
@@ -359,7 +361,7 @@ public class TestGlobalFetch extends TestBase {
     server.setRedirect("/b/c/redirect4", "/simple.json");
 
     APIRequestContext request = playwright.request().newContext();
-    for (String method : new String[] {"GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH"}) {
+    for (String method : HTTP_METHODS) {
       for (int maxRedirects = 1; maxRedirects < 4; maxRedirects++) {
         int currMaxRedirects = maxRedirects;
         PlaywrightException exception = assertThrows(PlaywrightException.class,
@@ -372,23 +374,59 @@ public class TestGlobalFetch extends TestBase {
   }
 
   @Test
-  void shouldThrowAnErrorWhenMaxRedirectsOnContextIsExceeded() {
+  void shouldUseMaxRedirectsFromFetchWhenProvidedOverridingNewContext() {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
     server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
     server.setRedirect("/b/c/redirect4", "/simple.json");
 
-    for (String method : new String[] {"GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH"}) {
-      for (int maxRedirects = 1; maxRedirects < 4; maxRedirects++) {
+    APIRequestContext request = playwright.request().newContext(new NewContextOptions().setMaxRedirects(1));
+    for (String method : HTTP_METHODS) {
+      APIResponse response = request.fetch(server.PREFIX + "/a/redirect1",
+        RequestOptions.create().setMethod(method).setMaxRedirects(4));
+      assertEquals(200, response.status());
+    }
+    request.dispose();
+  }
+
+  @Test
+  void shouldFollowRedirectsUpToMaxRedirectsLimitSetInNewContext() {
+    server.setRedirect("/a/redirect1", "/b/c/redirect2");
+    server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
+    server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
+    server.setRedirect("/b/c/redirect4", "/simple.json");
+
+    for (String method : HTTP_METHODS) {
+      for (int maxRedirects = 1; maxRedirects <= 4; maxRedirects++) {
         int currMaxRedirects = maxRedirects;
         APIRequestContext request = playwright.request().newContext(new NewContextOptions().setMaxRedirects(currMaxRedirects));
-        PlaywrightException exception = assertThrows(PlaywrightException.class,
-          () -> request.fetch(server.PREFIX + "/a/redirect1",
-          RequestOptions.create().setMethod(method)));
-        assertTrue(exception.getMessage().contains("Max redirect count exceeded"), exception.getMessage());
+        if (maxRedirects < 4) {
+          PlaywrightException exception = assertThrows(PlaywrightException.class,
+            () -> request.fetch(server.PREFIX + "/a/redirect1",
+            RequestOptions.create().setMethod(method)));
+          assertTrue(exception.getMessage().contains("Max redirect count exceeded"), exception.getMessage());
+        } else {
+          APIResponse response = request.fetch(server.PREFIX + "/a/redirect1", RequestOptions.create().setMethod(method));
+          assertEquals(200, response.status());
+        }
         request.dispose();
       }
     }
+  }
+
+  @Test
+  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0InNewContext() {
+    server.setRedirect("/a/redirect1", "/b/c/redirect2");
+    server.setRedirect("/b/c/redirect2", "/simple.json");
+
+    APIRequestContext request = playwright.request().newContext(new NewContextOptions().setMaxRedirects(0));
+    for (String method : HTTP_METHODS) {
+      APIResponse response = request.fetch(server.PREFIX + "/a/redirect1",
+        RequestOptions.create().setMethod(method));
+      assertEquals("/b/c/redirect2", response.headers().get("location"));
+      assertEquals(302, response.status());
+    }
+    request.dispose();
   }
 
   @Test
@@ -397,7 +435,7 @@ public class TestGlobalFetch extends TestBase {
     server.setRedirect("/b/c/redirect2", "/simple.json");
 
     APIRequestContext request = playwright.request().newContext();
-    for (String method : new String[] {"GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH"}) {
+    for (String method : HTTP_METHODS) {
       APIResponse response = request.fetch(server.PREFIX + "/a/redirect1",
         RequestOptions.create().setMethod(method).setMaxRedirects(0));
       assertEquals("/b/c/redirect2", response.headers().get("location"));
@@ -412,7 +450,7 @@ public class TestGlobalFetch extends TestBase {
     server.setRedirect("/b/c/redirect2", "/simple.json");
 
     APIRequestContext request = playwright.request().newContext();
-    for (String method : new String[] {"GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH"}) {
+    for (String method : HTTP_METHODS) {
       PlaywrightException exception = assertThrows(PlaywrightException.class,
         () -> request.fetch(server.PREFIX + "/a/redirect1",
           RequestOptions.create().setMethod(method).setMaxRedirects(-1)));

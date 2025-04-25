@@ -83,10 +83,6 @@ class UrlMatcher {
   }
 
   boolean test(String value) {
-    return testImpl(pattern, predicate, glob, value);
-  }
-
-  private static boolean testImpl(Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
