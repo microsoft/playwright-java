@@ -16,9 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -79,16 +82,81 @@ public class TestPageRequestContinue extends TestBase {
   }
 
   @Test
-  void shouldNotOverrideCookieHeader() throws ExecutionException, InterruptedException {
+  @DisabledIf(value = "com.microsoft.playwright.TestBase#isFirefox", disabledReason = "We currently clear all headers during interception in firefox")
+  void continueShouldNotPropagateCookieOverrideToRedirects() throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/35168
-    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
-    page.route(server.EMPTY_PAGE, route -> {
-      Map<String, String> headers = route.request().allHeaders();
-      headers.put("Cookie", "foo=bar");
+    server.setRoute("/set-cookie", exchange -> {
+      exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    page.navigate(server.PREFIX + "/set-cookie");
+    assertEquals("foo=bar", page.evaluate("() => document.cookie"));
+
+    server.setRedirect("/redirect", server.PREFIX + "/empty.html");
+    page.route("**/redirect", route -> {
+      Map<String, String> headers = new HashMap<>(route.request().allHeaders());
+      headers.put("cookie", "override");
       route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
 
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    page.navigate(server.PREFIX + "/redirect");
+    assertEquals(asList("foo=bar"), serverRequest.get().headers.get("cookie"));
+  }
+
+  @Test
+  @DisabledIf(value = "com.microsoft.playwright.TestBase#isFirefox", disabledReason = "We currently clear all headers during interception in firefox")
+  void continueShouldNotOverrideCookie() throws ExecutionException, InterruptedException {
+    // https://github.com/microsoft/playwright/issues/35168
+    server.setRoute("/set-cookie", exchange -> {
+      exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    page.navigate(server.PREFIX + "/set-cookie");
+    assertEquals("foo=bar", page.evaluate("() => document.cookie"));
+
+    page.route("**", route -> {
+      Map<String, String> headers = new HashMap<>(route.request().allHeaders());
+      headers.put("cookie", "override");
+      headers.put("custom", "value");
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
+    });
+
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
-    assertNull(serverRequest.get().headers.get("Cookie"));
+
+    // Original cookie from the browser's cookie jar should be sent.
+    assertEquals(asList("foo=bar"), serverRequest.get().headers.get("cookie"));
+    assertEquals(asList("value"), serverRequest.get().headers.get("custom"));
+  }
+
+  @Test
+  void redirectAfterContinueShouldBeAbleToDeleteCookie() throws ExecutionException, InterruptedException {
+    // https://github.com/microsoft/playwright/issues/35168
+    server.setRoute("/set-cookie", exchange -> {
+      exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    page.navigate(server.PREFIX + "/set-cookie");
+    assertEquals("foo=bar", page.evaluate("() => document.cookie"));
+
+    server.setRoute("/delete-cookie", exchange -> {
+      exchange.getResponseHeaders().add("Set-Cookie", "foo=bar; expires=Thu, 01 Jan 1970 00:00:00 GMT");
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    server.setRedirect("/redirect", "/delete-cookie");
+    page.route("**/redirect", route -> {
+      // Pass original headers explicitly when continuing.
+      route.resume(new Route.ResumeOptions().setHeaders(route.request().allHeaders()));
+    });
+    page.navigate(server.PREFIX + "/redirect");
+
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    page.navigate(server.EMPTY_PAGE);
+    assertNull(serverRequest.get().headers.get("cookie"));
   }
 }
