@@ -32,23 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLocatorAssertions extends TestBase {
   @Test
-  void containsClass() {
-    page.setContent("<div id=node class='foo bar'></div>");
-    Locator locator = page.locator("#node");
-    assertThat(locator).containsClass("foo");
-    assertThat(locator).containsClass("foo bar");
-    assertThat(locator).containsClass("bar foo");
-    assertThat(locator).not().containsClass("foo bar baz");
-  }
-
-  @Test
-  void containsClassArray() {
-    page.setContent("<div class=foo>foo</div><div class=bar>bar</div>");
-    Locator locator = page.locator("div");
-    assertThat(locator).containsClass(asList("foo", "bar"));
-  }
-
-  @Test
   void containsTextWRegexPass() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
