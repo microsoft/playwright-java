@@ -90,8 +90,12 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     sharedSelectors.removeChannel(selectors);
   }
 
+  public LocalUtils localUtils() {
+    return connection.localUtils;
+  }
+
   public JsonArray deviceDescriptors() {
-    return connection.localUtils.deviceDescriptors();
+    return localUtils().deviceDescriptors();
   }
 
   @Override

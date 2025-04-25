@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class LocalUtils extends ChannelOwner {
+public class LocalUtils extends ChannelOwner {
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     markAsInternalType();
@@ -61,7 +61,7 @@ class LocalUtils extends ChannelOwner {
     return json.get("stacksId").getAsString();
   }
 
-  Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
+  public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     JsonObject params = new JsonObject();
     params.addProperty("glob", glob);
     if (baseURL != null) {
@@ -69,6 +69,7 @@ class LocalUtils extends ChannelOwner {
     }
     params.addProperty("webSocketUrl", webSocketUrl);
     JsonObject json = connection.localUtils().sendMessage("globToRegex", params).getAsJsonObject();
-    return Pattern.compile(json.get("regex").getAsString());
+    String regex = json.get("regex").getAsString();
+    return Pattern.compile(regex);
   }
 }

@@ -18,11 +18,14 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import com.microsoft.playwright.impl.PlaywrightImpl;
+
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -138,5 +141,94 @@ public class TestPageInterception extends TestBase {
     });
     page.navigate(server.PREFIX + "/foo");
     assertTrue(page.content().contains("hello"));
+  }
+
+  @Test
+  void shouldWorkWithGlob() {
+    assertTrue(globToRegex("**/*.js").matcher("https://localhost:8080/foo.js").find());
+    assertFalse(globToRegex("**/*.css").matcher("https://localhost:8080/foo.js").find());
+    assertFalse(globToRegex("*.js").matcher("https://localhost:8080/foo.js").find());
+    assertTrue(globToRegex("https://**/*.js").matcher("https://localhost:8080/foo.js").find());
+    assertTrue(globToRegex("http://localhost:8080/simple/path.js").matcher("http://localhost:8080/simple/path.js").find());
+    assertTrue(globToRegex("**/{a,b}.js").matcher("https://localhost:8080/a.js").find());
+    assertTrue(globToRegex("**/{a,b}.js").matcher("https://localhost:8080/b.js").find());
+    assertFalse(globToRegex("**/{a,b}.js").matcher("https://localhost:8080/c.js").find());
+
+    assertTrue(globToRegex("**/*.{png,jpg,jpeg}").matcher("https://localhost:8080/c.jpg").find());
+    assertTrue(globToRegex("**/*.{png,jpg,jpeg}").matcher("https://localhost:8080/c.jpeg").find());
+    assertTrue(globToRegex("**/*.{png,jpg,jpeg}").matcher("https://localhost:8080/c.png").find());
+    assertFalse(globToRegex("**/*.{png,jpg,jpeg}").matcher("https://localhost:8080/c.css").find());
+    assertTrue(globToRegex("foo*").matcher("foo.js").find());
+    assertFalse(globToRegex("foo*").matcher("foo/bar.js").find());
+    assertFalse(globToRegex("http://localhost:3000/signin-oidc*").matcher("http://localhost:3000/signin-oidc/foo").find());
+    assertTrue(globToRegex("http://localhost:3000/signin-oidc*").matcher("http://localhost:3000/signin-oidcnice").find());
+
+    // range [] is NOT supported
+    assertTrue(globToRegex("**/api/v[0-9]").matcher("http://example.com/api/v[0-9]").find());
+    assertFalse(globToRegex("**/api/v[0-9]").matcher("http://example.com/api/version").find());
+
+    // query params
+    assertTrue(globToRegex("**/api\\?param").matcher("http://example.com/api?param").find());
+    assertFalse(globToRegex("**/api\\?param").matcher("http://example.com/api-param").find());
+    assertTrue(globToRegex("**/three-columns/settings.html\\?**id=settings-**").matcher("http://mydomain:8080/blah/blah/three-columns/settings.html?id=settings-e3c58efe-02e9-44b0-97ac-dd138100cf7c&blah").find());
+
+    assertEquals("^\\?$", globToRegex("\\?").pattern());
+    assertEquals("^\\\\$", globToRegex("\\").pattern());
+    assertEquals("^\\\\$", globToRegex("\\\\").pattern());
+    assertEquals("^\\[$", globToRegex("\\[").pattern());
+    assertEquals("^\\[a-z\\]$", globToRegex("[a-z]").pattern());
+    assertEquals("^\\$\\^\\+\\.\\*\\(\\)\\|\\?\\{\\}\\[\\]$", globToRegex("$^+.\\*()|\\?\\{\\}\\[\\]").pattern());
+
+
+    assertTrue(urlMatches(null, "http://playwright.dev/", "http://playwright.dev"));
+    assertTrue(urlMatches(null, "http://playwright.dev/?a=b", "http://playwright.dev?a=b"));
+    assertTrue(urlMatches(null, "http://playwright.dev/", "h*://playwright.dev"));
+    assertTrue(urlMatches(null, "http://api.playwright.dev/?x=y", "http://*.playwright.dev?x=y"));
+    assertTrue(urlMatches(null, "http://playwright.dev/foo/bar", "**/foo/**"));
+    assertTrue(urlMatches("http://playwright.dev", "http://playwright.dev/?x=y", "?x=y"));
+    assertTrue(urlMatches("http://playwright.dev/foo/", "http://playwright.dev/foo/bar?x=y", "./bar?x=y"));
+
+    // This is not supported, we treat ? as a query separator.
+    assertFalse(urlMatches(null, "http://localhost:8080/Simple/path.js", "http://localhost:8080/?imple/path.js"));
+    assertFalse(urlMatches(null, "http://playwright.dev/", "http://playwright.?ev"));
+    assertTrue(urlMatches(null, "http://playwright./?ev", "http://playwright.?ev"));
+    assertFalse(urlMatches(null, "http://playwright.dev/foo", "http://playwright.dev/f??"));
+    assertTrue(urlMatches(null, "http://playwright.dev/f??", "http://playwright.dev/f??"));
+    assertTrue(urlMatches(null, "http://playwright.dev/?x=y", "http://playwright.dev\\\\?x=y"));
+    assertTrue(urlMatches(null, "http://playwright.dev/?x=y", "http://playwright.dev/\\\\?x=y"));
+    assertTrue(urlMatches("http://playwright.dev/foo", "http://playwright.dev/foo?bar", "?bar"));
+    assertTrue(urlMatches("http://playwright.dev/foo", "http://playwright.dev/foo?bar", "\\\\?bar"));
+    assertTrue(urlMatches("http://first.host/", "http://second.host/foo", "**/foo"));
+    assertTrue(urlMatches("http://playwright.dev/", "http://localhost/", "*//localhost/"));
+  }
+
+  Pattern globToRegex(String glob) {
+    return globToRegex(glob, null, false);
+  }
+
+  Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
+    return ((PlaywrightImpl) playwright).localUtils().globToRegex(glob, baseURL, webSocketUrl);
+  }
+
+  boolean urlMatches(String baseURL, String urlString, Object match) {
+    return urlMatches(baseURL, urlString, match, false);
+  }
+
+  boolean urlMatches(String baseURL, String urlString, Object match, boolean webSocketUrl) {
+    if (match == null) {
+      return true;
+    }
+
+    if (match instanceof String) {
+      String glob = (String) match;
+      if (glob.isEmpty()) {
+        return true;
+      }
+
+      match = globToRegex(glob, baseURL, webSocketUrl);
+    }
+
+    Pattern pattern = (Pattern) match;
+    return pattern.matcher(urlString).find();
   }
 }
