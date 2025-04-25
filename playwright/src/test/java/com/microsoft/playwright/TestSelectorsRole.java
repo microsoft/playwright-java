@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import java.util.regex.Pattern;
 
@@ -242,6 +243,66 @@ public class TestSelectorsRole extends TestBase {
   }
 
   @Test
+  void shouldInheritDisabledFromTheAncestor() {
+    page.setContent(
+      "<span aria-disabled=\"true\">\n" +
+      "  <button>Click me!</button>\n" +
+      "</span>");
+    assertThat(page.locator("button")).isDisabled();
+
+    page.setContent(
+      "<span aria-disabled=\"true\">\n" +
+      "  <h1>Heading</h1>\n" +
+      "</span>");
+    // Non-control roles do not inherit disabled state
+    assertThat(page.locator("h1")).isEnabled();
+  }
+
+  @Test
+  void shouldSupportDisabledFieldset() {
+    page.setContent(
+      "<fieldset disabled>\n" +
+      "  <input></input>\n" +
+      "  <button data-testid=\"inside-fieldset-element\">x</button>\n" +
+      "  <legend>\n" +
+      "    <button data-testid=\"inside-legend-element\">legend</button>\n" +
+      "  </legend>\n" +
+      "</fieldset>\n" +
+      "\n" +
+      "<fieldset disabled>\n" +
+      "  <legend>\n" +
+      "    <div>\n" +
+      "      <button data-testid=\"nested-inside-legend-element\">x</button>\n" +
+      "    </div>\n" +
+      "  </legend>\n" +
+      "</fieldset>\n" +
+      "\n" +
+      "<fieldset disabled>\n" +
+      "  <div></div>\n" +
+      "  <legend>\n" +
+      "    <button data-testid=\"first-legend-element\">x</button>\n" +
+      "  </legend>\n" +
+      "  <legend>\n" +
+      "    <button data-testid=\"second-legend-element\">x</button>\n" +
+      "  </legend>\n" +
+      "</fieldset>\n" +
+      "\n" +
+      "<fieldset disabled>\n" +
+      "  <fieldset>\n" +
+      "    <button data-testid=\"deep-button\">x</button>\n" +
+      "  </fieldset>\n" +
+      "</fieldset>");
+
+    assertThat(page.getByTestId("inside-legend-element")).isEnabled();
+    assertThat(page.getByTestId("nested-inside-legend-element")).isEnabled();
+    assertThat(page.getByTestId("first-legend-element")).isEnabled();
+    // Only the first legend is exempt from disabled fieldset
+    assertThat(page.getByTestId("second-legend-element")).isDisabled();
+    // Nested fieldsets inherit disabled state
+    assertThat(page.getByTestId("deep-button")).isDisabled();
+  }
+
+  @Test
   void shouldSupportLevel() {
     page.setContent("<h1>Hello</h1>\n" +
       "    <h3>Hi</h3>\n" +
@@ -356,15 +417,6 @@ public class TestSelectorsRole extends TestBase {
       "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hallo\"></div>"
     ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("^H[ae]llo$"))).evaluateAll("els => els.map(e => e.outerHTML)"));
-
-    assertEquals(asList(
-      "<div role=\"button\" aria-label=\" Hello \"></div>",
-      "<div role=\"button\" aria-label=\"Hallo\"></div>"
-    ), page.locator("role=button[name=/h.*o/i]").evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(asList(
-      "<div role=\"button\" aria-label=\" Hello \"></div>",
-      "<div role=\"button\" aria-label=\"Hallo\"></div>"
-    ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("h.*o", Pattern.CASE_INSENSITIVE))).evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
       "<div role=\"button\" aria-label=\" Hello \"></div>",

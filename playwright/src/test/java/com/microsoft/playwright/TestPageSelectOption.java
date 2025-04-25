@@ -25,6 +25,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class TestPageSelectOption extends TestBase {
   @Test
@@ -238,4 +239,64 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
+  @Test
+  void shouldWaitForOptionToBeEnabled() {
+    page.setContent(
+      "<select disabled>\n" +
+      "  <option>one</option>\n" +
+      "  <option>two</option>\n" +
+      "</select>\n" +
+      "\n" +
+      "<script>\n" +
+      "function hydrate() {\n" +
+      "  const select = document.querySelector('select');\n" +
+      "  select.removeAttribute('disabled');\n" +
+      "  select.addEventListener('change', () => {\n" +
+      "    window['result'] = select.value;\n" +
+      "  });\n" +
+      "}\n" +
+      "</script>");
+
+    page.evaluate("() => setTimeout(hydrate, 1000)");
+    page.locator("select").selectOption("two");
+
+    assertEquals("two", page.evaluate("window['result']"));
+    assertThat(page.locator("select")).hasValue("two");
+  }
+
+  @Test
+  void shouldWaitForSelectToBeSwapped() {
+    page.setContent(
+      "<select disabled>\n" +
+      "  <option>one</option>\n" +
+      "  <option>two</option>\n" +
+      "</select>\n" +
+      "\n" +
+      "<script>\n" +
+      "function hydrate() {\n" +
+      "  const select = document.querySelector('select');\n" +
+      "  select.remove();\n" +
+      "\n" +
+      "  const newSelect = document.createElement('select');\n" +
+      "  const option1 = document.createElement('option');\n" +
+      "  option1.textContent = 'one';\n" +
+      "  newSelect.appendChild(option1);\n" +
+      "  const option2 = document.createElement('option');\n" +
+      "  option2.textContent = 'two';\n" +
+      "  newSelect.appendChild(option2);\n" +
+      "\n" +
+      "  document.body.appendChild(newSelect);\n" +
+      "\n" +
+      "  newSelect.addEventListener('change', () => {\n" +
+      "    window['result'] = newSelect.value;\n" +
+      "  });\n" +
+      "}\n" +
+      "</script>");
+
+    page.evaluate("() => setTimeout(window.hydrate, 1000)");
+    page.locator("select").selectOption("two");
+
+    assertThat(page.locator("select")).hasValue("two");
+    assertEquals("two", page.evaluate("window['result']"));
+  }
 }
