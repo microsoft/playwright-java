@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
 
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -210,25 +208,16 @@ public class TestPageInterception extends TestBase {
     return ((PlaywrightImpl) playwright).localUtils().globToRegex(glob, baseURL, webSocketUrl);
   }
 
-  boolean urlMatches(String baseURL, String urlString, Object match) {
-    return urlMatches(baseURL, urlString, match, false);
-  }
-
-  boolean urlMatches(String baseURL, String urlString, Object match, boolean webSocketUrl) {
+  boolean urlMatches(String baseURL, String urlString, String match) {
     if (match == null) {
       return true;
     }
 
-    if (match instanceof String) {
-      String glob = (String) match;
-      if (glob.isEmpty()) {
-        return true;
-      }
-
-      match = globToRegex(glob, baseURL, webSocketUrl);
+    String glob = (String) match;
+    if (glob.isEmpty()) {
+      return true;
     }
 
-    Pattern pattern = (Pattern) match;
-    return pattern.matcher(urlString).find();
+    return globToRegex(glob, baseURL, false).matcher(urlString).find();
   }
 }
