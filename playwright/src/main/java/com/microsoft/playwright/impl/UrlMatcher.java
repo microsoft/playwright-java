@@ -21,25 +21,22 @@ import com.microsoft.playwright.PlaywrightException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class UrlMatcher {
-  private final String baseURL;
   public final String glob;
   public final Pattern pattern;
   public final Predicate<String> predicate;
 
-  static UrlMatcher forOneOf(URL baseUrl, Object object) {
+  static UrlMatcher forOneOf(URL baseUrl, Object object, LocalUtils localUtils, boolean isWebSocketUrl) {
     if (object == null) {
-      return new UrlMatcher(null, null, null, null);
+      return new UrlMatcher(null, null, null);
     }
     if (object instanceof String) {
-      return new UrlMatcher(baseUrl, (String) object);
+      return UrlMatcher.forGlob(baseUrl, (String) object, localUtils, isWebSocketUrl);
     }
     if (object instanceof Pattern) {
       return new UrlMatcher((Pattern) object);
@@ -66,60 +63,31 @@ class UrlMatcher {
     }
   }
 
-  private static String normaliseUrl(String spec) {
-    try {
-      // Align with the Node.js URL parser which automatically adds a slash to the path if it is empty.
-      URI url = new URI(spec);
-      if (url.getScheme() != null &&
-        Arrays.asList("http", "https", "ws", "wss").contains(url.getScheme()) &&
-        url.getPath().isEmpty()) {
-        return new URI(url.getScheme(), url.getAuthority(), "/", url.getQuery(), url.getFragment()).toString();
-      }
-      return url.toString();
-    } catch (URISyntaxException e) {
-      return spec;
-    }
-  }
-
-  UrlMatcher(URL baseURL, String glob) {
-    this(baseURL, glob, null, null);
+  static UrlMatcher forGlob(URL baseURL, String glob, LocalUtils localUtils, boolean isWebSocketUrl) {
+    Pattern pattern = localUtils.globToRegex(glob, baseURL != null ? baseURL.toString() : null, isWebSocketUrl);
+    return new UrlMatcher(glob, pattern, null);
   }
 
   UrlMatcher(Pattern pattern) {
-    this(null, null, pattern, null);
+    this(null, pattern, null);
   }
 
   UrlMatcher(Predicate<String> predicate) {
-    this(null, null, null, predicate);
+    this(null, null, predicate);
   }
 
-  private UrlMatcher(URL baseURL, String glob, Pattern pattern, Predicate<String> predicate) {
-    this.baseURL = baseURL != null ? baseURL.toString() : null;
+  private UrlMatcher(String glob, Pattern pattern, Predicate<String> predicate) {
     this.glob = glob;
     this.pattern = pattern;
     this.predicate = predicate;
   }
 
   boolean test(String value) {
-    return testImpl(baseURL, pattern, predicate, glob, value);
-  }
-
-  private static boolean testImpl(String baseURL, Pattern pattern, Predicate<String> predicate, String glob, String value) {
     if (pattern != null) {
       return pattern.matcher(value).find();
     }
     if (predicate != null) {
       return predicate.test(value);
-    }
-    if (glob != null) {
-      if (!glob.startsWith("*")) {
-        // Allow http(s) baseURL to match ws(s) urls.
-        if (baseURL != null && Pattern.compile("^https?://").matcher(baseURL).find() && Pattern.compile("^wss?://").matcher(value).find()) {
-          baseURL = baseURL.replaceFirst("^http", "ws");
-        }
-        glob = normaliseUrl(resolveUrl(baseURL, glob));
-      }
-      return Pattern.compile(globToRegex(glob)).matcher(value).find();
     }
     return true;
   }
@@ -157,10 +125,12 @@ class UrlMatcher {
 
   @Override
   public String toString() {
+    if (glob != null)
+      return String.format("<glob pattern=\"%s\">", glob);  
     if (pattern != null)
       return String.format("<regex pattern=\"%s\" flags=\"%s\">", pattern.pattern(), toJsRegexFlags(pattern));
     if (this.predicate != null)
       return "<predicate>";
-    return String.format("<glob pattern=\"%s\">", glob);
+    return "<true>";
   }
 }

@@ -31,6 +31,11 @@ import java.util.regex.Pattern;
 public interface Locator {
   class AriaSnapshotOptions {
     /**
+     * Generate symbolic reference for each element. One can use {@code aria-ref=<ref>} locator immediately after capturing the
+     * snapshot to perform actions on the element.
+     */
+    public Boolean ref;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -38,6 +43,14 @@ public interface Locator {
      */
     public Double timeout;
 
+    /**
+     * Generate symbolic reference for each element. One can use {@code aria-ref=<ref>} locator immediately after capturing the
+     * snapshot to perform actions on the element.
+     */
+    public AriaSnapshotOptions setRef(boolean ref) {
+      this.ref = ref;
+      return this;
+    }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
@@ -600,18 +613,14 @@ public interface Locator {
   }
   class EvaluateOptions {
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
+     * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
+     * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public EvaluateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -620,18 +629,14 @@ public interface Locator {
   }
   class EvaluateHandleOptions {
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
+     * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
+     * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public EvaluateHandleOptions setTimeout(double timeout) {
       this.timeout = timeout;

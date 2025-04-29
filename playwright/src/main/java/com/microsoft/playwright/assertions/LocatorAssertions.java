@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.assertions;
 
+import java.util.*;
 import java.util.regex.Pattern;
 import com.microsoft.playwright.options.AriaRole;
 
@@ -234,6 +235,20 @@ public interface LocatorAssertions {
     }
     public IsVisibleOptions setVisible(boolean visible) {
       this.visible = visible;
+      return this;
+    }
+  }
+  class ContainsClassOptions {
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public ContainsClassOptions setTimeout(double timeout) {
+      this.timeout = timeout;
       return this;
     }
   }
@@ -856,6 +871,98 @@ public interface LocatorAssertions {
    */
   void isVisible(IsVisibleOptions options);
   /**
+   * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
+   * by spaces, must be present in the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">Element.classList</a> in any order.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("#component")).containsClass("middle selected row");
+   * assertThat(page.locator("#component")).containsClass("selected");
+   * assertThat(page.locator("#component")).containsClass("row middle");
+   * }</pre>
+   *
+   * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
+   * class lists. Each element's class attribute is matched against the corresponding class in the array:
+   * <pre>{@code
+   * assertThat(page.locator("list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * }</pre>
+   *
+   * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
+   * @since v1.52
+   */
+  default void containsClass(String expected) {
+    containsClass(expected, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
+   * by spaces, must be present in the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">Element.classList</a> in any order.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("#component")).containsClass("middle selected row");
+   * assertThat(page.locator("#component")).containsClass("selected");
+   * assertThat(page.locator("#component")).containsClass("row middle");
+   * }</pre>
+   *
+   * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
+   * class lists. Each element's class attribute is matched against the corresponding class in the array:
+   * <pre>{@code
+   * assertThat(page.locator("list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * }</pre>
+   *
+   * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
+   * @since v1.52
+   */
+  void containsClass(String expected, ContainsClassOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
+   * by spaces, must be present in the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">Element.classList</a> in any order.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("#component")).containsClass("middle selected row");
+   * assertThat(page.locator("#component")).containsClass("selected");
+   * assertThat(page.locator("#component")).containsClass("row middle");
+   * }</pre>
+   *
+   * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
+   * class lists. Each element's class attribute is matched against the corresponding class in the array:
+   * <pre>{@code
+   * assertThat(page.locator("list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * }</pre>
+   *
+   * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
+   * @since v1.52
+   */
+  default void containsClass(List<String> expected) {
+    containsClass(expected, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
+   * by spaces, must be present in the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">Element.classList</a> in any order.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("#component")).containsClass("middle selected row");
+   * assertThat(page.locator("#component")).containsClass("selected");
+   * assertThat(page.locator("#component")).containsClass("row middle");
+   * }</pre>
+   *
+   * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
+   * class lists. Each element's class attribute is matched against the corresponding class in the array:
+   * <pre>{@code
+   * assertThat(page.locator("list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * }</pre>
+   *
+   * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
+   * @since v1.52
+   */
+  void containsClass(List<String> expected, ContainsClassOptions options);
+  /**
    * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
    * when computing the text content of the element. You can use regular expressions for the value as well.
    *
@@ -1445,12 +1552,13 @@ public interface LocatorAssertions {
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1468,12 +1576,13 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1489,12 +1598,13 @@ public interface LocatorAssertions {
   void hasClass(String expected, HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1512,12 +1622,13 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1533,12 +1644,13 @@ public interface LocatorAssertions {
   void hasClass(Pattern expected, HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1556,12 +1668,13 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1577,12 +1690,13 @@ public interface LocatorAssertions {
   void hasClass(String[] expected, HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
@@ -1600,12 +1714,13 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
-   * the element's {@code class} attribute. To match individual classes or perform partial matches, use a regular expression:
+   * the element's {@code class} attribute. To match individual classes use {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * assertThat(page.locator("#component")).hasClass("middle selected row");
+   * assertThat(page.locator("#component")).hasClass(Pattern.compile("(^|\\s)selected(\\s|$)"));
    * }</pre>
    *
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected

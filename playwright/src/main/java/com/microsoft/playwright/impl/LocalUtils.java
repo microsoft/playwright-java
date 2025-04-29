@@ -21,10 +21,11 @@ import com.google.gson.JsonObject;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class LocalUtils extends ChannelOwner {
+public class LocalUtils extends ChannelOwner {
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     markAsInternalType();
@@ -58,5 +59,17 @@ class LocalUtils extends ChannelOwner {
     params.addProperty("traceName", traceName);
     JsonObject json = connection.localUtils().sendMessage("tracingStarted", params).getAsJsonObject();
     return json.get("stacksId").getAsString();
+  }
+
+  public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
+    JsonObject params = new JsonObject();
+    params.addProperty("glob", glob);
+    if (baseURL != null) {
+      params.addProperty("baseURL", baseURL);
+    }
+    params.addProperty("webSocketUrl", webSocketUrl);
+    JsonObject json = connection.localUtils().sendMessage("globToRegex", params).getAsJsonObject();
+    String regex = json.get("regex").getAsString();
+    return Pattern.compile(regex);
   }
 }

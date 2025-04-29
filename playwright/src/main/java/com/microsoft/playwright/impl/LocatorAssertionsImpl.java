@@ -39,6 +39,25 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     super((LocatorImpl) locator, isNot);
   }
 
+
+  @Override
+  public void containsClass(String classname, ContainsClassOptions options) {
+    ExpectedTextValue expected = new ExpectedTextValue();
+    expected.string = classname;
+    expectImpl("to.contain.class", expected, classname, "Locator expected to contain class", convertType(options, FrameExpectOptions.class));
+  }
+
+  @Override
+  public void containsClass(List<String> classnames, ContainsClassOptions options) {
+    List<ExpectedTextValue> list = new ArrayList<>();
+    for (String text : classnames) {
+      ExpectedTextValue expected = new ExpectedTextValue();
+      expected.string = text;
+      list.add(expected);
+    }
+    expectImpl("to.contain.class.array", list, classnames, "Locator expected to contain classes", convertType(options, FrameExpectOptions.class));
+  }
+
   @Override
   public void containsText(String text, ContainsTextOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();

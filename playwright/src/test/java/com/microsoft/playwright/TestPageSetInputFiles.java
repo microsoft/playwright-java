@@ -123,7 +123,7 @@ public class TestPageSetInputFiles extends TestBase {
     }
     FileChooser fileChooser = page.waitForFileChooser(() -> input.click());
     fileChooser.setFiles(uploadFiles.toArray(new Path[0]));
-    Object filesLen = page.getByRole(AriaRole.TEXTBOX).evaluate("e => e.files.length");
+    Object filesLen = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Choose File")).evaluate("e => e.files.length");
     assertTrue(fileChooser.isMultiple());
     assertEquals(filesCount, filesLen);
   }

@@ -28,7 +28,7 @@ public class TestElementHandleSelectText extends TestBase {
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("textarea => textarea.value = 'some value'");
     textarea.selectText();
-    if (isFirefox() || isWebKit()) {
+    if (isFirefox()) {
       assertEquals(0, textarea.evaluate("el => el.selectionStart"));
       assertEquals(10, textarea.evaluate("el => el.selectionEnd"));
     } else {
@@ -42,7 +42,7 @@ public class TestElementHandleSelectText extends TestBase {
     ElementHandle input = page.querySelector("input");
     input.evaluate("input => input.value = 'some value'");
     input.selectText();
-    if (isFirefox() || isWebKit()) {
+    if (isFirefox()) {
       assertEquals(0, input.evaluate("el => el.selectionStart"));
       assertEquals(10, input.evaluate("el => el.selectionEnd"));
     } else {

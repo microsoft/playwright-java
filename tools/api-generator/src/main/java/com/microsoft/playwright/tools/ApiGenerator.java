@@ -998,7 +998,7 @@ class Interface extends TypeDefinition {
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {

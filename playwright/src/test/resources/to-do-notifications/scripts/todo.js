@@ -140,7 +140,7 @@ window.onload = () => {
     
     // Grab the values entered into the form fields and store them in an object ready for being inserted into the IndexedDB
     const newItem = [
-      { taskTitle: title.value, hours: hours.value, minutes: minutes.value, day: day.value, month: month.value, year: year.value, notified: 'no' },
+      { taskTitle: title.value, hours: hours.value, minutes: minutes.value, day: day.value, month: month.value, year: year.value, notified: 'no', signature: new TextEncoder().encode("signed by simon") },
     ];
 
     // Open a read/write DB transaction, ready for adding the data

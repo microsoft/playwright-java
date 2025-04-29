@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
@@ -32,7 +31,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -89,79 +87,6 @@ public class Utils {
       return f;
     }
     return convertType(f, (Class<T>) f.getClass());
-  }
-
-
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#escaping
-  static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('$', '^', '+', '.', '*', '(', ')', '|', '\\', '?', '{', '}', '[', ']'));
-
-  static String globToRegex(String glob) {
-    StringBuilder tokens = new StringBuilder();
-    tokens.append('^');
-    boolean inGroup = false;
-    for (int i = 0; i < glob.length(); ++i) {
-      char c = glob.charAt(i);
-      if (c == '\\' && i + 1 < glob.length()) {
-        char nextChar = glob.charAt(++i);
-        if (escapeGlobChars.contains(nextChar)) {
-          tokens.append('\\');
-        }
-        tokens.append(nextChar);
-        continue;
-      }
-      if (c == '*') {
-        boolean beforeDeep = i < 1 || glob.charAt(i - 1) == '/';
-        int starCount = 1;
-        while (i + 1 < glob.length() && glob.charAt(i + 1) == '*') {
-          starCount++;
-          i++;
-        }
-        boolean afterDeep = i + 1 >= glob.length() || glob.charAt(i + 1) == '/';
-        boolean isDeep = starCount > 1 && beforeDeep && afterDeep;
-        if (isDeep) {
-          tokens.append("((?:[^/]*(?:\\/|$))*)");
-          i++;
-        } else {
-          tokens.append("([^/]*)");
-        }
-        continue;
-      }
-
-      switch (c) {
-        case '?':
-          tokens.append('.');
-          break;
-        case '[':
-          tokens.append('[');
-          break;
-        case ']':
-          tokens.append(']');
-          break;
-        case '{':
-          inGroup = true;
-          tokens.append('(');
-          break;
-        case '}':
-          inGroup = false;
-          tokens.append(')');
-          break;
-        case ',':
-          if (inGroup) {
-            tokens.append('|');
-            break;
-          }
-          tokens.append("\\").append(c);
-          break;
-        default:
-          if (escapeGlobChars.contains(c)) {
-            tokens.append('\\');
-          }
-          tokens.append(c);
-          break;
-      }
-    }
-    tokens.append('$');
-    return tokens.toString();
   }
 
   static String mimeType(Path path) {
