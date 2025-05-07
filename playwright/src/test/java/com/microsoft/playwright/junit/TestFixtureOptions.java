@@ -41,6 +41,11 @@ public class TestFixtureOptions {
   }
 
   @Test
+  public void newBrowserContextOptionsShouldBeConfiguredFromOptionsFactory(Browser.NewContextOptions newContextOptions) {
+    assertEquals(newContextOptions.baseURL, serverMap.get(TestFixtureOptions.class).EMPTY_PAGE);
+  }
+
+  @Test
   public void testCustomBrowser(Browser browser) {
     assertEquals(browser.browserType().name(), "webkit");
   }
