@@ -143,6 +143,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new BlurOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("strict", true);

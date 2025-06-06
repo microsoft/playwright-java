@@ -228,6 +228,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new CheckOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("check", params);
@@ -771,7 +772,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetContentOptions();
     }
-    options.timeout = timeout(options.timeout);
+    options.timeout = navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("html", html);
     sendMessage("setContent", params);
