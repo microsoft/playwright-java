@@ -88,6 +88,11 @@ public interface Playwright extends AutoCloseable {
    */
   BrowserType webkit();
   /**
+   * This object can be used to launch or connect to Android, returning instances of {@code Android}.
+   *
+   */
+  Android android();
+  /**
    * Terminates this instance of Playwright, will also close all created browsers if they are still running.
    *
    * @since v1.9

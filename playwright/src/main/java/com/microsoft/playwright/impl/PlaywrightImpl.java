@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.APIRequest;
+import com.microsoft.playwright.Android;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
@@ -64,6 +65,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl webkit;
   private final SelectorsImpl selectors;
   private final APIRequestImpl apiRequest;
+  private final AndroidImpl android;
   private SharedSelectors sharedSelectors;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -71,7 +73,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
-
+    android = parent.connection.getExistingObject(initializer.getAsJsonObject("android").get("guid").getAsString());
     selectors = connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
     apiRequest = new APIRequestImpl(this);
   }
@@ -121,6 +123,11 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public Selectors selectors() {
     return sharedSelectors;
+  }
+
+  @Override
+  public Android android() {
+    return android;
   }
 
   @Override

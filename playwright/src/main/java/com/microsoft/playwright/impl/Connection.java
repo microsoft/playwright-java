@@ -304,13 +304,13 @@ public class Connection {
     ChannelOwner result = null;
     switch (type) {
       case "Android":
-//        result = new Android(parent, type, guid, initializer);
+        result = new AndroidImpl(parent, type, guid, initializer);
         break;
       case "AndroidSocket":
 //        result = new AndroidSocket(parent, type, guid, initializer);
         break;
       case "AndroidDevice":
-//        result = new AndroidDevice(parent, type, guid, initializer);
+        result = new AndroidDeviceImpl(parent, type, guid, initializer);
         break;
       case "Artifact":
         result = new ArtifactImpl(parent, type, guid, initializer);
