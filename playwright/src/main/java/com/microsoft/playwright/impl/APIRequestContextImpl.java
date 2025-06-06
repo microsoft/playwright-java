@@ -39,6 +39,8 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   private final TracingImpl tracing;
   private String disposeReason;
 
+  protected TimeoutSettings timeoutSettings = new TimeoutSettings();
+
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
@@ -93,6 +95,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options == null) {
       options = new RequestOptionsImpl();
     }
+    options.timeout = timeoutSettings.timeout(options.timeout);
     JsonObject params = new JsonObject();
     params.addProperty("url", url);
     if (options.params != null) {

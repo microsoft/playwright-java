@@ -1123,6 +1123,20 @@ public class FrameImpl extends ChannelOwner implements Frame {
     sendMessage("highlight", params);
   }
 
+  double timeout(Double timeout) {
+    if (page != null) {
+      return page.timeoutSettings.timeout(timeout);
+    }
+    return new TimeoutSettings().timeout(timeout);
+  }
+
+  double navigationTimeout(Double timeout) {
+    if (page != null) {
+      return page.timeoutSettings.navigationTimeout(timeout);
+    }
+    return new TimeoutSettings().navigationTimeout(timeout);
+  }
+
   protected void handleEvent(String event, JsonObject params) {
     if ("loadstate".equals(event)) {
       JsonElement add = params.get("add");

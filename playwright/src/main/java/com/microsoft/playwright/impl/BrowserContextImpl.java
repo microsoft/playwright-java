@@ -105,6 +105,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
+    request.timeoutSettings = timeoutSettings;
     clock = new ClockImpl(this);
     closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
   }
@@ -559,30 +560,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setDefaultNavigationTimeout(double timeout) {
-    setDefaultNavigationTimeoutImpl(timeout);
-  }
-
-  void setDefaultNavigationTimeoutImpl(Double timeout) {
-    withLogging("BrowserContext.setDefaultNavigationTimeout", () -> {
-      timeoutSettings.setDefaultNavigationTimeout(timeout);
-      JsonObject params = new JsonObject();
-      params.addProperty("timeout", timeout);
-      sendMessage("setDefaultNavigationTimeoutNoReply", params);
-    });
+    timeoutSettings.setDefaultNavigationTimeout(timeout);
   }
 
   @Override
   public void setDefaultTimeout(double timeout) {
-    setDefaultTimeoutImpl(timeout);
-  }
-
-  void setDefaultTimeoutImpl(Double timeout) {
-    withLogging("BrowserContext.setDefaultTimeout", () -> {
-      timeoutSettings.setDefaultTimeout(timeout);
-      JsonObject params = new JsonObject();
-      params.addProperty("timeout", timeout);
-      sendMessage("setDefaultTimeoutNoReply", params);
-    });
+    timeoutSettings.setDefaultTimeout(timeout);
   }
 
   @Override

@@ -180,6 +180,13 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator describe(String description) {
+    // TODO: fix this
+    LocatorImpl locator = new LocatorImpl(frame, selector, null);
+    return locator;
+  }
+
+  @Override
   public void dblclick(DblclickOptions options) {
     if (options == null) {
       options = new DblclickOptions();

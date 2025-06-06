@@ -23,6 +23,12 @@ import java.nio.file.Path;
  * API for collecting and saving Playwright traces. Playwright traces can be opened in <a
  * href="https://playwright.dev/java/docs/trace-viewer">Trace Viewer</a> after Playwright script runs.
  *
+ * <p> <strong>NOTE:</strong> You probably want to <a href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enable tracing in
+ * your config file</a> instead of using {@code context.tracing}.The {@code context.tracing} API captures browser operations and network activity, but it doesn't record test assertions
+ * (like {@code expect} calls). We recommend <a
+ * href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enabling tracing through Playwright Test
+ * configuration</a>, which includes those assertions and provides a more complete trace for debugging test failures.
+ *
  * <p> Start recording a trace before performing actions. At the end, stop tracing and save it to a file.
  * <pre>{@code
  * Browser browser = chromium.launch();
@@ -200,6 +206,12 @@ public interface Tracing {
   /**
    * Start tracing.
    *
+   * <p> <strong>NOTE:</strong> You probably want to <a href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enable tracing in
+   * your config file</a> instead of using {@code Tracing.start}.The {@code context.tracing} API captures browser operations and network activity, but it doesn't record test assertions
+   * (like {@code expect} calls). We recommend <a
+   * href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enabling tracing through Playwright Test
+   * configuration</a>, which includes those assertions and provides a more complete trace for debugging test failures.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
@@ -218,6 +230,12 @@ public interface Tracing {
   }
   /**
    * Start tracing.
+   *
+   * <p> <strong>NOTE:</strong> You probably want to <a href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enable tracing in
+   * your config file</a> instead of using {@code Tracing.start}.The {@code context.tracing} API captures browser operations and network activity, but it doesn't record test assertions
+   * (like {@code expect} calls). We recommend <a
+   * href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enabling tracing through Playwright Test
+   * configuration</a>, which includes those assertions and provides a more complete trace for debugging test failures.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
