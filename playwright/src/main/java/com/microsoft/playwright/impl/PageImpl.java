@@ -908,6 +908,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoBackOptions();
     }
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("goBack", params).getAsJsonObject();
     if (json.has("response")) {
@@ -925,6 +926,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoForwardOptions();
     }
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("goForward", params).getAsJsonObject();
     if (json.has("response")) {
@@ -1095,6 +1097,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
+    options.timeout = timeoutSettings.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("reload", params).getAsJsonObject();
     if (json.has("response")) {
@@ -1195,6 +1198,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ScreenshotOptions();
     }
+    options.timeout = timeoutSettings.timeout(options.timeout);
     if (options.type == null) {
       options.type = PNG;
       if (options.path != null) {

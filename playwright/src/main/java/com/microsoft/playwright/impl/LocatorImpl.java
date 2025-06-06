@@ -127,6 +127,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject result = frame.sendMessage("ariaSnapshot", params).getAsJsonObject();
@@ -181,9 +182,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator describe(String description) {
-    // TODO: fix this
-    LocatorImpl locator = new LocatorImpl(frame, selector, null);
-    return locator;
+    throw new Error("not implemented yet");
   }
 
   @Override
