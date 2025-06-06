@@ -40,8 +40,11 @@ import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
+  private final FrameImpl frame;
+
   ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    this.frame = (FrameImpl)parent;
   }
 
   @Override
@@ -127,6 +130,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new CheckOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("check", params);
   }
@@ -140,6 +144,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ClickOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("click", params);
   }
@@ -166,6 +171,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new DblclickOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("dblclick", params);
   }
@@ -189,6 +195,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new FillOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("value", value);
     sendMessage("fill", params);
@@ -218,6 +225,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new HoverOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("hover", params);
   }
@@ -319,6 +327,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new PressOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("key", key);
     sendMessage("press", params);
@@ -333,6 +342,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScreenshotOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     if (options.type == null) {
       options.type = PNG;
       if (options.path != null) {
@@ -379,6 +389,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (values != null) {
       params.add("options", toSelectValueOrLabel(values));
@@ -396,6 +407,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScrollIntoViewIfNeededOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("scrollIntoViewIfNeeded", params);
   }
@@ -454,6 +466,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectTextOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("selectText", params);
   }
@@ -471,6 +484,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     addFilePathUploadParams(files, params, frame.page().context());
     sendMessage("setInputFiles", params);
@@ -491,6 +505,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("payloads", Serialization.toJsonArray(files));
     sendMessage("setInputFiles", params);
@@ -505,6 +520,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new TapOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("tap", params);
   }
@@ -530,6 +546,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new TypeOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("text", text);
     sendMessage("type", params);
@@ -544,6 +561,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new UncheckOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("uncheck", params);
   }
@@ -557,6 +575,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     if (state == null) {
       throw new IllegalArgumentException("State cannot be null");
     }
@@ -578,6 +597,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonElement json = sendMessage("waitForSelector", params);

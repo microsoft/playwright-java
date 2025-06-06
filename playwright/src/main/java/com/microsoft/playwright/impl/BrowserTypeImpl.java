@@ -48,6 +48,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new LaunchOptions();
     }
+    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("launch", params);
     BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
@@ -82,6 +83,10 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     if (!foundBrowserHeader) {
       headers.addProperty("x-playwright-browser", name());
+    }
+
+    if (!params.has("timeout")) {
+      params.addProperty("timeout", 0);
     }
 
     JsonObject json = connection.localUtils().sendMessage("connect", params).getAsJsonObject();
@@ -126,6 +131,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new ConnectOverCDPOptions();
     }
+    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("endpointURL", endpointURL);
@@ -195,6 +201,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
       }
     }
+    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (!userDataDir.isAbsolute() && !userDataDir.toString().isEmpty()) {

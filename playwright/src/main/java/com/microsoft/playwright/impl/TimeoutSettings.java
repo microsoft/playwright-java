@@ -18,7 +18,7 @@ package com.microsoft.playwright.impl;
 
 class TimeoutSettings {
   private static final int DEFAULT_TIMEOUT_MS = 30_000;
-  private static final int DEFAULT_LAUNCH_TIMEOUT_MS = 180_000; // 3 minutes
+  private static final int DEFAULT_LAUNCH_TIMEOUT_MS = 180_000;
 
   private final TimeoutSettings parent;
   private Double defaultTimeout ;

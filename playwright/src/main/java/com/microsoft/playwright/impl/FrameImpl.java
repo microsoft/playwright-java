@@ -247,6 +247,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new ClickOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("click", params);
@@ -344,6 +345,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new FocusOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("focus", params);
@@ -506,6 +508,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new InnerHTMLOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("innerHTML", params).getAsJsonObject();
@@ -521,6 +524,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new InnerTextOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("innerText", params).getAsJsonObject();
@@ -681,6 +685,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SelectOptionOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     if (values != null) {
@@ -750,6 +755,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetContentOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("html", html);
     sendMessage("setContent", params);
@@ -799,6 +805,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new TapOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("tap", params);
@@ -837,6 +844,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new TypeOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("text", text);
@@ -1123,20 +1131,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     sendMessage("highlight", params);
   }
 
-  double timeout(Double timeout) {
-    if (page != null) {
-      return page.timeoutSettings.timeout(timeout);
-    }
-    return new TimeoutSettings().timeout(timeout);
-  }
-
-  double navigationTimeout(Double timeout) {
-    if (page != null) {
-      return page.timeoutSettings.navigationTimeout(timeout);
-    }
-    return new TimeoutSettings().navigationTimeout(timeout);
-  }
-
   protected void handleEvent(String event, JsonObject params) {
     if ("loadstate".equals(event)) {
       JsonElement add = params.get("add");
@@ -1164,5 +1158,21 @@ public class FrameImpl extends ChannelOwner implements Frame {
       }
       internalListeners.notify(InternalEventType.NAVIGATED, params);
     }
+  }
+
+  protected double timeout(Double timeout) {
+    TimeoutSettings timeoutSettings = page.timeoutSettings;
+    if (timeoutSettings == null) {
+      timeoutSettings = new TimeoutSettings();
+    }
+    return timeoutSettings.timeout(timeout);
+  }
+
+  protected double navigationTimeout(Double timeout) {
+    TimeoutSettings timeoutSettings = page.timeoutSettings;
+    if (timeoutSettings == null) {
+      timeoutSettings = new TimeoutSettings();
+    }
+    return timeoutSettings.navigationTimeout(timeout);
   }
 }

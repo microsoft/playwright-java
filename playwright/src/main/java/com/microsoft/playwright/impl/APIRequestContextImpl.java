@@ -135,9 +135,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options.multipart != null) {
       params.add("multipartData", serializeMultipartData(options.multipart.fields));
     }
-    if (options.timeout != null) {
-      params.addProperty("timeout", options.timeout);
-    }
+    params.addProperty("timeout", timeoutSettings.timeout(options.timeout));
     if (options.failOnStatusCode != null) {
       params.addProperty("failOnStatusCode", options.failOnStatusCode);
     }

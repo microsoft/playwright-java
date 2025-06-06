@@ -95,7 +95,7 @@ public class PageImpl extends ChannelOwner implements Page {
   BrowserContextImpl ownedContext;
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
-  final TimeoutSettings timeoutSettings;
+  protected final TimeoutSettings timeoutSettings;
   private VideoImpl video;
   private final PageImpl opener;
   private String closeReason;
