@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -112,6 +113,7 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("Text,\nmore text", page.textContent("#inner"));
   }
 
+  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void textContentShouldBeAtomic() {
     String createDummySelector = "{\n" +
@@ -135,6 +137,7 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').textContent"));
   }
 
+  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void innerTextShouldBeAtomic() {
     String createDummySelector = "{\n" +
@@ -158,6 +161,7 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').innerText"));
   }
 
+  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void innerHTMLShouldBeAtomic() {
     String createDummySelector = "{\n" +
@@ -181,6 +185,7 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').innerHTML"));
   }
 
+  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void getAttributeShouldBeAtomic() {
     String createDummySelector = "{\n" +
