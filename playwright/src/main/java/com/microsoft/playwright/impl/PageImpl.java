@@ -1097,7 +1097,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
-    options.timeout = timeoutSettings.timeout(options.timeout);
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("reload", params).getAsJsonObject();
     if (json.has("response")) {

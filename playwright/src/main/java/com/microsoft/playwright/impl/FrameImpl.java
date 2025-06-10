@@ -465,7 +465,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new NavigateOptions();
     }
-    options.timeout = timeout(options.timeout);
+    options.timeout = navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
     JsonElement result = sendMessage("goto", params);
@@ -1184,18 +1184,16 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   protected double timeout(Double timeout) {
-    TimeoutSettings timeoutSettings = page.timeoutSettings;
-    if (timeoutSettings == null) {
-      timeoutSettings = new TimeoutSettings();
+    if (page != null) {
+      return page.timeoutSettings.timeout(timeout);
     }
-    return timeoutSettings.timeout(timeout);
+    return new TimeoutSettings().timeout(timeout);
   }
 
   protected double navigationTimeout(Double timeout) {
-    TimeoutSettings timeoutSettings = page.timeoutSettings;
-    if (timeoutSettings == null) {
-      timeoutSettings = new TimeoutSettings();
+    if (page != null) {
+      return page.timeoutSettings.navigationTimeout(timeout);
     }
-    return timeoutSettings.navigationTimeout(timeout);
+    return new TimeoutSettings().navigationTimeout(timeout);
   }
 }
