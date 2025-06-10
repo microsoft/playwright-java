@@ -181,7 +181,7 @@ public class TestTracing extends TestBase {
     List<TraceEvent> events = parseTraceEvents(traceFile1);
     List<TraceEvent> groups = events.stream().filter(e -> "tracingGroup".equals(e.method)).collect(Collectors.toList());
     assertEquals(1, groups.size());
-    assertEquals("actual", groups.get(0).apiName);
+    assertEquals("actual", groups.get(0).title);
 
   }
 
@@ -202,7 +202,7 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.apiName != null).map(e -> e.apiName).collect(Collectors.toList());
+    List<String> calls = events.stream().filter(e -> e.title != null).map(e -> e.title).collect(Collectors.toList());
     assertEquals(asList("outer group", "Page.navigate", "inner group 1", "Frame.click", "inner group 2", "Page.isVisible"), calls);
   }
 
@@ -284,7 +284,7 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.apiName != null).map(e -> e.apiName)
+    List<String> calls = events.stream().filter(e -> e.title != null).map(e -> e.title)
       .collect(Collectors.toList());
     assertEquals(asList("Page.navigate"), calls);
   }
