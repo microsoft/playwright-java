@@ -183,7 +183,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator describe(String description) {
-    throw new Error("not implemented yet");
+    return locator(describeSelector(description));
   }
 
   @Override
