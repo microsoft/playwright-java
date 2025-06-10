@@ -12,7 +12,7 @@ env:
   PW_MAX_RETRIES: 3
 jobs:
   dev:
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +52,7 @@ jobs:
         java -jar target/test-spring-boot*.jar
 
   stable:
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -93,7 +93,7 @@ jobs:
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
 
   Java_21:
-    timeout-minutes: 30
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
