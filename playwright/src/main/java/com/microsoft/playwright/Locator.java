@@ -31,11 +31,6 @@ import java.util.regex.Pattern;
 public interface Locator {
   class AriaSnapshotOptions {
     /**
-     * Generate symbolic reference for each element. One can use {@code aria-ref=<ref>} locator immediately after capturing the
-     * snapshot to perform actions on the element.
-     */
-    public Boolean ref;
-    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -43,14 +38,6 @@ public interface Locator {
      */
     public Double timeout;
 
-    /**
-     * Generate symbolic reference for each element. One can use {@code aria-ref=<ref>} locator immediately after capturing the
-     * snapshot to perform actions on the element.
-     */
-    public AriaSnapshotOptions setRef(boolean ref) {
-      this.ref = ref;
-      return this;
-    }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
@@ -2616,6 +2603,14 @@ public interface Locator {
    */
   void dblclick(DblclickOptions options);
   /**
+   * Describes the locator, description is used in the trace viewer and reports. Returns the locator pointing to the same
+   * element.
+   *
+   * @param description Locator description.
+   * @since v1.53
+   */
+  Locator describe(String description);
+  /**
    * Programmatically dispatch an event on the matching element.
    *
    * <p> <strong>Usage</strong>
@@ -2861,6 +2856,14 @@ public interface Locator {
    *
    * <p> <strong>Usage</strong>
    *
+   * <p> Passing argument to {@code expression}:
+   * <pre>{@code
+   * Object result = page.getByTestId("myId").evaluate("(element, [x, y]) => {\n" +
+   *   "  return element.textContent + ' ' + x * y;\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "myId text 56"
+   * }</pre>
+   *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
@@ -2885,6 +2888,14 @@ public interface Locator {
    *
    * <p> <strong>Usage</strong>
    *
+   * <p> Passing argument to {@code expression}:
+   * <pre>{@code
+   * Object result = page.getByTestId("myId").evaluate("(element, [x, y]) => {\n" +
+   *   "  return element.textContent + ' ' + x * y;\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "myId text 56"
+   * }</pre>
+   *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @since v1.14
@@ -2907,6 +2918,14 @@ public interface Locator {
    * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> <strong>Usage</strong>
+   *
+   * <p> Passing argument to {@code expression}:
+   * <pre>{@code
+   * Object result = page.getByTestId("myId").evaluate("(element, [x, y]) => {\n" +
+   *   "  return element.textContent + ' ' + x * y;\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "myId text 56"
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.

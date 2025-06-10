@@ -209,6 +209,9 @@ public interface BrowserType {
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     *
+     * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
+     * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
     public Map<String, Object> firefoxUserPrefs;
     /**
@@ -339,6 +342,9 @@ public interface BrowserType {
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     *
+     * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
+     * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
     public LaunchOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;
@@ -535,6 +541,9 @@ public interface BrowserType {
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     *
+     * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
+     * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
     public Map<String, Object> firefoxUserPrefs;
     /**
@@ -881,6 +890,9 @@ public interface BrowserType {
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     *
+     * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
+     * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
     public LaunchPersistentContextOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;

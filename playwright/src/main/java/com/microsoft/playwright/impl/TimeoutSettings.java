@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 class TimeoutSettings {
   private static final int DEFAULT_TIMEOUT_MS = 30_000;
+  private static final int DEFAULT_LAUNCH_TIMEOUT_MS = 180_000;
 
   private final TimeoutSettings parent;
   private Double defaultTimeout ;
@@ -79,5 +80,12 @@ class TimeoutSettings {
       return new WaitableNever<>();
     }
     return new WaitableTimeout<>(timeout(timeout));
+  }
+
+  static double launchTimeout(Double timeout) {
+    if (timeout != null) {
+      return timeout;
+    }
+    return DEFAULT_LAUNCH_TIMEOUT_MS;
   }
 }

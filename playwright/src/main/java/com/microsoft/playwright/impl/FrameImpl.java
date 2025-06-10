@@ -228,6 +228,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new CheckOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("check", params);
@@ -247,6 +248,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new ClickOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("click", params);
@@ -270,6 +272,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new DblclickOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("dblclick", params);
@@ -284,6 +287,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new DispatchEventOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("type", type);
@@ -329,6 +333,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new FillOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("value", value);
@@ -344,6 +349,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new FocusOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("focus", params);
@@ -439,6 +445,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new GetAttributeOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("name", name);
@@ -458,6 +465,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new NavigateOptions();
     }
+    options.timeout = navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
     JsonElement result = sendMessage("goto", params);
@@ -477,6 +485,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new HoverOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("hover", params);
@@ -491,6 +500,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new DragAndDropOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("source", source);
     params.addProperty("target", target);
@@ -506,6 +516,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new InnerHTMLOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("innerHTML", params).getAsJsonObject();
@@ -521,6 +532,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new InnerTextOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("innerText", params).getAsJsonObject();
@@ -536,6 +548,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new InputValueOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("inputValue", params).getAsJsonObject();
@@ -551,6 +564,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new IsCheckedOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isChecked", params).getAsJsonObject();
@@ -571,6 +585,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new IsDisabledOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isDisabled", params).getAsJsonObject();
@@ -586,6 +601,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new IsEditableOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isEditable", params).getAsJsonObject();
@@ -601,6 +617,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new IsEnabledOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isEnabled", params).getAsJsonObject();
@@ -616,6 +633,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new IsHiddenOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isHidden", params).getAsJsonObject();
@@ -666,6 +684,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new PressOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("key", key);
@@ -681,6 +700,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SelectOptionOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     if (values != null) {
@@ -693,6 +713,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SelectOptionOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     if (values != null) {
@@ -710,6 +731,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SelectOptionOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     if (values != null) {
@@ -750,6 +772,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetContentOptions();
     }
+    options.timeout = navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("html", html);
     sendMessage("setContent", params);
@@ -764,6 +787,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     addFilePathUploadParams(files, params, page.context());
     params.addProperty("selector", selector);
@@ -785,6 +809,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.add("payloads", toJsonArray(files));
@@ -799,6 +824,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new TapOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("tap", params);
@@ -813,6 +839,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new TextContentOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     return sendMessage("textContent", params).getAsJsonObject().get("value").getAsString();
@@ -837,6 +864,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new TypeOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("text", text);
@@ -852,6 +880,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new UncheckOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     sendMessage("uncheck", params);
@@ -871,6 +900,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new WaitForFunctionOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("expression", pageFunction);
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
@@ -1054,6 +1084,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
+    options.timeout = timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("omitReturnValue", omitReturnValue);
@@ -1150,5 +1181,19 @@ public class FrameImpl extends ChannelOwner implements Frame {
       }
       internalListeners.notify(InternalEventType.NAVIGATED, params);
     }
+  }
+
+  protected double timeout(Double timeout) {
+    if (page != null) {
+      return page.timeoutSettings.timeout(timeout);
+    }
+    return new TimeoutSettings().timeout(timeout);
+  }
+
+  protected double navigationTimeout(Double timeout) {
+    if (page != null) {
+      return page.timeoutSettings.navigationTimeout(timeout);
+    }
+    return new TimeoutSettings().navigationTimeout(timeout);
   }
 }

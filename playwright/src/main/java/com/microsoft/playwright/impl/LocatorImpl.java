@@ -127,6 +127,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject result = frame.sendMessage("ariaSnapshot", params).getAsJsonObject();
@@ -142,6 +143,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new BlurOptions();
     }
+    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("strict", true);
@@ -177,6 +179,11 @@ class LocatorImpl implements Locator {
   @Override
   public int count() {
     return frame.queryCount(selector);
+  }
+
+  @Override
+  public Locator describe(String description) {
+    return locator(describeSelector(description));
   }
 
   @Override

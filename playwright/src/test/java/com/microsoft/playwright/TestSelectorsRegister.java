@@ -16,12 +16,14 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
 public class TestSelectorsRegister extends TestBase {
   @Test
   void shouldWork() {

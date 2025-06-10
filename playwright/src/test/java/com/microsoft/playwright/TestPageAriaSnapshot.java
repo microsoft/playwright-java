@@ -74,12 +74,6 @@ public class TestPageAriaSnapshot {
   }
 
   @Test
-  void shouldSnapshotRef(Page page) {
-    page.setContent("<ul><li>foo</li></ul>");
-    assertEquals(unshift("- list [ref=s1e3]:\n  - listitem [ref=s1e4]: foo"), page.locator("body").ariaSnapshot(new AriaSnapshotOptions().setRef(true)));
-  }
-
-  @Test
   void shouldAllowTextNodes(Page page) {
     page.setContent("<h1>Microsoft</h1><div>Open source projects and samples from Microsoft</div>");
     checkAndMatchSnapshot(page.locator("body"), "" +

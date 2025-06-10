@@ -39,6 +39,10 @@ public class LocatorUtils {
     return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector(value, exact) + "]";
   }
 
+  static String describeSelector(String description) {
+    return "internal:describe=" + gson().toJson(description);
+  }
+
   static String getByTestIdSelector(Object testId, PlaywrightImpl playwright) {
     String testIdAttributeName = ((SharedSelectors) playwright.selectors()).testIdAttributeName;
     return getByAttributeTextSelector(testIdAttributeName, testId, true);

@@ -95,7 +95,7 @@ public class PageImpl extends ChannelOwner implements Page {
   BrowserContextImpl ownedContext;
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
-  private final TimeoutSettings timeoutSettings;
+  protected final TimeoutSettings timeoutSettings;
   private VideoImpl video;
   private final PageImpl opener;
   private String closeReason;
@@ -908,6 +908,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoBackOptions();
     }
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("goBack", params).getAsJsonObject();
     if (json.has("response")) {
@@ -925,6 +926,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoForwardOptions();
     }
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("goForward", params).getAsJsonObject();
     if (json.has("response")) {
@@ -1045,13 +1047,13 @@ public class PageImpl extends ChannelOwner implements Page {
     withLogging("Page.pause", () -> {
       Double defaultNavigationTimeout = browserContext.timeoutSettings.defaultNavigationTimeout();
       Double defaultTimeout = browserContext.timeoutSettings.defaultTimeout();
-      browserContext.setDefaultNavigationTimeoutImpl(0.0);
-      browserContext.setDefaultTimeoutImpl(0.0);
+      browserContext.setDefaultNavigationTimeout(0.0);
+      browserContext.setDefaultTimeout(0.0);
       try {
         runUntil(() -> {}, new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)));
       } finally {
-        browserContext.setDefaultNavigationTimeoutImpl(defaultNavigationTimeout);
-        browserContext.setDefaultTimeoutImpl(defaultTimeout);
+        browserContext.setDefaultNavigationTimeout(defaultNavigationTimeout);
+        browserContext.setDefaultTimeout(defaultTimeout);
       }
     });
   }
@@ -1095,6 +1097,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
+    options.timeout = timeoutSettings.navigationTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonObject json = sendMessage("reload", params).getAsJsonObject();
     if (json.has("response")) {
@@ -1195,6 +1198,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ScreenshotOptions();
     }
+    options.timeout = timeoutSettings.timeout(options.timeout);
     if (options.type == null) {
       options.type = PNG;
       if (options.path != null) {
@@ -1257,9 +1261,6 @@ public class PageImpl extends ChannelOwner implements Page {
   public void setDefaultNavigationTimeout(double timeout) {
     withLogging("Page.setDefaultNavigationTimeout", () -> {
       timeoutSettings.setDefaultNavigationTimeout(timeout);
-      JsonObject params = new JsonObject();
-      params.addProperty("timeout", timeout);
-      sendMessage("setDefaultNavigationTimeoutNoReply", params);
     });
   }
 
@@ -1267,9 +1268,6 @@ public class PageImpl extends ChannelOwner implements Page {
   public void setDefaultTimeout(double timeout) {
     withLogging("Page.setDefaultTimeout", () -> {
       timeoutSettings.setDefaultTimeout(timeout);
-      JsonObject params = new JsonObject();
-      params.addProperty("timeout", timeout);
-      sendMessage("setDefaultTimeoutNoReply", params);
     });
   }
 
