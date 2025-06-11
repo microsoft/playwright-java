@@ -561,7 +561,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       params.add("page", page.toProtocolRef());
     }
     JsonObject recordHarArgs = new JsonObject();
-    recordHarArgs.addProperty("zip", har.endsWith(".zip"));  
+    recordHarArgs.addProperty("zip", har.toString().endsWith(".zip"));  
     recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
     recordHarArgs.addProperty("mode", (options.updateMode == null ? HarMode.MINIMAL : options.updateMode).name().toLowerCase());
     addHarUrlFilter(recordHarArgs, options.url);
