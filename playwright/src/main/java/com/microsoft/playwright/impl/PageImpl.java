@@ -1127,7 +1127,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new RouteFromHAROptions();
     }
     if (options.update != null && options.update) {
-      browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class));
+      browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class), null);
       return;
     }
     UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl, options.url, this.connection.localUtils, false);

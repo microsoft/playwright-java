@@ -98,11 +98,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    if (parent instanceof BrowserImpl) {
-      browser = (BrowserImpl) parent;
-    } else {
-      browser = null;
-    }
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
     request.timeoutSettings = timeoutSettings;
@@ -500,7 +495,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       options = new RouteFromHAROptions();
     }
     if (options.update != null && options.update) {
-      recordIntoHar(null, har, options);
+      recordIntoHar(null, har, options, null);
       return;
     }
     UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url, this.connection.localUtils, false);
@@ -538,24 +533,41 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     });
   }
 
-  void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options) {
+  private HarContentPolicy routeFromHarUpdateContentPolicyToHarContentPolicy(RouteFromHarUpdateContentPolicy contentPolicy) {
+    switch (contentPolicy) {
+      case ATTACH:
+        return HarContentPolicy.ATTACH;
+      case EMBED:
+        return HarContentPolicy.EMBED;
+      default:
+        return null;
+    }
+  }
+
+  void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options, HarContentPolicy contentPolicy) {
+    if (contentPolicy == null) {
+      contentPolicy = routeFromHarUpdateContentPolicyToHarContentPolicy(options.updateContent);
+    }
+    if (contentPolicy == null) {
+      contentPolicy = HarContentPolicy.ATTACH;
+    }
+
     JsonObject params = new JsonObject();
     if (page != null) {
       params.add("page", page.toProtocolRef());
     }
-    JsonObject jsonOptions = new JsonObject();
-    jsonOptions.addProperty("path", har.toAbsolutePath().toString());
-    jsonOptions.addProperty("content", options.updateContent == null ?
-      HarContentPolicy.ATTACH.name().toLowerCase() :
-      options.updateContent.name().toLowerCase());
-    jsonOptions.addProperty("mode", options.updateMode == null ?
+    JsonObject recordHarArgs = new JsonObject();
+    recordHarArgs.addProperty("zip", har.endsWith(".zip"));  
+    recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
+    recordHarArgs.addProperty("mode", options.updateMode == null ?
       HarMode.MINIMAL.name().toLowerCase() :
       options.updateMode.name().toLowerCase());
-    addHarUrlFilter(jsonOptions, options.url);
-    params.add("options", jsonOptions);
+    addHarUrlFilter(recordHarArgs, options.url);
+
+    params.add("options", recordHarArgs);
     JsonObject json = sendMessage("harStart", params).getAsJsonObject();
     String harId = json.get("harId").getAsString();
-    harRecorders.put(harId, new HarRecorder(har, HarContentPolicy.ATTACH));
+    harRecorders.put(harId, new HarRecorder(har, contentPolicy));
   }
 
   @Override
@@ -862,5 +874,30 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     params.addProperty("lastModifiedMs", lastModifiedMs);
     JsonObject json = sendMessage("createTempFile", params).getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("writableStream").get("guid").getAsString());
+  }
+
+  protected void initializeHarFromOptions(Browser.NewContextOptions options) {
+    if (options.recordHarPath == null) {
+      return;
+    }
+
+    HarContentPolicy defaultPolicy = options.recordHarPath.endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+    HarContentPolicy contentPolicy = options.recordHarContent == null ? (options.recordHarOmitContent ? HarContentPolicy.OMIT : defaultPolicy) : options.recordHarContent;
+    RouteFromHAROptions routeFromHAROptions = new RouteFromHAROptions();
+
+    if (options.recordHarUrlFilter instanceof String) {
+      routeFromHAROptions.setUrl((String) options.recordHarUrlFilter);
+    } else if (options.recordHarUrlFilter instanceof Pattern) {
+      routeFromHAROptions.setUrl((Pattern) options.recordHarUrlFilter);
+    }
+
+    if (options.recordHarMode != null) {
+      routeFromHAROptions.updateMode = options.recordHarMode;
+    } else {
+      routeFromHAROptions.updateMode = HarMode.FULL;
+    }
+    routeFromHAROptions.url = options.recordHarUrlFilter;
+
+    recordIntoHar(null, options.recordHarPath, routeFromHAROptions, contentPolicy);
   }
 }
