@@ -203,15 +203,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
-
-    Browser.NewContextOptions harOptions = new Browser.NewContextOptions();
-    harOptions.recordHarContent = options.recordHarContent;
-    harOptions.recordHarMode = options.recordHarMode;
-    harOptions.recordHarOmitContent = options.recordHarOmitContent;
-    harOptions.recordHarPath = options.recordHarPath;
-    harOptions.recordHarUrlFilter = options.recordHarUrlFilter;
-    context.initializeHarFromOptions(harOptions);
-
+    context.initializeHarFromOptions(convertType(options, Browser.NewContextOptions.class));
     context.tracing().setTracesDir(options.tracesDir);
     return context;
   }
