@@ -125,6 +125,8 @@ class BrowserImpl extends ChannelOwner implements Browser {
       // Make a copy so that we can nullify some fields below.
       options = convertType(options, NewContextOptions.class);
     }
+    Object recordHarUrlFilter = options.recordHarUrlFilter;
+    options.recordHarUrlFilter = null;
     if (options.storageStatePath != null) {
       try {
         byte[] bytes = Files.readAllBytes(options.storageStatePath);
@@ -178,6 +180,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
+    options.recordHarUrlFilter = recordHarUrlFilter;
     context.initializeHarFromOptions(options);
     return context;
   }

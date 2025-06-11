@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.HarContentPolicy;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import com.microsoft.playwright.options.RouteFromHarUpdateContentPolicy;
@@ -40,7 +39,6 @@ import static com.microsoft.playwright.Utils.copy;
 import static com.microsoft.playwright.Utils.extractZip;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.options.HarContentPolicy.ATTACH;
-import static com.microsoft.playwright.options.HarContentPolicy.EMBED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextHar extends TestBase {

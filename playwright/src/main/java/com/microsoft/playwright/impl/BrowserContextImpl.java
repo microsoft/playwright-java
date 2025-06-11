@@ -534,6 +534,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private HarContentPolicy routeFromHarUpdateContentPolicyToHarContentPolicy(RouteFromHarUpdateContentPolicy contentPolicy) {
+    if (contentPolicy == null) {
+      return null;
+    }
+
     switch (contentPolicy) {
       case ATTACH:
         return HarContentPolicy.ATTACH;
@@ -559,9 +563,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     JsonObject recordHarArgs = new JsonObject();
     recordHarArgs.addProperty("zip", har.endsWith(".zip"));  
     recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
-    recordHarArgs.addProperty("mode", options.updateMode == null ?
-      HarMode.MINIMAL.name().toLowerCase() :
-      options.updateMode.name().toLowerCase());
+    recordHarArgs.addProperty("mode", (options.updateMode == null ? HarMode.MINIMAL : options.updateMode).name().toLowerCase());
     addHarUrlFilter(recordHarArgs, options.url);
 
     params.add("options", recordHarArgs);
@@ -881,8 +883,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       return;
     }
 
-    HarContentPolicy defaultPolicy = options.recordHarPath.endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
-    HarContentPolicy contentPolicy = options.recordHarContent == null ? (options.recordHarOmitContent ? HarContentPolicy.OMIT : defaultPolicy) : options.recordHarContent;
+    HarContentPolicy contentPolicy = options.recordHarContent;
+    if (contentPolicy == null && options.recordHarOmitContent != null && options.recordHarOmitContent == true) {
+      contentPolicy = HarContentPolicy.OMIT;
+    }
+    if (contentPolicy == null) {
+      contentPolicy = options.recordHarPath.endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+    }
     RouteFromHAROptions routeFromHAROptions = new RouteFromHAROptions();
 
     if (options.recordHarUrlFilter instanceof String) {
