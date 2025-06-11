@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
 
@@ -39,7 +38,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   private boolean isConnected = true;
   BrowserTypeImpl browserType;
   BrowserType.LaunchOptions launchOptions;
-  private Path tracesDir;
+  private Path tracePath;
   String closeReason;
 
   enum EventType {
@@ -199,7 +198,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options == null) {
       options = new StartTracingOptions();
     }
-    tracesDir = options.path;
+    tracePath = options.path;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (page != null) {
       params.add("page", ((PageImpl) page).toProtocolRef());
@@ -217,14 +216,14 @@ class BrowserImpl extends ChannelOwner implements Browser {
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("artifact").get("guid").getAsString());
     byte[] data = artifact.readAllBytes();
     artifact.delete();
-    if (tracesDir != null) {
+    if (tracePath != null) {
       try {
-        Files.createDirectories(tracesDir.getParent());
-        Files.write(tracesDir, data);
+        Files.createDirectories(tracePath.getParent());
+        Files.write(tracePath, data);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to write trace file", e);
       } finally {
-        tracesDir = null;
+        tracePath = null;
       }
     }
     return data;
@@ -274,7 +273,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     // Note: when using connect(), `browserType` is different from `this.parent`.
     // This is why browser type is not wired up in the constructor, and instead this separate method is called later on.
     this.browserType = browserType;
-    this.tracesDir = tracesDir;
+    this.tracePath = tracesDir;
 
     for (BrowserContextImpl context : contexts) {
       context.tracing().setTracesDir(tracesDir);
@@ -288,7 +287,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     // Note: when connecting to a browser, initial contexts arrive before `_browserType` is set,
     // and will be configured later in `ConnectToBrowserType`.
     if (browserType != null) {
-      context.tracing().setTracesDir(tracesDir);
+      context.tracing().setTracesDir(tracePath);
       browserType.playwright.sharedSelectors.contextsForSelectors.add(context);
     }
   }
