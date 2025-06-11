@@ -20,7 +20,6 @@ import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -297,7 +296,6 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(Arrays.asList("page", "context"), events);
   }
 
-  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void shouldRespectSelectors() {
     String mycss = "{\n" +

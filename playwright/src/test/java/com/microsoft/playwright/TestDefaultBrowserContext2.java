@@ -20,7 +20,6 @@ import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
@@ -227,7 +226,6 @@ public class TestDefaultBrowserContext2 extends TestBase {
     // TODO:
   }
 
-  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void shouldRespectSelectors() {
     Page page = launchPersistent();

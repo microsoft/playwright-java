@@ -72,13 +72,13 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
     JsonObject engine = new JsonObject();
     engine.addProperty("name", name);
     engine.addProperty("source", script);
-    if (options.contentScript != null) {
+    if (options != null && options.contentScript != null) {
       engine.addProperty("contentScript", options.contentScript);
     }
     for (BrowserContextImpl context : contextsForSelectors) {
       JsonObject params = new JsonObject();
       params.add("selectorEngine", engine);
-      context.sendMessageAsync("registerSelectorEngine", params);
+      context.sendMessage("registerSelectorEngine", params);
     }
     selectorEngines.add(engine);
   }
