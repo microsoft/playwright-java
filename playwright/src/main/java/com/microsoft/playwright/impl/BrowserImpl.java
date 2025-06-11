@@ -181,10 +181,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
     params.addProperty("testIdAttributeName", browserType.playwright.sharedSelectors.testIdAttributeName);
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
-    context.videosDir = options.recordVideoDir;
-    if (options.baseURL != null) {
-      context.setBaseUrl(options.baseURL);
-    }
     context.initializeHarFromOptions(harOptions);
     return context;
   }

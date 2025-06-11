@@ -207,10 +207,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.connectToBrowserType(this, options.tracesDir);
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
-    context.videosDir = options.recordVideoDir;
-    if (options.baseURL != null) {
-      context.setBaseUrl(options.baseURL);
-    }
     context.initializeHarFromOptions(harOptions);
     context.tracing().setTracesDir(options.tracesDir);
     return context;

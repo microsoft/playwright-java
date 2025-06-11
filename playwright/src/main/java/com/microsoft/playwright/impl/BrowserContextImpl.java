@@ -102,20 +102,25 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
     request.timeoutSettings = timeoutSettings;
     clock = new ClockImpl(this);
-    closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
+    closePromise = new WaitableEvent<>(listeners, EventType.CLOSE); 
+
+    String url = initializer.getAsJsonObject("options").get("baseUrl").getAsString();
+    if (url != null) {
+      try {
+        this.baseUrl = new URL(url);
+      } catch (MalformedURLException e) {
+      }
+    }
+  
+    JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
+    if (recordVideo != null) {
+      this.videosDir = Path.of(recordVideo.get("dir").getAsString());
+    }
   }
 
   void setRecordHar(Path path, HarContentPolicy policy) {
     if (path != null) {
       harRecorders.put("", new HarRecorder(path, policy));
-    }
-  }
-
-  void setBaseUrl(String spec) {
-    try {
-      this.baseUrl = new URL(spec);
-    } catch (MalformedURLException e) {
-      this.baseUrl = null;
     }
   }
 
