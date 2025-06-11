@@ -41,7 +41,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public BrowserImpl launch(LaunchOptions options) {
-    return withLogging("BrowserType.launch", () -> launchImpl(options));
+    return launchImpl(options);
   }
 
   private BrowserImpl launchImpl(LaunchOptions options) {
@@ -59,7 +59,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public Browser connect(String wsEndpoint, ConnectOptions options) {
-    return withLogging("BrowserType.connect", () -> connectImpl(wsEndpoint, options));
+    return connectImpl(wsEndpoint, options);
   }
 
   private Browser connectImpl(String wsEndpoint, ConnectOptions options) {
@@ -123,7 +123,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (!"chromium".equals(name())) {
       throw new PlaywrightException("Connecting over CDP is only supported in Chromium.");
     }
-    return withLogging("BrowserType.connectOverCDP", () -> connectOverCDPImpl(endpointURL, options));
+    return connectOverCDPImpl(endpointURL, options);
   }
 
   private Browser connectOverCDPImpl(String endpointURL, ConnectOverCDPOptions options) {
@@ -147,8 +147,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public BrowserContextImpl launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
-    return withLogging("BrowserType.launchPersistentContext",
-      () -> launchPersistentContextImpl(userDataDir, options));
+    return launchPersistentContextImpl(userDataDir, options);
   }
 
   private BrowserContextImpl launchPersistentContextImpl(Path userDataDir, LaunchPersistentContextOptions options) {

@@ -53,7 +53,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public void dispose(DisposeOptions options) {
-    withLogging("APIRequestContext.dispose", () -> disposeImpl(options));
+    disposeImpl(options);
   }
 
   private void disposeImpl(DisposeOptions options) {
@@ -67,7 +67,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public APIResponse fetch(String urlOrRequest, RequestOptions options) {
-    return withLogging("APIRequestContext.fetch", () -> fetchImpl(urlOrRequest, (RequestOptionsImpl) options));
+    return fetchImpl(urlOrRequest, (RequestOptionsImpl) options);
   }
 
   @Override
@@ -220,14 +220,12 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public String storageState(StorageStateOptions options) {
-    return withLogging("APIRequestContext.storageState", () -> {
-      JsonElement json = sendMessage("storageState");
-      String storageState = json.toString();
-      if (options != null && options.path != null) {
-        Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
-      }
-      return storageState;
-    });
+    JsonElement json = sendMessage("storageState");
+    String storageState = json.toString();
+    if (options != null && options.path != null) {
+      Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
+    }
+    return storageState;
   }
 
   private static RequestOptionsImpl ensureOptions(RequestOptions options, String method) {

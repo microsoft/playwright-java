@@ -66,7 +66,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void close(CloseOptions options) {
-    withLogging("Browser.close", () -> closeImpl(options));
+    closeImpl(options);
   }
 
   private void closeImpl(CloseOptions options) {
@@ -114,7 +114,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
-    return withLogging("Browser.newContext", () -> newContextImpl(options));
+    return newContextImpl(options);
   }
 
   private BrowserContextImpl newContextImpl(NewContextOptions options) {
@@ -192,7 +192,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void startTracing(Page page, StartTracingOptions options) {
-    withLogging("Browser.startTracing", () -> startTracingImpl(page, options));
+    startTracingImpl(page, options);
   }
 
   private void startTracingImpl(Page page, StartTracingOptions options) {
@@ -209,7 +209,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public byte[] stopTracing() {
-    return withLogging("Browser.stopTracing", () -> stopTracingImpl());
+    return stopTracingImpl();
   }
 
   private byte[] stopTracingImpl() {

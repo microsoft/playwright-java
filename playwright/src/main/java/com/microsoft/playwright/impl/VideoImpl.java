@@ -30,7 +30,6 @@ class VideoImpl implements Video {
 
   VideoImpl(PageImpl page) {
     this.page = page;
-    BrowserImpl browser = page.context().browser();
   }
 
   void setArtifact(ArtifactImpl artifact) {
@@ -44,39 +43,33 @@ class VideoImpl implements Video {
 
   @Override
   public void delete() {
-    page.withLogging("Video.delete", () -> {
-      try {
-        waitForArtifact().delete();
-      } catch (PlaywrightException e) {
-      }
-    });
+    try {
+      waitForArtifact().delete();
+    } catch (PlaywrightException e) {
+    }
   }
 
   @Override
   public Path path() {
-    return page.withLogging("Video.path", () -> {
-      if (page.connection.isRemote) {
-        throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
-      }
-      try {
-        return Paths.get(waitForArtifact().initializer.get("absolutePath").getAsString());
-      } catch (PlaywrightException e) {
-        throw new PlaywrightException("Page did not produce any video frames", e);
-      }
-    });
+    if (page.connection.isRemote) {
+      throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
+    }
+    try {
+      return Paths.get(waitForArtifact().initializer.get("absolutePath").getAsString());
+    } catch (PlaywrightException e) {
+      throw new PlaywrightException("Page did not produce any video frames", e);
+    }
   }
 
   @Override
   public void saveAs(Path path) {
-    page.withLogging("Video.saveAs", () -> {
-      if (!page.isClosed()) {
-        throw new PlaywrightException("Page is not yet closed. Close the page prior to calling saveAs");
-      }
-      try {
-        waitForArtifact().saveAs(path);
-      } catch (PlaywrightException e) {
-        throw new PlaywrightException("Page did not produce any video frames", e);
-      }
-    });
+    if (!page.isClosed()) {
+      throw new PlaywrightException("Page is not yet closed. Close the page prior to calling saveAs");
+    }
+    try {
+      waitForArtifact().saveAs(path);
+    } catch (PlaywrightException e) {
+      throw new PlaywrightException("Page did not produce any video frames", e);
+    }
   }
 }

@@ -31,7 +31,7 @@ class MouseImpl implements Mouse {
 
   @Override
   public void click(double x, double y, ClickOptions options) {
-    page.withLogging("Mouse.click", () -> clickImpl(x, y, options));
+    clickImpl(x, y, options);
   }
 
   private void clickImpl(double x, double y, ClickOptions options) {
@@ -62,7 +62,7 @@ class MouseImpl implements Mouse {
 
   @Override
   public void down(DownOptions options) {
-    page.withLogging("Mouse.down", () -> downImpl(options));
+    downImpl(options);
   }
 
   private void downImpl(DownOptions options) {
@@ -75,7 +75,7 @@ class MouseImpl implements Mouse {
 
   @Override
   public void move(double x, double y, MoveOptions options) {
-    page.withLogging("Mouse.move", () -> moveImpl(x, y, options));
+    moveImpl(x, y, options);
   }
 
   private void moveImpl(double x, double y, MoveOptions options) {
@@ -90,17 +90,15 @@ class MouseImpl implements Mouse {
 
   @Override
   public void up(UpOptions options) {
-    page.withLogging("Mouse.up", () -> upImpl(options));
+    upImpl(options);
   }
 
   @Override
   public void wheel(double deltaX, double deltaY) {
-    page.withLogging("Mouse.wheel", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("deltaX", deltaX);
-      params.addProperty("deltaY", deltaY);
-      page.sendMessage("mouseWheel", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("deltaX", deltaX);
+    params.addProperty("deltaY", deltaY);
+    page.sendMessage("mouseWheel", params);
   }
 
   private void upImpl(UpOptions options) {

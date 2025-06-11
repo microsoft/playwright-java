@@ -44,11 +44,9 @@ public class RouteImpl extends ChannelOwner implements Route {
   @Override
   public void abort(String errorCode) {
     startHandling();
-    withLogging("Route.abort", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("errorCode", errorCode);
-      sendMessageAsync("abort", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("errorCode", errorCode);
+    sendMessageAsync("abort", params);
   }
 
   boolean isHandled() {
@@ -63,7 +61,7 @@ public class RouteImpl extends ChannelOwner implements Route {
   void resume(ResumeOptions options, boolean isFallback) {
     startHandling();
     applyOverrides(convertType(options, FallbackOptions.class));
-    withLogging("Route.resume", () -> resumeImpl(request().fallbackOverridesForResume(), isFallback));
+    resumeImpl(request().fallbackOverridesForResume(), isFallback);
   }
 
   @Override
@@ -151,7 +149,7 @@ public class RouteImpl extends ChannelOwner implements Route {
   @Override
   public void fulfill(FulfillOptions options) {
     startHandling();
-    withLogging("Route.fulfill", () -> fulfillImpl(options));
+    fulfillImpl(options);
   }
 
   private void fulfillImpl(FulfillOptions options) {

@@ -71,25 +71,21 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    return withLogging("Worker.evaluate", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("expression", pageFunction);
-      params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-      JsonElement json = sendMessage("evaluateExpression", params);
-      SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-      return deserialize(value);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", pageFunction);
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpression", params);
+    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return withLogging("Worker.evaluateHandle", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("expression", pageFunction);
-      params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-      JsonElement json = sendMessage("evaluateExpressionHandle", params);
-      return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", pageFunction);
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpressionHandle", params);
+    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
 
   @Override

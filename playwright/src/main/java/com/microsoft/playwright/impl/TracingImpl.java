@@ -87,7 +87,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
   @Override
   public void group(String name, GroupOptions options) {
-    withLogging("Tracing.group", () -> groupImpl(name, options));
+    groupImpl(name, options);
   }
 
   private void groupImpl(String name, GroupOptions options) {
@@ -101,7 +101,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
   @Override
   public void groupEnd() {
-    withLogging("Tracing.groupEnd", () -> sendMessage("tracingGroupEnd"));
+    sendMessage("tracingGroupEnd");
   }
 
   private void tracingStartChunk(String name, String title) {

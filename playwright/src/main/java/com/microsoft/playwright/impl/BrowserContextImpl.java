@@ -275,7 +275,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close(CloseOptions options) {
-    withLogging("BrowserContext.close", () -> closeImpl(options));
+    closeImpl(options);
   }
 
   @Override
@@ -320,28 +320,24 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void addCookies(List<Cookie> cookies) {
-    withLogging("BrowserContext.addCookies", () -> {
-      JsonObject params = new JsonObject();
-      params.add("cookies", gson().toJsonTree(cookies));
-      sendMessage("addCookies", params);
-    });
+    JsonObject params = new JsonObject();
+    params.add("cookies", gson().toJsonTree(cookies));
+    sendMessage("addCookies", params);
   }
 
   @Override
   public void addInitScript(String script) {
-    withLogging("BrowserContext.addInitScript", () -> addInitScriptImpl(script));
+    addInitScriptImpl(script);
   }
 
   @Override
   public void addInitScript(Path path) {
-    withLogging("BrowserContext.addInitScript", () -> {
-      try {
-        byte[] bytes = readAllBytes(path);
-        addInitScriptImpl(new String(bytes, UTF_8));
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read script from file", e);
-      }
-    });
+    try {
+      byte[] bytes = readAllBytes(path);
+      addInitScriptImpl(new String(bytes, UTF_8));
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read script from file", e);
+    }
   }
 
   @Override
@@ -362,7 +358,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void clearCookies(ClearCookiesOptions options) {
-    withLogging("BrowserContext.clearCookies", () -> clearCookiesImpl(options));
+    clearCookiesImpl(options);
   }
 
   private void clearCookiesImpl(ClearCookiesOptions options) {
@@ -388,12 +384,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void clearPermissions() {
-    withLogging("BrowserContext.clearPermissions", () -> sendMessage("clearPermissions"));
+    sendMessage("clearPermissions");
   }
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
-    return withLogging("BrowserContext.cookies", () -> cookiesImpl(urls));
+    return cookiesImpl(urls);
   }
 
   private List<Cookie> cookiesImpl(List<String> urls) {
@@ -409,7 +405,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
-    withLogging("BrowserContext.exposeBinding", () -> exposeBindingImpl(name, playwrightBinding, options));
+    exposeBindingImpl(name, playwrightBinding, options);
   }
 
   private void exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
@@ -433,13 +429,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void exposeFunction(String name, FunctionCallback playwrightFunction) {
-    withLogging("BrowserContext.exposeFunction",
-      () -> exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null));
+    exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
   }
 
   @Override
   public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
-    withLogging("BrowserContext.grantPermissions", () -> grantPermissionsImpl(permissions, options));
+    grantPermissionsImpl(permissions, options);
   }
 
   private void grantPermissionsImpl(List<String> permissions, GrantPermissionsOptions options) {
@@ -456,7 +451,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public PageImpl newPage() {
-    return withLogging("BrowserContext.newPage", () -> newPageImpl());
+    return newPageImpl();
   }
 
   private PageImpl newPageImpl() {
@@ -508,10 +503,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
-    withLogging("BrowserContext.route", () -> {
-      routes.add(matcher, handler, options == null ? null : options.times);
-      updateInterceptionPatterns();
-    });
+    routes.add(matcher, handler, options == null ? null : options.times);
+    updateInterceptionPatterns();
   }
 
   @Override
@@ -530,10 +523,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
-    withLogging("BrowserContext.routeWebSocket", () -> {
-      webSocketRoutes.add(matcher, handler);
-      updateWebSocketInterceptionPatterns();
-    });
+    webSocketRoutes.add(matcher, handler);
+    updateWebSocketInterceptionPatterns();
   }
 
   void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options, HarContentPolicy contentPolicy) {
@@ -572,43 +563,37 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    withLogging("BrowserContext.setExtraHTTPHeaders", () -> {
-      JsonObject params = new JsonObject();
-      JsonArray jsonHeaders = new JsonArray();
-      for (Map.Entry<String, String> e : headers.entrySet()) {
-        JsonObject header = new JsonObject();
-        header.addProperty("name", e.getKey());
-        header.addProperty("value", e.getValue());
-        jsonHeaders.add(header);
-      }
-      params.add("headers", jsonHeaders);
-      sendMessage("setExtraHTTPHeaders", params);
-    });
+    JsonObject params = new JsonObject();
+    JsonArray jsonHeaders = new JsonArray();
+    for (Map.Entry<String, String> e : headers.entrySet()) {
+      JsonObject header = new JsonObject();
+      header.addProperty("name", e.getKey());
+      header.addProperty("value", e.getValue());
+      jsonHeaders.add(header);
+    }
+    params.add("headers", jsonHeaders);
+    sendMessage("setExtraHTTPHeaders", params);
   }
 
   @Override
   public void setGeolocation(Geolocation geolocation) {
-    withLogging("BrowserContext.setGeolocation", () -> {
-      JsonObject params = new JsonObject();
-      if (geolocation != null) {
-        params.add("geolocation", gson().toJsonTree(geolocation));
-      }
-      sendMessage("setGeolocation", params);
-    });
+    JsonObject params = new JsonObject();
+    if (geolocation != null) {
+      params.add("geolocation", gson().toJsonTree(geolocation));
+    }
+    sendMessage("setGeolocation", params);
   }
 
   @Override
   public void setOffline(boolean offline) {
-    withLogging("BrowserContext.setOffline", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("offline", offline);
-      sendMessage("setOffline", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("offline", offline);
+    sendMessage("setOffline", params);
   }
 
   @Override
   public String storageState(StorageStateOptions options) {
-    return withLogging("BrowserContext.storageState", () -> storageStateImpl(options));
+    return storageStateImpl(options);
   }
 
   private String storageStateImpl(StorageStateOptions options) {
@@ -633,10 +618,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unrouteAll() {
-    withLogging("BrowserContext.unrouteAll", () -> {
-      routes.removeAll();
-      updateInterceptionPatterns();
-    });
+    routes.removeAll();
+    updateInterceptionPatterns();
   }
 
   @Override
@@ -687,10 +670,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
-    withLogging("BrowserContext.unroute", () -> {
-      routes.remove(matcher, handler);
-      updateInterceptionPatterns();
-    });
+    routes.remove(matcher, handler);
+    updateInterceptionPatterns();
   }
 
   private void updateInterceptionPatterns() {

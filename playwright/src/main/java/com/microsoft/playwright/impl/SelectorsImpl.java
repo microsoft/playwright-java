@@ -52,20 +52,18 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
 
   @Override
   public void register(String name, String script, RegisterOptions options) {
-    withLogging("Selectors.register", () -> registerImpl(name, script, options));
+    registerImpl(name, script, options);
   }
 
   @Override
   public void register(String name, Path path, RegisterOptions options) {
-    withLogging("Selectors.register", () -> {
-      byte[] buffer;
-      try {
-        buffer = Files.readAllBytes(path);
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read selector from file: " + path, e);
-      }
-      registerImpl(name, new String(buffer, UTF_8), options);
-    });
+    byte[] buffer;
+    try {
+      buffer = Files.readAllBytes(path);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read selector from file: " + path, e);
+    }
+    registerImpl(name, new String(buffer, UTF_8), options);
   }
 
   private void registerImpl(String name, String script, RegisterOptions options) {

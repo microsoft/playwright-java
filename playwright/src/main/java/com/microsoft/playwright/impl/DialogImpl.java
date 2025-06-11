@@ -34,18 +34,16 @@ class DialogImpl extends ChannelOwner implements Dialog {
 
   @Override
   public void accept(String promptText) {
-    withLogging("Dialog.accept", () -> {
-      JsonObject params = new JsonObject();
-      if (promptText != null) {
-        params.addProperty("promptText", promptText);
-      }
-      sendMessage("accept", params);
-    });
+    JsonObject params = new JsonObject();
+    if (promptText != null) {
+      params.addProperty("promptText", promptText);
+    }
+    sendMessage("accept", params);
   }
 
   @Override
   public void dismiss() {
-    withLogging("Dialog.dismiss", () -> sendMessage("dismiss"));
+    sendMessage("dismiss");
   }
 
   @Override
