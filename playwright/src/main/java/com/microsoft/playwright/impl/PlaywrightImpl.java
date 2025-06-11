@@ -62,13 +62,17 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
   private final APIRequestImpl apiRequest;
-  private SharedSelectors sharedSelectors;
+  protected SharedSelectors sharedSelectors;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
+
+    chromium.playwright = this;
+    firefox.playwright = this;
+    webkit.playwright = this;
 
     sharedSelectors = new SharedSelectors();
     apiRequest = new APIRequestImpl(this);

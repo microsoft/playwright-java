@@ -35,6 +35,8 @@ import static com.microsoft.playwright.impl.Utils.addToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
+  protected PlaywrightImpl playwright;
+
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

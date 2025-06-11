@@ -42,7 +42,7 @@ import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
-  private final BrowserImpl browser;
+  protected BrowserImpl browser;
   private final TracingImpl tracing;
   private final APIRequestContextImpl request;
   private final ClockImpl clock;
@@ -51,7 +51,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   final Router routes = new Router();
   final WebSocketRouter webSocketRoutes = new WebSocketRouter();
-  private boolean closeWasCalled;
+  private boolean closingOrClosed;
   private final WaitableEvent<EventType, ?> closePromise;
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
@@ -286,8 +286,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void closeImpl(CloseOptions options) {
-    if (!closeWasCalled) {
-      closeWasCalled = true;
+    if (!closingOrClosed) {
+      closingOrClosed = true;
       if (options == null) {
         options = new CloseOptions();
       }
@@ -851,6 +851,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   void didClose() {
     if (browser != null) {
       browser.contexts.remove(this);
+      browser.browserType.playwright.sharedSelectors.contextsForSelectors.remove(this);
     }
     listeners.notify(EventType.CLOSE, this);
   }

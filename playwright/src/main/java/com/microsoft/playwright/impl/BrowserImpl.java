@@ -32,7 +32,6 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
-import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContextImpl> contexts = new HashSet<>();
@@ -41,7 +40,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   private boolean isConnected = true;
   BrowserTypeImpl browserType;
   BrowserType.LaunchOptions launchOptions;
-  private Path tracePath;
+  private Path tracesDir;
   String closeReason;
 
   enum EventType {
@@ -241,7 +240,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options == null) {
       options = new StartTracingOptions();
     }
-    tracePath = options.path;
+    tracesDir = options.path;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (page != null) {
       params.add("page", ((PageImpl) page).toProtocolRef());
@@ -259,14 +258,14 @@ class BrowserImpl extends ChannelOwner implements Browser {
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("artifact").get("guid").getAsString());
     byte[] data = artifact.readAllBytes();
     artifact.delete();
-    if (tracePath != null) {
+    if (tracesDir != null) {
       try {
-        Files.createDirectories(tracePath.getParent());
-        Files.write(tracePath, data);
+        Files.createDirectories(tracesDir.getParent());
+        Files.write(tracesDir, data);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to write trace file", e);
       } finally {
-        tracePath = null;
+        tracesDir = null;
       }
     }
     return data;
@@ -295,8 +294,13 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   void handleEvent(String event, JsonObject parameters) {
-    if ("close".equals(event)) {
-      didClose();
+    switch (event) {
+      case "context":
+        didCreateContext(connection.getExistingObject(parameters.getAsJsonObject("context").get("guid").getAsString()));
+        break;
+      case "close":
+        didClose();
+        break;
     }
   }
 
@@ -305,6 +309,29 @@ class BrowserImpl extends ChannelOwner implements Browser {
     JsonObject params = new JsonObject();
     JsonObject result = sendMessage("newBrowserCDPSession", params).getAsJsonObject();
     return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+  }
+
+  protected void connectToBrowserType(BrowserTypeImpl browserType, Path tracesDir){
+    // Note: when using connect(), `browserType` is different from `this.parent`.
+    // This is why browser type is not wired up in the constructor, and instead this separate method is called later on.
+    this.browserType = browserType;
+    this.tracesDir = tracesDir;
+
+    for (BrowserContextImpl context : contexts) {
+      context.tracing().setTracesDir(tracesDir);
+      browserType.playwright.sharedSelectors.contextsForSelectors.add(context);
+    }
+  }
+
+  private void didCreateContext(BrowserContextImpl context) {
+    context.browser = this;
+    contexts.add(context);
+    // Note: when connecting to a browser, initial contexts arrive before `_browserType` is set,
+    // and will be configured later in `ConnectToBrowserType`.
+    if (browserType != null) {
+      context.tracing().setTracesDir(tracesDir);
+      browserType.playwright.sharedSelectors.contextsForSelectors.add(context);
+    }
   }
 
   private void didClose() {
