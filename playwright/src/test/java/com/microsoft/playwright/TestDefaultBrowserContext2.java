@@ -313,14 +313,15 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldExposeBrowser() {
     Page page = launchPersistent();
-    Browser browser = page.context().browser();
-    assertNotNull(browser);
+    BrowserContext context = page.context();
+    Browser browser = context.browser();
+    assertFalse(browser.version().isEmpty());
     Page page2 = browser.newPage();
     page2.navigate("data:text/html,<html><title>Title</title></html>");
     assertEquals("Title", page2.title());
     browser.close();
-    assertEquals(0, page.context().pages().size());
+    assertEquals(0, context.pages().size());
     // Next line should not throw.
-    page.context().close();
+    context.close();
   }
 }
