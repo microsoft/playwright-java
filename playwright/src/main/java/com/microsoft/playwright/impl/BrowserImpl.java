@@ -177,8 +177,8 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
     }
-    params.add("selectorEngines", gson().toJsonTree(browserType.playwright.sharedSelectors.selectorEngines));
-    params.addProperty("testIdAttributeName", browserType.playwright.sharedSelectors.testIdAttributeName);
+    params.add("selectorEngines", gson().toJsonTree(browserType.playwright.selectors.selectorEngines));
+    params.addProperty("testIdAttributeName", browserType.playwright.selectors.testIdAttributeName);
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
     context.initializeHarFromOptions(harOptions);
@@ -278,7 +278,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
     for (BrowserContextImpl context : contexts) {
       context.tracing().setTracesDir(tracesDir);
-      browserType.playwright.sharedSelectors.contextsForSelectors.add(context);
+      browserType.playwright.selectors.contextsForSelectors.add(context);
     }
   }
 
@@ -289,7 +289,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     // and will be configured later in `ConnectToBrowserType`.
     if (browserType != null) {
       context.tracing().setTracesDir(tracePath);
-      browserType.playwright.sharedSelectors.contextsForSelectors.add(context);
+      browserType.playwright.selectors.contextsForSelectors.add(context);
     }
   }
 

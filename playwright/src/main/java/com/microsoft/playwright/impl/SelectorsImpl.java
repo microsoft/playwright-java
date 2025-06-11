@@ -28,7 +28,7 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class SharedSelectors extends LoggingSupport implements Selectors {
+public class SelectorsImpl extends LoggingSupport implements Selectors {
   protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
   protected final List<JsonObject> selectorEngines = new ArrayList<>();
 

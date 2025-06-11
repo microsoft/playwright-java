@@ -62,7 +62,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
   private final APIRequestImpl apiRequest;
-  protected SharedSelectors sharedSelectors;
+  protected SelectorsImpl selectors;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -74,7 +74,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     firefox.playwright = this;
     webkit.playwright = this;
 
-    sharedSelectors = new SharedSelectors();
+    selectors = new SelectorsImpl();
     apiRequest = new APIRequestImpl(this);
   }
 
@@ -108,7 +108,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
   @Override
   public Selectors selectors() {
-    return sharedSelectors;
+    return selectors;
   }
 
   @Override

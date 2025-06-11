@@ -101,7 +101,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       }
       throw new PlaywrightException("Malformed endpoint. Did you use launchServer method?");
     }
-    playwright.sharedSelectors = this.playwright.sharedSelectors;
+    playwright.selectors = this.playwright.selectors;
     BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
     browser.isConnectedOverWebSocket = true;
     browser.connectToBrowserType(this, null);
@@ -201,8 +201,8 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
     }
-    params.add("selectorEngines", gson().toJsonTree(playwright.sharedSelectors.selectorEngines));
-    params.addProperty("testIdAttributeName", playwright.sharedSelectors.testIdAttributeName);
+    params.add("selectorEngines", gson().toJsonTree(playwright.selectors.selectorEngines));
+    params.addProperty("testIdAttributeName", playwright.selectors.testIdAttributeName);
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.connectToBrowserType(this, options.tracesDir);
