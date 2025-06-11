@@ -114,7 +114,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   
     JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
     if (recordVideo != null) {
-      this.videosDir = Path.of(recordVideo.get("dir").getAsString());
+      this.videosDir = Paths.get(recordVideo.get("dir").getAsString());
     }
   }
 
