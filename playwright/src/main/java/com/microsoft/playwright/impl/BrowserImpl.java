@@ -179,10 +179,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.setBaseUrl(options.baseURL);
     }
     context.initializeHarFromOptions(options);
-    if (launchOptions != null) {
-      context.tracing().setTracesDir(launchOptions.tracesDir);
-    }
-    contexts.add(context);
     return context;
   }
 
