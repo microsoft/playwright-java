@@ -863,6 +863,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   void didClose() {
+    closingOrClosed = true;
     if (browser != null) {
       browser.contexts.remove(this);
       browser.browserType.playwright.sharedSelectors.contextsForSelectors.remove(this);
