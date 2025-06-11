@@ -30,7 +30,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SharedSelectors extends LoggingSupport implements Selectors {
   protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
-  protected final List<JsonObject> selectorEngines = new ArrayList<>(); // FIXME: do we need this? is it ever read?
+  protected final List<JsonObject> selectorEngines = new ArrayList<>();
 
   String testIdAttributeName = "data-testid";
 
