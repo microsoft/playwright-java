@@ -71,23 +71,25 @@ class LocatorImpl implements Locator {
     return gson().toJson(text);
   }
 
-  private <R, O> R withElement(BiFunction<ElementHandle, O, R> callback, O options) {
-    ElementHandleOptions handleOptions = convertType(options, ElementHandleOptions.class);
-    // TODO: support deadline based timeout
-//    Double timeout = null;
-//    if (handleOptions != null) {
-//      timeout = handleOptions.timeout;
-//    }
-//    timeout = frame.page.timeoutSettings.timeout(timeout);
-//    long deadline = System.nanoTime() + (long) timeout.doubleValue() * 1_000_000;
-    ElementHandle handle = elementHandle(handleOptions);
-    try {
-      return callback.apply(handle, options);
-    } finally {
-      if (handle != null) {
-        handle.dispose();
+  private <R, O> R withElement(BiFunction<ElementHandle, O, R> callback, O options, String title) {
+    return frame.withTitle(title, () -> {
+      ElementHandleOptions handleOptions = convertType(options, ElementHandleOptions.class);
+      // TODO: support deadline based timeout
+      //    Double timeout = null;
+      //    if (handleOptions != null) {
+      //      timeout = handleOptions.timeout;
+      //    }
+      //    timeout = frame.page.timeoutSettings.timeout(timeout);
+      //    long deadline = System.nanoTime() + (long) timeout.doubleValue() * 1_000_000;
+      ElementHandle handle = elementHandle(handleOptions);
+      try {
+        return callback.apply(handle, options);
+      } finally {
+        if (handle != null) {
+          handle.dispose();
+        }
       }
-    }
+    });
   }
 
   @Override
@@ -152,7 +154,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public BoundingBox boundingBox(BoundingBoxOptions options) {
-    return withElement((h, o) -> h.boundingBox(), options);
+    return withElement((h, o) -> h.boundingBox(), options, "Bounding Box");
   }
 
   @Override
@@ -165,7 +167,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public void clear(ClearOptions options) {
-    fill("", convertType(options, FillOptions.class));
+    frame.withTitle("Clear", () -> fill("", convertType(options, FillOptions.class)));
   }
 
   @Override
@@ -235,7 +237,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Object evaluate(String expression, Object arg, EvaluateOptions options) {
-    return withElement((h, o) -> h.evaluate(expression, arg), options);
+    return withElement((h, o) -> h.evaluate(expression, arg), options, "Evaluate");
   }
 
   @Override
@@ -245,7 +247,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public JSHandle evaluateHandle(String expression, Object arg, EvaluateHandleOptions options) {
-    return withElement((h, o) -> h.evaluateHandle(expression, arg), options);
+    return withElement((h, o) -> h.evaluateHandle(expression, arg), options, "Evaluate");
   }
 
   @Override
@@ -490,7 +492,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
-    return withElement((h, o) -> h.screenshot(o), convertType(options, ElementHandle.ScreenshotOptions.class));
+    return withElement((h, o) -> h.screenshot(o), convertType(options, ElementHandle.ScreenshotOptions.class), "Screenshot");
   }
 
   @Override
@@ -498,7 +500,7 @@ class LocatorImpl implements Locator {
     withElement((h, o) -> {
       h.scrollIntoViewIfNeeded(o);
       return null;
-    }, convertType(options, ElementHandle.ScrollIntoViewIfNeededOptions.class));
+    }, convertType(options, ElementHandle.ScrollIntoViewIfNeededOptions.class), "Scroll into view");
   }
 
   @Override
@@ -554,7 +556,7 @@ class LocatorImpl implements Locator {
     withElement((h, o) -> {
       h.selectText(o);
       return null;
-    }, convertType(options, ElementHandle.SelectTextOptions.class));
+    }, convertType(options, ElementHandle.SelectTextOptions.class), "Select text");
   }
 
   @Override
@@ -660,8 +662,8 @@ class LocatorImpl implements Locator {
     return frame.hashCode() ^ selector.hashCode();
   }
 
-  FrameExpectResult expect(String expression, FrameExpectOptions options) {
-    return frame.withLogging("Locator.expect", () -> expectImpl(expression, options));
+  FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
+    return frame.withTitle(title, () -> expectImpl(expression, options));
   }
 
   JsonObject toProtocol() {

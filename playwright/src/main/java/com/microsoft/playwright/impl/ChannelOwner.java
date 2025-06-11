@@ -82,13 +82,27 @@ class ChannelOwner extends LoggingSupport {
     return new WaitForEventLogger<>(this, apiName, code).get();
   }
 
+  @Deprecated
   @Override
   <T> T withLogging(String apiName, Supplier<T> code) {
-    String previousApiName = connection.setApiName(apiName);
+    // this has so many callers, removing it would clutter this PR.
+    // it's a no-op for now, and i'll remove it from the codebase in the next PR.
+    return super.withLogging(apiName, code);
+  }
+
+  void withTitle(String title, Runnable code) {
+    withTitle(title, () -> {
+      code.run();
+      return null;
+    });
+  }
+
+  <T> T withTitle(String title, Supplier<T> code) {
+    String previousTitle = connection.setTitle(title);
     try {
-      return super.withLogging(apiName, code);
+      return code.get();
     } finally {
-      connection.setApiName(previousApiName);
+      connection.setTitle(previousTitle);
     }
   }
 

@@ -229,7 +229,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public Page newPage(NewPageOptions options) {
-    return withLogging("Browser.newPage", () -> newPageImpl(options));
+    return withTitle("Create Page", () -> newPageImpl(options));
   }
 
   @Override

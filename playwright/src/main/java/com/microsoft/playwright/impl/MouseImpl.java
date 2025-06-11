@@ -46,7 +46,7 @@ class MouseImpl implements Mouse {
 
   @Override
   public void dblclick(double x, double y, DblclickOptions options) {
-    page.withLogging("Mouse.dblclick", () -> dblclickImpl(x, y, options));
+    page.withTitle("Double click", () -> dblclickImpl(x, y, options));
   }
 
   private void dblclickImpl(double x, double y, DblclickOptions options) {
