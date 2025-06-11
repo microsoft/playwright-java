@@ -104,7 +104,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     clock = new ClockImpl(this);
     closePromise = new WaitableEvent<>(listeners, EventType.CLOSE); 
 
-    JsonElement url = initializer.getAsJsonObject("options").get("baseUrl");
+    JsonElement url = initializer.getAsJsonObject("options").get("baseURL");
     if (url != null) {
       try {
         this.baseUrl = new URL(url.getAsString());
