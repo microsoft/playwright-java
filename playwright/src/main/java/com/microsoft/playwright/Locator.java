@@ -2606,6 +2606,12 @@ public interface Locator {
    * Describes the locator, description is used in the trace viewer and reports. Returns the locator pointing to the same
    * element.
    *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator button = page.getByTestId("btn-sub").describe("Subscribe button");
+   * button.click();
+   * }</pre>
+   *
    * @param description Locator description.
    * @since v1.53
    */

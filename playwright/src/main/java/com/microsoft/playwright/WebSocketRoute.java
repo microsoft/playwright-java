@@ -27,7 +27,7 @@ import java.util.function.Consumer;
  *
  * <p> <strong>Mocking</strong>
  *
- * <p> By default, the routed WebSocket will not connect to the server. This way, you can mock entire communcation over the
+ * <p> By default, the routed WebSocket will not connect to the server. This way, you can mock entire communication over the
  * WebSocket. Here is an example that responds to a {@code "request"} with a {@code "response"}.
  * <pre>{@code
  * page.routeWebSocket("wss://example.com/ws", ws -> {

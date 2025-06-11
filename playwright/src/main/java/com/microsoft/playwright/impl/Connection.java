@@ -373,9 +373,6 @@ public class Connection {
       case "Stream":
         result = new Stream(parent, type, guid, initializer);
         break;
-      case "Selectors":
-        result = new SelectorsImpl(parent, type, guid, initializer);
-        break;
       case "SocksSupport":
         break;
       case "Tracing":

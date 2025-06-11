@@ -52,7 +52,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()), env);
       PlaywrightImpl result = connection.initializePlaywright();
       result.driverProcess = p;
-      result.initSharedSelectors(null);
       return result;
     } catch (IOException e) {
       throw new PlaywrightException("Failed to launch driver", e);
@@ -62,7 +61,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl chromium;
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
-  private final SelectorsImpl selectors;
   private final APIRequestImpl apiRequest;
   private SharedSelectors sharedSelectors;
 
@@ -72,22 +70,8 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
 
-    selectors = connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+    sharedSelectors = new SharedSelectors();
     apiRequest = new APIRequestImpl(this);
-  }
-
-  void initSharedSelectors(PlaywrightImpl parent) {
-    assert sharedSelectors == null;
-    if (parent == null) {
-      sharedSelectors = new SharedSelectors();
-    } else {
-      sharedSelectors = parent.sharedSelectors;
-    }
-    sharedSelectors.addChannel(selectors);
-  }
-
-  void unregisterSelectors() {
-    sharedSelectors.removeChannel(selectors);
   }
 
   public LocalUtils localUtils() {

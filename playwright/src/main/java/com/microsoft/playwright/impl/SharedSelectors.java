@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 
@@ -28,20 +29,24 @@ import java.util.List;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SharedSelectors extends LoggingSupport implements Selectors {
-  private final List<SelectorsImpl> channels = new ArrayList<>();
-  private final List<Registration> registrations = new ArrayList<>();
+  private final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
+  private final List<JsonObject> selectorEngines = new ArrayList<>(); // FIXME: do we need this? is it ever read?
 
   String testIdAttributeName = "data-testid";
 
-  private static class Registration {
-    final String name;
-    final String script;
-    final RegisterOptions options;
-
-    Registration(String name, String script, RegisterOptions options) {
-      this.name = name;
-      this.script = script;
-      this.options = options;
+  @Override
+  public void setTestIdAttribute(String attributeName) {
+    if (attributeName == null) {
+      throw new PlaywrightException("Test id attribute cannot be null");
+    }
+    testIdAttributeName = attributeName;
+    for (BrowserContextImpl context : contextsForSelectors) {
+      try {
+        JsonObject params = new JsonObject();
+        params.addProperty("testIdAttributeName", attributeName);
+        context.sendMessageAsync("setTestIdAttributeName", params);
+      } catch (PlaywrightException e) {  
+      }
     }
   }
 
@@ -63,33 +68,18 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
     });
   }
 
-  @Override
-  public void setTestIdAttribute(String attributeName) {
-    if (attributeName == null) {
-      throw new PlaywrightException("Test id attribute cannot be null");
-    }
-    testIdAttributeName = attributeName;
-    channels.forEach(channel -> channel.setTestIdAttributeName(testIdAttributeName));
-  }
-
-  void addChannel(SelectorsImpl channel) {
-    registrations.forEach(r -> {
-      try {
-        channel.register(r.name, r.script, r.options);
-      } catch (PlaywrightException e) {
-        // This should not fail except for connection closure, but just in case we catch.
-      }
-      channel.setTestIdAttributeName(testIdAttributeName);
-    });
-    channels.add(channel);
-  }
-
-  void removeChannel(SelectorsImpl channel) {
-    channels.remove(channel);
-  }
-
   private void registerImpl(String name, String script, RegisterOptions options) {
-    channels.forEach(impl -> impl.register(name, script, options));
-    registrations.add(new Registration(name, script, options));
+    JsonObject engine = new JsonObject();
+    engine.addProperty("name", name);
+    engine.addProperty("source", script);
+    if (options.contentScript != null) {
+      engine.addProperty("contentScript", options.contentScript);
+    }
+    for (BrowserContextImpl context : contextsForSelectors) {
+      JsonObject params = new JsonObject();
+      params.add("selectorEngine", engine);
+      context.sendMessageAsync("registerSelectorEngine", params);
+    }
+    selectorEngines.add(engine);
   }
 }

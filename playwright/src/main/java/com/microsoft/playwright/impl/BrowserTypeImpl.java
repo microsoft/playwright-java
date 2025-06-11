@@ -101,14 +101,12 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       }
       throw new PlaywrightException("Malformed endpoint. Did you use launchServer method?");
     }
-    playwright.initSharedSelectors(this.connection.getExistingObject("Playwright"));
     BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
     browser.isConnectedOverWebSocket = true;
     browser.browserType = this;
     Consumer<JsonPipe> connectionCloseListener = t -> browser.notifyRemoteClosed();
     pipe.onClose(connectionCloseListener);
     browser.onDisconnected(b -> {
-      playwright.unregisterSelectors();
       pipe.offClose(connectionCloseListener);
       try {
         connection.close();
