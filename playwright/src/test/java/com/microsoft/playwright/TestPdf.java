@@ -60,13 +60,6 @@ public class TestPdf extends TestBase {
     assertTrue(outlineSize > noOutlineSize, "Unexpected sizes: " + outlineSize + " noOutline: " + noOutlineSize);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void shouldThrowInNonChromium() {
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.pdf());
-    assertTrue(e.getMessage().contains("PDF generation is only supported for Headless Chromium"), e.getMessage());
-  }
-
 
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")

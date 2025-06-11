@@ -150,9 +150,11 @@ public class Connection {
     if (titleReported) {
       metadata.addProperty("internal", true);
     } else {
-      metadata.addProperty("title", title);
-      // All but first message in a custom-titled API call are considered internal and will be hidden from the inspector.
-      titleReported = true;
+      if (title != null) {
+        metadata.addProperty("title", title);
+        // All but first message in a custom-titled API call are considered internal and will be hidden from the inspector.
+        titleReported = true;
+      }
       if (stackTraceCollector != null) {
         stack = stackTraceCollector.currentStackTrace();
         if (!stack.isEmpty()) {

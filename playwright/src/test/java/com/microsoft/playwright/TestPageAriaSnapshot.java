@@ -1,6 +1,5 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.Locator.AriaSnapshotOptions;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,6 @@ import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
 @UsePlaywright
