@@ -29,7 +29,6 @@ import static com.microsoft.playwright.options.ColorScheme.LIGHT;
 import static com.microsoft.playwright.options.Media.PRINT;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPageEmulateMedia extends TestBase {
   @Test
