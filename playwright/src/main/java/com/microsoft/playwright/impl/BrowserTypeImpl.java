@@ -158,6 +158,14 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       // Make a copy so that we can nullify some fields below.
       options = convertType(options, LaunchPersistentContextOptions.class);
     }
+
+    Browser.NewContextOptions harOptions = convertType(options, Browser.NewContextOptions.class);
+    options.recordHarContent = null;
+    options.recordHarMode = null;
+    options.recordHarPath = null;
+    options.recordHarOmitContent = null;
+    options.recordHarUrlFilter = null;
+
     options.timeout = TimeoutSettings.launchTimeout(options.timeout);
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
@@ -203,7 +211,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
-    context.initializeHarFromOptions(convertType(options, Browser.NewContextOptions.class));
+    context.initializeHarFromOptions(harOptions);
     context.tracing().setTracesDir(options.tracesDir);
     return context;
   }
