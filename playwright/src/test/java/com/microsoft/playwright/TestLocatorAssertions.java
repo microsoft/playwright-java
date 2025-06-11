@@ -1070,7 +1070,7 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("div");
     PlaywrightAssertions.setDefaultAssertionTimeout(1000);
     AssertionFailedError exception = assertThrows(AssertionFailedError.class, () -> assertThat(locator).hasText("foo"));
-    assertTrue(exception.getMessage().contains("Expect \"hasText\" with timeout 1000ms"), exception.getMessage());
+    assertTrue(exception.getMessage().contains("Assert \"hasText\" with timeout 1000ms"), exception.getMessage());
     // Restore default.
     PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
   }
@@ -1119,7 +1119,7 @@ public class TestLocatorAssertions extends TestBase {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page.locator("div")).containsClass("does-not-exist", new ContainsClassOptions().setTimeout(1000));
     });
-    assertTrue(e.getMessage().contains("Expect \"containsClass\" with timeout 1000ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Assert \"containsClass\" with timeout 1000ms"), e.getMessage());
   }
 
   @Test
@@ -1137,6 +1137,6 @@ public class TestLocatorAssertions extends TestBase {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page.locator("div")).containsClass(asList("foo", "bar", "baz"), new ContainsClassOptions().setTimeout(1000));
     });
-    assertTrue(e.getMessage().contains("Expect \"containsClass\" with timeout 1000ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Assert \"containsClass\" with timeout 1000ms"), e.getMessage());
   }
 }

@@ -17,12 +17,10 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
-import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;

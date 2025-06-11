@@ -67,10 +67,6 @@ class LocatorImpl implements Locator {
     this.selector = selector;
   }
 
-  private static String escapeWithQuotes(String text) {
-    return gson().toJson(text);
-  }
-
   private <R, O> R withElement(BiFunction<ElementHandle, O, R> callback, O options, String title) {
     return frame.withTitle(title, () -> {
       ElementHandleOptions handleOptions = convertType(options, ElementHandleOptions.class);
