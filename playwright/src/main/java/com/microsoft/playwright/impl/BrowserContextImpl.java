@@ -69,8 +69,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>(eventSubscriptions(), this);
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
-  Path videosDir;
-  URL baseUrl;
   final Map<String, HarRecorder> harRecorders = new HashMap<>();
 
   static class HarRecorder {
@@ -103,19 +101,25 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     request.timeoutSettings = timeoutSettings;
     clock = new ClockImpl(this);
     closePromise = new WaitableEvent<>(listeners, EventType.CLOSE); 
+  }
 
+  Path videosDir() {
+    JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
+    if (recordVideo == null) {
+      return null;
+    }
+    return Paths.get(recordVideo.get("dir").getAsString());
+  }
+
+  URL baseUrl() {
     JsonElement url = initializer.getAsJsonObject("options").get("baseURL");
     if (url != null) {
       try {
-        this.baseUrl = new URL(url.getAsString());
+        return new URL(url.getAsString());
       } catch (MalformedURLException e) {
       }
     }
-  
-    JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
-    if (recordVideo != null) {
-      this.videosDir = Paths.get(recordVideo.get("dir").getAsString());
-    }
+    return null;
   }
 
   void setRecordHar(Path path, HarContentPolicy policy) {
@@ -481,7 +485,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(baseUrl, url, this.connection.localUtils, false), handler, options);
+    route(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils, false), handler, options);
   }
 
   @Override
@@ -503,7 +507,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       recordIntoHar(null, har, options, null);
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url, this.connection.localUtils, false);
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl(), options.url, this.connection.localUtils, false);
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
@@ -518,7 +522,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl, url, this.connection.localUtils, true), handler);
+    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils, true), handler);
   }
 
   @Override
@@ -658,7 +662,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(this.baseUrl, url, this.connection.localUtils, false), handler);
+    unroute(UrlMatcher.forGlob(this.baseUrl(), url, this.connection.localUtils, false), handler);
   }
 
   @Override
