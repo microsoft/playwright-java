@@ -121,13 +121,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     return null;
   }
-
-  void setRecordHar(Path path, HarContentPolicy policy) {
-    if (path != null) {
-      harRecorders.put("", new HarRecorder(path, policy));
-    }
-  }
-
+  
   String effectiveCloseReason() {
     if (closeReason != null) {
       return closeReason;
