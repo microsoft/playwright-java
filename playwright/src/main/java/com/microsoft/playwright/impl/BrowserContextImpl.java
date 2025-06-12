@@ -542,24 +542,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     });
   }
 
-  private HarContentPolicy routeFromHarUpdateContentPolicyToHarContentPolicy(RouteFromHarUpdateContentPolicy contentPolicy) {
-    if (contentPolicy == null) {
-      return null;
-    }
-
-    switch (contentPolicy) {
-      case ATTACH:
-        return HarContentPolicy.ATTACH;
-      case EMBED:
-        return HarContentPolicy.EMBED;
-      default:
-        return null;
-    }
-  }
-
   void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options, HarContentPolicy contentPolicy) {
     if (contentPolicy == null) {
-      contentPolicy = routeFromHarUpdateContentPolicyToHarContentPolicy(options.updateContent);
+      contentPolicy = Utils.convertType(options.updateContent, HarContentPolicy.class);;
     }
     if (contentPolicy == null) {
       contentPolicy = HarContentPolicy.ATTACH;
