@@ -875,6 +875,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   protected void initializeHarFromOptions(Browser.NewContextOptions options) {
     if (options.recordHarPath == null) {
+      if (options.recordHarOmitContent != null) {
+        throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
+      }
+      if (options.recordHarUrlFilter != null) {
+        throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
+      }
+      if (options.recordHarMode != null) {
+        throw new PlaywrightException("recordHarMode is set but recordHarPath is null");
+      }
+      if (options.recordHarContent != null) {
+        throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
+      }
       return;
     }
 
