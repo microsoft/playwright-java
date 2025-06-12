@@ -1061,7 +1061,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     List<Waitable<Response>> waitables = new ArrayList<>();
     if (matcher == null) {
-      matcher = UrlMatcher.forOneOf(page.context().baseUrl, options.url, this.connection.localUtils, false);
+      matcher = UrlMatcher.forOneOf(page.context().baseUrl(), options.url, this.connection.localUtils, false);
     }
     logger.log("waiting for navigation " + matcher);
     waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil, logger));
@@ -1109,7 +1109,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(UrlMatcher.forGlob(page.context().baseUrl, url, this.connection.localUtils, false), options);
+    waitForURL(UrlMatcher.forGlob(page.context().baseUrl(), url, this.connection.localUtils, false), options);
   }
 
   @Override

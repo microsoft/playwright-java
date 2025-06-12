@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
@@ -64,7 +63,8 @@ public class Connection {
   private int lastId = 0;
   private final StackTraceCollector stackTraceCollector;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
-  private String apiName;
+  private String title;
+  private boolean titleReported = false;
   private static final boolean isLogging;
   static {
     String debug = System.getenv("DEBUG");
@@ -116,9 +116,10 @@ public class Connection {
     }
   }
 
-  String setApiName(String name) {
-    String previous = apiName;
-    apiName = name;
+  String setTitle(String newTitle) {
+    String previous = title;
+    titleReported = false;
+    title = newTitle;
     return previous;
   }
 
@@ -146,12 +147,14 @@ public class Connection {
     JsonObject metadata = new JsonObject();
     metadata.addProperty("wallTime", currentTimeMillis());
     JsonArray stack = null;
-    if (apiName == null) {
+    if (titleReported) {
       metadata.addProperty("internal", true);
     } else {
-      metadata.addProperty("apiName", apiName);
-      // All but first message in an API call are considered internal and will be hidden from the inspector.
-      apiName = null;
+      if (title != null) {
+        metadata.addProperty("title", title);
+        // All but first message in a custom-titled API call are considered internal and will be hidden from the inspector.
+        titleReported = true;
+      }
       if (stackTraceCollector != null) {
         stack = stackTraceCollector.currentStackTrace();
         if (!stack.isEmpty()) {
@@ -372,9 +375,6 @@ public class Connection {
         break;
       case "Stream":
         result = new Stream(parent, type, guid, initializer);
-        break;
-      case "Selectors":
-        result = new SelectorsImpl(parent, type, guid, initializer);
         break;
       case "SocksSupport":
         break;

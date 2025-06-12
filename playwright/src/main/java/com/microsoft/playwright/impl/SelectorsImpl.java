@@ -17,28 +17,69 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-class SelectorsImpl extends ChannelOwner {
-  SelectorsImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
-  }
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-  void register(String name, String script, Selectors.RegisterOptions options) {
-    if (options == null) {
-      options = new Selectors.RegisterOptions();
+public class SelectorsImpl extends LoggingSupport implements Selectors {
+  protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
+  protected final List<JsonObject> selectorEngines = new ArrayList<>();
+
+  String testIdAttributeName = "data-testid";
+
+  @Override
+  public void setTestIdAttribute(String attributeName) {
+    if (attributeName == null) {
+      throw new PlaywrightException("Test id attribute cannot be null");
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("name", name);
-    params.addProperty("source", script);
-    sendMessage("register", params);
+    testIdAttributeName = attributeName;
+    for (BrowserContextImpl context : contextsForSelectors) {
+      try {
+        JsonObject params = new JsonObject();
+        params.addProperty("testIdAttributeName", attributeName);
+        context.sendMessageAsync("setTestIdAttributeName", params);
+      } catch (PlaywrightException e) {  
+      }
+    }
   }
 
-  void setTestIdAttributeName(String name) {
-    JsonObject params = new JsonObject();
-    params.addProperty("testIdAttributeName", name);
-    sendMessageAsync("setTestIdAttributeName", params);
+  @Override
+  public void register(String name, String script, RegisterOptions options) {
+    withLogging("Selectors.register", () -> registerImpl(name, script, options));
+  }
+
+  @Override
+  public void register(String name, Path path, RegisterOptions options) {
+    withLogging("Selectors.register", () -> {
+      byte[] buffer;
+      try {
+        buffer = Files.readAllBytes(path);
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read selector from file: " + path, e);
+      }
+      registerImpl(name, new String(buffer, UTF_8), options);
+    });
+  }
+
+  private void registerImpl(String name, String script, RegisterOptions options) {
+    JsonObject engine = new JsonObject();
+    engine.addProperty("name", name);
+    engine.addProperty("source", script);
+    if (options != null && options.contentScript != null) {
+      engine.addProperty("contentScript", options.contentScript);
+    }
+    for (BrowserContextImpl context : contextsForSelectors) {
+      JsonObject params = new JsonObject();
+      params.add("selectorEngine", engine);
+      context.sendMessage("registerSelectorEngine", params);
+    }
+    selectorEngines.add(engine);
   }
 }

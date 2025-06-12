@@ -218,6 +218,6 @@ public class TestLocatorAssertions2 extends TestBase {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () ->
       assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true).setTimeout(1000)));
     // TODO: should be "assertThat().isChecked() with timeout 1000ms"
-    assertTrue(e.getMessage().contains("Locator.expect with timeout 1000ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Assert \"isChecked\" with timeout 1000ms"), e.getMessage());
   }
 }

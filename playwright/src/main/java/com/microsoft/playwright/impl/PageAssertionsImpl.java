@@ -21,7 +21,6 @@ import com.microsoft.playwright.assertions.PageAssertions;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorAssertionsImpl.shouldIgnoreCase;
 import static com.microsoft.playwright.impl.UrlMatcher.resolveUrl;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
@@ -42,30 +41,30 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = title;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.title", expected, title, "Page title expected to be", convertType(options, FrameExpectOptions.class));
+    expectImpl("to.have.title", expected, title, "Page title expected to be", convertType(options, FrameExpectOptions.class), "Assert \"hasTitle\"");
   }
 
   @Override
   public void hasTitle(Pattern pattern, HasTitleOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertType(options, FrameExpectOptions.class));
+    expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertType(options, FrameExpectOptions.class), "Assert \"hasTitle\"");
   }
 
   @Override
   public void hasURL(String url, HasURLOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
-    if (actualPage.context().baseUrl != null) {
-      url = resolveUrl(actualPage.context().baseUrl, url);
+    if (actualPage.context().baseUrl() != null) {
+      url = resolveUrl(actualPage.context().baseUrl(), url);
     }
     expected.string = url;
     expected.ignoreCase = shouldIgnoreCase(options);
-    expectImpl("to.have.url", expected, url, "Page URL expected to be", convertType(options, FrameExpectOptions.class));
+    expectImpl("to.have.url", expected, url, "Page URL expected to be", convertType(options, FrameExpectOptions.class), "Assert \"hasURL\"");
   }
 
   @Override
   public void hasURL(Pattern pattern, HasURLOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertType(options, FrameExpectOptions.class));
+    expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertType(options, FrameExpectOptions.class), "Assert \"hasURL\"");
   }
 
   @Override

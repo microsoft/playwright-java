@@ -38,7 +38,6 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    markAsInternalType();
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 

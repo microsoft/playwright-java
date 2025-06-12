@@ -44,8 +44,7 @@ public class LocatorUtils {
   }
 
   static String getByTestIdSelector(Object testId, PlaywrightImpl playwright) {
-    String testIdAttributeName = ((SharedSelectors) playwright.selectors()).testIdAttributeName;
-    return getByAttributeTextSelector(testIdAttributeName, testId, true);
+    return getByAttributeTextSelector(playwright.selectors.testIdAttributeName, testId, true);
   }
 
   static String getByAltTextSelector(Object text, Locator.GetByAltTextOptions options) {

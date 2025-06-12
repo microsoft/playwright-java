@@ -28,7 +28,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 public class LocalUtils extends ChannelOwner {
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    markAsInternalType();
   }
 
   JsonArray deviceDescriptors() {

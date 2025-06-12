@@ -20,7 +20,6 @@ import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
@@ -227,7 +226,6 @@ public class TestDefaultBrowserContext2 extends TestBase {
     // TODO:
   }
 
-  @Disabled("Temporarily skipping until the roll that contains https://github.com/microsoft/playwright/pull/36227")
   @Test
   void shouldRespectSelectors() {
     Page page = launchPersistent();
@@ -307,6 +305,21 @@ public class TestDefaultBrowserContext2 extends TestBase {
     Path relativePath = cwd.relativize(userDataDir);
     BrowserContext context = browserType.launchPersistentContext(relativePath);
     assertTrue(Files.list(userDataDir).count() > 0);
+    context.close();
+  }
+
+  @Test
+  void shouldExposeBrowser() {
+    Page page = launchPersistent();
+    BrowserContext context = page.context();
+    Browser browser = context.browser();
+    assertFalse(browser.version().isEmpty());
+    Page page2 = browser.newPage();
+    page2.navigate("data:text/html,<html><title>Title</title></html>");
+    assertEquals("Title", page2.title());
+    browser.close();
+    assertEquals(0, context.pages().size());
+    // Next line should not throw.
     context.close();
   }
 }

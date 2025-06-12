@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
@@ -202,8 +203,8 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.title != null).map(e -> e.title).collect(Collectors.toList());
-    assertEquals(asList("outer group", "Page.navigate", "inner group 1", "Frame.click", "inner group 2", "Page.isVisible"), calls);
+    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle()).collect(Collectors.toList());
+    assertEquals(asList("outer group", "Frame.goto", "inner group 1", "Frame.click", "inner group 2", "Frame.isVisible"), calls);
   }
 
   @Test
@@ -240,30 +241,30 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.title != null).map(e -> e.title)
+    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle())
         .collect(Collectors.toList());
     assertEquals(asList(
-        "Clock.install",
-        "Page.setContent",
+        "BrowserContext.clockInstall",
+        "Frame.setContent",
         "Frame.click",
         "Frame.click",
-        "Keyboard.type",
-        "Keyboard.press",
-        "Keyboard.down",
-        "Keyboard.insertText",
-        "Keyboard.up",
-        "Mouse.move",
-        "Mouse.down",
-        "Mouse.move",
-        "Mouse.wheel",
-        "Mouse.up",
-        "Clock.fastForward",
-        "Clock.fastForward",
-        "Clock.pauseAt",
-        "Clock.runFor",
-        "Clock.setFixedTime",
-        "Clock.setSystemTime",
-        "Clock.resume",
+        "Page.keyboardType",
+        "Page.keyboardPress",
+        "Page.keyboardDown",
+        "Page.keyboardInsertText",
+        "Page.keyboardUp",
+        "Page.mouseMove",
+        "Page.mouseDown",
+        "Page.mouseMove",
+        "Page.mouseWheel",
+        "Page.mouseUp",
+        "BrowserContext.clockFastForward",
+        "BrowserContext.clockFastForward",
+        "BrowserContext.clockPauseAt",
+        "BrowserContext.clockRunFor",
+        "BrowserContext.clockSetFixedTime",
+        "BrowserContext.clockSetSystemTime",
+        "BrowserContext.clockResume",
         "Frame.click"),
         calls);
   }
@@ -284,20 +285,31 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.title != null).map(e -> e.title)
+    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle())
       .collect(Collectors.toList());
-    assertEquals(asList("Page.navigate"), calls);
+    assertEquals(asList("Frame.goto"), calls);
   }
 
   private static class TraceEvent {
     String type;
     String name;
-    String apiName;
     String title;
+    @SerializedName("class")
+    String clazz;
     String method;
     Double startTime;
     Double endTime;
     String callId;
+
+    String renderedTitle() {
+      if (title != null) {
+        return title;
+      }
+      if (clazz != null && method != null) {
+        return clazz + "." + method;
+      }
+      return null;
+    }
   }
 
   private static List<TraceEvent> parseTraceEvents(Path traceFile) throws IOException {

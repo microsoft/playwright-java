@@ -26,8 +26,4 @@ public class RemoteBrowser extends ChannelOwner {
   BrowserImpl browser() {
     return connection.getExistingObject(initializer.getAsJsonObject("browser").get("guid").getAsString());
   }
-
-  SelectorsImpl selectors() {
-    return connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
-  }
 }

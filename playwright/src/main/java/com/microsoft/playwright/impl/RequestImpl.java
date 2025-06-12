@@ -53,7 +53,6 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    markAsInternalType();
 
     if (initializer.has("redirectedFrom")) {
       redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
