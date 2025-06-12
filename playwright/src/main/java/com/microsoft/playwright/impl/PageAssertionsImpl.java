@@ -53,8 +53,8 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   @Override
   public void hasURL(String url, HasURLOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
-    if (actualPage.context().baseUrl != null) {
-      url = resolveUrl(actualPage.context().baseUrl, url);
+    if (actualPage.context().baseUrl() != null) {
+      url = resolveUrl(actualPage.context().baseUrl(), url);
     }
     expected.string = url;
     expected.ignoreCase = shouldIgnoreCase(options);
