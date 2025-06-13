@@ -74,10 +74,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
-    return querySelectorImpl(selector, options);
-  }
-
-  ElementHandleImpl querySelectorImpl(String selector, QuerySelectorOptions options) {
     if (options == null) {
       options = new QuerySelectorOptions();
     }
@@ -93,7 +89,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return querySelectorAllImpl(selector);
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonElement json = sendMessage("querySelectorAll", params);
+    JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
+    if (elements == null) {
+      return null;
+    }
+    List<ElementHandle> handles = new ArrayList<>();
+    for (JsonElement item : elements) {
+      handles.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
+    }
+    return handles;
   }
 
   @Override
@@ -119,20 +126,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return selectOption(selector, values, options);
   }
 
-  List<ElementHandle> querySelectorAllImpl(String selector) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    JsonElement json = sendMessage("querySelectorAll", params);
-    JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
-    if (elements == null) {
-      return null;
-    }
-    List<ElementHandle> handles = new ArrayList<>();
-    for (JsonElement item : elements) {
-      handles.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
-    }
-    return handles;
-  }
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {

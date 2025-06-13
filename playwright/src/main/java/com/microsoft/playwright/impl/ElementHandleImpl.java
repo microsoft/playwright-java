@@ -113,10 +113,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void check(CheckOptions options) {
-    checkImpl(options);
-  }
-
-  private void checkImpl(CheckOptions options) {
     if (options == null) {
       options = new CheckOptions();
     }
@@ -127,10 +123,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void click(ClickOptions options) {
-    clickImpl(options);
-  }
-
-  private void clickImpl(ClickOptions options) {
     if (options == null) {
       options = new ClickOptions();
     }
@@ -141,10 +133,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public Frame contentFrame() {
-    return contentFrameImpl();
-  }
-
-  private Frame contentFrameImpl() {
     JsonObject json = sendMessage("contentFrame").getAsJsonObject();
     if (!json.has("frame")) {
       return null;
@@ -154,10 +142,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void dblclick(DblclickOptions options) {
-    dblclickImpl(options);
-  }
-
-  private void dblclickImpl(DblclickOptions options) {
     if (options == null) {
       options = new DblclickOptions();
     }
@@ -176,10 +160,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void fill(String value, FillOptions options) {
-    fillImpl(value, options);
-  }
-
-  private void fillImpl(String value, FillOptions options) {
     if (options == null) {
       options = new FillOptions();
     }
@@ -204,10 +184,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void hover(HoverOptions options) {
-    hoverImpl(options);
-  }
-
-  private void hoverImpl(HoverOptions options) {
     if (options == null) {
       options = new HoverOptions();
     }
@@ -230,10 +206,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public String inputValue(InputValueOptions options) {
-    return inputValueImpl(options);
-  }
-
-  private String inputValueImpl(InputValueOptions options) {
     if (options == null) {
       options = new InputValueOptions();
     }
@@ -289,9 +261,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void press(String key, PressOptions options) {
-    pressImpl(key, options);
-  }
-  private void pressImpl(String key, PressOptions options) {
     if (options == null) {
       options = new PressOptions();
     }
@@ -303,10 +272,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
-    return screenshotImpl(options);
-  }
-
-  private byte[] screenshotImpl(ScreenshotOptions options) {
     if (options == null) {
       options = new ScreenshotOptions();
     }
@@ -337,7 +302,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options) {
-    scrollIntoViewIfNeededImpl(options);
+    if (options == null) {
+      options = new ScrollIntoViewIfNeededOptions();
+    }
+    options.timeout = frame.timeout(options.timeout);
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("scrollIntoViewIfNeeded", params);
   }
 
   @Override
@@ -371,14 +341,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     return selectOption(values, options);
   }
 
-  private void scrollIntoViewIfNeededImpl(ScrollIntoViewIfNeededOptions options) {
-    if (options == null) {
-      options = new ScrollIntoViewIfNeededOptions();
-    }
-    options.timeout = frame.timeout(options.timeout);
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("scrollIntoViewIfNeeded", params);
-  }
 
   @Override
   public List<String> selectOption(SelectOption[] values, SelectOptionOptions options) {
@@ -411,7 +373,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void selectText(SelectTextOptions options) {
-    selectTextImpl(options);
+    if (options == null) {
+      options = new SelectTextOptions();
+    }
+    options.timeout = frame.timeout(options.timeout);
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("selectText", params);
   }
 
   @Override
@@ -428,21 +395,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     setInputFiles(new Path[]{files}, options);
   }
 
-  private void selectTextImpl(SelectTextOptions options) {
-    if (options == null) {
-      options = new SelectTextOptions();
-    }
-    options.timeout = frame.timeout(options.timeout);
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("selectText", params);
-  }
 
   @Override
   public void setInputFiles(Path[] files, SetInputFilesOptions options) {
-    setInputFilesImpl(files, options);
-  }
-
-  void setInputFilesImpl(Path[] files, SetInputFilesOptions options) {
     FrameImpl frame = ownerFrame();
     if (frame == null) {
       throw new Error("Cannot set input files to detached element");
@@ -463,10 +418,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void setInputFiles(FilePayload[] files, SetInputFilesOptions options) {
-    setInputFilesImpl(files, options);
-  }
-
-  void setInputFilesImpl(FilePayload[] files, SetInputFilesOptions options) {
     checkFilePayloadSize(files);
     if (options == null) {
       options = new SetInputFilesOptions();
@@ -479,10 +430,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void tap(TapOptions options) {
-    tapImpl(options);
-  }
-
-  private void tapImpl(TapOptions options) {
     if (options == null) {
       options = new TapOptions();
     }
@@ -493,20 +440,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public String textContent() {
-    return textContentImpl();
-  }
-
-  private String textContentImpl() {
     JsonObject json = sendMessage("textContent").getAsJsonObject();
     return json.has("value") ? json.get("value").getAsString() : null;
   }
 
   @Override
   public void type(String text, TypeOptions options) {
-    typeImpl(text, options);
-  }
-
-  private void typeImpl(String text, TypeOptions options) {
     if (options == null) {
       options = new TypeOptions();
     }
@@ -518,10 +457,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void uncheck(UncheckOptions options) {
-    uncheckImpl(options);
-  }
-
-  private void uncheckImpl(UncheckOptions options) {
     if (options == null) {
       options = new UncheckOptions();
     }
@@ -532,10 +467,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void waitForElementState(ElementState state, WaitForElementStateOptions options) {
-    waitForElementStateImpl(state, options);
-  }
-
-  private void waitForElementStateImpl(ElementState state, WaitForElementStateOptions options) {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
@@ -554,10 +485,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return waitForSelectorImpl(selector, options);
-  }
-
-  private ElementHandle waitForSelectorImpl(String selector, WaitForSelectorOptions options) {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }

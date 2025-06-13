@@ -118,10 +118,6 @@ class LocatorImpl implements Locator {
 
   @Override
   public String ariaSnapshot(AriaSnapshotOptions options) {
-    return ariaSnapshotImpl(options);
-  }
-
-  private String ariaSnapshotImpl(AriaSnapshotOptions options) {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
@@ -134,10 +130,6 @@ class LocatorImpl implements Locator {
 
   @Override
   public void blur(BlurOptions options) {
-    blurImpl(options);
-  }
-
-  private void blurImpl(BlurOptions options) {
     if (options == null) {
       options = new BlurOptions();
     }
@@ -632,10 +624,6 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new WaitForOptions();
     }
-    waitForImpl(options);
-  }
-
-  private void waitForImpl(WaitForOptions options) {
     frame.waitForSelectorImpl(selector, convertType(options, Frame.WaitForSelectorOptions.class).setStrict(true), true);
   }
 

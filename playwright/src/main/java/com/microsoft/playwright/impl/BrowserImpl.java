@@ -114,10 +114,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
-    return newContextImpl(options);
-  }
-
-  private BrowserContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     } else {

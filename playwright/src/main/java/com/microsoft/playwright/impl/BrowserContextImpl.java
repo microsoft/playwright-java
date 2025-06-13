@@ -275,15 +275,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close(CloseOptions options) {
-    closeImpl(options);
-  }
-
-  @Override
-  public List<Cookie> cookies(String url) {
-    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
-  }
-
-  private void closeImpl(CloseOptions options) {
     if (!closingOrClosed) {
       closingOrClosed = true;
       if (options == null) {
@@ -317,6 +308,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     runUntil(() -> {}, closePromise);
   }
+
+  @Override
+  public List<Cookie> cookies(String url) {
+    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
+  }
+
 
   @Override
   public void addCookies(List<Cookie> cookies) {
@@ -358,10 +355,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void clearCookies(ClearCookiesOptions options) {
-    clearCookiesImpl(options);
-  }
-
-  private void clearCookiesImpl(ClearCookiesOptions options) {
     if (options == null) {
       options = new ClearCookiesOptions();
     }
@@ -389,10 +382,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
-    return cookiesImpl(urls);
-  }
-
-  private List<Cookie> cookiesImpl(List<String> urls) {
     JsonObject params = new JsonObject();
     if (urls == null) {
       urls = new ArrayList<>();
@@ -434,10 +423,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
-    grantPermissionsImpl(permissions, options);
-  }
-
-  private void grantPermissionsImpl(List<String> permissions, GrantPermissionsOptions options) {
     if (options == null) {
       options = new GrantPermissionsOptions();
     }
@@ -451,10 +436,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public PageImpl newPage() {
-    return newPageImpl();
-  }
-
-  private PageImpl newPageImpl() {
     if (ownerPage != null) {
       throw new PlaywrightException("Please use browser.newContext()");
     }
@@ -593,10 +574,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public String storageState(StorageStateOptions options) {
-    return storageStateImpl(options);
-  }
-
-  private String storageStateImpl(StorageStateOptions options) {
     if (options == null) {
       options = new StorageStateOptions();
     }

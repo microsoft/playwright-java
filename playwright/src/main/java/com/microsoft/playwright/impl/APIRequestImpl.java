@@ -39,10 +39,6 @@ class APIRequestImpl implements APIRequest {
 
   @Override
   public APIRequestContextImpl newContext(NewContextOptions options) {
-    return newContextImpl(options);
-  }
-
-  private APIRequestContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     } else {

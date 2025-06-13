@@ -53,10 +53,6 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public void dispose(DisposeOptions options) {
-    disposeImpl(options);
-  }
-
-  private void disposeImpl(DisposeOptions options) {
     if (options == null) {
       options = new DisposeOptions();
     }
