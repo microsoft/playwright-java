@@ -214,10 +214,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void check(String selector, CheckOptions options){
-    checkImpl(selector, options);
-  }
-
-  void checkImpl(String selector, CheckOptions options) {
     if (options == null) {
       options = new CheckOptions();
     }
@@ -249,19 +245,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String content() {
-    return contentImpl();
-  }
-
-  String contentImpl() {
     return sendMessage("content").getAsJsonObject().get("value").getAsString();
   }
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
-    dblclickImpl(selector, options);
-  }
-
-  void dblclickImpl(String selector, DblclickOptions options) {
     if (options == null) {
       options = new DblclickOptions();
     }
@@ -273,10 +261,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
-    dispatchEventImpl(selector, type, eventInit, options);
-  }
-
-  void dispatchEventImpl(String selector, String type, Object eventInit, DispatchEventOptions options) {
     if (options == null) {
       options = new DispatchEventOptions();
     }
@@ -290,10 +274,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Object evaluate(String expression, Object arg) {
-    return evaluateImpl(expression, arg);
-  }
-
-  Object evaluateImpl(String expression, Object arg) {
     JsonObject params = new JsonObject();
     params.addProperty("expression", expression);
     params.addProperty("world", "main");
@@ -305,10 +285,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return evaluateHandleImpl(pageFunction, arg);
-  }
-
-  JSHandle evaluateHandleImpl(String pageFunction, Object arg) {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
@@ -319,10 +295,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void fill(String selector, String value, FillOptions options) {
-    fillImpl(selector, value, options);
-  }
-
-  void fillImpl(String selector, String value, FillOptions options) {
     if (options == null) {
       options = new FillOptions();
     }
@@ -335,10 +307,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void focus(String selector, FocusOptions options) {
-    focusImpl(selector, options);
-  }
-
-  void focusImpl(String selector, FocusOptions options) {
     if (options == null) {
       options = new FocusOptions();
     }
@@ -350,18 +318,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public ElementHandle frameElement() {
-    return frameElementImpl();
-
+    JsonObject json = sendMessage("frameElement").getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
   public FrameLocator frameLocator(String selector) {
     return new FrameLocatorImpl(this, selector);
-  }
-
-  ElementHandle frameElementImpl() {
-    JsonObject json = sendMessage("frameElement").getAsJsonObject();
-    return connection.getExistingObject(json.getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
@@ -745,23 +708,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   void setCheckedImpl(String selector, boolean checked, SetCheckedOptions options) {
     if (checked) {
-      checkImpl(selector, convertType(options, CheckOptions.class));
+      check(selector, convertType(options, CheckOptions.class));
     } else {
-      uncheckImpl(selector, convertType(options, UncheckOptions.class));
+      uncheck(selector, convertType(options, UncheckOptions.class));
     }
   }
 
   @Override
   public void setContent(String html, SetContentOptions options) {
-    setContentImpl(html, options);
-  }
-
-  @Override
-  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
-    setInputFiles(selector, new Path[] {files}, options);
-  }
-
-  void setContentImpl(String html, SetContentOptions options) {
     if (options == null) {
       options = new SetContentOptions();
     }
@@ -769,6 +723,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("html", html);
     sendMessage("setContent", params);
+  }
+
+  @Override
+  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
+    setInputFiles(selector, new Path[] {files}, options);
   }
 
   @Override
@@ -811,9 +770,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void tap(String selector, TapOptions options) {
-    tapImpl(selector, options);
-  }
-  void tapImpl(String selector, TapOptions options) {
     if (options == null) {
       options = new TapOptions();
     }
@@ -825,10 +781,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String textContent(String selector, TextContentOptions options) {
-    return textContentImpl(selector, options);
-  }
-
-  String textContentImpl(String selector, TextContentOptions options) {
     if (options == null) {
       options = new TextContentOptions();
     }
@@ -840,20 +792,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String title() {
-    return titleImpl();
-  }
-
-  String titleImpl() {
     JsonElement json = sendMessage("title");
     return json.getAsJsonObject().get("value").getAsString();
   }
 
   @Override
   public void type(String selector, String text, TypeOptions options) {
-    typeImpl(selector, text, options);
-  }
-
-  void typeImpl(String selector, String text, TypeOptions options) {
     if (options == null) {
       options = new TypeOptions();
     }
@@ -866,10 +810,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void uncheck(String selector, UncheckOptions options) {
-    uncheckImpl(selector, options);
-  }
-
-  void uncheckImpl(String selector, UncheckOptions options) {
     if (options == null) {
       options = new UncheckOptions();
     }
@@ -886,10 +826,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
-    return waitForFunctionImpl(pageFunction, arg, options);
-  }
-
-  JSHandle waitForFunctionImpl(String pageFunction, Object arg, WaitForFunctionOptions options) {
     if (options == null) {
       options = new WaitForFunctionOptions();
     }
@@ -1066,10 +1002,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return waitForSelectorImpl(selector, options);
-  }
-
-  ElementHandle waitForSelectorImpl(String selector, WaitForSelectorOptions options) {
     return waitForSelectorImpl(selector, options, false);
   }
 
@@ -1091,10 +1023,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForTimeout(double timeout) {
-    waitForTimeoutImpl(timeout);
-  }
-
-  void waitForTimeoutImpl(double timeout) {
     JsonObject params = new JsonObject();
     params.addProperty("timeout", timeout);
     sendMessage("waitForTimeout", params);

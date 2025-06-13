@@ -58,7 +58,7 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(Path[] files, SetFilesOptions options) {
-    element.setInputFilesImpl(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 
   @Override
@@ -68,6 +68,6 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(FilePayload[] files, SetFilesOptions options) {
-    element.setInputFilesImpl(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 }

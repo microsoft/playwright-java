@@ -324,14 +324,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void addInitScript(String script) {
-    addInitScriptImpl(script);
+    JsonObject params = new JsonObject();
+    params.addProperty("source", script);
+    sendMessage("addInitScript", params);
   }
 
   @Override
   public void addInitScript(Path path) {
     try {
       byte[] bytes = readAllBytes(path);
-      addInitScriptImpl(new String(bytes, UTF_8));
+      addInitScript(new String(bytes, UTF_8));
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read script from file", e);
     }
@@ -340,12 +342,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public List<Page> backgroundPages() {
     return new ArrayList<>(backgroundPages);
-  }
-
-  private void addInitScriptImpl(String script) {
-    JsonObject params = new JsonObject();
-    params.addProperty("source", script);
-    sendMessage("addInitScript", params);
   }
 
   @Override

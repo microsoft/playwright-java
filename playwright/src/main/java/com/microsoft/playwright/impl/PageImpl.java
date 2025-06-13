@@ -558,13 +558,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
-    return mainFrame.querySelectorImpl(
+    return mainFrame.querySelector(
       selector, convertType(options, Frame.QuerySelectorOptions.class));
   }
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return mainFrame.querySelectorAllImpl(selector);
+    return mainFrame.querySelectorAll(selector);
   }
 
   @Override
@@ -672,7 +672,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void check(String selector, CheckOptions options) {
-    mainFrame.checkImpl(selector, convertType(options, Frame.CheckOptions.class));
+    mainFrame.check(selector, convertType(options, Frame.CheckOptions.class));
   }
 
   @Override
@@ -682,7 +682,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public String content() {
-    return mainFrame.contentImpl();
+    return mainFrame.content();
   }
 
   @Override
@@ -692,12 +692,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
-    mainFrame.dblclickImpl(selector, convertType(options, Frame.DblclickOptions.class));
+    mainFrame.dblclick(selector, convertType(options, Frame.DblclickOptions.class));
   }
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
-    mainFrame.dispatchEventImpl(selector, type, eventInit, convertType(options, Frame.DispatchEventOptions.class));
+    mainFrame.dispatchEvent(selector, type, eventInit, convertType(options, Frame.DispatchEventOptions.class));
   }
 
   @Override
@@ -715,12 +715,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Object evaluate(String expression, Object arg) {
-    return mainFrame.evaluateImpl(expression, arg);
+    return mainFrame.evaluate(expression, arg);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return mainFrame.evaluateHandleImpl(pageFunction, arg);
+    return mainFrame.evaluateHandle(pageFunction, arg);
   }
 
   @Override
@@ -752,12 +752,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void fill(String selector, String value, FillOptions options) {
-    mainFrame.fillImpl(selector, value, convertType(options, Frame.FillOptions.class));
+    mainFrame.fill(selector, value, convertType(options, Frame.FillOptions.class));
   }
 
   @Override
   public void focus(String selector, FocusOptions options) {
-    mainFrame.focusImpl(selector, convertType(options, Frame.FocusOptions.class));
+    mainFrame.focus(selector, convertType(options, Frame.FocusOptions.class));
   }
 
   @Override
@@ -1208,7 +1208,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setContent(String html, SetContentOptions options) {
-    mainFrame.setContentImpl(html, convertType(options, Frame.SetContentOptions.class));
+    mainFrame.setContent(html, convertType(options, Frame.SetContentOptions.class));
   }
 
   @Override
@@ -1265,17 +1265,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void tap(String selector, TapOptions options) {
-    mainFrame.tapImpl(selector, convertType(options, Frame.TapOptions.class));
+    mainFrame.tap(selector, convertType(options, Frame.TapOptions.class));
   }
 
   @Override
   public String textContent(String selector, TextContentOptions options) {
-    return mainFrame.textContentImpl(selector, convertType(options, Frame.TextContentOptions.class));
+    return mainFrame.textContent(selector, convertType(options, Frame.TextContentOptions.class));
   }
 
   @Override
   public String title() {
-    return mainFrame.titleImpl();
+    return mainFrame.title();
   }
 
   @Override
@@ -1285,12 +1285,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void type(String selector, String text, TypeOptions options) {
-    mainFrame.typeImpl(selector, text, convertType(options, Frame.TypeOptions.class));
+    mainFrame.type(selector, text, convertType(options, Frame.TypeOptions.class));
   }
 
   @Override
   public void uncheck(String selector, UncheckOptions options) {
-    mainFrame.uncheckImpl(selector, convertType(options, Frame.UncheckOptions.class));
+    mainFrame.uncheck(selector, convertType(options, Frame.UncheckOptions.class));
   }
 
   @Override
@@ -1366,7 +1366,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
-    return mainFrame.waitForFunctionImpl(pageFunction, arg, convertType(options, Frame.WaitForFunctionOptions.class));
+    return mainFrame.waitForFunction(pageFunction, arg, convertType(options, Frame.WaitForFunctionOptions.class));
   }
 
   @Override
@@ -1519,7 +1519,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return mainFrame.waitForSelectorImpl(selector, convertType(options, Frame.WaitForSelectorOptions.class));
+    return mainFrame.waitForSelector(selector, convertType(options, Frame.WaitForSelectorOptions.class));
   }
 
   @Override
@@ -1533,7 +1533,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForTimeout(double timeout) {
-    mainFrame.waitForTimeoutImpl(timeout);
+    mainFrame.waitForTimeout(timeout);
   }
 
   @Override
