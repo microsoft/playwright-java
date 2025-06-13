@@ -30,25 +30,21 @@ class KeyboardImpl implements Keyboard {
 
   @Override
   public void down(String key) {
-    page.withLogging("Keyboard.down", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("key", key);
-      page.sendMessage("keyboardDown", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("key", key);
+    page.sendMessage("keyboardDown", params);
   }
 
   @Override
   public void insertText(String text) {
-    page.withLogging("Keyboard.insertText", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("text", text);
-      page.sendMessage("keyboardInsertText", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("text", text);
+    page.sendMessage("keyboardInsertText", params);
   }
 
   @Override
   public void press(String key, PressOptions options) {
-    page.withLogging("Keyboard.press", () -> pressImpl(key, options));
+    pressImpl(key, options);
   }
 
   private void pressImpl(String key, PressOptions options) {
@@ -62,7 +58,7 @@ class KeyboardImpl implements Keyboard {
 
     @Override
   public void type(String text, TypeOptions options) {
-    page.withLogging("Keyboard.type", () -> typeImpl(text, options));
+    typeImpl(text, options);
   }
 
   private void typeImpl(String text, TypeOptions options) {
@@ -76,10 +72,8 @@ class KeyboardImpl implements Keyboard {
 
   @Override
   public void up(String key) {
-    page.withLogging("Keyboard.up", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("key", key);
-      page.sendMessage("keyboardUp", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("key", key);
+    page.sendMessage("keyboardUp", params);
   }
 }

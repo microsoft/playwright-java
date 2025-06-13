@@ -66,10 +66,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void close(CloseOptions options) {
-    withLogging("Browser.close", () -> closeImpl(options));
-  }
-
-  private void closeImpl(CloseOptions options) {
     if (options == null) {
       options = new CloseOptions();
     }
@@ -114,10 +110,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
-    return withLogging("Browser.newContext", () -> newContextImpl(options));
-  }
-
-  private BrowserContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     } else {
@@ -192,10 +184,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void startTracing(Page page, StartTracingOptions options) {
-    withLogging("Browser.startTracing", () -> startTracingImpl(page, options));
-  }
-
-  private void startTracingImpl(Page page, StartTracingOptions options) {
     if (options == null) {
       options = new StartTracingOptions();
     }
@@ -209,10 +197,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public byte[] stopTracing() {
-    return withLogging("Browser.stopTracing", () -> stopTracingImpl());
-  }
-
-  private byte[] stopTracingImpl() {
     JsonObject json = sendMessage("stopTracing").getAsJsonObject();
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("artifact").get("guid").getAsString());
     byte[] data = artifact.readAllBytes();

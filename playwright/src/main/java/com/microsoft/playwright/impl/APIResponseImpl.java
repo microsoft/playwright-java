@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIResponse;
@@ -64,11 +63,9 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public void dispose() {
-    context.withLogging("APIResponse.dispose", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("fetchUid", fetchUid());
-      context.sendMessage("disposeAPIResponse", params);
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("fetchUid", fetchUid());
+    context.sendMessage("disposeAPIResponse", params);
   }
 
   @Override

@@ -46,22 +46,22 @@ class DownloadImpl implements Download {
 
   @Override
   public void cancel() {
-    page.withLogging("Download.cancel", () -> artifact.cancel());
+    artifact.cancel();
   }
 
   @Override
   public InputStream createReadStream() {
-    return page.withLogging("Download.createReadStream", () -> artifact.createReadStream());
+    return artifact.createReadStream();
   }
 
   @Override
   public void delete() {
-    page.withLogging("Download.delete", () -> artifact.delete());
+    artifact.delete();
   }
 
   @Override
   public String failure() {
-    return page.withLogging("Download.failure", () -> artifact.failure());
+    return artifact.failure();
   }
 
   @Override
@@ -71,11 +71,11 @@ class DownloadImpl implements Download {
 
   @Override
   public Path path() {
-    return page.withLogging("Download.path", () -> artifact.pathAfterFinished());
+    return artifact.pathAfterFinished();
   }
 
   @Override
   public void saveAs(Path path) {
-    page.withLogging("Download.saveAs", () -> artifact.saveAs(path));
+    artifact.saveAs(path);
   }
 }

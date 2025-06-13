@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.PlaywrightException;
@@ -26,12 +25,10 @@ import com.microsoft.playwright.options.ClientCertificate;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Base64;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.addToProtocol;
-import static java.nio.file.Files.readAllBytes;
 
 class APIRequestImpl implements APIRequest {
   private final PlaywrightImpl playwright;
@@ -42,10 +39,6 @@ class APIRequestImpl implements APIRequest {
 
   @Override
   public APIRequestContextImpl newContext(NewContextOptions options) {
-    return playwright.withLogging("APIRequest.newContext", () -> newContextImpl(options));
-  }
-
-  private APIRequestContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     } else {

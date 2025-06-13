@@ -19,7 +19,6 @@ package com.microsoft.playwright.impl;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Supplier;
 
 class LoggingSupport {
   private static final boolean isEnabled;
@@ -30,29 +29,6 @@ class LoggingSupport {
 
   private static final DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(
     "yyyy-MM-dd'T'HH:mm:ss.SSSXXX").withZone(ZoneId.of("UTC"));
-
-  void withLogging(String apiName, Runnable code) {
-    withLogging(apiName, () -> {
-      code.run();
-      return null;
-    });
-  }
-
-  <T> T withLogging(String apiName, Supplier<T> code) {
-    if (isEnabled) {
-      logApi("=> " + apiName + " started");
-    }
-    boolean success = false;
-    try {
-      T result = code.get();
-      success = true;
-      return result;
-    } finally {
-      if (isEnabled) {
-        logApi("<= " + apiName + (success ? " succeeded" : " failed"));
-      }
-    }
-  }
 
   static void logWithTimestamp(String message) {
     // This matches log format produced by the server.

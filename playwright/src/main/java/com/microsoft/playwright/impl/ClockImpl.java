@@ -14,8 +14,7 @@ class ClockImpl implements Clock {
 
   private void sendMessageWithLogging(String method, JsonObject params) {
     String capitalizedMethod = method.substring(0, 1).toUpperCase() + method.substring(1);
-    browserContext.withLogging("Clock." + method,
-        () -> browserContext.sendMessage("clock" + capitalizedMethod, params));
+    browserContext.sendMessage("clock" + capitalizedMethod, params);
   }
 
   @Override

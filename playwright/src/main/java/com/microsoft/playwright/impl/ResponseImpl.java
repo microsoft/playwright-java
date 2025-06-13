@@ -47,15 +47,13 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public Map<String, String> allHeaders() {
-    return withLogging("Response.allHeaders", () -> getRawHeaders().headers());
+    return getRawHeaders().headers();
   }
 
   @Override
   public byte[] body() {
-    return withLogging("Response.body", () -> {
-      JsonObject json = sendMessage("body").getAsJsonObject();
-      return Base64.getDecoder().decode(json.get("binary").getAsString());
-    });
+    JsonObject json = sendMessage("body").getAsJsonObject();
+    return Base64.getDecoder().decode(json.get("binary").getAsString());
   }
 
   @Override
@@ -95,7 +93,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public List<HttpHeader> headersArray() {
-    return withLogging("Response.headersArray", () -> getRawHeaders().headersArray());
+    return getRawHeaders().headersArray();
   }
 
   @Override
@@ -120,24 +118,20 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public SecurityDetails securityDetails() {
-    return withLogging("Response.securityDetails", () -> {
-      JsonObject json = sendMessage("securityDetails").getAsJsonObject();
-      if (json.has("value")) {
-        return gson().fromJson(json.get("value"), SecurityDetails.class);
-      }
-      return null;
-    });
+    JsonObject json = sendMessage("securityDetails").getAsJsonObject();
+    if (json.has("value")) {
+      return gson().fromJson(json.get("value"), SecurityDetails.class);
+    }
+    return null;
   }
 
   @Override
   public ServerAddr serverAddr() {
-    return withLogging("Response.serverAddr", () -> {
-      JsonObject json = sendMessage("serverAddr").getAsJsonObject();
-      if (json.has("value")) {
-        return gson().fromJson(json.get("value"), ServerAddr.class);
-      }
-      return null;
-    });
+    JsonObject json = sendMessage("serverAddr").getAsJsonObject();
+    if (json.has("value")) {
+      return gson().fromJson(json.get("value"), ServerAddr.class);
+    }
+    return null;
   }
 
   @Override

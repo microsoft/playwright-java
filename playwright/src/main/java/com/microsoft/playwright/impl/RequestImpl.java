@@ -68,7 +68,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Map<String, String> allHeaders() {
-    return withLogging("Request.allHeaders", () -> getRawHeaders().headers());
+    return getRawHeaders().headers();
   }
 
   @Override
@@ -97,12 +97,12 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public List<HttpHeader> headersArray() {
-    return withLogging("Request.headersArray", () -> getRawHeaders().headersArray());
+    return getRawHeaders().headersArray();
   }
 
   @Override
   public String headerValue(String name) {
-    return withLogging("Request.headerValue", () -> getRawHeaders().get(name));
+    return getRawHeaders().get(name);
   }
 
   @Override
@@ -152,25 +152,21 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public ResponseImpl response() {
-    return withLogging("Request.response", () -> {
-      JsonObject result = sendMessage("response").getAsJsonObject();
-      if (!result.has("response")) {
-        return null;
-      }
-      return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
-    });
+    JsonObject result = sendMessage("response").getAsJsonObject();
+    if (!result.has("response")) {
+      return null;
+    }
+    return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
   }
 
   @Override
   public Sizes sizes() {
-    return withLogging("Request.sizes", () -> {
-      ResponseImpl response = response();
-      if (response == null) {
-        throw new PlaywrightException("Unable to fetch sizes for failed request");
-      }
-      JsonObject json = response.sendMessage("sizes").getAsJsonObject();
-      return gson().fromJson(json.getAsJsonObject("sizes"), Sizes.class);
-    });
+    ResponseImpl response = response();
+    if (response == null) {
+      throw new PlaywrightException("Unable to fetch sizes for failed request");
+    }
+    JsonObject json = response.sendMessage("sizes").getAsJsonObject();
+    return gson().fromJson(json.getAsJsonObject("sizes"), Sizes.class);
   }
 
   @Override
@@ -197,10 +193,8 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (rawHeaders != null) {
       return rawHeaders;
     }
-    JsonArray rawHeadersJson = withLogging("Request.allHeaders", () -> {
-      JsonObject result = sendMessage("rawRequestHeaders").getAsJsonObject();
-      return result.getAsJsonArray("headers");
-    });
+    JsonObject result = sendMessage("rawRequestHeaders").getAsJsonObject();
+    JsonArray rawHeadersJson = result.getAsJsonArray("headers");
 
     // The field may have been initialized in a nested call but it is ok.
     rawHeaders = new RawHeaders(asList(gson().fromJson(rawHeadersJson, HttpHeader[].class)));

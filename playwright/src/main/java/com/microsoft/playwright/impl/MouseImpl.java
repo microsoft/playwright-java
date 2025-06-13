@@ -31,10 +31,6 @@ class MouseImpl implements Mouse {
 
   @Override
   public void click(double x, double y, ClickOptions options) {
-    page.withLogging("Mouse.click", () -> clickImpl(x, y, options));
-  }
-
-  private void clickImpl(double x, double y, ClickOptions options) {
     if (options == null) {
       options = new ClickOptions();
     }
@@ -62,10 +58,6 @@ class MouseImpl implements Mouse {
 
   @Override
   public void down(DownOptions options) {
-    page.withLogging("Mouse.down", () -> downImpl(options));
-  }
-
-  private void downImpl(DownOptions options) {
     if (options == null) {
       options = new DownOptions();
     }
@@ -75,10 +67,6 @@ class MouseImpl implements Mouse {
 
   @Override
   public void move(double x, double y, MoveOptions options) {
-    page.withLogging("Mouse.move", () -> moveImpl(x, y, options));
-  }
-
-  private void moveImpl(double x, double y, MoveOptions options) {
     if (options == null) {
       options = new MoveOptions();
     }
@@ -90,24 +78,18 @@ class MouseImpl implements Mouse {
 
   @Override
   public void up(UpOptions options) {
-    page.withLogging("Mouse.up", () -> upImpl(options));
-  }
-
-  @Override
-  public void wheel(double deltaX, double deltaY) {
-    page.withLogging("Mouse.wheel", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("deltaX", deltaX);
-      params.addProperty("deltaY", deltaY);
-      page.sendMessage("mouseWheel", params);
-    });
-  }
-
-  private void upImpl(UpOptions options) {
     if (options == null) {
       options = new UpOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     page.sendMessage("mouseUp", params);
+  }
+
+  @Override
+  public void wheel(double deltaX, double deltaY) {
+    JsonObject params = new JsonObject();
+    params.addProperty("deltaX", deltaX);
+    params.addProperty("deltaY", deltaY);
+    page.sendMessage("mouseWheel", params);
   }
 }
