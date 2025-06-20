@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Keyboard;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class KeyboardImpl implements Keyboard {
@@ -32,14 +33,14 @@ class KeyboardImpl implements Keyboard {
   public void down(String key) {
     JsonObject params = new JsonObject();
     params.addProperty("key", key);
-    page.sendMessage("keyboardDown", params);
+    page.sendMessage("keyboardDown", params, NO_TIMEOUT);
   }
 
   @Override
   public void insertText(String text) {
     JsonObject params = new JsonObject();
     params.addProperty("text", text);
-    page.sendMessage("keyboardInsertText", params);
+    page.sendMessage("keyboardInsertText", params, NO_TIMEOUT);
   }
 
   @Override
@@ -53,7 +54,7 @@ class KeyboardImpl implements Keyboard {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("key", key);
-    page.sendMessage("keyboardPress", params);
+    page.sendMessage("keyboardPress", params, NO_TIMEOUT);
   }
 
     @Override
@@ -67,13 +68,13 @@ class KeyboardImpl implements Keyboard {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("text", text);
-    page.sendMessage("keyboardType", params);
+    page.sendMessage("keyboardType", params, NO_TIMEOUT);
   }
 
   @Override
   public void up(String key) {
     JsonObject params = new JsonObject();
     params.addProperty("key", key);
-    page.sendMessage("keyboardUp", params);
+    page.sendMessage("keyboardUp", params, NO_TIMEOUT);
   }
 }
