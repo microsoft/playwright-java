@@ -78,11 +78,11 @@ class BindingCall extends ChannelOwner {
 
       JsonObject params = new JsonObject();
       params.add("result", gson().toJsonTree(serializeArgument(result)));
-      sendMessage("resolve", params);
+      sendMessage("resolve", params, NO_TIMEOUT);
     } catch (RuntimeException exception) {
       JsonObject params = new JsonObject();
       params.add("error", gson().toJsonTree(serializeError(exception)));
-      sendMessage("reject", params);
+      sendMessage("reject", params, NO_TIMEOUT);
     }
   }
 }

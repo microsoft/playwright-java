@@ -38,7 +38,7 @@ class DialogImpl extends ChannelOwner implements Dialog {
     if (promptText != null) {
       params.addProperty("promptText", promptText);
     }
-    sendMessage("accept", params);
+    sendMessage("accept", params, NO_TIMEOUT);
   }
 
   @Override

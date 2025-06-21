@@ -123,7 +123,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     options.recordHarPath = null;
     options.recordHarOmitContent = null;
     options.recordHarUrlFilter = null;
-    
+
     if (options.storageStatePath != null) {
       try {
         byte[] bytes = Files.readAllBytes(options.storageStatePath);
@@ -171,7 +171,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
     params.add("selectorEngines", gson().toJsonTree(browserType.playwright.selectors.selectorEngines));
     params.addProperty("testIdAttributeName", browserType.playwright.selectors.testIdAttributeName);
-    JsonElement result = sendMessage("newContext", params);
+    JsonElement result = sendMessage("newContext", params, NO_TIMEOUT);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
     context.initializeHarFromOptions(harOptions);
     return context;
@@ -192,7 +192,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (page != null) {
       params.add("page", ((PageImpl) page).toProtocolRef());
     }
-    sendMessage("startTracing", params);
+    sendMessage("startTracing", params, NO_TIMEOUT);
   }
 
   @Override
@@ -250,7 +250,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   @Override
   public CDPSession newBrowserCDPSession() {
     JsonObject params = new JsonObject();
-    JsonObject result = sendMessage("newBrowserCDPSession", params).getAsJsonObject();
+    JsonObject result = sendMessage("newBrowserCDPSession", params, NO_TIMEOUT).getAsJsonObject();
     return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
   }
 

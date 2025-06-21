@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SelectorsImpl extends LoggingSupport implements Selectors {
@@ -45,7 +46,7 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
         JsonObject params = new JsonObject();
         params.addProperty("testIdAttributeName", attributeName);
         context.sendMessageAsync("setTestIdAttributeName", params);
-      } catch (PlaywrightException e) {  
+      } catch (PlaywrightException e) {
       }
     }
   }
@@ -76,7 +77,7 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
     for (BrowserContextImpl context : contextsForSelectors) {
       JsonObject params = new JsonObject();
       params.add("selectorEngine", engine);
-      context.sendMessage("registerSelectorEngine", params);
+      context.sendMessage("registerSelectorEngine", params, NO_TIMEOUT);
     }
     selectorEngines.add(engine);
   }

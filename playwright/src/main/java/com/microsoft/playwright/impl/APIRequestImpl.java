@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.addToProtocol;
 
@@ -65,7 +66,8 @@ class APIRequestImpl implements APIRequest {
       params.add("storageState", storageState);
     }
     addToProtocol(params, clientCertificateList);
-    JsonObject result = playwright.sendMessage("newRequest", params).getAsJsonObject();
+    // Timeout here is not the command's timeout, but we pass it for consistency.
+    JsonObject result = playwright.sendMessage("newRequest", params, options.timeout).getAsJsonObject();
     APIRequestContextImpl context = playwright.connection.getExistingObject(result.getAsJsonObject("request").get("guid").getAsString());
     context.timeoutSettings.setDefaultTimeout(options.timeout);
     return context;

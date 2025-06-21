@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 import static java.nio.file.Files.readAllBytes;
 
@@ -200,7 +201,7 @@ public class Utils {
       items.add(item);
     }
     tempFilesParams.add("items", items);
-    return context.sendMessage("createTempFiles", tempFilesParams).getAsJsonObject();
+    return context.sendMessage("createTempFiles", tempFilesParams, NO_TIMEOUT).getAsJsonObject();
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {

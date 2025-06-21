@@ -86,6 +86,6 @@ class ArtifactImpl extends ChannelOwner {
 
     JsonObject params = new JsonObject();
     params.addProperty("path", path.toString());
-    sendMessage("saveAs", params);
+    sendMessage("saveAs", params, NO_TIMEOUT);
   }
 }

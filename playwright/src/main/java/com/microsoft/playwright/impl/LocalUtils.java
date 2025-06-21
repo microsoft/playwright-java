@@ -41,13 +41,13 @@ public class LocalUtils extends ChannelOwner {
     params.addProperty("mode", appendMode ? "append" : "write");
     params.addProperty("stacksId", stacksId);
     params.addProperty("includeSources", includeSources);
-    sendMessage("zip", params);
+    sendMessage("zip", params, NO_TIMEOUT);
   }
 
   void traceDiscarded(String stacksId) {
     JsonObject params = new JsonObject();
     params.addProperty("stacksId", stacksId);
-    sendMessage("traceDiscarded", params);
+    sendMessage("traceDiscarded", params, NO_TIMEOUT);
   }
 
   String tracingStarted(String tracesDir, String traceName) {
@@ -56,7 +56,7 @@ public class LocalUtils extends ChannelOwner {
       params.addProperty("tracesDir", "");
     }
     params.addProperty("traceName", traceName);
-    JsonObject json = connection.localUtils().sendMessage("tracingStarted", params).getAsJsonObject();
+    JsonObject json = connection.localUtils().sendMessage("tracingStarted", params, NO_TIMEOUT).getAsJsonObject();
     return json.get("stacksId").getAsString();
   }
 
@@ -67,7 +67,7 @@ public class LocalUtils extends ChannelOwner {
       params.addProperty("baseURL", baseURL);
     }
     params.addProperty("webSocketUrl", webSocketUrl);
-    JsonObject json = connection.localUtils().sendMessage("globToRegex", params).getAsJsonObject();
+    JsonObject json = connection.localUtils().sendMessage("globToRegex", params, NO_TIMEOUT).getAsJsonObject();
     String regex = json.get("regex").getAsString();
     return Pattern.compile(regex);
   }

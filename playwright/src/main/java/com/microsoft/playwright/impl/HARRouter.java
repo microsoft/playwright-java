@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.LoggingSupport.*;
 import static com.microsoft.playwright.impl.Serialization.fromNameValues;
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -41,7 +42,7 @@ public class HARRouter {
 
     JsonObject params = new JsonObject();
     params.addProperty("file", harFile.toString());
-    JsonObject json = localUtils.sendMessage("harOpen", params).getAsJsonObject();
+    JsonObject json = localUtils.sendMessage("harOpen", params, NO_TIMEOUT).getAsJsonObject();
     if (json.has("error")) {
       throw new PlaywrightException(json.get("error").getAsString());
     }
@@ -61,7 +62,7 @@ public class HARRouter {
       params.addProperty("postData", base64);
     }
     params.addProperty("isNavigationRequest", request.isNavigationRequest());
-    JsonObject response = localUtils.sendMessage("harLookup", params).getAsJsonObject();
+    JsonObject response = localUtils.sendMessage("harLookup", params, NO_TIMEOUT).getAsJsonObject();
 
     String action = response.get("action").getAsString();
     if ("redirect".equals(action)) {

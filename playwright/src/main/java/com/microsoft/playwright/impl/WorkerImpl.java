@@ -74,7 +74,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params);
+    JsonElement json = sendMessage("evaluateExpression", params, NO_TIMEOUT);
     SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
@@ -84,7 +84,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params);
+    JsonElement json = sendMessage("evaluateExpressionHandle", params, NO_TIMEOUT);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
 

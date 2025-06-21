@@ -44,9 +44,8 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new LaunchOptions();
     }
-    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonElement result = sendMessage("launch", params);
+    JsonElement result = sendMessage("launch", params, TimeoutSettings.launchTimeout(options.timeout));
     BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
     browser.browserType = this;
     browser.launchOptions = options;
@@ -77,11 +76,12 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       headers.addProperty("x-playwright-browser", name());
     }
 
-    if (!params.has("timeout")) {
-      params.addProperty("timeout", 0);
+    Double timeout = options.timeout;
+    if (timeout == null) {
+      timeout = 0.0;
     }
 
-    JsonObject json = connection.localUtils().sendMessage("connect", params).getAsJsonObject();
+    JsonObject json = connection.localUtils().sendMessage("connect", params, timeout).getAsJsonObject();
     JsonPipe pipe = connection.getExistingObject(json.getAsJsonObject("pipe").get("guid").getAsString());
     Connection connection = new Connection(pipe, this.connection.env, this.connection.localUtils);
     PlaywrightImpl playwright = connection.initializePlaywright();
@@ -118,11 +118,10 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new ConnectOverCDPOptions();
     }
-    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("endpointURL", endpointURL);
-    JsonObject json = sendMessage("connectOverCDP", params).getAsJsonObject();
+    JsonObject json = sendMessage("connectOverCDP", params, TimeoutSettings.launchTimeout(options.timeout)).getAsJsonObject();
 
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.connectToBrowserType(this, null);
@@ -148,8 +147,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     options.recordHarPath = null;
     options.recordHarOmitContent = null;
     options.recordHarUrlFilter = null;
-
-    options.timeout = TimeoutSettings.launchTimeout(options.timeout);
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (!userDataDir.isAbsolute() && !userDataDir.toString().isEmpty()) {
@@ -186,7 +183,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     params.add("selectorEngines", gson().toJsonTree(playwright.selectors.selectorEngines));
     params.addProperty("testIdAttributeName", playwright.selectors.testIdAttributeName);
-    JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
+    JsonObject json = sendMessage("launchPersistentContext", params, TimeoutSettings.launchTimeout(options.timeout)).getAsJsonObject();
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.connectToBrowserType(this, options.tracesDir);
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());

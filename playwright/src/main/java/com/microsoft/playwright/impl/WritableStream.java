@@ -42,7 +42,7 @@ class WritableStream extends ChannelOwner {
         ByteBuffer buffer = ByteBuffer.wrap(b, off, len);
         ByteBuffer encoded = Base64.getEncoder().encode(buffer);
         params.addProperty("binary", new String(encoded.array(), StandardCharsets.UTF_8));
-        sendMessage("write", params);
+        sendMessage("write", params, NO_TIMEOUT);
       }
 
       @Override

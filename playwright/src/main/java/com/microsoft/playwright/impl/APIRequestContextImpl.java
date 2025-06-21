@@ -58,7 +58,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     }
     disposeReason = options.reason;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("dispose", params);
+    sendMessage("dispose", params, NO_TIMEOUT);
   }
 
   @Override
@@ -131,7 +131,6 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options.multipart != null) {
       params.add("multipartData", serializeMultipartData(options.multipart.fields));
     }
-    params.addProperty("timeout", timeoutSettings.timeout(options.timeout));
     if (options.failOnStatusCode != null) {
       params.addProperty("failOnStatusCode", options.failOnStatusCode);
     }
@@ -150,7 +149,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       }
       params.addProperty("maxRetries", options.maxRetries);
     }
-    JsonObject json = sendMessage("fetch", params).getAsJsonObject();
+    JsonObject json = sendMessage("fetch", params, timeoutSettings.timeout(options.timeout)).getAsJsonObject();
     return new APIResponseImpl(this, json.getAsJsonObject("response"));
   }
 

@@ -5,6 +5,8 @@ import com.microsoft.playwright.Clock;
 
 import java.util.Date;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
+
 class ClockImpl implements Clock {
   private final ChannelOwner browserContext;
 
@@ -14,7 +16,7 @@ class ClockImpl implements Clock {
 
   private void sendMessageWithLogging(String method, JsonObject params) {
     String capitalizedMethod = method.substring(0, 1).toUpperCase() + method.substring(1);
-    browserContext.sendMessage("clock" + capitalizedMethod, params);
+    browserContext.sendMessage("clock" + capitalizedMethod, params, NO_TIMEOUT);
   }
 
   @Override

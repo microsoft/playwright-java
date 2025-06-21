@@ -121,10 +121,9 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
-    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-    JsonObject result = frame.sendMessage("ariaSnapshot", params).getAsJsonObject();
+    JsonObject result = frame.sendMessage("ariaSnapshot", params, frame.timeout(options.timeout)).getAsJsonObject();
     return result.get("snapshot").getAsString();
   }
 
@@ -133,11 +132,10 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new BlurOptions();
     }
-    options.timeout = frame.timeout(options.timeout);
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("strict", true);
-    frame.sendMessage("blur", params);
+    frame.sendMessage("blur", params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -661,7 +659,7 @@ class LocatorImpl implements Locator {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", expression);
-    JsonElement json = frame.sendMessage("expect", params);
+    JsonElement json = frame.sendMessage("expect", params, options.timeout);
     FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
     return result;
   }
