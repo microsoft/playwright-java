@@ -36,6 +36,8 @@ class ChannelOwner extends LoggingSupport {
   final JsonObject initializer;
   private boolean wasCollected;
 
+  static Double NO_TIMEOUT = null;
+
   protected ChannelOwner(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     this(parent.connection, parent, type, guid, initializer);
   }
@@ -109,11 +111,16 @@ class ChannelOwner extends LoggingSupport {
   }
 
   JsonElement sendMessage(String method) {
-    return sendMessage(method, new JsonObject());
+    return sendMessage(method, new JsonObject(), NO_TIMEOUT);
   }
 
-  JsonElement sendMessage(String method, JsonObject params) {
+  JsonElement sendMessage(String method, JsonObject params, Double timeout) {
     checkNotCollected();
+    if (timeout != null) {
+      params.addProperty("timeout", timeout);
+    } else if (params.has("timeout")) {
+      throw new PlaywrightException("Internal error: timeout must be passed explicitly.");
+    }
     return connection.sendMessage(guid, method, params);
   }
 

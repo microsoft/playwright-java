@@ -53,7 +53,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params);
+    JsonElement json = sendMessage("evaluateExpression", params, NO_TIMEOUT);
     SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
@@ -64,7 +64,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params);
+    JsonElement json = sendMessage("evaluateExpressionHandle", params, NO_TIMEOUT);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
 
@@ -84,7 +84,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
   public JSHandle getProperty(String propertyName) {
     JsonObject params = new JsonObject();
     params.addProperty("name", propertyName);
-    JsonObject json = sendMessage("getProperty", params).getAsJsonObject();
+    JsonObject json = sendMessage("getProperty", params, NO_TIMEOUT).getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("handle").get("guid").getAsString());
   }
 

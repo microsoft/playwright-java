@@ -50,7 +50,7 @@ public class Stream extends ChannelOwner {
       }
       JsonObject params = new JsonObject();
       params.addProperty("size", len);
-      JsonObject json = sendMessage("read", params).getAsJsonObject();
+      JsonObject json = sendMessage("read", params, NO_TIMEOUT).getAsJsonObject();
       String encoded = json.get("binary").getAsString();
       if (encoded.isEmpty()) {
         return -1;

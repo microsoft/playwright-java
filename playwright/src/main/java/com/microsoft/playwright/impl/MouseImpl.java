@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Mouse;
 
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
@@ -37,7 +38,7 @@ class MouseImpl implements Mouse {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("x", x);
     params.addProperty("y", y);
-    page.sendMessage("mouseClick", params);
+    page.sendMessage("mouseClick", params, NO_TIMEOUT);
   }
 
   @Override
@@ -62,7 +63,7 @@ class MouseImpl implements Mouse {
       options = new DownOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    page.sendMessage("mouseDown", params);
+    page.sendMessage("mouseDown", params, NO_TIMEOUT);
   }
 
   @Override
@@ -73,7 +74,7 @@ class MouseImpl implements Mouse {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("x", x);
     params.addProperty("y", y);
-    page.sendMessage("mouseMove", params);
+    page.sendMessage("mouseMove", params, NO_TIMEOUT);
   }
 
   @Override
@@ -82,7 +83,7 @@ class MouseImpl implements Mouse {
       options = new UpOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    page.sendMessage("mouseUp", params);
+    page.sendMessage("mouseUp", params, NO_TIMEOUT);
   }
 
   @Override
@@ -90,6 +91,6 @@ class MouseImpl implements Mouse {
     JsonObject params = new JsonObject();
     params.addProperty("deltaX", deltaX);
     params.addProperty("deltaY", deltaY);
-    page.sendMessage("mouseWheel", params);
+    page.sendMessage("mouseWheel", params, NO_TIMEOUT);
   }
 }
