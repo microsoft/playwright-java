@@ -61,15 +61,17 @@ class APIRequestImpl implements APIRequest {
     }
     List<ClientCertificate> clientCertificateList = options.clientCertificates;
     options.clientCertificates = null;
+    Double timeout = options.timeout;
+    // Timeout is handled on the client.
+    options.timeout = null;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (storageState != null) {
       params.add("storageState", storageState);
     }
     addToProtocol(params, clientCertificateList);
-    // Timeout here is not the command's timeout, but we pass it for consistency.
-    JsonObject result = playwright.sendMessage("newRequest", params, options.timeout).getAsJsonObject();
+    JsonObject result = playwright.sendMessage("newRequest", params, NO_TIMEOUT).getAsJsonObject();
     APIRequestContextImpl context = playwright.connection.getExistingObject(result.getAsJsonObject("request").get("guid").getAsString());
-    context.timeoutSettings.setDefaultTimeout(options.timeout);
+    context.timeoutSettings.setDefaultTimeout(timeout);
     return context;
   }
 }
