@@ -37,7 +37,7 @@ extends:
             artifact: esrp-build
         steps:
         - bash: |
-            if [[ ! "$CURRENT_BRANCH" =~ ^v1\\..* ]]; then
+            if [[ ! "$CURRENT_BRANCH" =~ ^v1\..* ]]; then
               echo "Can only publish from a release tag branch (v1.*)."
               echo "Unexpected branch name: $CURRENT_BRANCH"
               exit 1
