@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.impl.driver.jar;
+package com.microsoft.playwright.springboottest;
 
 import com.microsoft.playwright.impl.driver.Driver;
 
@@ -114,7 +114,7 @@ public class DriverJar extends Driver {
   }
 
   public static URI getDriverResourceURI() throws URISyntaxException {
-    ClassLoader classloader = DriverJar.class.getClassLoader();
+    ClassLoader classloader = com.microsoft.playwright.impl.driver.jar.DriverJar.class.getClassLoader();
     return classloader.getResource("driver/" + platformDir()).toURI();
   }
 
