@@ -189,7 +189,7 @@ public class TestGlobalFetch extends TestBase {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setTimeout(100));
     server.setRoute("/empty.html", exchange -> {});
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
-    assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
 

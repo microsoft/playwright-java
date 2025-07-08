@@ -99,7 +99,7 @@ public class TestPageInterception extends TestBase {
     page.route("**/*", route -> {
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> route.fetch(new Route.FetchOptions().setTimeout(1000)));
-      assertTrue(error.getMessage().contains("Request timed out after 1000ms"), error.getMessage());
+      assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"), error.getMessage());
     });
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.navigate(server.PREFIX + "/slow", new Page.NavigateOptions().setTimeout(2000)));

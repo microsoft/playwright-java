@@ -436,7 +436,7 @@ public class TestBrowserContextFetch extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.PREFIX + "/slow", RequestOptions.create().setTimeout(100));
     });
-    assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
   @Test
@@ -468,7 +468,7 @@ public class TestBrowserContextFetch extends TestBase {
 
     context.setDefaultTimeout(100);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
-    assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
+    assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
   @Test
