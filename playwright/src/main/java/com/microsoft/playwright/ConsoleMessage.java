@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 import java.util.*;
 
 /**
@@ -77,6 +78,6 @@ public interface ConsoleMessage {
    *
    * @since v1.8
    */
-  String type();
+  ConsoleMessageType type();
 }
 

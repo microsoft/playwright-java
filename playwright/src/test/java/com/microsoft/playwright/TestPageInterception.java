@@ -199,11 +199,14 @@ public class TestPageInterception extends TestBase {
     assertTrue(urlMatches("http://first.host/", "http://second.host/foo", "**/foo"));
     assertTrue(urlMatches("http://playwright.dev/", "http://localhost/", "*//localhost/"));
 
-    assertTrue(urlMatches("http://playwright.dev/", "about:blank", "about:blank"));
-    assertFalse(urlMatches("http://playwright.dev/", "about:blank", "http://playwright.dev/"));
-    assertTrue(urlMatches(null, "about:blank", "about:blank"));
-    assertTrue(urlMatches(null, "about:blank", "about:*"));
-    assertFalse(urlMatches(null, "notabout:blank", "about:*"));
+    String[] customPrefixes = {"about", "data", "chrome", "edge", "file"};
+    for (String prefix : customPrefixes) {
+      assertTrue(urlMatches("http://playwright.dev/", prefix + ":blank", prefix + ":blank"));
+      assertFalse(urlMatches("http://playwright.dev/", prefix + ":blank", "http://playwright.dev/"));
+      assertTrue(urlMatches(null, prefix + ":blank", prefix + ":blank"));
+      assertTrue(urlMatches(null, prefix + ":blank", prefix + ":*"));
+      assertFalse(urlMatches(null, "not" + prefix + ":blank", prefix + ":*"));
+    }
   }
 
   Pattern globToRegex(String glob) {

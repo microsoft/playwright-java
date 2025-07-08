@@ -506,7 +506,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options, HarContentPolicy contentPolicy) {
     if (contentPolicy == null) {
-      contentPolicy = Utils.convertType(options.updateContent, HarContentPolicy.class);;
+      contentPolicy = Utils.convertType(options.updateContent, HarContentPolicy.class);
     }
     if (contentPolicy == null) {
       contentPolicy = HarContentPolicy.ATTACH;

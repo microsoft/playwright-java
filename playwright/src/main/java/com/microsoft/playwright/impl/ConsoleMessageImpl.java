@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.ConsoleMessageType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,8 @@ public class ConsoleMessageImpl implements ConsoleMessage {
     this.initializer = initializer;
   }
 
-  public String type() {
-    return initializer.get("type").getAsString();
+  public ConsoleMessageType type() {
+    return Utils.convertType(initializer.get("type").getAsString(), ConsoleMessageType.class);
   }
 
   public String text() {
