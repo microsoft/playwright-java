@@ -20,13 +20,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ConsoleMessageType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class ConsoleMessageImpl implements ConsoleMessage {
   private final Connection connection;
@@ -45,7 +43,28 @@ public class ConsoleMessageImpl implements ConsoleMessage {
   }
 
   public ConsoleMessageType type() {
-    return Utils.convertType(initializer.get("type").getAsString(), ConsoleMessageType.class);
+    String value = initializer.get("type").getAsString();
+    switch (value) {
+      case "log": return ConsoleMessageType.LOG;
+      case "debug": return ConsoleMessageType.DEBUG;
+      case "info": return ConsoleMessageType.INFO;
+      case "error": return ConsoleMessageType.ERROR;
+      case "warning": return ConsoleMessageType.WARNING;
+      case "dir": return ConsoleMessageType.DIR;
+      case "dirxml": return ConsoleMessageType.DIRXML;
+      case "table": return ConsoleMessageType.TABLE;
+      case "trace": return ConsoleMessageType.TRACE;
+      case "clear": return ConsoleMessageType.CLEAR;
+      case "startGroup": return ConsoleMessageType.STARTGROUP;
+      case "startGroupCollapsed": return ConsoleMessageType.STARTGROUPCOLLAPSED;
+      case "endGroup": return ConsoleMessageType.ENDGROUP;
+      case "assert": return ConsoleMessageType.ASSERT;
+      case "profile": return ConsoleMessageType.PROFILE;
+      case "profileEnd": return ConsoleMessageType.PROFILEEND;
+      case "count": return ConsoleMessageType.COUNT;
+      case "timeEnd": return ConsoleMessageType.TIMEEND;
+      default: throw new PlaywrightException("Unexpected console message type: " + value);
+    }
   }
 
   public String text() {

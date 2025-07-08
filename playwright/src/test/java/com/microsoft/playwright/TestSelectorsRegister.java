@@ -139,7 +139,9 @@ public class TestSelectorsRegister extends TestBase {
   @Test
   void shouldThrowAlreadyRegisteredErrorWhenRegistering() {
     // https://github.com/microsoft/playwright/issues/36467
-    browser.close();
+
+    // this test is about the exception *before* there's a context created
+    context.close();
 
     // Register the selector engine first
     playwright.selectors().register("alreadyRegistered", TAG_SELECTOR_SCRIPT);

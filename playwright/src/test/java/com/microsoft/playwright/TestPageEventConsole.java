@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import com.microsoft.playwright.options.ConsoleMessageType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class TestPageEventConsole extends TestBase {
     } else {
       assertEquals("hello 5 {foo: bar}", message.text());
     }
-    assertEquals("log", message.type());
+    assertEquals(ConsoleMessageType.LOG, message.type());
     assertEquals("hello", message.args().get(0).jsonValue());
     assertEquals(5, message.args().get(1).jsonValue());
     assertEquals(mapOf("foo", "bar"), message.args().get(2).jsonValue());
@@ -70,7 +72,13 @@ public class TestPageEventConsole extends TestBase {
       "    console.error('calling console.error');\n" +
       "    console.log(Promise.resolve('should not wait until resolved!'));\n" +
       "  }");
-    assertEquals(asList("timeEnd", "trace", "dir", "warning", "error", "log"),
+    assertEquals(asList(
+      ConsoleMessageType.TIMEEND,
+      ConsoleMessageType.TRACE,
+      ConsoleMessageType.DIR,
+      ConsoleMessageType.WARNING,
+      ConsoleMessageType.ERROR,
+      ConsoleMessageType.LOG),
       messages.stream().map(msg -> msg.type()).collect(toList()));
     assertTrue(messages.get(0).text().contains("calling console.time"));
 
@@ -104,7 +112,7 @@ public class TestPageEventConsole extends TestBase {
       page.evaluate("async url => fetch(url).catch(e => {})", server.EMPTY_PAGE);
     });
     assertTrue(message.text().contains("Access-Control-Allow-Origin"));
-    assertEquals("error", message.type());
+    assertEquals(ConsoleMessageType.ERROR, message.type());
   }
 
   @Test
@@ -113,7 +121,7 @@ public class TestPageEventConsole extends TestBase {
     ConsoleMessage message = page.waitForConsoleMessage(
       new Page.WaitForConsoleMessageOptions().setPredicate(m -> "yellow".equals(m.text())),
       () -> page.navigate(server.PREFIX + "/consolelog.html"));
-    assertEquals("log", message.type());
+    assertEquals(ConsoleMessageType.LOG, message.type());
     // Engines have different column notion.
     assertTrue(message.location().startsWith(server.PREFIX + "/consolelog.html:7:"), message.location());
   }
@@ -122,12 +130,12 @@ public class TestPageEventConsole extends TestBase {
   void shouldSupportPredicate() {
     page.navigate(server.EMPTY_PAGE);
     ConsoleMessage message = page.waitForConsoleMessage(
-      new Page.WaitForConsoleMessageOptions().setPredicate(m -> "info".equals(m.type())),
+      new Page.WaitForConsoleMessageOptions().setPredicate(m -> m.type() == ConsoleMessageType.INFO),
       () -> {
         page.evaluate("console.log(1)");
         page.evaluate("console.info(2)");
       });
     assertEquals("2", message.text());
-    assertEquals("info", message.type());
+    assertEquals(ConsoleMessageType.INFO, message.type());
   }
 }

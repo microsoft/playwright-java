@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import com.microsoft.playwright.options.ConsoleMessageType;
+
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -53,7 +55,7 @@ public class TestBrowserContextEvents extends TestBase {
   void consoleEventShouldWorkInPopup2() {
     Page[] popup = { null };
     ConsoleMessage message = context.waitForConsoleMessage(
-      new BrowserContext.WaitForConsoleMessageOptions().setPredicate(msg -> "log".equals(msg.type())),
+      new BrowserContext.WaitForConsoleMessageOptions().setPredicate(msg -> msg.type() == ConsoleMessageType.LOG),
       () -> {
         popup[0] = context.waitForPage(() -> {
           page.evaluate("async () => {\n" +
