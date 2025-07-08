@@ -19,7 +19,6 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -255,7 +254,6 @@ public class TestPageAddLocatorHandler extends TestBase {
   }
 
   @Test
-  @Disabled("need to debug why this is failing")
   public void shouldWaitForHiddenByDefault2() {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
@@ -273,7 +271,7 @@ public class TestPageAddLocatorHandler extends TestBase {
 
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator("#target").click(new Locator.ClickOptions().setTimeout(3_000)));
     assertEquals(0, (int) page.evaluate("window.clicked"));
-    assertThat(page.locator("#interstitial")).isVisible();
+    assertTrue(page.locator("#interstitial").isVisible());
     assertEquals(1, called[0]);
     assertTrue(e.getMessage().contains("locator handler has finished, waiting for getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"close\")) to be hidden"), e.getMessage());
   }
