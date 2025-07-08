@@ -198,6 +198,12 @@ public class TestPageInterception extends TestBase {
     assertTrue(urlMatches("http://playwright.dev/foo", "http://playwright.dev/foo?bar", "\\\\?bar"));
     assertTrue(urlMatches("http://first.host/", "http://second.host/foo", "**/foo"));
     assertTrue(urlMatches("http://playwright.dev/", "http://localhost/", "*//localhost/"));
+
+    assertTrue(urlMatches("http://playwright.dev/", "about:blank", "about:blank"));
+    assertFalse(urlMatches("http://playwright.dev/", "about:blank", "http://playwright.dev/"));
+    assertTrue(urlMatches(null, "about:blank", "about:blank"));
+    assertTrue(urlMatches(null, "about:blank", "about:*"));
+    assertFalse(urlMatches(null, "notabout:blank", "about:*"));
   }
 
   Pattern globToRegex(String glob) {

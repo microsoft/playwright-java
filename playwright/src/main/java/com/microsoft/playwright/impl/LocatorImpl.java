@@ -645,22 +645,14 @@ class LocatorImpl implements Locator {
   }
 
   FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
-    return frame.withTitle(title, () -> expectImpl(expression, options));
+    options.selector = selector;
+    return frame.expect(expression, options, title);
   }
 
   JsonObject toProtocol() {
     JsonObject result = new JsonObject();
     result.add("frame", frame.toProtocolRef());
     result.addProperty("selector", selector);
-    return result;
-  }
-
-  private FrameExpectResult expectImpl(String expression, FrameExpectOptions options) {
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("expression", expression);
-    JsonElement json = frame.sendMessage("expect", params, options.timeout);
-    FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
     return result;
   }
 }

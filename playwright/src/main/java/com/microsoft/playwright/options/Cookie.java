@@ -48,6 +48,12 @@ public class Cookie {
    * Optional.
    */
   public SameSiteAttribute sameSite;
+  /**
+   * For partitioned third-party cookies (aka <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies">CHIPS</a>), the
+   * partition key. Optional.
+   */
+  public String partitionKey;
 
   public Cookie(String name, String value) {
     this.name = name;
@@ -101,6 +107,15 @@ public class Cookie {
    */
   public Cookie setSameSite(SameSiteAttribute sameSite) {
     this.sameSite = sameSite;
+    return this;
+  }
+  /**
+   * For partitioned third-party cookies (aka <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies">CHIPS</a>), the
+   * partition key. Optional.
+   */
+  public Cookie setPartitionKey(String partitionKey) {
+    this.partitionKey = partitionKey;
     return this;
   }
 }

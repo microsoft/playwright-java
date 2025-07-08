@@ -1085,4 +1085,16 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     return new TimeoutSettings().navigationTimeout(timeout);
   }
+
+  FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
+    return withTitle(title, () -> expect(expression, options));
+  }
+
+  FrameExpectResult expect(String expression, FrameExpectOptions options) {
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("expression", expression);
+    JsonElement json = sendMessage("expect", params, options.timeout);
+    FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
+    return result;
+  }
 }

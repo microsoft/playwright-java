@@ -30,12 +30,20 @@ import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAssertions {
+  LocatorImpl actualLocator;
+
   public LocatorAssertionsImpl(Locator locator) {
     this(locator, false);
   }
 
   private LocatorAssertionsImpl(Locator locator, boolean isNot) {
-    super((LocatorImpl) locator, isNot);
+    super(isNot);
+    this.actualLocator = (LocatorImpl) locator;
+  }
+
+  @Override
+  FrameExpectResult doExpect(String expression, FrameExpectOptions expectOptions, String title) {
+    return actualLocator.expect(expression, expectOptions, title);
   }
 
 
