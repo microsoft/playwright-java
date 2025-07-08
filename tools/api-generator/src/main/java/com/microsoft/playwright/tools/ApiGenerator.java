@@ -596,6 +596,9 @@ abstract class TypeDefinition extends Element {
     if (newEnum.jsonName == null) {
       throw new RuntimeException("Enum without name: " + jsonObject);
     }
+    if ("ConsoleMessageType".equals(newEnum.jsonName)) {
+      return;
+    }
     Map<String, TypeDefinition> enumMap = topLevelTypes();
     TypeDefinition existing = enumMap.putIfAbsent(newEnum.jsonName, newEnum);
     if (existing != null && (!(existing instanceof Enum) || !((Enum) existing).hasSameValues(newEnum))) {
@@ -720,6 +723,11 @@ class Method extends Element {
       output.add(offset + "  AssertionsTimeout.setDefaultTimeout(timeout);");
       output.add(offset + "}");
       output.add("");
+      return;
+    }
+    if ("ConsoleMessage.type".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "String type();");
       return;
     }
     int numOverloads = 1;
@@ -986,7 +994,7 @@ class Interface extends TypeDefinition {
     if (methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "ConsoleMessage").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if ("Download".equals(jsonName)) {
