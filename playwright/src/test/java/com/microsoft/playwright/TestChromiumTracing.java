@@ -64,11 +64,19 @@ public class TestChromiumTracing extends TestBase {
       browser.startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile)
         .setCategories(asList("disabled-by-default-v8.cpu_profiler.hires")));
+      page.evaluate("() => 1 + 1");
       browser.stopTracing();
       try (FileReader fileReader = new FileReader(outputTraceFile.toFile())) {
         JsonObject traceJson = new Gson().fromJson(fileReader, JsonObject.class);
-        assertTrue(traceJson.getAsJsonObject("metadata").get("trace-config")
-          .getAsString().contains("disabled-by-default-v8.cpu_profiler.hires"));
+        // NOTE: trace-config is deprecated as per http://crrev.com/c/6628182
+        boolean hasTraceConfig = traceJson.getAsJsonObject("metadata").get("trace-config").getAsString().contains("disabled-by-default-v8.cpu_profiler.hires");
+        boolean hasTraceEvents = traceJson.getAsJsonArray("traceEvents").asList().stream()
+            .anyMatch(event -> {
+              JsonObject eventObj = (JsonObject) event;
+              return eventObj.has("cat") && 
+                eventObj.get("cat").getAsString().equals("disabled-by-default-v8.cpu_profiler.hires");
+            });
+        assertTrue(hasTraceConfig || hasTraceEvents);
       }
     }
   }
