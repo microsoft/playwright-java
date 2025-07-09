@@ -596,7 +596,8 @@ public interface BrowserContext extends AutoCloseable {
    */
   List<Page> backgroundPages();
   /**
-   * Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
+   * Gets the browser instance that owns the context. Returns {@code null} if the context is created outside of normal
+   * browser, e.g. Android or Electron.
    *
    * @since v1.8
    */
@@ -871,6 +872,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "local-fonts"}</li>
    * </ul>
    * @since v1.8
    */
@@ -903,6 +905,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "local-fonts"}</li>
    * </ul>
    * @since v1.8
    */

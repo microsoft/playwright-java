@@ -3,6 +3,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @FixtureTest
 @UsePlaywright
@@ -101,5 +103,28 @@ public class TestPageAriaSnapshot {
     assertThat(page.locator("body")).matchesAriaSnapshot("" +
       "- link:\n" +
       "  - /url: /.*example.com/");
+  }
+
+  @Test
+  void shouldHandleTopLevelDeepEqual(Page page) {
+    // https://github.com/microsoft/playwright/issues/36456
+    page.setContent("" +
+      "<ul>\n" +
+      "  <li>\n" +
+      "    <ul>\n" +
+      "      <li>1.1</li>\n" +
+      "      <li>1.2</li>\n" +
+      "    </ul>\n" +
+      "  </li>\n" +
+      "</ul>");
+
+    assertThrows(AssertionFailedError.class, () -> {
+      assertThat(page.locator("body")).matchesAriaSnapshot("" +
+        "- /children: deep-equal\n" +
+        "- list:\n" +
+        "  - listitem:\n" +
+        "    - listitem: \"1.1\"\n" +
+        "    - listitem: \"1.2\"");
+    });
   }
 }

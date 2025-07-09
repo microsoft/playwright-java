@@ -32,8 +32,14 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   }
 
   private PageAssertionsImpl(Page page, boolean isNot) {
-    super((LocatorImpl) page.locator(":root"), isNot);
+    super(isNot);
     this.actualPage = (PageImpl) page;
+  }
+
+  @Override
+  FrameExpectResult doExpect(String expression, FrameExpectOptions expectOptions, String title) {
+    FrameImpl frame = (FrameImpl) actualPage.mainFrame();
+    return frame.expect(expression, expectOptions, title);
   }
 
   @Override

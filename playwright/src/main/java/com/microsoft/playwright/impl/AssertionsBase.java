@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.PlaywrightException;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.ValueWrapper;
 
@@ -29,12 +28,10 @@ import java.util.stream.Collectors;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.util.Arrays.asList;
 
-class AssertionsBase {
-  final LocatorImpl actualLocator;
+abstract class AssertionsBase {
   final boolean isNot;
 
-  AssertionsBase(LocatorImpl actual, boolean isNot) {
-    this.actualLocator = actual;
+  AssertionsBase(boolean isNot) {
     this.isNot = isNot;
   }
 
@@ -58,7 +55,7 @@ class AssertionsBase {
     if (isNot) {
       message = message.replace("expected to", "expected not to");
     }
-    FrameExpectResult result = actualLocator.expect(expression, expectOptions, title);
+    FrameExpectResult result = doExpect(expression, expectOptions, title);
     if (result.matches == isNot) {
       Object actual = result.received == null ? null : Serialization.deserialize(result.received);
       String log = (result.log == null) ? "" : String.join("\n", result.log);
@@ -75,7 +72,9 @@ class AssertionsBase {
     }
   }
 
-  private static ValueWrapper formatValue(Object value) {
+  abstract FrameExpectResult doExpect(String expression, FrameExpectOptions expectOptions, String title);
+
+  protected static ValueWrapper formatValue(Object value) {
     if (value == null || !value.getClass().isArray()) {
       return ValueWrapper.create(value);
     }

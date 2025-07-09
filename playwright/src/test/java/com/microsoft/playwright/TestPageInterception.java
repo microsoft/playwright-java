@@ -99,7 +99,7 @@ public class TestPageInterception extends TestBase {
     page.route("**/*", route -> {
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> route.fetch(new Route.FetchOptions().setTimeout(1000)));
-      assertTrue(error.getMessage().contains("Request timed out after 1000ms"), error.getMessage());
+      assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"), error.getMessage());
     });
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.navigate(server.PREFIX + "/slow", new Page.NavigateOptions().setTimeout(2000)));
@@ -198,6 +198,15 @@ public class TestPageInterception extends TestBase {
     assertTrue(urlMatches("http://playwright.dev/foo", "http://playwright.dev/foo?bar", "\\\\?bar"));
     assertTrue(urlMatches("http://first.host/", "http://second.host/foo", "**/foo"));
     assertTrue(urlMatches("http://playwright.dev/", "http://localhost/", "*//localhost/"));
+
+    String[] customPrefixes = {"about", "data", "chrome", "edge", "file"};
+    for (String prefix : customPrefixes) {
+      assertTrue(urlMatches("http://playwright.dev/", prefix + ":blank", prefix + ":blank"));
+      assertFalse(urlMatches("http://playwright.dev/", prefix + ":blank", "http://playwright.dev/"));
+      assertTrue(urlMatches(null, prefix + ":blank", prefix + ":blank"));
+      assertTrue(urlMatches(null, prefix + ":blank", prefix + ":*"));
+      assertFalse(urlMatches(null, "not" + prefix + ":blank", prefix + ":*"));
+    }
   }
 
   Pattern globToRegex(String glob) {

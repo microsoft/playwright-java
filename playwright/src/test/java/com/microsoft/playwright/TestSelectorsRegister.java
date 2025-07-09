@@ -23,25 +23,26 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSelectorsRegister extends TestBase {
+  private static final String TAG_SELECTOR_SCRIPT = "{\n" +
+    "  create(root, target) {\n" +
+    "    return target.nodeName;\n" +
+    "  },\n" +
+    "  query(root, selector) {\n" +
+    "    return root.querySelector(selector);\n" +
+    "  },\n" +
+    "  queryAll(root, selector) {\n" +
+    "    return Array.from(root.querySelectorAll(selector));\n" +
+    "  }\n" +
+    "}";
+
   @Test
   void shouldWork() {
-    String selectorScript = "{\n" +
-      "  create(root, target) {\n" +
-      "    return target.nodeName;\n" +
-      "  },\n" +
-      "  query(root, selector) {\n" +
-      "    return root.querySelector(selector);\n" +
-      "  },\n" +
-      "  queryAll(root, selector) {\n" +
-      "    return Array.from(root.querySelectorAll(selector));\n" +
-      "  }\n" +
-      "}";
     // Register one engine before creating context.
-    playwright.selectors().register("tag", selectorScript);
+    playwright.selectors().register("tag", TAG_SELECTOR_SCRIPT);
 
     BrowserContext context = browser.newContext();
     // Register another engine after creating context.
-    playwright.selectors().register("tag2", selectorScript);
+    playwright.selectors().register("tag2", TAG_SELECTOR_SCRIPT);
 
     Page page = context.newPage();
     page.setContent("<div><span></span></div><div></div>");
@@ -133,5 +134,22 @@ public class TestSelectorsRegister extends TestBase {
       playwright.selectors().register("css", createDummySelector);
     });
     assertTrue(e.getMessage().contains("\"css\" is a predefined selector engine"));
+  }
+
+  @Test
+  void shouldThrowAlreadyRegisteredErrorWhenRegistering() {
+    // https://github.com/microsoft/playwright/issues/36467
+
+    // this test is about the exception *before* there's a context created
+    context.close();
+
+    // Register the selector engine first
+    playwright.selectors().register("alreadyRegistered", TAG_SELECTOR_SCRIPT);
+    
+    // Attempt to register the same selector engine again should throw an error
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
+      playwright.selectors().register("alreadyRegistered", TAG_SELECTOR_SCRIPT);
+    });
+    assertTrue(e.getMessage().contains("\"alreadyRegistered\" selector engine has been already registered"));
   }
 }

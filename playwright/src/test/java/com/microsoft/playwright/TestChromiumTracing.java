@@ -63,12 +63,22 @@ public class TestChromiumTracing extends TestBase {
       Path outputTraceFile = tempDir.resolve("trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile)
-        .setCategories(asList("disabled-by-default-v8.cpu_profiler.hires")));
+        .setCategories(asList("disabled-by-default-cc.debug")));
+      page.evaluate("() => 1 + 1");
       browser.stopTracing();
       try (FileReader fileReader = new FileReader(outputTraceFile.toFile())) {
         JsonObject traceJson = new Gson().fromJson(fileReader, JsonObject.class);
-        assertTrue(traceJson.getAsJsonObject("metadata").get("trace-config")
-          .getAsString().contains("disabled-by-default-v8.cpu_profiler.hires"));
+        // NOTE: trace-config is deprecated as per http://crrev.com/c/6628182
+        boolean hasTraceConfig =
+              traceJson.getAsJsonObject("metadata").get("trace-config") != null
+          && traceJson.getAsJsonObject("metadata").get("trace-config").getAsString().contains("disabled-by-default-cc.debug");
+        boolean hasTraceEvents = traceJson.getAsJsonArray("traceEvents").asList().stream()
+            .anyMatch(event -> {
+              JsonObject eventObj = (JsonObject) event;
+              return eventObj.has("cat") && 
+                eventObj.get("cat").getAsString().equals("disabled-by-default-cc.debug");
+            });
+        assertTrue(hasTraceConfig || hasTraceEvents);
       }
     }
   }

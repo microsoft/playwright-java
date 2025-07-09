@@ -20,12 +20,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
-import com.microsoft.playwright.Page;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class ConsoleMessageImpl implements ConsoleMessage {
   private final Connection connection;

@@ -68,6 +68,10 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
   }
 
   private void registerImpl(String name, String script, RegisterOptions options) {
+    if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.get("name").getAsString()))) {
+      throw new PlaywrightException("selectors.register: \"" + name + "\" selector engine has been already registered");
+    }
+
     JsonObject engine = new JsonObject();
     engine.addProperty("name", name);
     engine.addProperty("source", script);

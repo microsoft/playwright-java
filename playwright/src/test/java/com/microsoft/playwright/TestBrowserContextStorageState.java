@@ -174,10 +174,19 @@ public class TestBrowserContextStorageState extends TestBase {
   @Test
   void shouldSupportIndexedDB() {
     page.navigate(server.PREFIX + "/to-do-notifications/index.html");
+
+    assertThat(page.locator("#notifications")).matchesAriaSnapshot(
+      "    - list:\n" +
+      "      - listitem: Database initialised."
+    );
     page.locator("label:has-text('Task title')").fill("Pet the cat");
     page.locator("label:has-text('Hours')").fill("1");
     page.locator("label:has-text('Mins')").fill("1");
     page.locator("text=Add Task").click();
+    assertThat(page.locator("#notifications")).matchesAriaSnapshot(
+      "    - list:\n" +
+      "      - listitem: \"Transaction completed: database modification finished.\""
+    );
 
     String storageState = page.context().storageState(new BrowserContext.StorageStateOptions().setIndexedDB(true));
     assertJsonEquals("{\"cookies\":[],\"origins\":[\n" +

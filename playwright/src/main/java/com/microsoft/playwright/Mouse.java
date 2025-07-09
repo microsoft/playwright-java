@@ -21,6 +21,11 @@ import com.microsoft.playwright.options.*;
 /**
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
  *
+ * <p> <strong>NOTE:</strong> If you want to debug where the mouse moved, you can use the <a
+ * href="https://playwright.dev/java/docs/trace-viewer-intro">Trace viewer</a> or <a
+ * href="https://playwright.dev/java/docs/running-tests">Playwright Inspector</a>. A red dot showing the location of the
+ * mouse will be shown for every mouse action.
+ *
  * <p> Every {@code page} object has its own Mouse, accessible with {@link com.microsoft.playwright.Page#mouse Page.mouse()}.
  * <pre>{@code
  * // Using ‘page.mouse’ to trace a 100x100 square.

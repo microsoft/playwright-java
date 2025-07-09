@@ -128,7 +128,11 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       return;
     }
     // Ensure that websocket is "open" and can send messages without an actual server connection.
-    sendMessageAsync("ensureOpened");
+    try {
+      sendMessageAsync("ensureOpened");
+    } catch (PlaywrightException e) {
+      // If this happens after the page has been closed, ignore the error.
+    }
   }
 
   @Override

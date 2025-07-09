@@ -271,7 +271,7 @@ public class TestPageAddLocatorHandler extends TestBase {
 
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator("#target").click(new Locator.ClickOptions().setTimeout(3_000)));
     assertEquals(0, (int) page.evaluate("window.clicked"));
-    assertThat(page.locator("#interstitial")).isVisible();
+    assertTrue(page.locator("#interstitial").isVisible());
     assertEquals(1, called[0]);
     assertTrue(e.getMessage().contains("locator handler has finished, waiting for getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"close\")) to be hidden"), e.getMessage());
   }
