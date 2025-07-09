@@ -596,9 +596,6 @@ abstract class TypeDefinition extends Element {
     if (newEnum.jsonName == null) {
       throw new RuntimeException("Enum without name: " + jsonObject);
     }
-    if ("ConsoleMessageType".equals(newEnum.jsonName)) {
-      return;
-    }
     Map<String, TypeDefinition> enumMap = topLevelTypes();
     TypeDefinition existing = enumMap.putIfAbsent(newEnum.jsonName, newEnum);
     if (existing != null && (!(existing instanceof Enum) || !((Enum) existing).hasSameValues(newEnum))) {
@@ -723,11 +720,6 @@ class Method extends Element {
       output.add(offset + "  AssertionsTimeout.setDefaultTimeout(timeout);");
       output.add(offset + "}");
       output.add("");
-      return;
-    }
-    if ("ConsoleMessage.type".equals(jsonPath)) {
-      writeJavadoc(params, output, offset);
-      output.add(offset + "String type();");
       return;
     }
     int numOverloads = 1;
