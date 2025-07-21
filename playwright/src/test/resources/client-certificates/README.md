@@ -1,66 +1,16 @@
 # Client Certificate test-certificates
 
-## Server
-
-```bash
-openssl req \
-	-x509 \
-	-newkey rsa:4096 \
-	-keyout server/server_key.pem \
-	-out server/server_cert.pem \
-	-nodes \
-	-days 365 \
-	-subj "/CN=localhost/O=Client\ Certificate\ Demo" \
-	-addext "subjectAltName=DNS:localhost,DNS:local.playwright"
-```
-
-## Trusted client-certificate (server signed/valid)
+Regenerate all certificates by running:
 
 ```
-mkdir -p client/trusted
-# generate server-signed (valid) certifcate
-openssl req \
-	-newkey rsa:4096 \
-	-keyout client/trusted/key.pem \
-	-out client/trusted/csr.pem \
-	-nodes \
-	-days 365 \
-	-subj "/CN=Alice"
-
-# sign with server_cert.pem
-openssl x509 \
-	-req \
-	-in client/trusted/csr.pem \
-	-CA server/server_cert.pem \
-	-CAkey server/server_key.pem \
-	-out client/trusted/cert.pem \
-	-set_serial 01 \
-	-days 365
-```
-
-## Self-signed certificate (invalid)
-
-```
-mkdir -p client/self-signed
-openssl req \
-	-newkey rsa:4096 \
-	-keyout client/self-signed/key.pem \
-	-out client/self-signed/csr.pem \
-	-nodes \
-	-days 365 \
-	-subj "/CN=Bob"
-
-# sign with self-signed/key.pem
-openssl x509 \
-	-req \
-	-in client/self-signed/csr.pem \
-	-signkey client/self-signed/key.pem \
-	-out client/self-signed/cert.pem \
-	-days 365
+bash generate.sh
 ```
 
 ## Java: Convert PEM Files to PKCS12
 
+
+Java server understands only PKCS12 keys, after copying the certificates from Node.js Playwright we need to convert them.
+
 ```
-openssl pkcs12 -export -in server_cert.pem -inkey server_key.pem -out server_keystore.p12 -name myalias
+bash generate_java.sh
 ```

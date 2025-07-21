@@ -125,8 +125,8 @@ public class TestClientCertificates extends TestBase {
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
         new ClientCertificate(customServer.origin)
-          .setPfxPath(asset("client-certificates/client/trusted/client_keystore.p12"))
-          .setPassphrase("passphrase")));
+          .setPfxPath(asset("client-certificates/client/trusted/keystore.p12"))
+          .setPassphrase("")));
 
     APIRequestContext request = playwright.request().newContext(requestOptions);
     APIResponse response = request.get(customServer.url);
