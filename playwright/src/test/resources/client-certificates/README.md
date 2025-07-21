@@ -8,6 +8,8 @@ bash generate.sh
 
 ## Java: Convert PEM Files to PKCS12
 
+Java server understands only PKCS12 keys, so we need to convert.
+
 ```
-openssl pkcs12 -export -in server_cert.pem -inkey server_key.pem -out server_keystore.p12 -name myalias
+bash generate_java.sh
 ```
