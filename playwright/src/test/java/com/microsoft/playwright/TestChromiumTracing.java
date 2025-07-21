@@ -57,6 +57,13 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
+  private static void rafraf(Page page) {
+    int count = 2;
+    for (int i = 0; i < count; i++) {
+      page.evaluate("() => new Promise(f => requestAnimationFrame(() => requestAnimationFrame(f)))");
+    }
+  }
+
   @Test
   void shouldRunWithCustomCategoriesIfProvided(@TempDir Path tempDir) throws IOException {
     try (Page page = browser.newPage()) {
@@ -64,7 +71,7 @@ public class TestChromiumTracing extends TestBase {
       browser.startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile)
         .setCategories(asList("disabled-by-default-cc.debug")));
-      page.evaluate("() => 1 + 1");
+      rafraf(page);
       browser.stopTracing();
       try (FileReader fileReader = new FileReader(outputTraceFile.toFile())) {
         JsonObject traceJson = new Gson().fromJson(fileReader, JsonObject.class);
@@ -75,7 +82,7 @@ public class TestChromiumTracing extends TestBase {
         boolean hasTraceEvents = traceJson.getAsJsonArray("traceEvents").asList().stream()
             .anyMatch(event -> {
               JsonObject eventObj = (JsonObject) event;
-              return eventObj.has("cat") && 
+              return eventObj.has("cat") &&
                 eventObj.get("cat").getAsString().equals("disabled-by-default-cc.debug");
             });
         assertTrue(hasTraceConfig || hasTraceEvents);
