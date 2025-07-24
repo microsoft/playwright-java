@@ -41,4 +41,4 @@ jobs:
           BROWSER: ${{ matrix.browser }}
         run: |
           CONTAINER_ID="$(docker run --rm -e CI --ipc=host -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-${{ matrix.flavor }} /bin/bash)"
-          docker exec "${CONTAINER_ID}" /root/playwright/tools/test-spring-classloader/package_and_run_classloader_test.sh
+          docker exec "${CONTAINER_ID}" /root/playwright/tools/test-spring-boot-starter/package_and_run_async_test.sh
