@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 @SpringBootApplication
@@ -16,15 +17,10 @@ public class TestApp implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    if (args.length == 0) {
-      runSync();
+    if (Arrays.asList(args).contains("--async")) {
+      runAsync();
     } else {
-      if ("--async".equals(args[0])) {
-        runAsync();
-      }
-      else {
-        runSync();
-      }
+      runSync();
     }
   }
 
