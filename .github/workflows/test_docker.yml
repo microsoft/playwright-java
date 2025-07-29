@@ -43,6 +43,7 @@ jobs:
 
       - name: Test ClassLoader
         run: |
+            docker exec "${CONTAINER_ID}" chmod +x /root/playwright/tools/test-spring-boot-starter/package_and_run_async_test.sh
             docker exec "${CONTAINER_ID}" /root/playwright/tools/test-spring-boot-starter/package_and_run_async_test.sh
 
       - name: Stop container
