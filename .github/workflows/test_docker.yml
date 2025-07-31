@@ -32,7 +32,19 @@ jobs:
         run: |
           ARCH="${{ matrix.runs-on == 'ubuntu-24.04-arm' && 'arm64' || 'amd64' }}"
           bash utils/docker/build.sh --$ARCH ${{ matrix.flavor }} playwright-java:localbuild-${{ matrix.flavor }}
-      - name: Test
+      - name: Start container
         run: |
-          CONTAINER_ID="$(docker run --rm -e CI --ipc=host -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-${{ matrix.flavor }} /bin/bash)"
-          docker exec "${CONTAINER_ID}" /root/playwright/tools/test-local-installation/create_project_and_run_tests.sh
+            CONTAINER_ID=$(docker run --rm -e CI --ipc=host -v "$(pwd)":/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-${{ matrix.flavor }} /bin/bash)
+            echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+
+      - name: Run test in container
+        run: |
+            docker exec "$CONTAINER_ID" /root/playwright/tools/test-local-installation/create_project_and_run_tests.sh
+
+      - name: Test ClassLoader
+        run: |
+            docker exec "${CONTAINER_ID}" /root/playwright/tools/test-spring-boot-starter/package_and_run_async_test.sh
+
+      - name: Stop container
+        run: |
+            docker stop "$CONTAINER_ID"

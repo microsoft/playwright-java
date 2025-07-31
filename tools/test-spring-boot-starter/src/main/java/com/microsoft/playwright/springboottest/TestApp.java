@@ -5,6 +5,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+
 @SpringBootApplication
 public class TestApp implements CommandLineRunner {
 
@@ -14,6 +17,19 @@ public class TestApp implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
+    if (Arrays.asList(args).contains("--async")) {
+      runAsync();
+    } else {
+      runSync();
+    }
+  }
+
+  private void runAsync() {
+    CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(this::runSync);
+    voidCompletableFuture.join();
+  }
+
+  private void runSync() {
     try (Playwright playwright = Playwright.create()) {
       BrowserType browserType = getBrowserTypeFromEnv(playwright);
       System.out.println("Running test with " + browserType.name());
