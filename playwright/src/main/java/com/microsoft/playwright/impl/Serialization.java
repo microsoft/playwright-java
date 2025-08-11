@@ -66,6 +66,7 @@ class Serialization {
     .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
+    .registerTypeAdapter(LocatorImpl.class, new LocatorImplSerializer())
     .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();
 
   static Gson gson() {
@@ -487,6 +488,13 @@ class Serialization {
     @Override
     public JsonElement serialize(E src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(src.toString().toLowerCase());
+    }
+  }
+
+  private static class LocatorImplSerializer implements JsonSerializer<LocatorImpl> {
+    @Override
+    public JsonElement serialize(LocatorImpl src, Type typeOfSrc, JsonSerializationContext context) {
+      return src.toProtocol();
     }
   }
 

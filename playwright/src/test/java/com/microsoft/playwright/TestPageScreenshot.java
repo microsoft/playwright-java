@@ -136,13 +136,24 @@ public class TestPageScreenshot extends TestBase {
   }
 
   @Test
-  void maskShouldWork() {
+  void maskShouldWorkForPage() {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
       .setMask(asList(page.locator("div").nth(5))));
     // TODO: toMatchSnapshot is not present in java, so we only checks that masked screenshot is different.
     byte[] originalScreenshot = page.screenshot();
+    assertThrows(AssertionFailedError.class, () -> assertArrayEquals(screenshot, originalScreenshot));
+  }
+
+  @Test
+  void maskShouldWorkForLocator() {
+    page.navigate(server.PREFIX + "/grid.html");
+    Locator locatorToScreenshot = page.locator("div").first();
+    byte[] screenshot = locatorToScreenshot.screenshot(new Locator.ScreenshotOptions()
+      .setMask(asList(page.locator("img"))));
+    // TODO: toMatchSnapshot is not present in java, so we only checks that masked screenshot is different.
+    byte[] originalScreenshot = locatorToScreenshot.screenshot();
     assertThrows(AssertionFailedError.class, () -> assertArrayEquals(screenshot, originalScreenshot));
   }
 
