@@ -1166,18 +1166,8 @@ public class PageImpl extends ChannelOwner implements Page {
         }
       }
     }
-    List<Locator> mask = options.mask;
-    options.mask = null;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    options.mask = mask;
     params.remove("path");
-    if (mask != null) {
-      JsonArray maskArray = new JsonArray();
-      for (Locator locator: mask) {
-        maskArray.add(((LocatorImpl) locator).toProtocol());
-      }
-      params.add("mask", maskArray);
-    }
     JsonObject json = sendMessage("screenshot", params, timeoutSettings.timeout(options.timeout)).getAsJsonObject();
 
     byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());
