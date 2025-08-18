@@ -491,6 +491,10 @@ public interface BrowserType {
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
      *
+     * <p> Client certificate authentication is only active when at least one client certificate is provided. If you want to reject
+     * all client certificates sent by the server, you need to provide a client certificate with an {@code origin} that does
+     * not match any of the domains you plan to visit.
+     *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
@@ -812,6 +816,10 @@ public interface BrowserType {
      * keyPath}, a single {@code pfxPath}, or their corresponding direct value equivalents ({@code cert} and {@code key}, or
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
+     *
+     * <p> Client certificate authentication is only active when at least one client certificate is provided. If you want to reject
+     * all client certificates sent by the server, you need to provide a client certificate with an {@code origin} that does
+     * not match any of the domains you plan to visit.
      *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
@@ -1386,6 +1394,11 @@ public interface BrowserType {
    * the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
    *
    * <p> Note that browsers do not allow launching multiple instances with the same User Data Directory.
+   *
+   * <p> <strong>NOTE:</strong> Chromium/Chrome: Due to recent Chrome policy changes, automating the default Chrome user profile is not supported.
+   * Pointing {@code userDataDir} to Chrome's main "User Data" directory (the profile used for your regular browsing) may
+   * result in pages not loading or the browser exiting. Create and use a separate directory (for example, an empty folder)
+   * as your automation profile instead. See https://developer.chrome.com/blog/remote-debugging-port for details.
    * @since v1.8
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
@@ -1406,6 +1419,11 @@ public interface BrowserType {
    * the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
    *
    * <p> Note that browsers do not allow launching multiple instances with the same User Data Directory.
+   *
+   * <p> <strong>NOTE:</strong> Chromium/Chrome: Due to recent Chrome policy changes, automating the default Chrome user profile is not supported.
+   * Pointing {@code userDataDir} to Chrome's main "User Data" directory (the profile used for your regular browsing) may
+   * result in pages not loading or the browser exiting. Create and use a separate directory (for example, an empty folder)
+   * as your automation profile instead. See https://developer.chrome.com/blog/remote-debugging-port for details.
    * @since v1.8
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
