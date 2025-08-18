@@ -356,4 +356,10 @@ public class TestPageBasic extends TestBase {
 
     assertTrue(e.getMessage().contains("Can't add a null listener"));
   }
+
+  @Test
+  void pagePauseShouldNotThrow() {
+    page.pause();
+  }
+
 }
