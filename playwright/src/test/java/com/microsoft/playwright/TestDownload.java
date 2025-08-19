@@ -94,7 +94,9 @@ public class TestDownload extends TestBase {
     byte[] bytes = readAllBytes(path);
     assertEquals("Hello world", new String(bytes, UTF_8));
     assertNotNull(error[0]);
-    assertTrue(error[0].getMessage().contains("Download is starting"));
+    if (!chromiumVersionLessThan(browser.version(), "140.0.0.0")) {
+      assertTrue(error[0].getMessage().contains("Download is starting"));
+    }
     if (!isFirefox())
       assertEquals("about:blank", page.url());
     page.close();
