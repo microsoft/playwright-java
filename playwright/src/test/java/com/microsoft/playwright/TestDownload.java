@@ -93,18 +93,12 @@ public class TestDownload extends TestBase {
     assertTrue(Files.exists(path));
     byte[] bytes = readAllBytes(path);
     assertEquals("Hello world", new String(bytes, UTF_8));
-    if (isChromium()) {
-      assertNotNull(error[0]);
-      assertTrue(error[0].getMessage().contains("net::ERR_ABORTED"));
-      assertEquals("about:blank", page.url());
-    } else if (isWebKit()) {
-      assertNotNull(error[0]);
-      assertTrue(error[0].getMessage().contains("Download is starting"));
-      assertEquals("about:blank", page.url());
-    } else {
-      assertNotNull(error[0]);
+    assertNotNull(error[0]);
+    if (!chromiumVersionLessThan(browser.version(), "140.0.0.0")) {
       assertTrue(error[0].getMessage().contains("Download is starting"));
     }
+    if (!isFirefox())
+      assertEquals("about:blank", page.url());
     page.close();
   }
 

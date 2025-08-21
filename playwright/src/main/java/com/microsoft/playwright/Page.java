@@ -5812,8 +5812,8 @@ public interface Page extends AutoCloseable {
    */
   Page opener();
   /**
-   * Pauses script execution. Playwright will stop executing the script and wait for the user to either press 'Resume' button
-   * in the page overlay or to call {@code playwright.resume()} in the DevTools console.
+   * Pauses script execution. Playwright will stop executing the script and wait for the user to either press the 'Resume'
+   * button in the page overlay or to call {@code playwright.resume()} in the DevTools console.
    *
    * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script from
    * the place it was paused.

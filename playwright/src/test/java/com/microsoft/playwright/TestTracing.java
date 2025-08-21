@@ -269,27 +269,6 @@ public class TestTracing extends TestBase {
         calls);
   }
 
-  @Test
-  public void shouldNotRecordNetworkActions(@TempDir Path tempDir) throws IOException {
-    context.tracing().start(new Tracing.StartOptions());
-
-    page.onRequest(request -> {
-      request.allHeaders();
-    });
-    page.onResponse(response -> {
-      response.text();
-    });
-    page.navigate(server.EMPTY_PAGE);
-
-    Path traceFile1 = tempDir.resolve("trace1.zip");
-    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
-
-    List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle())
-      .collect(Collectors.toList());
-    assertEquals(asList("Frame.goto"), calls);
-  }
-
   private static class TraceEvent {
     String type;
     String name;

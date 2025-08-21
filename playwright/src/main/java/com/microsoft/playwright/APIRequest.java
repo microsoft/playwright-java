@@ -51,6 +51,10 @@ public interface APIRequest {
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
      *
+     * <p> Client certificate authentication is only active when at least one client certificate is provided. If you want to reject
+     * all client certificates sent by the server, you need to provide a client certificate with an {@code origin} that does
+     * not match any of the domains you plan to visit.
+     *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
@@ -133,6 +137,10 @@ public interface APIRequest {
      * keyPath}, a single {@code pfxPath}, or their corresponding direct value equivalents ({@code cert} and {@code key}, or
      * {@code pfx}). Optionally, {@code passphrase} property should be provided if the certificate is encrypted. The {@code
      * origin} property should be provided with an exact match to the request origin that the certificate is valid for.
+     *
+     * <p> Client certificate authentication is only active when at least one client certificate is provided. If you want to reject
+     * all client certificates sent by the server, you need to provide a client certificate with an {@code origin} that does
+     * not match any of the domains you plan to visit.
      *
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
