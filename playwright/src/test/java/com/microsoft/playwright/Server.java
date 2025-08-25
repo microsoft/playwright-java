@@ -20,11 +20,10 @@ import com.sun.net.httpserver.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 import java.util.zip.GZIPOutputStream;
 
 import static com.microsoft.playwright.Utils.copy;
@@ -42,7 +41,7 @@ public class Server implements HttpHandler {
   private final Map<String, String> csp = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, HttpHandler> routes = Collections.synchronizedMap(new HashMap<>());
   private final Set<String> gzipRoutes = Collections.synchronizedSet(new HashSet<>());
-  private Path staticFilesDirectory;
+  private Function<String, InputStream> resourceProvider;
 
   private static class Auth {
     public final String user;
@@ -78,6 +77,8 @@ public class Server implements HttpHandler {
     server.createContext("/", this);
     server.setExecutor(null); // creates a default executor
     server.start();
+    // Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
+    resourceProvider = path -> Server.class.getClassLoader().getResourceAsStream("resources" + path);
   }
 
   public void stop() {
@@ -96,8 +97,8 @@ public class Server implements HttpHandler {
     gzipRoutes.add(path);
   }
 
-  void setStaticFilesDirectory(Path staticFilesDirectory) {
-    this.staticFilesDirectory = staticFilesDirectory;
+  void setResourceProvider(Function<String, InputStream> resourceProvider) {
+    this.resourceProvider = resourceProvider;
   }
 
   static class Request {
@@ -194,30 +195,16 @@ public class Server implements HttpHandler {
       path = "/index.html";
     }
 
-    // If static files directory is set, serve from filesystem first
-    if (staticFilesDirectory != null) {
-      Path filePath = staticFilesDirectory.resolve(path.substring(1)); // Remove leading /
-      if (Files.exists(filePath) && !Files.isDirectory(filePath)) {
-        exchange.getResponseHeaders().add("Content-Type", mimeType(filePath.toFile()));
-        exchange.sendResponseHeaders(200, Files.size(filePath));
-        Files.copy(filePath, exchange.getResponseBody());
-        exchange.getResponseBody().close();
-        return;
-      }
-    }
-
-    // Fallback: Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
-    String resourcePath = "resources" + path;
-    InputStream resource = getClass().getClassLoader().getResourceAsStream(resourcePath);
+    InputStream resource = resourceProvider.apply(path);
     if (resource == null) {
       exchange.getResponseHeaders().add("Content-Type", "text/plain");
       exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("File not found: " + resourcePath);
+        writer.write("File not found: " + path);
       }
       return;
     }
-    exchange.getResponseHeaders().add("Content-Type", mimeType(new File(resourcePath)));
+    exchange.getResponseHeaders().add("Content-Type", mimeType(new File(path)));
     ByteArrayOutputStream body = new ByteArrayOutputStream();
     OutputStream output = body;
     if (gzipRoutes.contains(path)) {
