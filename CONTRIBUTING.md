@@ -32,9 +32,9 @@ scripts/download_driver.sh
 mvn compile
 mvn test
 # Executing a single test
-BROWSER=chromium mvn test --projects=playwright -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
+BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
 # Executing a single test class
-BROWSER=chromium mvn test --projects=playwright -Dtest=TestPageNetworkSizes
+BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes
 ```
 
 ### Generating API
