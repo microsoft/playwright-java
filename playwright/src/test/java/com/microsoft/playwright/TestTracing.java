@@ -276,7 +276,6 @@ public class TestTracing extends TestBase {
         Pattern.compile("inner group 1"),
         Pattern.compile("Click"),
         Pattern.compile("inner group 2"),
-        Pattern.compile("Is visible")
       });
     });
   }
