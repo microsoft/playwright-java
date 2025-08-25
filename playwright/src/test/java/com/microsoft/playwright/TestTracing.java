@@ -368,7 +368,17 @@ public class TestTracing extends TestBase {
     Path driverDir = Driver.ensureDriverInstalled(java.util.Collections.emptyMap(), true).driverDir();
     Path traceViewerPath = driverDir.resolve("package").resolve("lib").resolve("vite").resolve("traceViewer");
     Server traceServer = Server.createHttp(Utils.nextFreePort());
-    traceServer.setStaticFilesDirectory(traceViewerPath);
+    traceServer.setResourceProvider(path -> {
+      Path filePath = traceViewerPath.resolve(path.substring(1));
+      if (Files.exists(filePath) && !Files.isDirectory(filePath)) {
+        try {
+          return Files.newInputStream(filePath);
+        } catch (IOException e) {
+          return null;
+        }
+      }
+      return null;
+    });
     traceServer.setRoute("/trace.zip", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/zip");
       exchange.sendResponseHeaders(200, Files.size(tracePath));
