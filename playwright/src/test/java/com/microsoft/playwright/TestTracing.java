@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.BrowserType.LaunchOptions;
-import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
@@ -27,7 +25,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +60,7 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
 
     assertTrue(Files.exists(traceFile));
-    showTraceViewer(traceFile, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate to \"/empty.html\""),
         Pattern.compile("Set content"),
@@ -93,7 +90,7 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
     
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate to \"/empty.html\""),
         Pattern.compile("Set content"),
@@ -101,7 +98,7 @@ public class TestTracing extends TestBase {
       });
     });
     
-    showTraceViewer(traceFile2, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Double click"),
         Pattern.compile("Close")
@@ -128,7 +125,7 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
     
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Set content"),
         Pattern.compile("Click")
@@ -138,7 +135,7 @@ public class TestTracing extends TestBase {
       assertThat(frame.locator("button")).hasText("Click");
     });
     
-    showTraceViewer(traceFile2, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
       assertThat(traceViewer.actionTitles()).containsText(new String[] {"Hover"});
       FrameLocator frame = traceViewer.snapshotFrame("Hover", 0, false);
       assertThat(frame.locator("button")).hasText("Click");
@@ -155,7 +152,7 @@ public class TestTracing extends TestBase {
     Path trace = tmpDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
-    showTraceViewer(trace, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, trace, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate to \"/empty.html\""),
         Pattern.compile("Set content"),
@@ -210,7 +207,7 @@ public class TestTracing extends TestBase {
       assertTrue(Files.exists(tracesDir.resolve("name2.trace")));
       assertTrue(Files.exists(tracesDir.resolve("name2.network")));
       
-      showTraceViewer(tempDir.resolve("trace1.zip"), traceViewer -> {
+      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace1.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
           Pattern.compile("Navigate to \"/one-style.html\"")
         });
@@ -219,7 +216,7 @@ public class TestTracing extends TestBase {
         assertThat(frame.locator("body")).hasText("hello, world!");
       });
       
-      showTraceViewer(tempDir.resolve("trace2.zip"), traceViewer -> {
+      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace2.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
           Pattern.compile("Navigate to \"/har.html\"")
         });
@@ -247,7 +244,7 @@ public class TestTracing extends TestBase {
     context.tracing().groupEnd();
     context.tracing().groupEnd();
 
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).containsText(new String[] {"actual", "Navigate to \"/empty.html\""});
     });
   }
@@ -268,7 +265,7 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       traceViewer.expandAction("inner group 1");
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("outer group"),
@@ -313,7 +310,7 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Install clock"),
         Pattern.compile("Set content"),
@@ -356,105 +353,10 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    showTraceViewer(traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate to \"/empty.html\"")
       });
     });
-  }
-
-  private void showTraceViewer(Path tracePath, TraceViewerConsumer callback) throws Exception {
-    Path driverDir = Driver.ensureDriverInstalled(java.util.Collections.emptyMap(), true).driverDir();
-    Path traceViewerPath = driverDir.resolve("package").resolve("lib").resolve("vite").resolve("traceViewer");
-    Server traceServer = Server.createHttp(Utils.nextFreePort());
-    traceServer.setResourceProvider(path -> {
-      Path filePath = traceViewerPath.resolve(path.substring(1));
-      if (Files.exists(filePath) && !Files.isDirectory(filePath)) {
-        try {
-          return Files.newInputStream(filePath);
-        } catch (IOException e) {
-          return null;
-        }
-      }
-      return null;
-    });
-    traceServer.setRoute("/trace.zip", exchange -> {
-      exchange.getResponseHeaders().add("Content-Type", "application/zip");
-      exchange.sendResponseHeaders(200, Files.size(tracePath));
-      Files.copy(tracePath, exchange.getResponseBody());
-      exchange.getResponseBody().close();
-    });
-    
-    try (Browser browser = browserType.launch(createLaunchOptions());
-         BrowserContext context = browser.newContext()) {
-      Page page = context.newPage();
-      page.navigate(traceServer.PREFIX + "/index.html?trace=" + traceServer.PREFIX + "/trace.zip");
-      
-      TraceViewerPage traceViewer = new TraceViewerPage(page);
-      callback.accept(traceViewer);
-    } finally {
-      traceServer.stop();
-    }
-  }
-  
-  @FunctionalInterface
-  interface TraceViewerConsumer {
-    void accept(TraceViewerPage traceViewer) throws Exception;
-  }
-}
-
-class TraceViewerPage {
-  private final Page page;
-
-  public TraceViewerPage(Page page) {
-    this.page = page;
-  }
-
-  public Page page() {
-    return page;
-  }
-
-  public Locator actionsTree() {
-    return page.getByTestId("actions-tree");
-  }
-
-  public Locator actionTitles() {
-    return page.locator(".action-title");
-  }
-
-  public Locator stackFrames() {
-    return this.page.getByRole(AriaRole.LIST, new Page.GetByRoleOptions().setName("stack trace")).getByRole(AriaRole.LISTITEM);
-  }
-
-  public void selectAction(String title, int ordinal) {
-    this.actionsTree().getByTitle(title).nth(ordinal).click();
-  }
-
-  public void selectAction(String title) {
-    selectAction(title, 0);
-  }
-
-  public void selectSnapshot(String name) {
-    this.page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(name)).click();
-  }
-
-  public FrameLocator snapshotFrame(String actionName, int ordinal, boolean hasSubframe) {
-    selectAction(actionName, ordinal);
-    while (page.frames().size() < (hasSubframe ? 4 : 3)) {
-      page.waitForTimeout(200);
-    }
-    return page.frameLocator("iframe.snapshot-visible[name=snapshot]");
-  }
-
-  public FrameLocator snapshotFrame(String actionName, int ordinal) {
-    return snapshotFrame(actionName, ordinal, false);
-  }
-
-  public void showSourceTab() {
-    page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName("Source")).click();
-  }
-
-  public void expandAction(String title) {
-    this.actionsTree().getByRole(AriaRole.TREEITEM, new Locator.GetByRoleOptions().setName(title)).locator(".codicon-chevron-right").click();
   }
 }
