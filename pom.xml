@@ -170,6 +170,7 @@
                 junit.jupiter.execution.parallel.config.dynamic.factor=0.5
               </configurationParameters>
             </properties>
+            <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
             <failIfNoTests>false</failIfNoTests>
             <rerunFailingTestsCount>${env.PW_MAX_RETRIES}</rerunFailingTestsCount>
             <!-- Activate the use of TCP to transmit events to the plugin and avoid
