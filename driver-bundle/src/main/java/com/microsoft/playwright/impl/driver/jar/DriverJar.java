@@ -40,7 +40,6 @@ public class DriverJar extends Driver {
     driverTempDir = alternativeTmpdir == null
       ? Files.createTempDirectory(prefix)
       : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
-    driverTempDir.toFile().deleteOnExit();
     String nodePath = System.getProperty("playwright.nodejs.path");
     if (nodePath != null) {
       preinstalledNodePath = Paths.get(nodePath);
@@ -87,10 +86,11 @@ public class DriverJar extends Driver {
     }
     ProcessBuilder pb = createProcessBuilder();
     pb.command().add("install");
+    logMessage("Executing: " + String.join(" ", pb.command()));
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();
-    boolean result = p.waitFor(10, TimeUnit.MINUTES);
+    boolean result = p.waitFor(30, TimeUnit.MINUTES);
     if (!result) {
       p.destroy();
       throw new RuntimeException("Timed out waiting for browsers to install");
