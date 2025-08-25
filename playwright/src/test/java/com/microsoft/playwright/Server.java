@@ -20,6 +20,8 @@ import com.sun.net.httpserver.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -40,6 +42,7 @@ public class Server implements HttpHandler {
   private final Map<String, String> csp = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, HttpHandler> routes = Collections.synchronizedMap(new HashMap<>());
   private final Set<String> gzipRoutes = Collections.synchronizedSet(new HashSet<>());
+  private Path staticFilesDirectory;
 
   private static class Auth {
     public final String user;
@@ -91,6 +94,10 @@ public class Server implements HttpHandler {
 
   void enableGzip(String path) {
     gzipRoutes.add(path);
+  }
+
+  void setStaticFilesDirectory(Path staticFilesDirectory) {
+    this.staticFilesDirectory = staticFilesDirectory;
   }
 
   static class Request {
@@ -187,7 +194,19 @@ public class Server implements HttpHandler {
       path = "/index.html";
     }
 
-    // Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
+    // If static files directory is set, serve from filesystem first
+    if (staticFilesDirectory != null) {
+      Path filePath = staticFilesDirectory.resolve(path.substring(1)); // Remove leading /
+      if (Files.exists(filePath) && !Files.isDirectory(filePath)) {
+        exchange.getResponseHeaders().add("Content-Type", mimeType(filePath.toFile()));
+        exchange.sendResponseHeaders(200, Files.size(filePath));
+        Files.copy(filePath, exchange.getResponseBody());
+        exchange.getResponseBody().close();
+        return;
+      }
+    }
+
+    // Fallback: Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
     String resourcePath = "resources" + path;
     InputStream resource = getClass().getClassLoader().getResourceAsStream(resourcePath);
     if (resource == null) {
