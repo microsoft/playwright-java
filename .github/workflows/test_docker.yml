@@ -21,6 +21,8 @@ jobs:
     name: Test
     timeout-minutes: 120
     runs-on: ${{ matrix.runs-on }}
+    env:
+      PW_MAX_RETRIES: 3
     strategy:
       fail-fast: false
       matrix:
@@ -34,7 +36,7 @@ jobs:
           bash utils/docker/build.sh --$ARCH ${{ matrix.flavor }} playwright-java:localbuild-${{ matrix.flavor }}
       - name: Start container
         run: |
-            CONTAINER_ID=$(docker run --rm -e CI --ipc=host -v "$(pwd)":/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-${{ matrix.flavor }} /bin/bash)
+            CONTAINER_ID=$(docker run --rm -e CI -e PW_MAX_RETRIES --ipc=host -v "$(pwd)":/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-${{ matrix.flavor }} /bin/bash)
             echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
 
       - name: Run test in container
