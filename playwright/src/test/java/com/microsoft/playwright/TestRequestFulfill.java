@@ -87,7 +87,7 @@ public class TestRequestFulfill extends TestBase {
   @Test
   @DisabledIf(value="isFirefoxHeadful", disabledReason="skip")
   void shouldAllowMockingSvgWithCharset() {
-    // Firefox headful produces a different image.
+    // Firefox headed produces a different image.
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setContentType("image/svg+xml ; charset=utf-8")

@@ -40,7 +40,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-// TODO: suite.skip(browserName === "firefox" && headful");
+// TODO: suite.skip(browserName === "firefox" && headed");
 public class TestPageScreenshot extends TestBase {
   @Test
   void shouldWork() throws IOException {

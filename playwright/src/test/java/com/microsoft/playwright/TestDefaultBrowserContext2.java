@@ -128,7 +128,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
 
   @Test
   void shouldSupportExtraHTTPHeadersOption() throws ExecutionException, InterruptedException {
-//   TODO: test.flaky(browserName === "firefox" && headful && platform === "linux", "Intermittent timeout on bots");
+//   TODO: test.flaky(browserName === "firefox" && headed && platform === "linux", "Intermittent timeout on bots");
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setExtraHTTPHeaders(mapOf("foo", "bar")));
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);

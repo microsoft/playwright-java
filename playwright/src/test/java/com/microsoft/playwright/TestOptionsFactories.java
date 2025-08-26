@@ -40,8 +40,8 @@ public class TestOptionsFactories {
   }
 
   private static boolean getHeadful() {
-    String headfulEnv = System.getenv("HEADFUL");
-    return headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
+    String headedEnv = System.getenv("HEADED");
+    return headedEnv != null && !"0".equals(headedEnv) && !"false".equals(headedEnv);
   }
 
   public static String getBrowserName() {

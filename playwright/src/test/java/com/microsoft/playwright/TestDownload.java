@@ -348,7 +348,7 @@ public class TestDownload extends TestBase {
   @Test
   @DisabledIf(value="isChromiumHeadful", disabledReason="fixme")
   void shouldReportNewWindowDownloads() throws IOException {
-    // TODO: - the test fails in headful Chromium as the popup page gets closed along
+    // TODO: - the test fails in headed Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
     // - WebKit doesn't close the popup page
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
