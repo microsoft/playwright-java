@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
@@ -27,18 +25,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTracing extends TestBase {
@@ -57,7 +49,7 @@ public class TestTracing extends TestBase {
   }
 
   @Test
-  void shouldCollectTrace1(@TempDir Path tempDir) {
+  void shouldCollectTrace1(@TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setName("test")
       .setScreenshots(true).setSnapshots(true));
     page.navigate(server.EMPTY_PAGE);
@@ -68,10 +60,18 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
 
     assertTrue(Files.exists(traceFile));
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Set content"),
+        Pattern.compile("Click"),
+        Pattern.compile("Close")
+      });
+    });
   }
 
   @Test
-  void shouldCollectTwoTraces(@TempDir Path tempDir) {
+  void shouldCollectTwoTraces(@TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setName("test1")
       .setScreenshots(true).setSnapshots(true));
     page.navigate(server.EMPTY_PAGE);
@@ -89,10 +89,25 @@ public class TestTracing extends TestBase {
 
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
+    
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Set content"),
+        Pattern.compile("Click")
+      });
+    });
+    
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Double click"),
+        Pattern.compile("Close")
+      });
+    });
   }
 
   @Test
-  void shouldWorkWithMultipleChunks(@TempDir Path tempDir) {
+  void shouldWorkWithMultipleChunks(@TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
     page.navigate(server.PREFIX + "/frames/frame.html");
 
@@ -109,28 +124,60 @@ public class TestTracing extends TestBase {
 
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
+    
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Set content"),
+        Pattern.compile("Click")
+      });
+      traceViewer.selectSnapshot("After");
+      FrameLocator frame = traceViewer.snapshotFrame("Set content", 0, false);
+      assertThat(frame.locator("button")).hasText("Click");
+    });
+    
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).containsText(new String[] {"Hover"});
+      FrameLocator frame = traceViewer.snapshotFrame("Hover", 0, false);
+      assertThat(frame.locator("button")).hasText("Click");
+    });
   }
 
   @Test
-  void shouldCollectSources(@TempDir Path tmpDir) throws IOException {
+  void shouldCollectSources(@TempDir Path tmpDir) throws Exception {
     Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") != null, "PLAYWRIGHT_JAVA_SRC must point to the directory containing this test source.");
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
-    page.click("'Click'");
+    myMethodOuter();
     Path trace = tmpDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
-    Map<String, byte[]> entries = Utils.parseZip(trace);
-    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    assertEquals(1, sources.size());
+    TraceViewerPage.showTraceViewer(this.browserType, trace, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Set content"),
+        Pattern.compile("Click")
+      });
+      traceViewer.showSourceTab();
+      assertThat(traceViewer.stackFrames()).containsText(new Pattern[] {
+        Pattern.compile("myMethodInner"),
+        Pattern.compile("myMethodOuter"),
+        Pattern.compile("shouldCollectSources")
+      });
+      traceViewer.selectAction("Set content");
+      assertThat(traceViewer.page().locator(".source-tab-file-name"))
+        .hasAttribute("title", Pattern.compile(".*TestTracing\\.java"));
+      assertThat(traceViewer.page().locator(".source-line-running"))
+        .containsText("page.setContent(\"<button>Click</button>\");");
+    });
+  }
 
-    String path = getClass().getName().replace('.', File.separatorChar);
-    String[] srcRoots = System.getenv("PLAYWRIGHT_JAVA_SRC").split(File.pathSeparator);
-    // Resolve in the last specified source dir.
-    Path sourceFile = Paths.get(srcRoots[srcRoots.length - 1], path + ".java");
-    byte[] thisFile = Files.readAllBytes(sourceFile);
-    assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
+  private void myMethodOuter() {
+    myMethodInner();
+  }
+
+  private void myMethodInner() {
+    page.getByText("Click").click();
   }
 
   @Test
@@ -140,7 +187,7 @@ public class TestTracing extends TestBase {
   }
 
   @Test
-  void shouldRespectTracesDirAndName(@TempDir Path tempDir) {
+  void shouldRespectTracesDirAndName(@TempDir Path tempDir) throws Exception {
     Path tracesDir = tempDir.resolve("trace-dir");
     BrowserType.LaunchOptions options = createLaunchOptions();
     options.setTracesDir(tracesDir);
@@ -159,6 +206,24 @@ public class TestTracing extends TestBase {
       context.tracing().stop(new Tracing.StopOptions().setPath(tempDir.resolve("trace2.zip")));
       assertTrue(Files.exists(tracesDir.resolve("name2.trace")));
       assertTrue(Files.exists(tracesDir.resolve("name2.network")));
+      
+      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace1.zip"), traceViewer -> {
+        assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+          Pattern.compile("Navigate to \"/one-style.html\"")
+        });
+        FrameLocator frame = traceViewer.snapshotFrame("Navigate", 0, false);
+        assertThat(frame.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+        assertThat(frame.locator("body")).hasText("hello, world!");
+      });
+      
+      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace2.zip"), traceViewer -> {
+        assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+          Pattern.compile("Navigate to \"/har.html\"")
+        });
+        FrameLocator frame = traceViewer.snapshotFrame("Navigate", 0, false);
+        assertThat(frame.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+        assertThat(frame.locator("body")).hasText("hello, world!");
+      });
     }
   }
 
@@ -179,11 +244,9 @@ public class TestTracing extends TestBase {
     context.tracing().groupEnd();
     context.tracing().groupEnd();
 
-    List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<TraceEvent> groups = events.stream().filter(e -> "tracingGroup".equals(e.method)).collect(Collectors.toList());
-    assertEquals(1, groups.size());
-    assertEquals("actual", groups.get(0).title);
-
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).containsText(new String[] {"actual", "Navigate to \"/empty.html\""});
+    });
   }
 
   @Test
@@ -202,9 +265,16 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle()).collect(Collectors.toList());
-    assertEquals(asList("outer group", "Frame.goto", "inner group 1", "Frame.click", "inner group 2", "Frame.isVisible"), calls);
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      traceViewer.expandAction("inner group 1");
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("outer group"),
+        Pattern.compile("Navigate to \"data:"),
+        Pattern.compile("inner group 1"),
+        Pattern.compile("Click"),
+        Pattern.compile("inner group 2"),
+      });
+    });
   }
 
   @Test
@@ -240,64 +310,53 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    List<TraceEvent> events = parseTraceEvents(traceFile1);
-    List<String> calls = events.stream().filter(e -> e.renderedTitle() != null).map(e -> e.renderedTitle())
-        .collect(Collectors.toList());
-    assertEquals(asList(
-        "BrowserContext.clockInstall",
-        "Frame.setContent",
-        "Frame.click",
-        "Frame.click",
-        "Page.keyboardType",
-        "Page.keyboardPress",
-        "Page.keyboardDown",
-        "Page.keyboardInsertText",
-        "Page.keyboardUp",
-        "Page.mouseMove",
-        "Page.mouseDown",
-        "Page.mouseMove",
-        "Page.mouseWheel",
-        "Page.mouseUp",
-        "BrowserContext.clockFastForward",
-        "BrowserContext.clockFastForward",
-        "BrowserContext.clockPauseAt",
-        "BrowserContext.clockRunFor",
-        "BrowserContext.clockSetFixedTime",
-        "BrowserContext.clockSetSystemTime",
-        "BrowserContext.clockResume",
-        "Frame.click"),
-        calls);
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Install clock"),
+        Pattern.compile("Set content"),
+        Pattern.compile("Click"),
+        Pattern.compile("Click"),
+        Pattern.compile("Type"),
+        Pattern.compile("Press"),
+        Pattern.compile("Key down"),
+        Pattern.compile("Insert"),
+        Pattern.compile("Key up"),
+        Pattern.compile("Mouse move"),
+        Pattern.compile("Mouse down"),
+        Pattern.compile("Mouse move"),
+        Pattern.compile("Mouse wheel"),
+        Pattern.compile("Mouse up"),
+        Pattern.compile("Fast forward clock"),
+        Pattern.compile("Fast forward clock"),
+        Pattern.compile("Pause clock"),
+        Pattern.compile("Run clock"),
+        Pattern.compile("Set fixed time"),
+        Pattern.compile("Set system time"),
+        Pattern.compile("Resume clock"),
+        Pattern.compile("Click")
+      });
+    });
   }
 
-  private static class TraceEvent {
-    String type;
-    String name;
-    String title;
-    @SerializedName("class")
-    String clazz;
-    String method;
-    Double startTime;
-    Double endTime;
-    String callId;
+  @Test
+  public void shouldNotRecordNetworkActions(@TempDir Path tempDir) throws Exception {
+    context.tracing().start(new Tracing.StartOptions());
 
-    String renderedTitle() {
-      if (title != null) {
-        return title;
-      }
-      if (clazz != null && method != null) {
-        return clazz + "." + method;
-      }
-      return null;
-    }
-  }
+    page.onRequest(request -> {
+      request.allHeaders();
+    });
+    page.onResponse(response -> {
+      response.text();
+    });
+    page.navigate(server.EMPTY_PAGE);
 
-  private static List<TraceEvent> parseTraceEvents(Path traceFile) throws IOException {
-    Map<String, byte[]> files = Utils.parseZip(traceFile);
-    Map<String, byte[]> traces = files.entrySet().stream().filter(e -> e.getKey().endsWith(".trace")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    assertNotNull(traces.get("trace.trace"));
-    return Arrays.stream(new String(traces.get("trace.trace"), UTF_8)
-        .split("\n"))
-        .map(s -> new Gson().fromJson(s, TraceEvent.class))
-        .collect(Collectors.toList());
+    Path traceFile1 = tempDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
+
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate to \"/empty.html\"")
+      });
+    });
   }
 }
