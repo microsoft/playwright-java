@@ -64,7 +64,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.3</version>
+        <configuration>
+          <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+          <failIfNoTests>false</failIfNoTests>
+          <rerunFailingTestsCount>${env.PW_MAX_RETRIES}</rerunFailingTestsCount>
+          <!-- Activate the use of TCP to transmit events to the plugin and avoid
+          [WARNING] Corrupted STDOUT by directly writing to native stream in forked JVM -->
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+        </configuration>
       </plugin>
     </plugins>
   </build>
