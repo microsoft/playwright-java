@@ -23,42 +23,42 @@ import java.nio.file.Path;
 import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.options.AriaRole;
 
-public class TraceViewerPage {
+class TraceViewerPage {
   private final Page page;
 
-  public TraceViewerPage(Page page) {
+  TraceViewerPage(Page page) {
     this.page = page;
   }
 
-  public Page page() {
+  Page page() {
     return page;
   }
 
-  public Locator actionsTree() {
+  Locator actionsTree() {
     return page.getByTestId("actions-tree");
   }
 
-  public Locator actionTitles() {
+  Locator actionTitles() {
     return page.locator(".action-title");
   }
 
-  public Locator stackFrames() {
+  Locator stackFrames() {
     return this.page.getByRole(AriaRole.LIST, new Page.GetByRoleOptions().setName("stack trace")).getByRole(AriaRole.LISTITEM);
   }
 
-  public void selectAction(String title, int ordinal) {
+  void selectAction(String title, int ordinal) {
     this.actionsTree().getByTitle(title).nth(ordinal).click();
   }
 
-  public void selectAction(String title) {
+  void selectAction(String title) {
     selectAction(title, 0);
   }
 
-  public void selectSnapshot(String name) {
+  void selectSnapshot(String name) {
     this.page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(name)).click();
   }
 
-  public FrameLocator snapshotFrame(String actionName, int ordinal, boolean hasSubframe) {
+  FrameLocator snapshotFrame(String actionName, int ordinal, boolean hasSubframe) {
     selectAction(actionName, ordinal);
     while (page.frames().size() < (hasSubframe ? 4 : 3)) {
       page.waitForTimeout(200);
@@ -66,15 +66,15 @@ public class TraceViewerPage {
     return page.frameLocator("iframe.snapshot-visible[name=snapshot]");
   }
 
-  public FrameLocator snapshotFrame(String actionName, int ordinal) {
+  FrameLocator snapshotFrame(String actionName, int ordinal) {
     return snapshotFrame(actionName, ordinal, false);
   }
 
-  public void showSourceTab() {
+  void showSourceTab() {
     page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName("Source")).click();
   }
 
-  public void expandAction(String title) {
+  void expandAction(String title) {
     this.actionsTree().getByRole(AriaRole.TREEITEM, new Locator.GetByRoleOptions().setName(title)).locator(".codicon-chevron-right").click();
   }
 
