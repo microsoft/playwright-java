@@ -341,12 +341,12 @@ public class TestDownload extends TestBase {
   }
 
 
-  static boolean isChromiumHeadful() {
-    return isChromium() && isHeadful();
+  static boolean isChromiumHeaded() {
+    return isChromium() && isHeaded();
   }
 
   @Test
-  @DisabledIf(value="isChromiumHeadful", disabledReason="fixme")
+  @DisabledIf(value="isChromiumHeaded", disabledReason="fixme")
   void shouldReportNewWindowDownloads() throws IOException {
     // TODO: - the test fails in headed Chromium as the popup page gets closed along
     // with the session before download completed event arrives.

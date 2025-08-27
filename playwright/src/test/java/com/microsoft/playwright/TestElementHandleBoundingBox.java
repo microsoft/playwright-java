@@ -26,12 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleBoundingBox extends TestBase {
 
-  static boolean isFirefoxHeadful() {
-    return isFirefox() && isHeadful();
+  static boolean isFirefoxHeaded() {
+    return isFirefox() && isHeaded();
   }
 
   @Test
-  @DisabledIf(value="isFirefoxHeadful", disabledReason="fail")
+  @DisabledIf(value="isFirefoxHeaded", disabledReason="fail")
   void shouldWork() {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");

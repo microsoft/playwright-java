@@ -27,7 +27,7 @@ public class TestBrowserContextCredentials extends TestBase {
 
   static boolean isChromiumHeadedLike() {
     // --headless=new, the default in all Chromium channels, is like headless.
-    return isChromium() && (isHeadful() || getBrowserChannelFromEnv() != null);
+    return isChromium() && (isHeaded() || getBrowserChannelFromEnv() != null);
   }
 
   @Test

@@ -35,11 +35,11 @@ public class TestOptionsFactories {
   public static BrowserType.LaunchOptions createLaunchOptions() {
     BrowserType.LaunchOptions options;
     options = new BrowserType.LaunchOptions();
-    options.headless = !getHeadful();
+    options.headless = !getHeaded();
     return options;
   }
 
-  private static boolean getHeadful() {
+  private static boolean getHeaded() {
     String headedEnv = System.getenv("HEADED");
     return headedEnv != null && !"0".equals(headedEnv) && !"false".equals(headedEnv);
   }

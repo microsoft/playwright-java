@@ -129,12 +129,12 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  static boolean isChromiumHeadful() {
-    return isChromium() && isHeadful();
+  static boolean isChromiumHeaded() {
+    return isChromium() && isHeaded();
   }
 
   @Test
-  @DisabledIf(value="isChromiumHeadful", disabledReason="fixme")
+  @DisabledIf(value="isChromiumHeaded", disabledReason="fixme")
   void shouldExcludePatterns() {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);

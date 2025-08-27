@@ -58,7 +58,7 @@ public class TestBase {
   Page page;
   BrowserContext context;
 
-  static boolean isHeadful() {
+  static boolean isHeaded() {
     return headed;
   }
 
