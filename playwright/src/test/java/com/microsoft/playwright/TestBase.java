@@ -45,12 +45,12 @@ public class TestBase {
   static final boolean isMac = Utils.getOS() == Utils.OS.MAC;
   static final boolean isLinux = Utils.getOS() == Utils.OS.LINUX;
   static final boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
-  static final boolean headful;
+  static final boolean headed;
   static final SameSiteAttribute defaultSameSiteCookieValue;
 
   static {
-    String headfulEnv = System.getenv("HEADFUL");
-    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
+    String headedEnv = System.getenv("HEADED");
+    headed = headedEnv != null && !"0".equals(headedEnv) && !"false".equals(headedEnv);
     defaultSameSiteCookieValue = initSameSiteAttribute();
   }
 
@@ -58,8 +58,8 @@ public class TestBase {
   Page page;
   BrowserContext context;
 
-  static boolean isHeadful() {
-    return headful;
+  static boolean isHeaded() {
+    return headed;
   }
 
   static boolean isChromium() {
@@ -81,7 +81,7 @@ public class TestBase {
   static BrowserType.LaunchOptions createLaunchOptions() {
     BrowserType.LaunchOptions options;
     options = new BrowserType.LaunchOptions();
-    options.headless = !headful;
+    options.headless = !headed;
     options.channel = getBrowserChannelFromEnv();
     return options;
   }

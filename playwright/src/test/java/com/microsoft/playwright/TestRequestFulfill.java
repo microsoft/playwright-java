@@ -55,12 +55,12 @@ public class TestRequestFulfill extends TestBase {
     assertEquals("Yo, page!", page.evaluate("document.body.textContent"));
   }
 
-  static boolean isFirefoxHeadful() {
-    return isFirefox() && isHeadful();
+  static boolean isFirefoxHeaded() {
+    return isFirefox() && isHeaded();
   }
 
   @Test
-  @DisabledIf(value="isFirefoxHeadful", disabledReason="skip")
+  @DisabledIf(value="isFirefoxHeaded", disabledReason="skip")
   void shouldAllowMockingBinaryResponses() {
     page.route("**/*", route -> {
       byte[] imageBuffer;
@@ -85,9 +85,9 @@ public class TestRequestFulfill extends TestBase {
   }
 
   @Test
-  @DisabledIf(value="isFirefoxHeadful", disabledReason="skip")
+  @DisabledIf(value="isFirefoxHeaded", disabledReason="skip")
   void shouldAllowMockingSvgWithCharset() {
-    // Firefox headful produces a different image.
+    // Firefox headed produces a different image.
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setContentType("image/svg+xml ; charset=utf-8")

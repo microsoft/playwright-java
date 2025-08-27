@@ -451,7 +451,7 @@ public class TestPageSetInputFiles extends TestBase {
     List<String> relativePathsSorted = new ArrayList<>(webkitRelativePaths);
     relativePathsSorted.sort(String::compareTo);
     // https://issues.chromium.org/issues/345393164
-    if (isChromium() && !isHeadful() && chromiumVersionLessThan(browser.version(), "127.0.6533.0")) {
+    if (isChromium() && !isHeaded() && chromiumVersionLessThan(browser.version(), "127.0.6533.0")) {
       assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2"), relativePathsSorted);
     } else {
       assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2", "file-upload-test/sub-dir/really.txt"), relativePathsSorted);
