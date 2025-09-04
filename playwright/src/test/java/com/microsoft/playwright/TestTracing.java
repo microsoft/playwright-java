@@ -359,4 +359,24 @@ public class TestTracing extends TestBase {
       });
     });
   }
+
+  @Test
+  public void shouldShowWaitForLoadState(@TempDir Path tempDir) throws Exception {
+    // https://github.com/microsoft/playwright/issues/37297
+
+    context.tracing().start(new Tracing.StartOptions());
+
+    page.navigate(server.EMPTY_PAGE);
+    page.waitForLoadState();
+
+    Path traceFile1 = tempDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
+
+    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Wait for load state \"load\""),
+      });
+    });
+  }
 }
