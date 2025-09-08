@@ -1357,11 +1357,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void waitForLoadState(LoadState _state, WaitForLoadStateOptions options) {
-    final LoadState state = _state == null ? LoadState.LOAD : _state;
-    withTitle("Wait for load state \"" + state.toString().toLowerCase() + "\"", () -> {
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    final LoadState loadState = state == null ? LoadState.LOAD : state;
+    withTitle("Wait for load state \"" + loadState.toString().toLowerCase() + "\"", () -> {
       withWaitLogging("Page.waitForLoadState", logger -> {
-        mainFrame.waitForLoadStateImpl(state, convertType(options, Frame.WaitForLoadStateOptions.class), logger);
+        mainFrame.waitForLoadStateImpl(loadState, convertType(options, Frame.WaitForLoadStateOptions.class), logger);
         return null;
       });
     });
