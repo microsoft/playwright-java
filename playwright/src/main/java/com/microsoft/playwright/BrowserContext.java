@@ -46,14 +46,7 @@ import java.util.regex.Pattern;
 public interface BrowserContext extends AutoCloseable {
 
   /**
-   * <strong>NOTE:</strong> Only works with Chromium browser's persistent context.
-   *
-   * <p> Emitted when new background page is created in the context.
-   * <pre>{@code
-   * context.onBackgroundPage(backgroundPage -> {
-   *   System.out.println(backgroundPage.url());
-   * });
-   * }</pre>
+   * @deprecated Background pages have been removed from Chromium together with Manifest V2 extensions.
    */
   void onBackgroundPage(Consumer<Page> handler);
   /**
@@ -588,9 +581,7 @@ public interface BrowserContext extends AutoCloseable {
    */
   void addInitScript(Path script);
   /**
-   * <strong>NOTE:</strong> Background pages are only supported on Chromium-based browsers.
-   *
-   * <p> All existing background pages in the context.
+   * @deprecated Background pages have been removed from Chromium together with Manifest V2 extensions.
    *
    * @since v1.11
    */

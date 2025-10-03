@@ -114,6 +114,7 @@ class FrameExpectOptions {
 class FrameExpectResult {
   boolean matches;
   SerializedValue received;
+  String errorMessage;
   List<String> log;
 }
 

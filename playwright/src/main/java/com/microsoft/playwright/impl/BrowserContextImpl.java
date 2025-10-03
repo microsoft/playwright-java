@@ -34,8 +34,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
@@ -731,9 +730,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         bindingCall.call(binding);
       }
     } else if ("console".equals(event)) {
-      ConsoleMessageImpl message = new ConsoleMessageImpl(connection, params);
+      PageImpl page = null;
+      if (params.has("page")) {
+        page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      }
+      ConsoleMessageImpl message = new ConsoleMessageImpl(connection, params, page);
       listeners.notify(BrowserContextImpl.EventType.CONSOLE, message);
-      PageImpl page = message.page();
       if (page != null) {
         page.listeners.notify(PageImpl.EventType.CONSOLE, message);
       }
@@ -781,14 +783,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         page.listeners.notify(PageImpl.EventType.RESPONSE, response);
       }
     } else if ("pageError".equals(event)) {
-      SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
-      String errorStr = "";
-      if (error.error != null) {
-        errorStr = error.error.name + ": " + error.error.message;
-        if (error.error.stack != null && !error.error.stack.isEmpty()) {
-          errorStr += "\n" + error.error.stack;
-        }
-      }
+      String errorStr = parseError(params.getAsJsonObject("error"));
       PageImpl page;
       try {
         page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());

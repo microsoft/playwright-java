@@ -1,4 +1,4 @@
-/*
+  /*
  * Copyright (c) Microsoft Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -206,7 +206,7 @@ public class TestLocatorAssertions2 extends TestBase {
     page.setContent("<input type=checkbox></input>");
     page.locator("input").evaluate("e => e.indeterminate = true");
     Locator locator = page.locator("input");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () ->
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () ->
       assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true).setChecked(false)));
     assertTrue(e.getMessage().contains("Can't assert indeterminate and checked at the same time"), e.getMessage());
   }
@@ -220,4 +220,5 @@ public class TestLocatorAssertions2 extends TestBase {
     // TODO: should be "assertThat().isChecked() with timeout 1000ms"
     assertTrue(e.getMessage().contains("Assert \"isChecked\" with timeout 1000ms"), e.getMessage());
   }
+
 }

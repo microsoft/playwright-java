@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageInterception extends TestBase {
+public class  TestPageInterception extends TestBase {
   @Test
   void shouldWorkWithNavigationSmoke() {
     HashMap<String, Request> requests = new HashMap<>();
@@ -192,6 +192,10 @@ public class TestPageInterception extends TestBase {
     // Path and search query are case-sensitive
     assertFalse(urlMatches(null, "https://playwright.dev/foobar", "https://playwright.dev/fooBAR"));
     assertFalse(urlMatches(null, "https://playwright.dev/foobar?a=b", "https://playwright.dev/foobar?A=B"));
+
+    assertTrue(urlMatches(null, "https://localhost:3000/?a=b", "**/?a=b"));
+    assertTrue(urlMatches(null, "https://localhost:3000/?a=b", "**?a=b"));
+    assertTrue(urlMatches(null, "https://localhost:3000/?a=b", "**=b"));
 
     // This is not supported, we treat ? as a query separator.
     assertFalse(urlMatches(null, "http://localhost:8080/Simple/path.js", "http://localhost:8080/?imple/path.js"));

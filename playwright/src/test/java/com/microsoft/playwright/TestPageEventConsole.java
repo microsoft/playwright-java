@@ -103,7 +103,7 @@ public class TestPageEventConsole extends TestBase {
     ConsoleMessage message = page.waitForConsoleMessage(() -> {
       page.evaluate("async url => fetch(url).catch(e => {})", server.EMPTY_PAGE);
     });
-    assertTrue(message.text().contains("Access-Control-Allow-Origin"));
+    assertTrue(message.text().contains("Access-Control-Allow-Origin") || message.text().contains("blocked by CORS policy"), message.text());
     assertEquals("error", message.type());
   }
 
@@ -129,5 +129,24 @@ public class TestPageEventConsole extends TestBase {
       });
     assertEquals("2", message.text());
     assertEquals("info", message.type());
+  }
+
+  @Test
+  void consoleMessagesShouldWork() {
+    page.evaluate("() => {\n" +
+      "  for (let i = 0; i < 301; i++)\n" +
+      "    console.log('message' + i);\n" +
+      "}");
+
+    List<ConsoleMessage> messages = page.consoleMessages();
+    assertTrue(messages.size() >= 100, "should be at least 100 messages");
+
+    int firstIndex = messages.size() - 100;
+    for (int i = 0; i < 100; i++) {
+      ConsoleMessage message = messages.get(firstIndex + i);
+      assertEquals("message" + (201 + i), message.text());
+      assertEquals("log", message.type());
+      assertEquals(page, message.page());
+    }
   }
 }

@@ -26,17 +26,12 @@ import java.util.List;
 
 public class ConsoleMessageImpl implements ConsoleMessage {
   private final Connection connection;
-  private PageImpl page;
+  private final PageImpl page;
   private final JsonObject initializer;
 
-  public ConsoleMessageImpl(Connection connection, JsonObject initializer) {
+  public ConsoleMessageImpl(Connection connection, JsonObject initializer, PageImpl page) {
     this.connection = connection;
-    // Note: currently, we only report console messages for pages and they always have a page.
-    // However, in the future we might report console messages for service workers or something else,
-    // where page() would be null.
-    if (initializer.has("page")) {
-      page = connection.getExistingObject(initializer.getAsJsonObject("page").get("guid").getAsString());
-    }
+    this.page = page;
     this.initializer = initializer;
   }
 
