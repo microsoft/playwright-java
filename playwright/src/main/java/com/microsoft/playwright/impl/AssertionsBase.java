@@ -62,12 +62,15 @@ abstract class AssertionsBase {
       if (!log.isEmpty()) {
         log = "\nCall log:\n" + log;
       }
+      if (result.errorMessage != null) {
+        message += "\n" + result.errorMessage;
+      }
       if (expected == null) {
         throw new AssertionFailedError(message + log);
       }
       ValueWrapper expectedValue = formatValue(expected);
       ValueWrapper actualValue = formatValue(actual);
-      message += ": " + expectedValue.getStringRepresentation() + "\nReceived: " + actualValue.getStringRepresentation() + "\n";
+      message += "\nExpected: " + expectedValue.getStringRepresentation() + "\nReceived: " + actualValue.getStringRepresentation() + "\n";
       throw new AssertionFailedError(message + log, expectedValue, actualValue);
     }
   }

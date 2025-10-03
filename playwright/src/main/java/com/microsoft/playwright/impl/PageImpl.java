@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.parseError;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
@@ -568,6 +569,17 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public List<Request> requests() {
+    JsonObject json = sendMessage("requests", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
+    JsonArray requests = json.getAsJsonArray("requests");
+    List<Request> result = new ArrayList<>();
+    for (JsonElement item : requests) {
+      result.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
+    }
+    return result;
+  }
+
+  @Override
   public void addLocatorHandler(Locator locator, Consumer<Locator> handler, AddLocatorHandlerOptions options) {
     LocatorImpl locatorImpl = (LocatorImpl) locator;
     if (locatorImpl.frame != mainFrame) {
@@ -981,6 +993,29 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Keyboard keyboard() {
     return keyboard;
+  }
+
+  @Override
+  public List<ConsoleMessage> consoleMessages() {
+    JsonObject json = sendMessage("consoleMessages", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
+    JsonArray messages = json.getAsJsonArray("messages");
+    List<ConsoleMessage> result = new ArrayList<>();
+    for (JsonElement item : messages) {
+      result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this));
+    }
+    return result;
+  }
+
+  @Override
+  public List<String> pageErrors() {
+    JsonObject json = sendMessage("pageErrors", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
+    JsonArray errors = json.getAsJsonArray("errors");
+    List<String> result = new ArrayList<>();
+    for (JsonElement item : errors) {
+      String errorStr = parseError(item.getAsJsonObject());
+      result.add(errorStr);
+    }
+    return result;
   }
 
   @Override

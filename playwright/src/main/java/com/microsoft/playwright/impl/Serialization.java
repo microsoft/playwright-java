@@ -423,6 +423,18 @@ class Serialization {
     return result;
   }
 
+  static String parseError(JsonObject object) {
+    SerializedError error = gson().fromJson(object, SerializedError.class);
+    String errorStr = "";
+    if (error.error != null) {
+      errorStr = error.error.name + ": " + error.error.message;
+      if (error.error.stack != null && !error.error.stack.isEmpty()) {
+        errorStr += "\n" + error.error.stack;
+      }
+    }
+    return errorStr;
+  }
+
   private static class OptionalSerializer implements JsonSerializer<Optional<?>> {
     private static boolean isSupported(Type type) {
       return new TypeToken<Optional<Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||

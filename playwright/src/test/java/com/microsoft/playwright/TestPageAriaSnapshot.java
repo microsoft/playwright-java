@@ -127,4 +127,13 @@ public class TestPageAriaSnapshot {
         "    - listitem: \"1.2\"");
     });
   }
+
+  @Test
+  void matchValuesBothAgainstRegexAndString(Page page) {
+    page.setContent("<a href=\"/auth?r=/\">Log in</a>");
+    checkAndMatchSnapshot(page.locator("body"),
+      "- link \"Log in\":\n" +
+      "  - /url: /auth?r=/");
+  }
+
 }

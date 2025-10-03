@@ -223,7 +223,7 @@ public class TestLocatorAssertions extends TestBase {
     });
     assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
     assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
+    assertTrue(e.getMessage().contains("Locator expected to have text\nExpected: [Text 1, Text 3, Extra]"), e.getMessage());
     assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
   }
 
@@ -272,7 +272,7 @@ public class TestLocatorAssertions extends TestBase {
     });
     assertEquals("foo", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id': foo\nReceived: node"), e.getMessage());
+    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id'\nExpected: foo\nReceived: node"), e.getMessage());
   }
 
   @Test
@@ -291,7 +291,7 @@ public class TestLocatorAssertions extends TestBase {
     });
     assertEquals(".Nod..", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex: .Nod..\nReceived: node"), e.getMessage());
+    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex\nExpected: .Nod..\nReceived: node"), e.getMessage());
   }
 
   @Test
@@ -629,7 +629,7 @@ public class TestLocatorAssertions extends TestBase {
       "            </select>");
     Locator locator = page.locator("select");
     locator.selectOption(new String[] {"B"});
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
     });
     assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
@@ -639,7 +639,7 @@ public class TestLocatorAssertions extends TestBase {
   void hasValuesFailsWhenNotASelectElement() {
     page.setContent("<input value=\"foo\" />");
     Locator locator = page.locator("input");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")}, new LocatorAssertions.HasValuesOptions().setTimeout(1000));
     });
     assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
@@ -661,7 +661,7 @@ public class TestLocatorAssertions extends TestBase {
     });
     assertEquals("checked", e.getExpected().getStringRepresentation());
     assertEquals("unchecked", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to be: checked"), e.getMessage());
+    assertTrue(e.getMessage().contains("Locator expected to be\nExpected: checked"), e.getMessage());
   }
 
   @Test
@@ -674,7 +674,7 @@ public class TestLocatorAssertions extends TestBase {
 
     assertEquals("checked", e.getExpected().getStringRepresentation());
     assertEquals("checked", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected not to be: checked"), e.getMessage());
+    assertTrue(e.getMessage().contains("Locator expected not to be\nExpected: checked"), e.getMessage());
   }
 
   @Test
@@ -690,7 +690,7 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be: unchecked"), error.getMessage());
+    assertTrue(error.getMessage().contains("Locator expected to be\nExpected: unchecked"), error.getMessage());
   }
 
   @Test
@@ -796,7 +796,7 @@ public class TestLocatorAssertions extends TestBase {
   void isEditableThrowsOnNonInputElement() {
     page.setContent("<button>");
     Locator locator = page.locator("button");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> assertThat(locator).isEditable());
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(locator).isEditable());
     assertTrue(e.getMessage().contains("Element is not an <input>, <textarea>, <select> or [contenteditable] and does not have a role allowing [aria-readonly]"), e.getMessage());
   }
 

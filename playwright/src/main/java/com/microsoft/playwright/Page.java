@@ -5730,6 +5730,20 @@ public interface Page extends AutoCloseable {
    */
   Keyboard keyboard();
   /**
+   * Returns up to (currently) 200 last console messages from this page. See {@link
+   * com.microsoft.playwright.Page#onConsoleMessage Page.onConsoleMessage()} for more details.
+   *
+   * @since v1.56
+   */
+  List<ConsoleMessage> consoleMessages();
+  /**
+   * Returns up to (currently) 200 last page errors from this page. See {@link com.microsoft.playwright.Page#onPageError
+   * Page.onPageError()} for more details.
+   *
+   * @since v1.56
+   */
+  List<String> pageErrors();
+  /**
    * The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to
    * the element immediately before performing an action, so a series of actions on the same locator can in fact be performed
    * on different DOM elements. That would happen if the DOM structure between those actions has changed.
@@ -6053,6 +6067,21 @@ public interface Page extends AutoCloseable {
    * @since v1.9
    */
   List<ElementHandle> querySelectorAll(String selector);
+  /**
+   * Returns up to (currently) 100 last network request from this page. See {@link com.microsoft.playwright.Page#onRequest
+   * Page.onRequest()} for more details.
+   *
+   * <p> Returned requests should be accessed immediately, otherwise they might be collected to prevent unbounded memory growth
+   * as new requests come in. Once collected, retrieving most information about the request is impossible.
+   *
+   * <p> Note that requests reported through the {@link com.microsoft.playwright.Page#onRequest Page.onRequest()} request are not
+   * collected, so there is a trade off between efficient memory usage with {@link com.microsoft.playwright.Page#requests
+   * Page.requests()} and the amount of available information reported through {@link com.microsoft.playwright.Page#onRequest
+   * Page.onRequest()}.
+   *
+   * @since v1.56
+   */
+  List<Request> requests();
   /**
    * When testing a web page, sometimes unexpected overlays like a "Sign up" dialog appear and block actions you want to
    * automate, e.g. clicking a button. These overlays don't always show up in the same way or at the same time, making them
