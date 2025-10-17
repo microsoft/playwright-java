@@ -856,6 +856,8 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "clipboard-write"}</li>
    * <li> {@code "geolocation"}</li>
    * <li> {@code "gyroscope"}</li>
+   * <li> {@code "local-fonts"}</li>
+   * <li> {@code "local-network-access"}</li>
    * <li> {@code "magnetometer"}</li>
    * <li> {@code "microphone"}</li>
    * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
@@ -863,7 +865,6 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
-   * <li> {@code "local-fonts"}</li>
    * </ul>
    * @since v1.8
    */
@@ -889,6 +890,8 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "clipboard-write"}</li>
    * <li> {@code "geolocation"}</li>
    * <li> {@code "gyroscope"}</li>
+   * <li> {@code "local-fonts"}</li>
+   * <li> {@code "local-network-access"}</li>
    * <li> {@code "magnetometer"}</li>
    * <li> {@code "microphone"}</li>
    * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
@@ -896,7 +899,6 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
-   * <li> {@code "local-fonts"}</li>
    * </ul>
    * @since v1.8
    */
