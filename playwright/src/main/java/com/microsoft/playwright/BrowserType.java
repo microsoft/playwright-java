@@ -68,6 +68,23 @@ public interface BrowserType {
      */
     public Map<String, String> headers;
     /**
+     * Launch options to be passed to the browser being connected to. These options will be automatically
+     * serialized and sent via the {@code x-playwright-launch-options} header.
+     *
+     * <p> This is particularly useful when connecting to a browser with specific requirements, such as using
+     * a specific browser channel (e.g., "msedge" for Microsoft Edge).
+     *
+     * <p> Example:
+     * <pre>{@code
+     * BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions()
+     *   .setChannel("msedge");
+     * BrowserType.ConnectOptions connectOptions = new BrowserType.ConnectOptions()
+     *   .setLaunchOptions(launchOptions);
+     * Browser browser = browserType.connect(wsEndpoint, connectOptions);
+     * }</pre>
+     */
+    public LaunchOptions launchOptions;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -105,6 +122,26 @@ public interface BrowserType {
      */
     public ConnectOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
+      return this;
+    }
+    /**
+     * Launch options to be passed to the browser being connected to. These options will be automatically
+     * serialized and sent via the {@code x-playwright-launch-options} header.
+     *
+     * <p> This is particularly useful when connecting to a browser with specific requirements, such as using
+     * a specific browser channel (e.g., "msedge" for Microsoft Edge).
+     *
+     * <p> Example:
+     * <pre>{@code
+     * BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions()
+     *   .setChannel("msedge");
+     * BrowserType.ConnectOptions connectOptions = new BrowserType.ConnectOptions()
+     *   .setLaunchOptions(launchOptions);
+     * Browser browser = browserType.connect(wsEndpoint, connectOptions);
+     * }</pre>
+     */
+    public ConnectOptions setLaunchOptions(LaunchOptions launchOptions) {
+      this.launchOptions = launchOptions;
       return this;
     }
     /**
