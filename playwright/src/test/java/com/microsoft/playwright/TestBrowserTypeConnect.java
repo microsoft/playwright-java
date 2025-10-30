@@ -175,6 +175,22 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
   @Test
+  void shouldSendLaunchOptionsViaConnectOptions() throws Exception {
+    try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
+      try {
+        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
+          new BrowserType.ConnectOptions().setLaunchOptions(
+            new BrowserType.LaunchOptions().setChannel("msedge")));
+      } catch (Exception e) {
+      }
+      assertNotNull(webSocketServer.lastClientHandshake);
+      String headerValue = webSocketServer.lastClientHandshake.getFieldValue("x-playwright-launch-options");
+      assertNotNull(headerValue);
+      assertTrue(headerValue.contains("\"channel\":\"msedge\""));
+    }
+  }
+
+  @Test
   void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed() throws InterruptedException {
     // Launch another server to not affect other tests.
     BrowserServer remote = launchBrowserServer(browserType);
