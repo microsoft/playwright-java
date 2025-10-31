@@ -237,7 +237,6 @@ public class PageImpl extends ChannelOwner implements Page {
   void didClose() {
     isClosed = true;
     browserContext.pages.remove(this);
-    browserContext.backgroundPages.remove(this);
     listeners.notify(EventType.CLOSE, this);
   }
 
