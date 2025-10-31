@@ -36,7 +36,7 @@ public class PlaywrightExtension implements ParameterResolver {
   // There should be at most one instance of PlaywrightRegistry per test run, it keeps
   // track of all created Playwright instances and calls `close()` on each of them after
   // the tests finished.
-  static class PlaywrightRegistry implements ExtensionContext.Store.CloseableResource {
+  static class PlaywrightRegistry implements AutoCloseable {
     private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
     static synchronized PlaywrightRegistry getOrCreateFor(ExtensionContext extensionContext) {
@@ -59,7 +59,7 @@ public class PlaywrightExtension implements ParameterResolver {
     // This is a workaround for JUnit's lack of an "AfterTestRun" hook
     // This will be called once after all tests have completed.
     @Override
-    public void close() throws Throwable {
+    public void close() {
       for (Playwright playwright : playwrightList) {
         playwright.close();
       }
