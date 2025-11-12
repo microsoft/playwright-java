@@ -31,22 +31,26 @@ public class TestFixtures {
   private Page pageFromBeforeEach;
   private static APIRequestContext apiRequestContextFromBeforeAll;
   private APIRequestContext apiRequestContextFromBeforeEach;
+  private static Browser.NewContextOptions newBrowserContextOptionsFromBeforeAll;
 
   @BeforeAll
-  public static void beforeAll(Playwright playwright, Browser browser, APIRequestContext apiRequestContext) {
+  public static void beforeAll(Playwright playwright, Browser browser, APIRequestContext apiRequestContext, Browser.NewContextOptions newBrowserContextOptions) {
     assertNotNull(playwright);
     assertNotNull(browser);
     assertNotNull(apiRequestContext);
+    assertNotNull(newBrowserContextOptions);
 
     playwrightFromBeforeAll = playwright;
     browserFromBeforeAll = browser;
     apiRequestContextFromBeforeAll = apiRequestContext;
+    newBrowserContextOptionsFromBeforeAll = newBrowserContextOptions;
   }
 
   @BeforeEach
-  public void beforeEach(Playwright playwright, Browser browser, BrowserContext browserContext, Page page, APIRequestContext apiRequestContext) {
+  public void beforeEach(Playwright playwright, Browser browser, BrowserContext browserContext, Page page, APIRequestContext apiRequestContext, Browser.NewContextOptions newBrowserContextOptions) {
     assertEquals(playwrightFromBeforeAll, playwright);
     assertEquals(browserFromBeforeAll, browser);
+    assertEquals(newBrowserContextOptionsFromBeforeAll, newBrowserContextOptions);
     assertNotEquals(apiRequestContextFromBeforeAll, apiRequestContext);
 
     assertNotNull(browserContext);
@@ -57,9 +61,10 @@ public class TestFixtures {
   }
 
   @Test
-  public void objectShouldBeSameAsBeforeAll(Playwright playwright, Browser browser) {
+  public void objectShouldBeSameAsBeforeAll(Playwright playwright, Browser browser, Browser.NewContextOptions browserNextContextOptions) {
     assertEquals(playwrightFromBeforeAll, playwright);
     assertEquals(browserFromBeforeAll, browser);
+    assertEquals(newBrowserContextOptionsFromBeforeAll, browserNextContextOptions);
   }
 
   @Test
