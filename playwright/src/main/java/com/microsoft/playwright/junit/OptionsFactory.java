@@ -36,7 +36,7 @@ package com.microsoft.playwright.junit;
  *     public Options getOptions() {
  *       return new Options()
  *           .setHeadless(false)
- *           .setContextOption(new Browser.NewContextOptions()
+ *           .setContextOptions(new Browser.NewContextOptions()
  *               .setBaseURL("https://github.com"))
  *           .setApiRequestOptions(new APIRequest.NewContextOptions()
  *               .setBaseURL("https://playwright.dev"));
