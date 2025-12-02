@@ -564,6 +564,11 @@ public interface Frame {
      */
     public Position sourcePosition;
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
+     * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
+     */
+    public Integer steps;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -615,6 +620,14 @@ public interface Frame {
      */
     public DragAndDropOptions setSourcePosition(Position sourcePosition) {
       this.sourcePosition = sourcePosition;
+      return this;
+    }
+    /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
+     * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
+     */
+    public DragAndDropOptions setSteps(int steps) {
+      this.steps = steps;
       return this;
     }
     /**

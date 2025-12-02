@@ -65,4 +65,41 @@ public class TestLocatorClick extends TestBase {
       page.getByText("Go").click(new Locator.ClickOptions().setModifiers(asList(KeyboardModifier.CONTROLORMETA))));
     assertThat(newPage).hasURL(server.PREFIX + "/title.html");
   }
+
+  @Test
+  void shouldClickWithTweenedMouseMovement() {
+    page.setContent(
+      "<body style=\"margin: 0; padding: 0; height: 500px; width: 500px;\">\n" +
+      "  <div style=\"position: relative; top: 280px; left: 150px; width: 100px; height: 40px\">Click me</div>\n" +
+      "</body>"
+    );
+
+    // The test becomes flaky on WebKit without next line.
+    if (isWebKit()) {
+      page.evaluate("() => new Promise(requestAnimationFrame)");
+    }
+
+    page.mouse().move(100, 100);
+
+    page.evaluate("() => {\n" +
+      "  window['result'] = [];\n" +
+      "  document.addEventListener('mousemove', event => {\n" +
+      "    window['result'].push([event.clientX, event.clientY]);\n" +
+      "  });\n" +
+      "}");
+
+    // Centerpoint at 150 + 100/2, 280 + 40/2 = 200, 300
+    page.locator("div").click(new Locator.ClickOptions().setSteps(5));
+
+    assertEquals(
+      asList(
+        asList(120, 140),
+        asList(140, 180),
+        asList(160, 220),
+        asList(180, 260),
+        asList(200, 300)
+      ),
+      page.evaluate("result")
+    );
+  }
 }

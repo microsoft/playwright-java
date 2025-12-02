@@ -78,5 +78,12 @@ public interface ConsoleMessage {
    * @since v1.8
    */
   String type();
+  /**
+   * The web worker or service worker that produced this console message, if any. Note that console messages from web workers
+   * also have non-null {@link com.microsoft.playwright.ConsoleMessage#page ConsoleMessage.page()}.
+   *
+   * @since v1.57
+   */
+  Worker worker();
 }
 

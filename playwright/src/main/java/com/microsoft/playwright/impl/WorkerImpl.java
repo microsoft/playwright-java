@@ -18,21 +18,25 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
 class WorkerImpl extends ChannelOwner implements Worker {
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
+  final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   PageImpl page;
 
   enum EventType {
     CLOSE,
+    CONSOLE,
   }
 
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -49,9 +53,19 @@ class WorkerImpl extends ChannelOwner implements Worker {
     listeners.remove(EventType.CLOSE, handler);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+  @Override
+  public void onConsole(Consumer<ConsoleMessage> handler) {
+    listeners.add(EventType.CONSOLE, handler);
+  }
+
+  @Override
+  public void offConsole(Consumer<ConsoleMessage> handler) {
+    listeners.remove(EventType.CONSOLE, handler);
+  }
+
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType));
+    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -62,11 +76,23 @@ class WorkerImpl extends ChannelOwner implements Worker {
     return withWaitLogging("Worker.waitForClose", logger -> waitForCloseImpl(options, code));
   }
 
+  @Override
+  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
+    return withWaitLogging("Worker.waitForConsoleMessage", logger -> waitForConsoleMessageImpl(options, code));
+  }
+
+  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
+    if (options == null) {
+      options = new WaitForConsoleMessageOptions();
+    }
+    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+  }
+
   private Worker waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(EventType.CLOSE, code, options.timeout);
+    return waitForEventWithTimeout(EventType.CLOSE, code, null, options.timeout);
   }
 
   @Override

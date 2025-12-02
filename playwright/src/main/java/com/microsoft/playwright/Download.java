@@ -48,6 +48,9 @@ public interface Download {
   /**
    * Returns a readable stream for a successful download, or throws for a failed/canceled download.
    *
+   * <p> <strong>NOTE:</strong> If you don't need a readable stream, it's usually simpler to read the file from disk after the download completed. See
+   * {@link com.microsoft.playwright.Download#path Download.path()}.
+   *
    * @since v1.8
    */
   InputStream createReadStream();

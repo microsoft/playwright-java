@@ -196,5 +196,26 @@ public class TestWorkers extends TestBase {
     assertEquals("10\u00A0000,2", worker.evaluate("() => (10000.20).toLocaleString()"));
     context.close();
   }
+
+  @Test
+  void shouldReportConsoleEventOnTheWorker() {
+    Worker worker = page.waitForWorker(() -> page.evaluate(
+      "() => { window.worker = new Worker(URL.createObjectURL(new Blob(['42'], {type: 'application/javascript'}))); }"
+    ));
+
+    ConsoleMessage[] message2 = {null};
+    ConsoleMessage[] message3 = {null};
+
+    page.onConsoleMessage(msg -> message2[0] = msg);
+    page.context().onConsoleMessage(msg -> message3[0] = msg);
+
+    ConsoleMessage message1 = worker.waitForConsoleMessage(() -> {
+      worker.evaluate("() => console.log('hello from worker')");
+    });
+
+    assertEquals("hello from worker", message1.text());
+    assertSame(message1, message2[0]);
+    assertSame(message1, message3[0]);
+  }
 }
 

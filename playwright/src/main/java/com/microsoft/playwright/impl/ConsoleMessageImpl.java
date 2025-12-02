@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
+import com.microsoft.playwright.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +28,23 @@ import java.util.List;
 public class ConsoleMessageImpl implements ConsoleMessage {
   private final Connection connection;
   private final PageImpl page;
+  private final WorkerImpl worker;
   private final JsonObject initializer;
 
-  public ConsoleMessageImpl(Connection connection, JsonObject initializer, PageImpl page) {
+  public ConsoleMessageImpl(Connection connection, JsonObject initializer, PageImpl page, WorkerImpl worker) {
     this.connection = connection;
     this.page = page;
+    this.worker = worker;
     this.initializer = initializer;
   }
 
   public String type() {
     return initializer.get("type").getAsString();
+  }
+
+  @Override
+  public Worker worker() {
+    return worker;
   }
 
   public String text() {

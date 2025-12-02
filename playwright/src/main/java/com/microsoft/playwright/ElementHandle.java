@@ -171,6 +171,12 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public Integer steps;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -245,6 +251,15 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public ClickOptions setSteps(int steps) {
+      this.steps = steps;
+      return this;
+    }
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -293,6 +308,12 @@ public interface ElementHandle extends JSHandle {
      * element.
      */
     public Position position;
+    /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public Integer steps;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
@@ -358,6 +379,15 @@ public interface ElementHandle extends JSHandle {
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public DblclickOptions setSteps(int steps) {
+      this.steps = steps;
       return this;
     }
     /**
