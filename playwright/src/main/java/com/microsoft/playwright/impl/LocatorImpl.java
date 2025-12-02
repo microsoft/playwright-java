@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -25,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.LocatorUtils.*;
@@ -161,7 +161,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new ClickOptions();
     }
-    frame.click(selector, convertType(options, Frame.ClickOptions.class).setStrict(true));
+    frame.clickImpl(selector, convertType(options, Frame.ClickOptions.class).setStrict(true), options.steps);
   }
 
   @Override
@@ -175,11 +175,32 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public String description() {
+    // Match internal:describe= at the end of the selector with a JSON string
+    // Pattern matches: >> internal:describe="..." where ... is a JSON-encoded string
+    Pattern pattern = Pattern.compile(" >> internal:describe=(\"(?:[^\"\\\\]|\\\\.)*\")$");
+    Matcher matcher = pattern.matcher(selector);
+
+    if (matcher.find()) {
+      String jsonString = matcher.group(1);
+      try {
+        // Deserialize the JSON string
+        return gson().fromJson(jsonString, String.class);
+      } catch (Exception e) {
+        // If we can't parse it, return null
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  @Override
   public void dblclick(DblclickOptions options) {
     if (options == null) {
       options = new DblclickOptions();
     }
-    frame.dblclick(selector, convertType(options, Frame.DblclickOptions.class).setStrict(true));
+    frame.dblclickImpl(selector, convertType(options, Frame.DblclickOptions.class).setStrict(true), options.steps);
   }
 
   @Override
@@ -197,7 +218,7 @@ class LocatorImpl implements Locator {
     }
     Frame.DragAndDropOptions frameOptions = convertType(options, Frame.DragAndDropOptions.class);
     frameOptions.setStrict(true);
-    frame.dragAndDrop(selector, ((LocatorImpl) target).selector, frameOptions);
+    frame.dragAndDropImpl(selector, ((LocatorImpl) target).selector, frameOptions, options.steps);
   }
 
   @Override
@@ -627,6 +648,10 @@ class LocatorImpl implements Locator {
 
   @Override
   public String toString() {
+    String description = description();
+    if (description != null) {
+      return description;
+    }
     return "Locator@" + selector;
   }
 

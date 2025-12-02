@@ -161,6 +161,16 @@ public class  TestPageInterception extends TestBase {
     assertFalse(globToRegex("http://localhost:3000/signin-oidc*").matcher("http://localhost:3000/signin-oidc/foo").find());
     assertTrue(globToRegex("http://localhost:3000/signin-oidc*").matcher("http://localhost:3000/signin-oidcnice").find());
 
+    assertTrue(globToRegex("**/*.js").matcher("/foo.js").find());
+    assertFalse(globToRegex("asd/**.js").matcher("/foo.js").find());
+    assertFalse(globToRegex("**/*.js").matcher("bar_foo.js").find());
+
+    // custom protocols
+    assertTrue(globToRegex("my.custom.protocol://**").matcher("my.custom.protocol://foo").find());
+    assertFalse(globToRegex("my.{p,y}://**").matcher("my.p://foo").find());
+    assertTrue(globToRegex("my.{p,y}://**").matcher("my.p://foo/").find());
+    assertTrue(globToRegex("f*e://**").matcher("file:///foo/").find());
+
     // range [] is NOT supported
     assertTrue(globToRegex("**/api/v[0-9]").matcher("http://example.com/api/v[0-9]").find());
     assertFalse(globToRegex("**/api/v[0-9]").matcher("http://example.com/api/version").find());
@@ -185,6 +195,10 @@ public class  TestPageInterception extends TestBase {
     assertTrue(urlMatches(null, "http://playwright.dev/foo/bar", "**/foo/**"));
     assertTrue(urlMatches("http://playwright.dev", "http://playwright.dev/?x=y", "?x=y"));
     assertTrue(urlMatches("http://playwright.dev/foo/", "http://playwright.dev/foo/bar?x=y", "./bar?x=y"));
+
+    // /**/ should match /.
+    assertTrue(urlMatches(null, "https://foo/bar.js", "https://foo/**/bar.js"));
+    assertTrue(urlMatches(null, "https://foo/bar.js", "https://foo/**/**/bar.js"));
 
     // Case insensitive matching
     assertTrue(urlMatches(null, "https://playwright.dev/fooBAR", "HtTpS://pLaYwRiGhT.dEv/fooBAR"));

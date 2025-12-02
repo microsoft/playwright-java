@@ -229,15 +229,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void click(String selector, ClickOptions options) {
-    clickImpl(selector, options);
+    clickImpl(selector, options, null);
   }
 
-  void clickImpl(String selector, ClickOptions options) {
+  void clickImpl(String selector, ClickOptions options, Integer steps) {
     if (options == null) {
       options = new ClickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
+    if (steps != null) {
+      params.addProperty("steps", steps);
+    }
     sendMessage("click", params, timeout(options.timeout));
   }
 
@@ -248,11 +251,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
+    dblclickImpl(selector, options, null);
+  }
+
+  void dblclickImpl(String selector, DblclickOptions options, Integer steps) {
     if (options == null) {
       options = new DblclickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
+    if (steps != null) {
+      params.addProperty("steps", steps);
+    }
     sendMessage("dblclick", params, timeout(options.timeout));
   }
 
@@ -440,16 +450,19 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void dragAndDrop(String source, String target, DragAndDropOptions options) {
-    dragAndDropImpl(source, target, options);
+    dragAndDropImpl(source, target, options, null);
   }
 
-  void dragAndDropImpl(String source, String target, DragAndDropOptions options) {
+  void dragAndDropImpl(String source, String target, DragAndDropOptions options, Integer steps) {
     if (options == null) {
       options = new DragAndDropOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("source", source);
     params.addProperty("target", target);
+    if (steps != null) {
+      params.addProperty("steps", steps);
+    }
     sendMessage("dragAndDrop", params, timeout(options.timeout));
   }
 
@@ -627,7 +640,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("key", key);
     sendMessage("press", params, timeout(options.timeout));
   }
-  
+
   @Override
   public List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options) {
     return selectOptionImpl(selector, values, options);

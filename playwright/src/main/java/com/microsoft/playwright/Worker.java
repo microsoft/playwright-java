@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The Worker class represents a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorker</a>.
@@ -44,6 +45,16 @@ public interface Worker {
    */
   void offClose(Consumer<Worker> handler);
 
+  /**
+   * Emitted when JavaScript within the worker calls one of console API methods, e.g. {@code console.log} or {@code
+   * console.dir}.
+   */
+  void onConsole(Consumer<ConsoleMessage> handler);
+  /**
+   * Removes handler that was previously added with {@link #onConsole onConsole(handler)}.
+   */
+  void offConsole(Consumer<ConsoleMessage> handler);
+
   class WaitForCloseOptions {
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
@@ -58,6 +69,35 @@ public interface Worker {
      * BrowserContext.setDefaultTimeout()}.
      */
     public WaitForCloseOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForConsoleMessageOptions {
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to true when the waiting should resolve.
+     */
+    public Predicate<ConsoleMessage> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}.
+     */
+    public Double timeout;
+
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to true when the waiting should resolve.
+     */
+    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}.
+     */
+    public WaitForConsoleMessageOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -158,5 +198,21 @@ public interface Worker {
    * @since v1.10
    */
   Worker waitForClose(WaitForCloseOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a console message.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   * @since v1.57
+   */
+  default ConsoleMessage waitForConsoleMessage(Runnable callback) {
+    return waitForConsoleMessage(null, callback);
+  }
+  /**
+   * Performs action and waits for a console message.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   * @since v1.57
+   */
+  ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
 }
 

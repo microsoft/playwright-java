@@ -39,7 +39,7 @@ do
   cd $PLATFORM
   echo "Downloading driver for $PLATFORM to $(pwd)"
 
-  URL=https://playwright.azureedge.net/builds/driver
+  URL=https://cdn.playwright.dev/builds/driver
   if [[ "$DRIVER_VERSION" == *-alpha* || "$DRIVER_VERSION" == *-beta* || "$DRIVER_VERSION" == *-next* ]]; then
     URL=$URL/next
   fi

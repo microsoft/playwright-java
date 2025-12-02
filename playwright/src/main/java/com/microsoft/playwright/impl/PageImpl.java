@@ -688,7 +688,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void click(String selector, ClickOptions options) {
-    mainFrame.clickImpl(selector, convertType(options, Frame.ClickOptions.class));
+    mainFrame.clickImpl(selector, convertType(options, Frame.ClickOptions.class), null);
   }
 
   @Override
@@ -703,7 +703,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
-    mainFrame.dblclick(selector, convertType(options, Frame.DblclickOptions.class));
+    mainFrame.dblclickImpl(selector, convertType(options, Frame.DblclickOptions.class), null);
   }
 
   @Override
@@ -936,7 +936,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dragAndDrop(String source, String target, DragAndDropOptions options) {
-    mainFrame.dragAndDropImpl(source, target, convertType(options, Frame.DragAndDropOptions.class));
+    if (options == null) {
+      options = new DragAndDropOptions();
+    }
+    mainFrame.dragAndDropImpl(source, target, convertType(options, Frame.DragAndDropOptions.class), options.steps);
   }
 
   @Override
@@ -1000,7 +1003,7 @@ public class PageImpl extends ChannelOwner implements Page {
     JsonArray messages = json.getAsJsonArray("messages");
     List<ConsoleMessage> result = new ArrayList<>();
     for (JsonElement item : messages) {
-      result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this));
+      result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this, null));
     }
     return result;
   }

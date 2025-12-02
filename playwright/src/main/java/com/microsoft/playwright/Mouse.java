@@ -127,12 +127,16 @@ public interface Mouse {
   }
   class MoveOptions {
     /**
-     * Defaults to 1. Sends intermediate {@code mousemove} events.
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
      */
     public Integer steps;
 
     /**
-     * Defaults to 1. Sends intermediate {@code mousemove} events.
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
      */
     public MoveOptions setSteps(int steps) {
       this.steps = steps;

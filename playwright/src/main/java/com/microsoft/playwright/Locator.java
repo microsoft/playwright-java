@@ -246,6 +246,12 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public Integer steps;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -321,6 +327,15 @@ public interface Locator {
       return this;
     }
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public ClickOptions setSteps(int steps) {
+      this.steps = steps;
+      return this;
+    }
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -370,6 +385,12 @@ public interface Locator {
      * element.
      */
     public Position position;
+    /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public Integer steps;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
@@ -439,6 +460,15 @@ public interface Locator {
       return this;
     }
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
+     * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
+     * location.
+     */
+    public DblclickOptions setSteps(int steps) {
+      this.steps = steps;
+      return this;
+    }
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -495,6 +525,11 @@ public interface Locator {
      */
     public Position sourcePosition;
     /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
+     * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
+     */
+    public Integer steps;
+    /**
      * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
@@ -541,6 +576,14 @@ public interface Locator {
      */
     public DragToOptions setSourcePosition(Position sourcePosition) {
       this.sourcePosition = sourcePosition;
+      return this;
+    }
+    /**
+     * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
+     * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
+     */
+    public DragToOptions setSteps(int steps) {
+      this.steps = steps;
       return this;
     }
     /**
@@ -2616,6 +2659,23 @@ public interface Locator {
    * @since v1.53
    */
   Locator describe(String description);
+  /**
+   * Returns locator description previously set with {@link com.microsoft.playwright.Locator#describe Locator.describe()}.
+   * Returns {@code null} if no custom description has been set. Prefer {@code Locator.toString()} for a human-readable
+   * representation, as it uses the description when available.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator button = page.getByRole(AriaRole.BUTTON).describe("Subscribe button");
+   * System.out.println(button.description()); // "Subscribe button"
+   *
+   * Locator input = page.getByRole(AriaRole.TEXTBOX);
+   * System.out.println(input.description()); // null
+   * }</pre>
+   *
+   * @since v1.57
+   */
+  String description();
   /**
    * Programmatically dispatch an event on the matching element.
    *

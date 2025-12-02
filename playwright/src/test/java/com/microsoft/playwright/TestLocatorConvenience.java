@@ -186,4 +186,53 @@ public class TestLocatorConvenience extends TestBase {
     page.setContent("<div>A</div><div>B</div><div>C</div>");
     assertEquals(asList("A", "B", "C"), page.locator("div").allInnerTexts());
   }
+
+  @Test
+  void descriptionShouldReturnNullForUndescribedLocators() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div");
+    assertNull(locator.description());
+  }
+
+  @Test
+  void descriptionShouldReturnSimpleDescription() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div").describe("my div");
+    assertEquals("my div", locator.description());
+  }
+
+  @Test
+  void descriptionShouldHandleSpecialCharacters() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div").describe("título 😊");
+    assertEquals("título 😊", locator.description());
+  }
+
+  @Test
+  void descriptionShouldWorkWithChainedLocators() {
+    page.setContent("<div><span>Hello</span></div>");
+    Locator locator = page.locator("div").describe("container").locator("span");
+    assertNull(locator.description());
+  }
+
+  @Test
+  void descriptionShouldReturnLastDescriptionForMultipleCalls() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div").describe("first").describe("second");
+    assertEquals("second", locator.description());
+  }
+
+  @Test
+  void toStringShouldReturnFormattedLocator() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div");
+    assertTrue(locator.toString().startsWith("Locator@"));
+  }
+
+  @Test
+  void toStringShouldPreferDescription() {
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div").describe("my div");
+    assertEquals("my div", locator.toString());
+  }
 }

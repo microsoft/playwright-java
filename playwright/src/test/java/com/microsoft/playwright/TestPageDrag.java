@@ -124,4 +124,94 @@ public class TestPageDrag extends TestBase {
     page.locator("#source").dragTo(page.locator("#target"));
     assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
+
+  @Test
+  void shouldDragAndDropWithTweenedMouseMovement() {
+    page.setContent(
+      "<body style='margin: 0; padding: 0;'>\n" +
+      "  <div style='width:100px;height:100px;background:red;' id='red'></div>\n" +
+      "  <div style='width:300px;height:100px;background:blue;' id='blue'></div>\n" +
+      "</body>"
+    );
+
+    JSHandle eventsHandle = page.evaluateHandle("() => {\n" +
+      "  const events = [];\n" +
+      "  document.addEventListener('mousedown', event => {\n" +
+      "    events.push({ type: 'mousedown', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  document.addEventListener('mouseup', event => {\n" +
+      "    events.push({ type: 'mouseup', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  document.addEventListener('mousemove', event => {\n" +
+      "    events.push({ type: 'mousemove', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  return events;\n" +
+      "}");
+
+    // Red div center is at (50, 50), blue div center is at (150, 50)
+    // With 4 steps, we expect intermediate positions at (75, 50), (100, 50), (125, 50)
+    page.dragAndDrop("#red", "#blue", new Page.DragAndDropOptions().setSteps(4));
+
+    Object json = eventsHandle.jsonValue();
+    // Expected sequence: mousemove to (50,50), mousedown at (50,50),
+    // then 3 mousemove events at (75,50), (100,50), (125,50),
+    // and mouseup at (150,50)
+    assertJsonEquals(
+      "[" +
+      "{type: \"mousemove\", x: 50, y: 50}," +
+      "{type: \"mousedown\", x: 50, y: 50}," +
+      "{type: \"mousemove\", x: 75, y: 75}," +
+      "{type: \"mousemove\", x: 100, y: 100}," +
+      "{type: \"mousemove\", x: 125, y: 125}," +
+      "{type: \"mousemove\", x: 150, y: 150}," +
+      "{type: \"mouseup\", x: 150, y: 150}" +
+      "]",
+      json
+    );
+  }
+
+  @Test
+  void shouldDragToWithTweenedMouseMovement() {
+    page.setContent(
+      "<body style='margin: 0; padding: 0;'>\n" +
+      "  <div style='width:100px;height:100px;background:red;' id='red'></div>\n" +
+      "  <div style='width:300px;height:100px;background:blue;' id='blue'></div>\n" +
+      "</body>"
+    );
+
+    JSHandle eventsHandle = page.evaluateHandle("() => {\n" +
+      "  const events = [];\n" +
+      "  document.addEventListener('mousedown', event => {\n" +
+      "    events.push({ type: 'mousedown', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  document.addEventListener('mouseup', event => {\n" +
+      "    events.push({ type: 'mouseup', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  document.addEventListener('mousemove', event => {\n" +
+      "    events.push({ type: 'mousemove', x: event.pageX, y: event.pageY });\n" +
+      "  });\n" +
+      "  return events;\n" +
+      "}");
+
+    // Red div center is at (50, 50), blue div center is at (150, 50)
+    // With 4 steps, we expect intermediate positions at (75, 50), (100, 50), (125, 50)
+    page.locator("#red").dragTo(page.locator("#blue"), new Locator.DragToOptions().setSteps(4));
+
+    Object json = eventsHandle.jsonValue();
+    // Expected sequence: mousemove to (50,50), mousedown at (50,50),
+    // then 3 mousemove events at (75,50), (100,50), (125,50),
+    // and mouseup at (150,50)
+    assertJsonEquals(
+      "[" +
+        "{type: \"mousemove\", x: 50, y: 50}," +
+        "{type: \"mousedown\", x: 50, y: 50}," +
+        "{type: \"mousemove\", x: 75, y: 75}," +
+        "{type: \"mousemove\", x: 100, y: 100}," +
+        "{type: \"mousemove\", x: 125, y: 125}," +
+        "{type: \"mousemove\", x: 150, y: 150}," +
+        "{type: \"mouseup\", x: 150, y: 150}" +
+        "]",
+      json
+    );
+  }
 }

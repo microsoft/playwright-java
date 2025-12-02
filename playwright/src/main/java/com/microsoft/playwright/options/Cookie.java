@@ -20,16 +20,16 @@ public class Cookie {
   public String name;
   public String value;
   /**
-   * Either url or domain / path are required. Optional.
+   * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
   public String url;
   /**
-   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either url or
-   * domain / path are required. Optional.
+   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either {@code
+   * url} or both {@code domain} and {@code path} are required. Optional.
    */
   public String domain;
   /**
-   * Either url or domain / path are required Optional.
+   * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
   public String path;
   /**
@@ -60,22 +60,22 @@ public class Cookie {
     this.value = value;
   }
   /**
-   * Either url or domain / path are required. Optional.
+   * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
   public Cookie setUrl(String url) {
     this.url = url;
     return this;
   }
   /**
-   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either url or
-   * domain / path are required. Optional.
+   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either {@code
+   * url} or both {@code domain} and {@code path} are required. Optional.
    */
   public Cookie setDomain(String domain) {
     this.domain = domain;
     return this;
   }
   /**
-   * Either url or domain / path are required Optional.
+   * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
   public Cookie setPath(String path) {
     this.path = path;
