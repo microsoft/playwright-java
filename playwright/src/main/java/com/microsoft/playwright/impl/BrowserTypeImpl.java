@@ -76,6 +76,11 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       headers.addProperty("x-playwright-browser", name());
     }
 
+    if (options.launchOptions != null && !headers.has("x-playwright-launch-options")) {
+      String launchOptionsJson = new Gson().toJsonTree(options.launchOptions).toString();
+      headers.addProperty("x-playwright-launch-options", launchOptionsJson);
+    }
+
     Double timeout = options.timeout;
     if (timeout == null) {
       timeout = 0.0;
