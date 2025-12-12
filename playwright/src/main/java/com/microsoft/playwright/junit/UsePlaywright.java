@@ -73,7 +73,7 @@ import java.lang.annotation.*;
  * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.
  */
 @ExtendWith({OptionsExtension.class, PlaywrightExtension.class, BrowserExtension.class, BrowserContextExtension.class,
-             PageExtension.class, APIRequestContextExtension.class})
+             PageExtension.class, APIRequestContextExtension.class, BrowserNewContextOptionsExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
