@@ -989,7 +989,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1034,7 +1034,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1077,7 +1077,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1122,7 +1122,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1165,7 +1165,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1210,7 +1210,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1253,7 +1253,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
@@ -1298,7 +1298,7 @@ public interface LocatorAssertions {
    * <p> Let's see how we can use the assertion:
    * <pre>{@code
    * // ✓ Contains the right items in the right order
-   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3"});
    *
    * // ✖ Wrong order
    * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});

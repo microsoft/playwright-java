@@ -2661,8 +2661,7 @@ public interface Locator {
   Locator describe(String description);
   /**
    * Returns locator description previously set with {@link com.microsoft.playwright.Locator#describe Locator.describe()}.
-   * Returns {@code null} if no custom description has been set. Prefer {@code Locator.toString()} for a human-readable
-   * representation, as it uses the description when available.
+   * Returns {@code null} if no custom description has been set.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

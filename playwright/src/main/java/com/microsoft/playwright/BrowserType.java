@@ -129,6 +129,11 @@ public interface BrowserType {
      */
     public Map<String, String> headers;
     /**
+     * Tells Playwright that it runs on the same host as the CDP server. It will enable certain optimizations that rely upon
+     * the file system being the same between Playwright and the Browser.
+     */
+    public Boolean isLocal;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -144,6 +149,14 @@ public interface BrowserType {
      */
     public ConnectOverCDPOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
+      return this;
+    }
+    /**
+     * Tells Playwright that it runs on the same host as the CDP server. It will enable certain optimizations that rely upon
+     * the file system being the same between Playwright and the Browser.
+     */
+    public ConnectOverCDPOptions setIsLocal(boolean isLocal) {
+      this.isLocal = isLocal;
       return this;
     }
     /**
@@ -187,10 +200,6 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
-     */
-    public Boolean devtools;
-    /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
@@ -229,8 +238,7 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
     public Boolean headless;
     /**
@@ -308,13 +316,6 @@ public interface BrowserType {
       return this;
     }
     /**
-     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
-     */
-    public LaunchOptions setDevtools(boolean devtools) {
-      this.devtools = devtools;
-      return this;
-    }
-    /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
@@ -374,8 +375,7 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -519,10 +519,6 @@ public interface BrowserType {
      */
     public Double deviceScaleFactor;
     /**
-     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
-     */
-    public Boolean devtools;
-    /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
@@ -577,8 +573,7 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
     public Boolean headless;
     /**
@@ -857,13 +852,6 @@ public interface BrowserType {
       return this;
     }
     /**
-     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
-     */
-    public LaunchPersistentContextOptions setDevtools(boolean devtools) {
-      this.devtools = devtools;
-      return this;
-    }
-    /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
@@ -954,8 +942,7 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;

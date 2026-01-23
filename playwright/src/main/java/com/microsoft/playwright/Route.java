@@ -370,9 +370,10 @@ public interface Route {
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
    * next matching handler in the chain to be invoked.
    *
-   * <p> <strong>NOTE:</strong> The {@code Cookie} header cannot be overridden using this method. If a value is provided, it will be ignored, and the
-   * cookie will be loaded from the browser's cookie store. To set custom cookies, use {@link
-   * com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
+   * <p> <strong>NOTE:</strong> Some request headers are **forbidden** and cannot be overridden (for example, {@code Cookie}, {@code Host}, {@code
+   * Content-Length} and others, see <a
+   * href="https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_request_header">this MDN page</a> for full list). If
+   * an override is provided for a forbidden header, it will be ignored and the original request header will be used.To set custom cookies, use {@link com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
    *
    * @since v1.8
    */
@@ -402,9 +403,10 @@ public interface Route {
    * matching handlers won't be invoked. Use {@link com.microsoft.playwright.Route#fallback Route.fallback()} If you want
    * next matching handler in the chain to be invoked.
    *
-   * <p> <strong>NOTE:</strong> The {@code Cookie} header cannot be overridden using this method. If a value is provided, it will be ignored, and the
-   * cookie will be loaded from the browser's cookie store. To set custom cookies, use {@link
-   * com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
+   * <p> <strong>NOTE:</strong> Some request headers are **forbidden** and cannot be overridden (for example, {@code Cookie}, {@code Host}, {@code
+   * Content-Length} and others, see <a
+   * href="https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_request_header">this MDN page</a> for full list). If
+   * an override is provided for a forbidden header, it will be ignored and the original request header will be used.To set custom cookies, use {@link com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()}.
    *
    * @since v1.8
    */
