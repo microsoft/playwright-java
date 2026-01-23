@@ -194,7 +194,7 @@ public class TestWorkers extends TestBase {
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     // https://github.com/microsoft/playwright/issues/38919
-    String expected = isFirefox() ? "10.000,2" : "10\u00A0000,2";
+    String expected = isFirefox() ? "10,000.2" : "10\u00A0000,2";
     assertEquals(expected, worker.evaluate("() => (10000.20).toLocaleString()"));
     context.close();
   }
