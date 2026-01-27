@@ -160,9 +160,9 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         sendMessageAsync("sendToPage", messageParams);
       }
     } else if ("closePage".equals(event)) {
-      int code = params.get("code").getAsInt();
-      String reason = params.get("reason").getAsString();
-      boolean wasClean = params.get("wasClean").getAsBoolean();
+      Integer code = params.has("code") ? params.get("code").getAsInt() : null;
+      String reason = params.has("reason") ? params.get("reason").getAsString() : null;
+      boolean wasClean = params.has("wasClean") && params.get("wasClean").getAsBoolean();
       if (onPageClose != null) {
         onPageClose.accept(code, reason);
       } else {
@@ -173,9 +173,9 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         sendMessageAsync("closeServer", closeParams);
       }
     } else if ("closeServer".equals(event)) {
-      int code = params.get("code").getAsInt();
-      String reason = params.get("reason").getAsString();
-      boolean wasClean = params.get("wasClean").getAsBoolean();
+      Integer code = params.has("code") ? params.get("code").getAsInt() : null;
+      String reason = params.has("reason") ? params.get("reason").getAsString() : null;
+      boolean wasClean = params.has("wasClean") && params.get("wasClean").getAsBoolean();
       if (onServerClose != null) {
         onServerClose.accept(code, reason);
       } else {
