@@ -22,7 +22,7 @@ RUN apt-get update && \
     adduser pwuser
 
 # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
-# Java 21, so we install latest Maven from Apache instead.
+# Java 25, so we install latest Maven from Apache instead.
 RUN VERSION=3.9.12 && \
     wget -O - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
