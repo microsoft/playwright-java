@@ -602,7 +602,7 @@ public interface FrameLocator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -645,7 +645,7 @@ public interface FrameLocator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -684,7 +684,7 @@ public interface FrameLocator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -706,7 +706,7 @@ public interface FrameLocator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>

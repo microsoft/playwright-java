@@ -1987,6 +1987,20 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class ConsoleMessagesOptions {
+    /**
+     * Controls which messages are returned:
+     */
+    public ConsoleMessagesFilter filter;
+
+    /**
+     * Controls which messages are returned:
+     */
+    public ConsoleMessagesOptions setFilter(ConsoleMessagesFilter filter) {
+      this.filter = filter;
+      return this;
+    }
+  }
   class LocatorOptions {
     /**
      * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
@@ -2966,6 +2980,50 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class AriaSnapshotOptions {
+    /**
+     * When specified, limits the depth of the snapshot.
+     */
+    public Integer depth;
+    /**
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
+     * "default"}.
+     */
+    public AriaSnapshotMode mode;
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public Double timeout;
+
+    /**
+     * When specified, limits the depth of the snapshot.
+     */
+    public AriaSnapshotOptions setDepth(int depth) {
+      this.depth = depth;
+      return this;
+    }
+    /**
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
+     * "default"}.
+     */
+    public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
+      this.mode = mode;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public AriaSnapshotOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class TapOptions {
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -3428,7 +3486,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -3458,7 +3516,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -3467,7 +3525,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -3476,7 +3534,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -3812,7 +3870,7 @@ public interface Page extends AutoCloseable {
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
-  void addInitScript(String script);
+  AutoCloseable addInitScript(String script);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
@@ -3839,7 +3897,7 @@ public interface Page extends AutoCloseable {
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
-  void addInitScript(Path script);
+  AutoCloseable addInitScript(Path script);
   /**
    * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's
    * onload fires or when the script content was injected into frame.
@@ -3880,6 +3938,13 @@ public interface Page extends AutoCloseable {
    * @since v1.8
    */
   void bringToFront();
+  /**
+   * Cancels an ongoing {@link com.microsoft.playwright.Page#pickLocator Page.pickLocator()} call by deactivating pick
+   * locator mode. If no pick locator mode is active, this method is a no-op.
+   *
+   * @since v1.59
+   */
+  void cancelPickLocator();
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -4611,8 +4676,8 @@ public interface Page extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  default void exposeBinding(String name, BindingCallback callback) {
-    exposeBinding(name, callback, null);
+  default AutoCloseable exposeBinding(String name, BindingCallback callback) {
+    return exposeBinding(name, callback, null);
   }
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called,
@@ -4661,7 +4726,7 @@ public interface Page extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
+  AutoCloseable exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the
    * function executes {@code callback} and returns a <a
@@ -4723,7 +4788,7 @@ public interface Page extends AutoCloseable {
    * @param callback Callback function which will be called in Playwright's context.
    * @since v1.8
    */
-  void exposeFunction(String name, FunctionCallback callback);
+  AutoCloseable exposeFunction(String name, FunctionCallback callback);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, fills it and
@@ -5062,7 +5127,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -5105,7 +5170,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -5144,7 +5209,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -5166,7 +5231,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -5743,12 +5808,35 @@ public interface Page extends AutoCloseable {
    */
   Keyboard keyboard();
   /**
+   * Clears all stored console messages from this page. Subsequent calls to {@link
+   * com.microsoft.playwright.Page#consoleMessages Page.consoleMessages()} will only return messages logged after the clear.
+   *
+   * @since v1.59
+   */
+  void clearConsoleMessages();
+  /**
+   * Clears all stored page errors from this page. Subsequent calls to {@link com.microsoft.playwright.Page#pageErrors
+   * Page.pageErrors()} will only return errors thrown after the clear.
+   *
+   * @since v1.59
+   */
+  void clearPageErrors();
+  /**
    * Returns up to (currently) 200 last console messages from this page. See {@link
    * com.microsoft.playwright.Page#onConsoleMessage Page.onConsoleMessage()} for more details.
    *
    * @since v1.56
    */
-  List<ConsoleMessage> consoleMessages();
+  default List<ConsoleMessage> consoleMessages() {
+    return consoleMessages(null);
+  }
+  /**
+   * Returns up to (currently) 200 last console messages from this page. See {@link
+   * com.microsoft.playwright.Page#onConsoleMessage Page.onConsoleMessage()} for more details.
+   *
+   * @since v1.56
+   */
+  List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options);
   /**
    * Returns up to (currently) 200 last page errors from this page. See {@link com.microsoft.playwright.Page#onPageError
    * Page.onPageError()} for more details.
@@ -5964,6 +6052,19 @@ public interface Page extends AutoCloseable {
    * @since v1.8
    */
   byte[] pdf(PdfOptions options);
+  /**
+   * Enters pick locator mode where hovering over page elements highlights them and shows the corresponding locator. Once the
+   * user clicks an element, the mode is deactivated and the {@code Locator} for the picked element is returned.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.pickLocator();
+   * System.out.println(locator);
+   * }</pre>
+   *
+   * @since v1.59
+   */
+  Locator pickLocator();
   /**
    * Focuses the element, and then uses {@link com.microsoft.playwright.Keyboard#down Keyboard.down()} and {@link
    * com.microsoft.playwright.Keyboard#up Keyboard.up()}.
@@ -6352,6 +6453,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6365,8 +6468,8 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(String url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(String url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by a page.
@@ -6411,6 +6514,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6424,7 +6529,7 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(String url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by a page.
    *
@@ -6468,6 +6573,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6481,8 +6588,8 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(Pattern url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(Pattern url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by a page.
@@ -6527,6 +6634,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6540,7 +6649,7 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(Pattern url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by a page.
    *
@@ -6584,6 +6693,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6597,8 +6708,8 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(Predicate<String> url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(Predicate<String> url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by a page.
@@ -6643,6 +6754,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
+   * <p> If a request matches multiple registered routes, the most recently registered route takes precedence.
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}) when request matches both handlers.
    *
@@ -6656,7 +6769,7 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
    * If specified the network requests that are made in the page will be served from the HAR file. Read more about <a
    * href="https://playwright.dev/java/docs/mock#replaying-from-har">Replaying from HAR</a>.
@@ -7415,6 +7528,22 @@ public interface Page extends AutoCloseable {
    */
   void setViewportSize(int width, int height);
   /**
+   * Captures the aria snapshot of the page. Read more about <a href="https://playwright.dev/java/docs/aria-snapshots">aria
+   * snapshots</a>.
+   *
+   * @since v1.59
+   */
+  default String ariaSnapshot() {
+    return ariaSnapshot(null);
+  }
+  /**
+   * Captures the aria snapshot of the page. Read more about <a href="https://playwright.dev/java/docs/aria-snapshots">aria
+   * snapshots</a>.
+   *
+   * @since v1.59
+   */
+  String ariaSnapshot(AriaSnapshotOptions options);
+  /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
@@ -7561,7 +7690,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @since v1.8
    */
   default void unroute(String url) {
@@ -7571,7 +7700,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    * @since v1.8
    */
@@ -7580,7 +7709,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @since v1.8
    */
   default void unroute(Pattern url) {
@@ -7590,7 +7719,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    * @since v1.8
    */
@@ -7599,7 +7728,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @since v1.8
    */
   default void unroute(Predicate<String> url) {
@@ -7609,7 +7738,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.Page#route Page.route()}. When {@code handler} is not
    * specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    * @since v1.8
    */
@@ -7621,7 +7750,9 @@ public interface Page extends AutoCloseable {
    */
   String url();
   /**
-   * Video object associated with this page.
+   * Video object associated with this page. Can be used to control video recording with {@link
+   * com.microsoft.playwright.Video#start Video.start()} and {@link com.microsoft.playwright.Video#stop Video.stop()}, or to
+   * access the video file when using the {@code recordVideo} context option.
    *
    * @since v1.8
    */
@@ -8447,7 +8578,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -8464,7 +8595,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -8479,7 +8610,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -8496,7 +8627,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -8511,7 +8642,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -8528,7 +8659,7 @@ public interface Page extends AutoCloseable {
    * page.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11

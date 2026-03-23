@@ -109,6 +109,14 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator normalize() {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonObject result = frame.sendMessage("normalizeLocator", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
+    return new LocatorImpl(frame, result.get("selector").getAsString(), null);
+  }
+
+  @Override
   public Locator and(Locator locator) {
     LocatorImpl other = (LocatorImpl) locator;
     if (other.frame != frame)

@@ -59,7 +59,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     // We don't use gson() here as the headers map should be serialized to a json object.
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("wsEndpoint", wsEndpoint);
+    params.addProperty("endpoint", wsEndpoint);
 
     if (!params.has("headers")) {
       params.add("headers", new JsonObject());

@@ -38,6 +38,11 @@ public class ConsoleMessageImpl implements ConsoleMessage {
     this.initializer = initializer;
   }
 
+  @Override
+  public double timestamp() {
+    return initializer.get("timestamp").getAsDouble();
+  }
+
   public String type() {
     return initializer.get("type").getAsString();
   }

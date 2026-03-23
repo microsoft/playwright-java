@@ -58,6 +58,8 @@ class Serialization {
     .registerTypeAdapter(ScreenshotCaret.class, new ToLowerCaseSerializer<ScreenshotCaret>())
     .registerTypeAdapter(ServiceWorkerPolicy.class, new ToLowerCaseAndDashSerializer<ServiceWorkerPolicy>())
     .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
+    .registerTypeAdapter(ConsoleMessagesFilter.class, new ConsoleMessagesFilterSerializer())
+    .registerTypeAdapter(AriaSnapshotMode.class, new ToLowerCaseSerializer<AriaSnapshotMode>())
     .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
     .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
     .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())
@@ -479,6 +481,17 @@ class Serialization {
         throw new PlaywrightException("Unexpected map type: " + typeOfSrc);
       }
       return toProtocol(src);
+    }
+  }
+
+  private static class ConsoleMessagesFilterSerializer implements JsonSerializer<ConsoleMessagesFilter> {
+    @Override
+    public JsonElement serialize(ConsoleMessagesFilter src, Type typeOfSrc, JsonSerializationContext context) {
+      switch (src) {
+        case ALL: return new JsonPrimitive("all");
+        case SINCE_NAVIGATION: return new JsonPrimitive("sinceNavigation");
+        default: throw new PlaywrightException("Unknown ConsoleMessagesFilter: " + src);
+      }
     }
   }
 

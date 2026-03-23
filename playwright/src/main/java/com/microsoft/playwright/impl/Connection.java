@@ -333,6 +333,9 @@ public class Connection {
       case "Dialog":
         result = new DialogImpl(parent, type, guid, initializer);
         break;
+      case "Disposable":
+        result = new DisposableObject(parent, type, guid, initializer);
+        break;
       case "Electron":
 //        result = new Playwright(parent, type, guid, initializer);
         break;
@@ -377,6 +380,9 @@ public class Connection {
         result = new Stream(parent, type, guid, initializer);
         break;
       case "SocksSupport":
+        break;
+      case "Debugger":
+        result = new DebuggerImpl(parent, type, guid, initializer);
         break;
       case "Tracing":
         result = new TracingImpl(parent, type, guid, initializer);

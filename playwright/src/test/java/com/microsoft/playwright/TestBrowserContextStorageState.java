@@ -31,6 +31,7 @@ import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static com.microsoft.playwright.Utils.mapOf;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestBrowserContextStorageState extends TestBase {
 
@@ -275,5 +276,13 @@ public class TestBrowserContextStorageState extends TestBase {
       "        - text: /Pet the cat/\n");
     assertEquals("{\"cookies\":[],\"origins\":[]}", context.storageState(
       new BrowserContext.StorageStateOptions().setIndexedDB(false)));
+  }
+
+  @Test
+  void setStorageStateShouldHandleMissingFile(@TempDir Path tempDir) {
+    Path file = tempDir.resolve("does-not-exist.json");
+    PlaywrightException e = org.junit.jupiter.api.Assertions.assertThrows(
+      PlaywrightException.class, () -> context.setStorageState(file));
+    assertTrue(e.getMessage().contains("Failed to read storage state from file"), e.getMessage());
   }
 }

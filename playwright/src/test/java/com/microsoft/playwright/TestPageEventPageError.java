@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,5 +42,29 @@ public class TestPageEventPageError extends TestBase {
       String error = errors.get(firstIndex + i);
       assertTrue(error.startsWith("Error: error" + (201 + i)), error);
     }
+  }
+
+  @Test
+  void clearPageErrorsShouldWork() {
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("async () => {\n" +
+      "  window.setTimeout(() => { throw new Error('error1'); }, 0);\n" +
+      "  await new Promise(f => window.setTimeout(f, 100));\n" +
+      "}");
+
+    List<String> errors = page.pageErrors();
+    assertTrue(errors.stream().anyMatch(e -> e.contains("error1")));
+
+    page.clearPageErrors();
+    errors = page.pageErrors();
+    assertEquals(0, errors.size());
+
+    page.evaluate("async () => {\n" +
+      "  window.setTimeout(() => { throw new Error('error2'); }, 0);\n" +
+      "  await new Promise(f => window.setTimeout(f, 100));\n" +
+      "}");
+    errors = page.pageErrors();
+    assertEquals(1, errors.size());
+    assertTrue(errors.get(0).contains("error2"));
   }
 }

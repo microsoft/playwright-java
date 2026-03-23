@@ -156,6 +156,26 @@ public class TestBrowserContextCDPSession extends TestBase {
   }
 
   @Test
+  void shouldEmitEventForEachCDPEvent() {
+    CDPSession client = page.context().newCDPSession(page);
+    client.send("Network.enable");
+    List<JsonObject> events = new ArrayList<>();
+    client.on("event", events::add);
+    page.navigate(server.EMPTY_PAGE);
+    assertTrue(events.size() > 0);
+    JsonObject requestEvent = null;
+    for (JsonObject e : events) {
+      if ("Network.requestWillBeSent".equals(e.get("method").getAsString())) {
+        requestEvent = e;
+        break;
+      }
+    }
+    assertNotNull(requestEvent);
+    assertEquals(server.EMPTY_PAGE,
+      requestEvent.getAsJsonObject("params").getAsJsonObject("request").get("url").getAsString());
+  }
+
+  @Test
   void shouldRemoveEventListeners() {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");

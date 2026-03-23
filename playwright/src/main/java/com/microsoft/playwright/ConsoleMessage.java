@@ -70,6 +70,12 @@ public interface ConsoleMessage {
    */
   String text();
   /**
+   * The timestamp of the console message in milliseconds since the Unix epoch.
+   *
+   * @since v1.59
+   */
+  double timestamp();
+  /**
    * One of the following values: {@code "log"}, {@code "debug"}, {@code "info"}, {@code "error"}, {@code "warning"}, {@code
    * "dir"}, {@code "dirxml"}, {@code "table"}, {@code "trace"}, {@code "clear"}, {@code "startGroup"}, {@code
    * "startGroupCollapsed"}, {@code "endGroup"}, {@code "assert"}, {@code "profile"}, {@code "profileEnd"}, {@code "count"},

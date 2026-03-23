@@ -563,8 +563,11 @@ public interface LocatorAssertions {
     }
   }
   /**
-   * Makes the assertion check for the opposite condition. For example, this code tests that the Locator doesn't contain text
-   * {@code "error"}:
+   * Makes the assertion check for the opposite condition.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> For example, this code tests that the Locator doesn't contain text {@code "error"}:
    * <pre>{@code
    * assertThat(locator).not().containsText("error");
    * }</pre>

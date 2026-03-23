@@ -31,6 +31,15 @@ import java.util.regex.Pattern;
 public interface Locator {
   class AriaSnapshotOptions {
     /**
+     * When specified, limits the depth of the snapshot.
+     */
+    public Integer depth;
+    /**
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
+     * "default"}.
+     */
+    public AriaSnapshotMode mode;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -38,6 +47,21 @@ public interface Locator {
      */
     public Double timeout;
 
+    /**
+     * When specified, limits the depth of the snapshot.
+     */
+    public AriaSnapshotOptions setDepth(int depth) {
+      this.depth = depth;
+      return this;
+    }
+    /**
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
+     * "default"}.
+     */
+    public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
+      this.mode = mode;
+      return this;
+    }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
@@ -3492,7 +3516,7 @@ public interface Locator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -3535,7 +3559,7 @@ public interface Locator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -3574,7 +3598,7 @@ public interface Locator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -3596,7 +3620,7 @@ public interface Locator {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -4245,6 +4269,14 @@ public interface Locator {
    * @since v1.14
    */
   Locator locator(Locator selectorOrLocator, LocatorOptions options);
+  /**
+   * Returns a new locator that uses best practices for referencing the matched element, prioritizing test ids, aria roles,
+   * and other user-facing attributes over CSS selectors. This is useful for converting implementation-detail selectors into
+   * more resilient, human-readable locators.
+   *
+   * @since v1.59
+   */
+  Locator normalize();
   /**
    * Returns locator to the n-th matching element. It's zero based, {@code nth(0)} selects the first element.
    *

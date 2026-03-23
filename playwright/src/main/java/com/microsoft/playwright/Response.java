@@ -87,6 +87,12 @@ public interface Response {
    */
   List<String> headerValues(String name);
   /**
+   * Returns the http version used by the response.
+   *
+   * @since v1.59
+   */
+  String httpVersion();
+  /**
    * Contains a boolean stating whether the response was successful (status in the range 200-299) or not.
    *
    * @since v1.8

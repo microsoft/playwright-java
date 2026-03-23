@@ -355,9 +355,8 @@ public class TestClick extends TestBase {
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals(page.evaluate("result"), "Clicked");
-    // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit() ? 20 + 8 : 20, page.evaluate("offsetX"));
-    assertEquals(isWebKit() ? 10 + 8 : 10, page.evaluate("offsetY"));
+    assertEquals(20, page.evaluate("offsetX"));
+    assertEquals(10, page.evaluate("offsetY"));
   }
 
   @Test
@@ -367,9 +366,8 @@ public class TestClick extends TestBase {
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
-    // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit() ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
-    assertEquals(isWebKit() ? 12 * 2 + 10 : 10, page.evaluate("offsetY"));
+    assertEquals(20, page.evaluate("offsetX"));
+    assertEquals(10, page.evaluate("offsetY"));
   }
 
   @Test
@@ -379,9 +377,8 @@ public class TestClick extends TestBase {
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
     page.click("button", new Page.ClickOptions().setPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
-    // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
-    assertEquals(isWebKit() ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+    assertEquals(1900, page.evaluate("offsetX"));
+    assertEquals(1910, page.evaluate("offsetY"));
   }
 
   @Test
@@ -400,9 +397,8 @@ public class TestClick extends TestBase {
       "}");
     page.click("button", new Page.ClickOptions().setPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
-    // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
-    assertEquals(isWebKit() ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+    assertEquals(1900, page.evaluate("offsetX"));
+    assertEquals(1910, page.evaluate("offsetY"));
   }
 
   private static void expectCloseTo(double expected, double actual) {

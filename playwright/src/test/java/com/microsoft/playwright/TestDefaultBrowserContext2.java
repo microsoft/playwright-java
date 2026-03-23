@@ -49,7 +49,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @TempDir Path tempDir;
 
   @AfterEach
-  private void closePersistentContext() {
+  void closePersistentContext() {
     if (persistentContext != null) {
       persistentContext.close();
       persistentContext = null;

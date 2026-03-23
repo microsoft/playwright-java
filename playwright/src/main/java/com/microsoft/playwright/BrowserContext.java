@@ -515,6 +515,12 @@ public interface BrowserContext extends AutoCloseable {
    */
   Clock clock();
   /**
+   * Debugger allows to pause and resume the execution.
+   *
+   * @since v1.59
+   */
+  Debugger debugger();
+  /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * obtained via {@link com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()}.
    *
@@ -552,7 +558,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
-  void addInitScript(String script);
+  AutoCloseable addInitScript(String script);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
@@ -579,7 +585,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param script Script to be evaluated in all pages in the browser context.
    * @since v1.8
    */
-  void addInitScript(Path script);
+  AutoCloseable addInitScript(Path script);
   /**
    * @deprecated Background pages have been removed from Chromium together with Manifest V2 extensions.
    *
@@ -730,8 +736,8 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  default void exposeBinding(String name, BindingCallback callback) {
-    exposeBinding(name, callback, null);
+  default AutoCloseable exposeBinding(String name, BindingCallback callback) {
+    return exposeBinding(name, callback, null);
   }
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
@@ -777,7 +783,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
+  AutoCloseable exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
    * When called, the function executes {@code callback} and returns a <a
@@ -836,7 +842,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  void exposeFunction(String name, FunctionCallback callback);
+  AutoCloseable exposeFunction(String name, FunctionCallback callback);
   /**
    * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
    * specified.
@@ -865,6 +871,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "screen-wake-lock"}</li>
    * </ul>
    * @since v1.8
    */
@@ -899,10 +906,17 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "screen-wake-lock"}</li>
    * </ul>
    * @since v1.8
    */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
+  /**
+   * Indicates that the browser context is in the process of closing or has already been closed.
+   *
+   * @since v1.59
+   */
+  boolean isClosed();
   /**
    * <strong>NOTE:</strong> CDP sessions are only supported on Chromium-based browsers.
    *
@@ -994,8 +1008,8 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(String url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(String url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
@@ -1050,7 +1064,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(String url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
@@ -1104,8 +1118,8 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(Pattern url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(Pattern url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
@@ -1160,7 +1174,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(Pattern url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
@@ -1214,8 +1228,8 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  default void route(Predicate<String> url, Consumer<Route> handler) {
-    route(url, handler, null);
+  default AutoCloseable route(Predicate<String> url, Consumer<Route> handler) {
+    return route(url, handler, null);
   }
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
@@ -1270,7 +1284,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
    * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
    * href="https://playwright.dev/java/docs/mock#replaying-from-har">Replaying from HAR</a>.
@@ -1460,6 +1474,21 @@ public interface BrowserContext extends AutoCloseable {
    */
   String storageState(StorageStateOptions options);
   /**
+   * Clears the existing cookies, local storage and IndexedDB entries for all origins and sets the new storage state.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * // Load storage state from a file and apply it to the context.
+   * context.setStorageState(Paths.get("state.json"));
+   * }</pre>
+   *
+   * @param storageState Populates context with given storage state. This option can be used to initialize context with logged-in information
+   * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
+   * file with saved storage state.
+   * @since v1.59
+   */
+  void setStorageState(Path storageState);
+  /**
    *
    *
    * @since v1.12
@@ -1476,7 +1505,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @since v1.8
    */
@@ -1487,7 +1516,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link com.microsoft.playwright.BrowserContext#route
    * BrowserContext.route()}.
@@ -1498,7 +1527,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @since v1.8
    */
@@ -1509,7 +1538,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link com.microsoft.playwright.BrowserContext#route
    * BrowserContext.route()}.
@@ -1520,7 +1549,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @since v1.8
    */
@@ -1531,7 +1560,7 @@ public interface BrowserContext extends AutoCloseable {
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] used to register a routing with {@link
    * com.microsoft.playwright.BrowserContext#route BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link com.microsoft.playwright.BrowserContext#route
    * BrowserContext.route()}.

@@ -500,6 +500,9 @@ class TypeRef extends Element {
     if ("Buffer".equals(name)) {
       return "byte[]";
     }
+    if ("Disposable".equals(name)) {
+      return "AutoCloseable";
+    }
     if ("URL".equals(name)) {
       return "String";
     }
@@ -639,7 +642,7 @@ class Event extends Element {
     writeJavadoc(output, offset, comment());
     String name = toTitle(jsonName);
     String paramType = type.toJava();
-    String listenerType = "Consumer<" + paramType + ">";
+    String listenerType = "void".equals(paramType) ? "Runnable" : "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     writeJavadoc(output, offset, "Removes handler that was previously added with {@link #on" + name + " on" + name + "(handler)}.");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
@@ -986,7 +989,7 @@ class Interface extends TypeDefinition {
     if (methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if ("Download".equals(jsonName)) {
@@ -998,7 +1001,7 @@ class Interface extends TypeDefinition {
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {
