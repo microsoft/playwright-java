@@ -48,6 +48,16 @@ import com.google.gson.JsonObject;
  * }</pre>
  */
 public interface CDPSession {
+
+  /**
+   * Emitted when the session is closed, either because the target was closed or {@code session.detach()} was called.
+   */
+  void onClose(Consumer<CDPSession> handler);
+  /**
+   * Removes handler that was previously added with {@link #onClose onClose(handler)}.
+   */
+  void offClose(Consumer<CDPSession> handler);
+
   /**
    * Detaches the CDPSession from the target. Once detached, the CDPSession object won't emit any events and can't be used to
    * send messages.

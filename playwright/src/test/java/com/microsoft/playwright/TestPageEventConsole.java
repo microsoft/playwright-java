@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.ConsoleMessagesFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
@@ -26,8 +27,7 @@ import static com.microsoft.playwright.Utils.getOS;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageEventConsole extends TestBase {
   @Test
@@ -148,5 +148,61 @@ public class TestPageEventConsole extends TestBase {
       assertEquals("log", message.type());
       assertEquals(page, message.page());
     }
+  }
+
+  @Test
+  void shouldHaveTimestamp() {
+    double before = (double) System.currentTimeMillis() - 1;
+    ConsoleMessage message = page.waitForConsoleMessage(
+      () -> page.evaluate("() => console.log('timestamp test')"));
+    double after = (double) System.currentTimeMillis() + 1;
+    assertTrue(message.timestamp() >= before,
+      "timestamp " + message.timestamp() + " should be >= " + before);
+    assertTrue(message.timestamp() <= after,
+      "timestamp " + message.timestamp() + " should be <= " + after);
+  }
+
+  @Test
+  void shouldHaveIncreasingTimestamps() {
+    List<ConsoleMessage> messages = new ArrayList<>();
+    page.onConsoleMessage(messages::add);
+    page.evaluate("() => { console.log('first'); console.log('second'); console.log('third'); }");
+    assertEquals(3, messages.size());
+    for (int i = 1; i < messages.size(); i++)
+      assertTrue(messages.get(i).timestamp() >= messages.get(i - 1).timestamp());
+  }
+
+  @Test
+  void clearConsoleMessagesShouldWork() {
+    page.evaluate("() => { console.log('message1'); console.log('message2'); }");
+    List<ConsoleMessage> messages = page.consoleMessages();
+    assertTrue(messages.stream().anyMatch(m -> "message1".equals(m.text())));
+    assertTrue(messages.stream().anyMatch(m -> "message2".equals(m.text())));
+
+    page.clearConsoleMessages();
+    messages = page.consoleMessages();
+    assertEquals(0, messages.size());
+
+    page.waitForConsoleMessage(() -> page.evaluate("() => console.log('message3')"));
+    messages = page.consoleMessages();
+    assertEquals(1, messages.size());
+    assertEquals("message3", messages.get(0).text());
+  }
+
+  @Test
+  void consoleMessagesSinceNavigationFilterShouldWork() {
+    page.evaluate("() => console.log('before navigation')");
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("() => console.log('after navigation')");
+
+    List<ConsoleMessage> all = page.consoleMessages(
+      new Page.ConsoleMessagesOptions().setFilter(ConsoleMessagesFilter.ALL));
+    assertTrue(all.stream().anyMatch(m -> "before navigation".equals(m.text())));
+    assertTrue(all.stream().anyMatch(m -> "after navigation".equals(m.text())));
+
+    // sinceNavigation is the default
+    List<ConsoleMessage> sinceNav = page.consoleMessages();
+    assertFalse(sinceNav.stream().anyMatch(m -> "before navigation".equals(m.text())));
+    assertTrue(sinceNav.stream().anyMatch(m -> "after navigation".equals(m.text())));
   }
 }

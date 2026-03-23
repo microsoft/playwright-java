@@ -185,6 +185,12 @@ public interface BrowserType {
      */
     public List<String> args;
     /**
+     * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
+     * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
+     * closes.
+     */
+    public Path artifactsDir;
+    /**
      * Browser distribution channel.
      *
      * <p> Use "chromium" to <a href="https://playwright.dev/java/docs/browsers#chromium-new-headless-mode">opt in to new headless
@@ -277,6 +283,15 @@ public interface BrowserType {
      */
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
+      return this;
+    }
+    /**
+     * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
+     * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
+     * closes.
+     */
+    public LaunchOptions setArtifactsDir(Path artifactsDir) {
+      this.artifactsDir = artifactsDir;
       return this;
     }
     @Deprecated
@@ -445,6 +460,12 @@ public interface BrowserType {
      * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
+    /**
+     * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
+     * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
+     * closes.
+     */
+    public Path artifactsDir;
     /**
      * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
      * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
@@ -737,6 +758,15 @@ public interface BrowserType {
      */
     public LaunchPersistentContextOptions setArgs(List<String> args) {
       this.args = args;
+      return this;
+    }
+    /**
+     * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
+     * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
+     * closes.
+     */
+    public LaunchPersistentContextOptions setArtifactsDir(Path artifactsDir) {
+      this.artifactsDir = artifactsDir;
       return this;
     }
     /**
@@ -1224,11 +1254,11 @@ public interface BrowserType {
    * <p> <strong>NOTE:</strong> The major and minor version of the Playwright instance that connects needs to match the version of Playwright that
    * launches the browser (1.2.3 → is compatible with 1.2.x).
    *
-   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
+   * @param endpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
    * @since v1.8
    */
-  default Browser connect(String wsEndpoint) {
-    return connect(wsEndpoint, null);
+  default Browser connect(String endpoint) {
+    return connect(endpoint, null);
   }
   /**
    * This method attaches Playwright to an existing browser instance created via {@code BrowserType.launchServer} in Node.js.
@@ -1236,10 +1266,10 @@ public interface BrowserType {
    * <p> <strong>NOTE:</strong> The major and minor version of the Playwright instance that connects needs to match the version of Playwright that
    * launches the browser (1.2.3 → is compatible with 1.2.x).
    *
-   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
+   * @param endpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
    * @since v1.8
    */
-  Browser connect(String wsEndpoint, ConnectOptions options);
+  Browser connect(String endpoint, ConnectOptions options);
   /**
    * This method attaches Playwright to an existing browser instance using the Chrome DevTools Protocol.
    *

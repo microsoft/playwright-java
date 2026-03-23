@@ -86,8 +86,9 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   @Override
-  public void group(String name, GroupOptions options) {
+  public AutoCloseable group(String name, GroupOptions options) {
     groupImpl(name, options);
+    return new DisposableStub(this::groupEnd);
   }
 
   private void groupImpl(String name, GroupOptions options) {

@@ -43,6 +43,7 @@ import static java.util.Arrays.asList;
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   protected BrowserImpl browser;
   private final TracingImpl tracing;
+  private final DebuggerImpl debugger;
   private final APIRequestContextImpl request;
   private final ClockImpl clock;
   final List<PageImpl> pages = new ArrayList<>();
@@ -94,6 +95,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
+    debugger = connection.getExistingObject(initializer.getAsJsonObject("debugger").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
     request.timeoutSettings = timeoutSettings;
     clock = new ClockImpl(this);
@@ -269,6 +271,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public boolean isClosed() {
+    return closingOrClosed;
+  }
+
+  @Override
   public void close(CloseOptions options) {
     if (!closingOrClosed) {
       closingOrClosed = true;
@@ -318,17 +325,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void addInitScript(String script) {
+  public AutoCloseable addInitScript(String script) {
     JsonObject params = new JsonObject();
     params.addProperty("source", script);
-    sendMessage("addInitScript", params, NO_TIMEOUT);
+    JsonObject result = sendMessage("addInitScript", params, NO_TIMEOUT).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
-  public void addInitScript(Path path) {
+  public AutoCloseable addInitScript(Path path) {
     try {
       byte[] bytes = readAllBytes(path);
-      addInitScript(new String(bytes, UTF_8));
+      return addInitScript(new String(bytes, UTF_8));
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read script from file", e);
     }
@@ -384,11 +392,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
-    exposeBindingImpl(name, playwrightBinding, options);
+  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+    return exposeBindingImpl(name, playwrightBinding, options);
   }
 
-  private void exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -404,12 +412,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options != null && options.handle != null && options.handle) {
       params.addProperty("needsHandle", true);
     }
-    sendMessage("exposeBinding", params, NO_TIMEOUT);
+    JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
-  public void exposeFunction(String name, FunctionCallback playwrightFunction) {
-    exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
+  public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
+    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
   }
 
   @Override
@@ -445,18 +454,21 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void route(String url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
     route(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils, false), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
-  public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
     route(new UrlMatcher(url), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
-  public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
     route(new UrlMatcher(url), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
@@ -564,6 +576,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public void setStorageState(Path storageState) {
+    try {
+      String state = new String(readAllBytes(storageState), UTF_8);
+      JsonObject params = new JsonObject();
+      params.addProperty("storageState", state);
+      sendMessage("setStorageState", params, NO_TIMEOUT);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read storage state from file", e);
+    }
+  }
+
+  @Override
   public String storageState(StorageStateOptions options) {
     if (options == null) {
       options = new StorageStateOptions();
@@ -577,6 +601,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }
     return storageState;
+  }
+
+  @Override
+  public DebuggerImpl debugger() {
+    return debugger;
   }
 
   @Override
@@ -775,7 +804,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     } else if ("response".equals(event)) {
       String guid = params.getAsJsonObject("response").get("guid").getAsString();
-      Response response = connection.getExistingObject(guid);
+      ResponseImpl response = connection.getExistingObject(guid);
+      response.request.existingResponse = response;
       listeners.notify(EventType.RESPONSE, response);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());

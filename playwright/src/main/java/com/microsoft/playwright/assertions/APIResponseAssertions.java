@@ -37,8 +37,11 @@ package com.microsoft.playwright.assertions;
  */
 public interface APIResponseAssertions {
   /**
-   * Makes the assertion check for the opposite condition. For example, this code tests that the response status is not
-   * successful:
+   * Makes the assertion check for the opposite condition.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> For example, this code tests that the response status is not successful:
    * <pre>{@code
    * assertThat(response).not().isOK();
    * }</pre>

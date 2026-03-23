@@ -25,6 +25,11 @@ import java.util.function.Consumer;
 
 public class CDPSessionImpl extends ChannelOwner implements CDPSession {
   private final ListenerCollection<String> listeners = new ListenerCollection<>(new HashMap<>(), this);
+  private final ListenerCollection<EventType> typedListeners = new ListenerCollection<>(new HashMap<>(), this);
+
+  enum EventType {
+    CLOSE,
+  }
 
   protected CDPSessionImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -40,7 +45,19 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
         params = parameters.get("params").getAsJsonObject();
       }
       listeners.notify(method, params);
+    } else if ("close".equals(event)) {
+      typedListeners.notify(EventType.CLOSE, this);
     }
+  }
+
+  @Override
+  public void onClose(Consumer<CDPSession> handler) {
+    typedListeners.add(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void offClose(Consumer<CDPSession> handler) {
+    typedListeners.remove(EventType.CLOSE, handler);
   }
 
   public JsonObject send(String method) {

@@ -16,37 +16,32 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Video;
+
+import static com.microsoft.playwright.impl.Serialization.gson;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.util.Arrays.asList;
-
 class VideoImpl implements Video {
   private final PageImpl page;
-  private final WaitableResult<ArtifactImpl> waitableArtifact = new WaitableResult<>();
+  private ArtifactImpl artifact;
 
   VideoImpl(PageImpl page) {
     this.page = page;
   }
 
-  void setArtifact(ArtifactImpl artifact) {
-    waitableArtifact.complete(artifact);
-  }
-
-  private ArtifactImpl waitForArtifact() {
-    Waitable<ArtifactImpl> waitable = new WaitableRace<>(asList(waitableArtifact, (Waitable<ArtifactImpl>) page.waitableClosedOrCrashed));
-    return page.runUntil(() -> {}, waitable);
+  VideoImpl(PageImpl page, ArtifactImpl artifact) {
+    this.page = page;
+    this.artifact = artifact;
   }
 
   @Override
   public void delete() {
-    try {
-      waitForArtifact().delete();
-    } catch (PlaywrightException e) {
-    }
+    if (artifact != null)
+      artifact.delete();
   }
 
   @Override
@@ -54,22 +49,32 @@ class VideoImpl implements Video {
     if (page.connection.isRemote) {
       throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
     }
-    try {
-      return Paths.get(waitForArtifact().initializer.get("absolutePath").getAsString());
-    } catch (PlaywrightException e) {
-      throw new PlaywrightException("Page did not produce any video frames", e);
+    if (artifact == null)
+      throw new PlaywrightException("Video recording has not been started.");
+    return Paths.get(artifact.initializer.get("absolutePath").getAsString());
+  }
+
+  @Override
+  public AutoCloseable start(StartOptions options) {
+    JsonObject params = new JsonObject();
+    if (options != null) {
+      params = gson().toJsonTree(options).getAsJsonObject();
     }
+    JsonObject result = page.sendMessage("videoStart", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
+    String artifactGuid = result.getAsJsonObject("artifact").get("guid").getAsString();
+    artifact = page.connection.getExistingObject(artifactGuid);
+    return new DisposableStub(this::stop);
+  }
+
+  @Override
+  public void stop() {
+    page.sendMessage("videoStop", new JsonObject(), ChannelOwner.NO_TIMEOUT);
   }
 
   @Override
   public void saveAs(Path path) {
-    if (!page.isClosed()) {
-      throw new PlaywrightException("Page is not yet closed. Close the page prior to calling saveAs");
-    }
-    try {
-      waitForArtifact().saveAs(path);
-    } catch (PlaywrightException e) {
-      throw new PlaywrightException("Page did not produce any video frames", e);
-    }
+    if (artifact == null)
+      throw new PlaywrightException("Video recording has not been started.");
+    artifact.saveAs(path);
   }
 }

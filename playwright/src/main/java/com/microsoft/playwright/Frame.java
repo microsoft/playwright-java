@@ -2272,7 +2272,7 @@ public interface Frame {
      */
     public Double timeout;
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -2302,7 +2302,7 @@ public interface Frame {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -2311,7 +2311,7 @@ public interface Frame {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -2320,7 +2320,7 @@ public interface Frame {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
@@ -3380,7 +3380,7 @@ public interface Frame {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -3423,7 +3423,7 @@ public interface Frame {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate each element by it's implicit role:
+   * <p> You can locate each element by its implicit role:
    * <pre>{@code
    * assertThat(page
    *     .getByRole(AriaRole.HEADING,
@@ -3462,7 +3462,7 @@ public interface Frame {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -3484,7 +3484,7 @@ public interface Frame {
    *
    * <p> Consider the following DOM structure.
    *
-   * <p> You can locate the element by it's test id:
+   * <p> You can locate the element by its test id:
    * <pre>{@code
    * page.getByTestId("directions").click();
    * }</pre>
@@ -5139,7 +5139,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -5156,7 +5156,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -5171,7 +5171,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -5188,7 +5188,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -5203,7 +5203,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11
@@ -5220,7 +5220,7 @@ public interface Frame {
    * frame.waitForURL("**\/target.html");
    * }</pre>
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * @param url A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
    * @since v1.11

@@ -143,6 +143,13 @@ public class PageImpl extends ChannelOwner implements Page {
     } else {
       opener = null;
     }
+    if (initializer.has("video")) {
+      String artifactGuid = initializer.getAsJsonObject("video").get("guid").getAsString();
+      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
+      video = new VideoImpl(this, artifact);
+    } else {
+      video = new VideoImpl(this);
+    }
   }
 
   @Override
@@ -219,10 +226,6 @@ public class PageImpl extends ChannelOwner implements Page {
       if (!webSocketRoutes.handle(route)) {
         browserContext.handleWebSocketRoute(route);
       }
-    } else if ("video".equals(event)) {
-      String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
-      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
-      forceVideo().setArtifact(artifact);
     } else if ("crash".equals(event)) {
       listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
@@ -634,6 +637,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public String ariaSnapshot(AriaSnapshotOptions options) {
+    return mainFrame.locator(":root").ariaSnapshot(convertType(options, Locator.AriaSnapshotOptions.class));
+  }
+
+  @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
     return mainFrame.evalOnSelectorImpl(
       selector, pageFunction, arg, convertType(options, Frame.EvalOnSelectorOptions.class));
@@ -645,25 +653,26 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void addInitScript(String script) {
-    addInitScriptImpl(script);
+  public AutoCloseable addInitScript(String script) {
+    return addInitScriptImpl(script);
   }
 
   @Override
-  public void addInitScript(Path path) {
+  public AutoCloseable addInitScript(Path path) {
     try {
       byte[] bytes = readAllBytes(path);
       String script = addSourceUrlToScript(new String(bytes, UTF_8), path);
-      addInitScriptImpl(script);
+      return addInitScriptImpl(script);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read script from file", e);
     }
   }
 
-  private void addInitScriptImpl(String script) {
+  private AutoCloseable addInitScriptImpl(String script) {
     JsonObject params = new JsonObject();
     params.addProperty("source", script);
-    sendMessage("addInitScript", params, NO_TIMEOUT);
+    JsonObject result = sendMessage("addInitScript", params, NO_TIMEOUT).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
@@ -735,11 +744,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
-    exposeBindingImpl(name, playwrightBinding, options);
+  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+    return exposeBindingImpl(name, playwrightBinding, options);
   }
 
-  private void exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -753,12 +762,13 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options != null && options.handle != null && options.handle) {
       params.addProperty("needsHandle", true);
     }
-    sendMessage("exposeBinding", params, NO_TIMEOUT);
+    JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
-  public void exposeFunction(String name, FunctionCallback playwrightFunction) {
-    exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
+  public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
+    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
   }
 
   @Override
@@ -998,14 +1008,25 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public List<ConsoleMessage> consoleMessages() {
-    JsonObject json = sendMessage("consoleMessages", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
+  public List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options) {
+    JsonObject params = options != null ? gson().toJsonTree(options).getAsJsonObject() : new JsonObject();
+    JsonObject json = sendMessage("consoleMessages", params, NO_TIMEOUT).getAsJsonObject();
     JsonArray messages = json.getAsJsonArray("messages");
     List<ConsoleMessage> result = new ArrayList<>();
     for (JsonElement item : messages) {
       result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this, null));
     }
     return result;
+  }
+
+  @Override
+  public void clearConsoleMessages() {
+    sendMessage("clearConsoleMessages", new JsonObject(), NO_TIMEOUT);
+  }
+
+  @Override
+  public void clearPageErrors() {
+    sendMessage("clearPageErrors", new JsonObject(), NO_TIMEOUT);
   }
 
   @Override
@@ -1041,6 +1062,17 @@ public class PageImpl extends ChannelOwner implements Page {
       return null;
     }
     return opener;
+  }
+
+  @Override
+  public void cancelPickLocator() {
+    sendMessage("cancelPickLocator", new JsonObject(), NO_TIMEOUT);
+  }
+
+  @Override
+  public Locator pickLocator() {
+    JsonObject result = sendMessage("pickLocator", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
+    return new LocatorImpl(mainFrame, result.get("selector").getAsString(), null);
   }
 
   @Override
@@ -1105,18 +1137,21 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void route(String url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
     route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
-  public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
     route(new UrlMatcher(url), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
-  public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
     route(new UrlMatcher(url), handler, options);
+    return new DisposableStub(() -> unroute(url, handler));
   }
 
   @Override
@@ -1357,22 +1392,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
 
-  private VideoImpl forceVideo() {
-    if (video == null) {
-      video = new VideoImpl(this);
-    }
-    return video;
-  }
-
   @Override
   public VideoImpl video() {
-    // Note: we are creating Video object lazily, because we do not know
-    // BrowserContextOptions when constructing the page - it is assigned
-    // too late during launchPersistentContext.
-    if (browserContext.videosDir() == null) {
-      return null;
-    }
-    return forceVideo();
+    return video;
   }
 
   @Override

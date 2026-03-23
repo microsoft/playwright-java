@@ -36,7 +36,7 @@ import static java.util.Arrays.asList;
 public class ResponseImpl extends ChannelOwner implements Response {
   private final RawHeaders headers;
   private RawHeaders rawHeaders;
-  private final RequestImpl request;
+  final RequestImpl request;
 
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -84,6 +84,14 @@ public class ResponseImpl extends ChannelOwner implements Response {
   @Override
   public boolean fromServiceWorker() {
     return initializer.get("fromServiceWorker").getAsBoolean();
+  }
+
+  @Override
+  public String httpVersion() {
+    if (initializer.has("httpVersion")) {
+      return initializer.get("httpVersion").getAsString();
+    }
+    return null;
   }
 
   @Override

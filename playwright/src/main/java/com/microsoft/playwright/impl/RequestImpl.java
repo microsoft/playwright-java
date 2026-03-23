@@ -42,6 +42,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   String failure;
   Timing timing;
   boolean didFailOrFinish;
+  ResponseImpl existingResponse;
   private FallbackOverrides fallbackOverrides;
 
   static class FallbackOverrides {
@@ -64,6 +65,11 @@ public class RequestImpl extends ChannelOwner implements Request {
     } else {
       postData = null;
     }
+  }
+
+  @Override
+  public ResponseImpl existingResponse() {
+    return existingResponse;
   }
 
   @Override

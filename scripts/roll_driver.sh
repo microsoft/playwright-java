@@ -6,15 +6,23 @@ set +x
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -gt 1 ]; then
   echo ""
-  echo "Usage: scripts/roll_driver.sh [new version]"
+  echo "Usage: scripts/roll_driver.sh [next|beta|<version>]"
   echo ""
   exit 1
 fi
 
-NEW_VERSION=$1
+ARG=${1:-next}
+if [[ "$ARG" == "next" ]]; then
+  NEW_VERSION=$(npm view playwright@next version)
+elif [[ "$ARG" == "beta" ]]; then
+  NEW_VERSION=$(npm view playwright@beta version)
+else
+  NEW_VERSION=$ARG
+fi
 CURRENT_VERSION=$(head -1 ./DRIVER_VERSION)
+echo "Rolling driver from $CURRENT_VERSION to $NEW_VERSION"
 
 if [[ "$CURRENT_VERSION" == "$NEW_VERSION" ]]; then
   echo "Current version is up to date. Skipping driver download.";

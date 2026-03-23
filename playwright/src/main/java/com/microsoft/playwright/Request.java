@@ -184,6 +184,16 @@ public interface Request {
    */
   Response response();
   /**
+   * Returns the {@code Response} object if the response has already been received, {@code null} otherwise.
+   *
+   * <p> Unlike {@link com.microsoft.playwright.Request#response Request.response()}, this method does not wait for the response
+   * to arrive. It returns immediately with the response object if the response has been received, or {@code null} if the
+   * response has not been received yet.
+   *
+   * @since v1.59
+   */
+  Response existingResponse();
+  /**
    * Returns resource size information for given request.
    *
    * @since v1.15

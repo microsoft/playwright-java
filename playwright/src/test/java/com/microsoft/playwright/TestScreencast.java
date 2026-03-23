@@ -59,32 +59,6 @@ public class TestScreencast extends TestBase {
   }
 
   @Test
-  void saveAsShouldThrowWhenNoVideoFrames(@TempDir Path videosDir) {
-    try (BrowserContext context = browser.newContext(
-      new Browser.NewContextOptions()
-        .setRecordVideoDir(videosDir)
-        .setRecordVideoSize(320, 240)
-        .setViewportSize(320, 240))) {
-
-      Page page = context.newPage();
-      Page popup = context.waitForPage(() -> {
-        page.evaluate("() => {\n" +
-          "  const win = window.open('about:blank');\n" +
-          "  win.close();\n" +
-          "}");
-      });
-      page.close();
-
-      Path saveAsPath = videosDir.resolve("my-video.webm");
-      if (!popup.isClosed()) {
-        popup.waitForClose(() -> {});
-      }
-      PlaywrightException e = assertThrows(PlaywrightException.class, () -> popup.video().saveAs(saveAsPath));
-      assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
-    }
-  }
-
-  @Test
   void shouldDeleteVideo(@TempDir Path videosDir) {
     try (BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
@@ -123,16 +97,4 @@ public class TestScreencast extends TestBase {
     assertTrue(Files.size(files.get(0)) > 0);
   }
 
-  @Test
-  void shouldErrorIfPageNotClosedBeforeSaveAs(@TempDir Path tmpDir) {
-    try (Page page = browser.newPage(new Browser.NewPageOptions().setRecordVideoDir(tmpDir))) {
-      page.navigate(server.PREFIX + "/grid.html");
-      Path outPath = tmpDir.resolve("some-video.webm");
-      Video video = page.video();
-      PlaywrightException exception = assertThrows(PlaywrightException.class, () -> video.saveAs(outPath));
-      assertTrue(
-        exception.getMessage().contains("Page is not yet closed. Close the page prior to calling saveAs"),
-        exception.getMessage());
-    }
-  }
 }

@@ -45,6 +45,12 @@ import java.nio.file.Path;
 public interface Tracing {
   class StartOptions {
     /**
+     * When enabled, the trace is written to an unarchived file that is updated in real time as actions occur, instead of
+     * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
+     * execution.
+     */
+    public Boolean live;
+    /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
      * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
      * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
@@ -74,6 +80,15 @@ public interface Tracing {
      */
     public String title;
 
+    /**
+     * When enabled, the trace is written to an unarchived file that is updated in real time as actions occur, instead of
+     * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
+     * execution.
+     */
+    public StartOptions setLive(boolean live) {
+      this.live = live;
+      return this;
+    }
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
      * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
@@ -333,8 +348,8 @@ public interface Tracing {
    * @param name Group name shown in the trace viewer.
    * @since v1.49
    */
-  default void group(String name) {
-    group(name, null);
+  default AutoCloseable group(String name) {
+    return group(name, null);
   }
   /**
    * <strong>NOTE:</strong> Use {@code test.step} instead when available.
@@ -356,7 +371,7 @@ public interface Tracing {
    * @param name Group name shown in the trace viewer.
    * @since v1.49
    */
-  void group(String name, GroupOptions options);
+  AutoCloseable group(String name, GroupOptions options);
   /**
    * Closes the last group created by {@link com.microsoft.playwright.Tracing#group Tracing.group()}.
    *

@@ -79,8 +79,11 @@ public interface PageAssertions {
     }
   }
   /**
-   * Makes the assertion check for the opposite condition. For example, this code tests that the page URL doesn't contain
-   * {@code "error"}:
+   * Makes the assertion check for the opposite condition.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> For example, this code tests that the page URL doesn't contain {@code "error"}:
    * <pre>{@code
    * assertThat(page).not().hasURL("error");
    * }</pre>
