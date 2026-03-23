@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,6 +108,8 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritTouchSupportFromBrowserContext() {
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=2014330
+    Assumptions.assumeFalse(isFirefox() && Integer.parseInt(browser.version().split("\\.")[0]) >= 148);
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 500)
       .setHasTouch(true));
