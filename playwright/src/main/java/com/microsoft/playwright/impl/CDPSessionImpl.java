@@ -45,6 +45,7 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
         params = parameters.get("params").getAsJsonObject();
       }
       listeners.notify(method, params);
+      listeners.notify("event", parameters);
     } else if ("close".equals(event)) {
       typedListeners.notify(EventType.CLOSE, this);
     }
