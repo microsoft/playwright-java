@@ -59,6 +59,7 @@ class Serialization {
     .registerTypeAdapter(ServiceWorkerPolicy.class, new ToLowerCaseAndDashSerializer<ServiceWorkerPolicy>())
     .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
     .registerTypeAdapter(ConsoleMessagesFilter.class, new ConsoleMessagesFilterSerializer())
+    .registerTypeAdapter(AriaSnapshotMode.class, new ToLowerCaseSerializer<AriaSnapshotMode>())
     .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
     .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
     .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())

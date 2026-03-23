@@ -638,7 +638,12 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public String ariaSnapshot(AriaSnapshotOptions options) {
-    return mainFrame.locator(":root").ariaSnapshot(convertType(options, Locator.AriaSnapshotOptions.class));
+    if (options == null) {
+      options = new AriaSnapshotOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    JsonObject result = mainFrame.sendMessage("ariaSnapshot", params, mainFrame.timeout(options.timeout)).getAsJsonObject();
+    return result.get("snapshot").getAsString();
   }
 
   @Override
