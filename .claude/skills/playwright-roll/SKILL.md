@@ -104,6 +104,38 @@ Common patterns:
 
 **Run the full suite to catch regressions, re-run flaky failures in isolation.** Some tests (e.g., `TestClientCertificates#shouldKeepSupportingHttp`) time out only under heavy parallel load. Run the failing test alone to confirm it's flaky before investigating further.
 
+## Commit Convention
+
+Semantic commit messages: `label(scope): description`
+
+Labels: `fix`, `feat`, `chore`, `docs`, `test`, `devops`
+
+```bash
+git checkout -b fix-39562
+# ... make changes ...
+git add <changed-files>
+git commit -m "$(cat <<'EOF'
+fix(proxy): handle SOCKS proxy authentication
+
+Fixes: https://github.com/microsoft/playwright-java/issues/39562
+EOF
+)"
+git push origin fix-39562
+gh pr create --repo microsoft/playwright-java --head username:fix-39562 \
+  --title "fix(proxy): handle SOCKS proxy authentication" \
+  --body "$(cat <<'EOF'
+## Summary
+- <describe the change very! briefly>
+
+Fixes https://github.com/microsoft/playwright-java/issues/39562
+EOF
+)"
+```
+
+Never add Co-Authored-By agents in commit message.
+Never add "Generated with" in commit message.
+Branch naming for issue fixes: `fix-<issue-number>`
+
 ## Tips & Tricks
 - Project checkouts are in the parent directory (`../`).
 - When updating checkboxes, store the issue content into /tmp and edit it there, then update the issue based on the file
