@@ -42,6 +42,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
     super(parent, type, guid, initializer);
     headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
+    request.existingResponse = this;
     request.timing = gson().fromJson(initializer.get("timing"), Timing.class);
   }
 
@@ -88,10 +89,8 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public String httpVersion() {
-    if (initializer.has("httpVersion")) {
-      return initializer.get("httpVersion").getAsString();
-    }
-    return null;
+    JsonObject result = sendMessage("httpVersion").getAsJsonObject();
+    return result.get("value").getAsString();
   }
 
   @Override

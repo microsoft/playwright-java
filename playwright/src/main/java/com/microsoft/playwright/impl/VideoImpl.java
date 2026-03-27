@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 class VideoImpl implements Video {
   private final PageImpl page;
   private ArtifactImpl artifact;
+  private Path savePath;
 
   VideoImpl(PageImpl page) {
     this.page = page;
@@ -58,7 +59,13 @@ class VideoImpl implements Video {
   public AutoCloseable start(StartOptions options) {
     JsonObject params = new JsonObject();
     if (options != null) {
-      params = gson().toJsonTree(options).getAsJsonObject();
+      if (options.size != null) {
+        params.add("size", gson().toJsonTree(options.size));
+      }
+      if (options.annotate != null) {
+        params.add("annotate", gson().toJsonTree(options.annotate));
+      }
+      savePath = options.path;
     }
     JsonObject result = page.sendMessage("videoStart", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
     String artifactGuid = result.getAsJsonObject("artifact").get("guid").getAsString();
@@ -69,6 +76,9 @@ class VideoImpl implements Video {
   @Override
   public void stop() {
     page.sendMessage("videoStop", new JsonObject(), ChannelOwner.NO_TIMEOUT);
+    if (savePath != null) {
+      saveAs(savePath);
+    }
   }
 
   @Override

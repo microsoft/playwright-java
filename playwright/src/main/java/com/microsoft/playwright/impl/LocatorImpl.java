@@ -112,8 +112,8 @@ class LocatorImpl implements Locator {
   public Locator normalize() {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
-    JsonObject result = frame.sendMessage("normalizeLocator", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
-    return new LocatorImpl(frame, result.get("selector").getAsString(), null);
+    JsonObject result = frame.sendMessage("resolveSelector", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
+    return new LocatorImpl(frame, result.get("resolvedSelector").getAsString(), null);
   }
 
   @Override

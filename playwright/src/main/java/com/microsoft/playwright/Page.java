@@ -2986,8 +2986,8 @@ public interface Page extends AutoCloseable {
      */
     public Integer depth;
     /**
-     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
-     * "default"}.
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption: including element references like {@code
+     * [ref=e2]} and snapshots of {@code <iframe>}s. Defaults to {@code "default"}.
      */
     public AriaSnapshotMode mode;
     /**
@@ -3006,8 +3006,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
-     * "default"}.
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption: including element references like {@code
+     * [ref=e2]} and snapshots of {@code <iframe>}s. Defaults to {@code "default"}.
      */
     public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
       this.mode = mode;
@@ -5880,6 +5880,12 @@ public interface Page extends AutoCloseable {
    * @since v1.8
    */
   Mouse mouse();
+  /**
+   *
+   *
+   * @since v1.59
+   */
+  Overlay overlay();
   /**
    * Adds one-off {@code Dialog} handler. The handler will be removed immediately after next {@code Dialog} is created.
    * <pre>{@code

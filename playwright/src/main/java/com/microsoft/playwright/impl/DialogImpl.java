@@ -43,7 +43,11 @@ class DialogImpl extends ChannelOwner implements Dialog {
 
   @Override
   public void dismiss() {
-    sendMessage("dismiss");
+    try {
+      sendMessage("dismiss");
+    } catch (TargetClosedError e) {
+      // Swallow TargetClosedErrors for beforeunload dialogs.
+    }
   }
 
   @Override

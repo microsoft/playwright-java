@@ -100,6 +100,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private VideoImpl video;
   private final PageImpl opener;
   private String closeReason;
+  private final OverlayImpl overlay;
 
   enum EventType {
     CLOSE,
@@ -135,6 +136,7 @@ public class PageImpl extends ChannelOwner implements Page {
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
+    overlay = new OverlayImpl(this);
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
     waitableClosedOrCrashed = createWaitForCloseHelper();
@@ -1345,6 +1347,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Touchscreen touchscreen() {
     return touchscreen;
+  }
+
+  @Override
+  public Overlay overlay() {
+    return overlay;
   }
 
   @Override

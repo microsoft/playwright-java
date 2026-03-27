@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
@@ -82,7 +84,7 @@ public class HARRouter {
       if (status == -1) {
         return;
       }
-      Map<String, String> headers = fromNameValues(response.getAsJsonArray("headers"));
+      Map<String, String> headers = mergeSetCookieHeaders(response.getAsJsonArray("headers"));
       byte[] buffer = Base64.getDecoder().decode(response.get("body").getAsString());
       route.fulfill(new Route.FulfillOptions()
         .setStatus(status)
@@ -103,6 +105,25 @@ public class HARRouter {
 
     // By default abort not matching requests.
     route.abort();
+  }
+
+  private static Map<String, String> mergeSetCookieHeaders(JsonArray headersArray) {
+    Map<String, String> result = new java.util.LinkedHashMap<>();
+    for (JsonElement element : headersArray) {
+      JsonObject pair = element.getAsJsonObject();
+      String name = pair.get("name").getAsString();
+      String value = pair.get("value").getAsString();
+      if ("set-cookie".equalsIgnoreCase(name)) {
+        if (!result.containsKey("set-cookie")) {
+          result.put("set-cookie", value);
+        } else {
+          result.put("set-cookie", result.get("set-cookie") + "\n" + value);
+        }
+      } else {
+        result.put(name, value);
+      }
+    }
+    return result;
   }
 
   void dispose() {

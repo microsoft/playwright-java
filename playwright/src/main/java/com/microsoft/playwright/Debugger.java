@@ -35,11 +35,11 @@ public interface Debugger {
   void offPausedStateChanged(Runnable handler);
 
   /**
-   * Returns details about the currently paused calls. Returns an empty array if the debugger is not paused.
+   * Returns details about the currently paused call. Returns {@code null} if the debugger is not paused.
    *
    * @since v1.59
    */
-  List<PausedDetails> pausedDetails();
+  PausedDetails pausedDetails();
   /**
    * Configures the debugger to pause before the next action is executed.
    *
@@ -47,13 +47,13 @@ public interface Debugger {
    * com.microsoft.playwright.Debugger#runTo Debugger.runTo()} to step while paused.
    *
    * <p> Note that {@link com.microsoft.playwright.Page#pause Page.pause()} is equivalent to a "debugger" statement — it pauses
-   * execution at the call site immediately. On the contrary, {@link com.microsoft.playwright.Debugger#pause
-   * Debugger.pause()} is equivalent to "pause on next statement" — it configures the debugger to pause before the next
-   * action is executed.
+   * execution at the call site immediately. On the contrary, {@link com.microsoft.playwright.Debugger#requestPause
+   * Debugger.requestPause()} is equivalent to "pause on next statement" — it configures the debugger to pause before the
+   * next action is executed.
    *
    * @since v1.59
    */
-  void pause();
+  void requestPause();
   /**
    * Resumes script execution. Throws if the debugger is not paused.
    *
