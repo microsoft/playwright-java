@@ -19,8 +19,6 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.PausedDetails;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDebugger extends TestBase {
@@ -50,6 +48,31 @@ public class TestDebugger extends TestBase {
     });
 
     page.click("div"); // blocks until dbg.resume() is called
+    assertNull(dbg.pausedDetails());
+  }
+
+  @Test
+  void shouldStepWithNext() {
+    page.setContent("<div>click me</div>");
+    Debugger dbg = context.debugger();
+    assertNull(dbg.pausedDetails());
+
+    dbg.requestPause();
+
+    boolean[] paused = {false};
+    dbg.onPausedStateChanged(() -> {
+      if (!paused[0]) {
+        paused[0] = true;
+        PausedDetails details = dbg.pausedDetails();
+        assertNotNull(details);
+        assertTrue(details.title.contains("Click"), "title: " + details.title);
+        dbg.next();
+      } else if (dbg.pausedDetails() != null) {
+        dbg.resume();
+      }
+    });
+
+    page.click("div");
     assertNull(dbg.pausedDetails());
   }
 

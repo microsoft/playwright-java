@@ -72,6 +72,35 @@ public class TestPageNetworkResponse extends TestBase {
   }
 
   @Test
+  void shouldReturnNullExistingResponseBeforeResponseReceived() {
+    Request[] capturedRequest = {null};
+    page.route("**/*", route -> {
+      capturedRequest[0] = route.request();
+      assertNull(capturedRequest[0].existingResponse());
+      route.resume();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertNotNull(capturedRequest[0]);
+  }
+
+  @Test
+  void shouldReturnExistingResponseAfterReceived() {
+    Response[] responses = {null};
+    page.onResponse(r -> responses[0] = r);
+    page.navigate(server.EMPTY_PAGE);
+    assertNotNull(responses[0]);
+    assertEquals(responses[0], responses[0].request().existingResponse());
+  }
+
+  @Test
+  void shouldReturnHttpVersion() {
+    page.navigate(server.EMPTY_PAGE);
+    Response response = page.waitForResponse("**/*", () -> page.navigate(server.EMPTY_PAGE));
+    String version = response.httpVersion();
+    assertTrue(version.matches("HTTP/[12](\\.[01])?"), "unexpected version: " + version);
+  }
+
+  @Test
   void shouldRejectResponseFinishedIfContextCloses() {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/get", exchange -> {
