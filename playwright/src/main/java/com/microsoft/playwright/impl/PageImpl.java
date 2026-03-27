@@ -46,6 +46,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
+  private final OverlayImpl overlay;
   final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
@@ -100,7 +101,6 @@ public class PageImpl extends ChannelOwner implements Page {
   private VideoImpl video;
   private final PageImpl opener;
   private String closeReason;
-  private final OverlayImpl overlay;
 
   enum EventType {
     CLOSE,

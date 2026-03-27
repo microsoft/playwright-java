@@ -78,6 +78,7 @@ class VideoImpl implements Video {
     page.sendMessage("videoStop", new JsonObject(), ChannelOwner.NO_TIMEOUT);
     if (savePath != null) {
       saveAs(savePath);
+      savePath = null;
     }
   }
 

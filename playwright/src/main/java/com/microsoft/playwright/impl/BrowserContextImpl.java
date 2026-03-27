@@ -805,7 +805,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else if ("response".equals(event)) {
       String guid = params.getAsJsonObject("response").get("guid").getAsString();
       ResponseImpl response = connection.getExistingObject(guid);
-      response.request.existingResponse = response;
       listeners.notify(EventType.RESPONSE, response);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
