@@ -19,61 +19,83 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.PausedDetails;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDebugger extends TestBase {
   @Test
-  void shouldReturnEmptyPausedDetailsInitially() {
+  void shouldReturnNullPausedDetailsInitially() {
     Debugger dbg = context.debugger();
-    assertEquals(Collections.emptyList(), dbg.pausedDetails());
-  }
-
-  @Test
-  void shouldPauseAtPauseCall() {
-    page.setContent("<div>click me</div>");
-    Debugger dbg = context.debugger();
-    assertEquals(Collections.emptyList(), dbg.pausedDetails());
-
-    dbg.pause();
-
-    boolean[] paused = {false};
-    dbg.onPausedStateChanged(() -> {
-      if (!paused[0]) {
-        paused[0] = true;
-        List<PausedDetails> details = dbg.pausedDetails();
-        assertEquals(1, details.size());
-        assertTrue(details.get(0).title.contains("Pause"), "title: " + details.get(0).title);
-        dbg.resume();
-      }
-    });
-
-    page.pause(); // blocks until dbg.resume() is called from event handler
-    assertEquals(Collections.emptyList(), dbg.pausedDetails());
+    assertNull(dbg.pausedDetails());
   }
 
   @Test
   void shouldPauseAtNextAndResume() {
     page.setContent("<div>click me</div>");
     Debugger dbg = context.debugger();
-    assertEquals(Collections.emptyList(), dbg.pausedDetails());
+    assertNull(dbg.pausedDetails());
 
-    dbg.pause();
+    dbg.requestPause();
 
     boolean[] paused = {false};
     dbg.onPausedStateChanged(() -> {
       if (!paused[0]) {
         paused[0] = true;
-        List<PausedDetails> details = dbg.pausedDetails();
-        assertEquals(1, details.size());
-        assertTrue(details.get(0).title.contains("Click"), "title: " + details.get(0).title);
+        PausedDetails details = dbg.pausedDetails();
+        assertNotNull(details);
+        assertTrue(details.title.contains("Click"), "title: " + details.title);
         dbg.resume();
       }
     });
 
     page.click("div"); // blocks until dbg.resume() is called
-    assertEquals(Collections.emptyList(), dbg.pausedDetails());
+    assertNull(dbg.pausedDetails());
+  }
+
+  @Test
+  void shouldStepWithNext() {
+    page.setContent("<div>click me</div>");
+    Debugger dbg = context.debugger();
+    assertNull(dbg.pausedDetails());
+
+    dbg.requestPause();
+
+    boolean[] paused = {false};
+    dbg.onPausedStateChanged(() -> {
+      if (!paused[0]) {
+        paused[0] = true;
+        PausedDetails details = dbg.pausedDetails();
+        assertNotNull(details);
+        assertTrue(details.title.contains("Click"), "title: " + details.title);
+        dbg.next();
+      } else if (dbg.pausedDetails() != null) {
+        dbg.resume();
+      }
+    });
+
+    page.click("div");
+    assertNull(dbg.pausedDetails());
+  }
+
+  @Test
+  void shouldPauseAtPauseCall() {
+    page.setContent("<div>click me</div>");
+    Debugger dbg = context.debugger();
+    assertNull(dbg.pausedDetails());
+
+    dbg.requestPause();
+
+    boolean[] paused = {false};
+    dbg.onPausedStateChanged(() -> {
+      if (!paused[0]) {
+        paused[0] = true;
+        PausedDetails details = dbg.pausedDetails();
+        assertNotNull(details);
+        assertTrue(details.title.contains("Pause"), "title: " + details.title);
+        dbg.resume();
+      }
+    });
+
+    page.pause(); // blocks until dbg.resume() is called from event handler
+    assertNull(dbg.pausedDetails());
   }
 }

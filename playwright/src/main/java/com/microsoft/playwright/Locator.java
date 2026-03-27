@@ -35,8 +35,8 @@ public interface Locator {
      */
     public Integer depth;
     /**
-     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
-     * "default"}.
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption. Defaults to {@code "default"}. See details
+     * for more information.
      */
     public AriaSnapshotMode mode;
     /**
@@ -55,8 +55,8 @@ public interface Locator {
       return this;
     }
     /**
-     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption with element references. Defaults to {@code
-     * "default"}.
+     * When set to {@code "ai"}, returns a snapshot optimized for AI consumption. Defaults to {@code "default"}. See details
+     * for more information.
      */
     public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
       this.mode = mode;
@@ -2322,6 +2322,12 @@ public interface Locator {
    *
    * <p> Below is the HTML markup and the respective ARIA snapshot:
    *
+   * <p> An AI-optimized snapshot, controlled by {@code mode}, is different from a default snapshot:
+   * <ol>
+   * <li> Includes element references {@code [ref=e2]}. 2. Does not wait for an element matching the locator, and throws when no
+   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target.</li>
+   * </ol>
+   *
    * @since v1.49
    */
   default String ariaSnapshot() {
@@ -2352,6 +2358,12 @@ public interface Locator {
    * </ul>
    *
    * <p> Below is the HTML markup and the respective ARIA snapshot:
+   *
+   * <p> An AI-optimized snapshot, controlled by {@code mode}, is different from a default snapshot:
+   * <ol>
+   * <li> Includes element references {@code [ref=e2]}. 2. Does not wait for an element matching the locator, and throws when no
+   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target.</li>
+   * </ol>
    *
    * @since v1.49
    */

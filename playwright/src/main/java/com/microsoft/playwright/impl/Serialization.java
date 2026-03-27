@@ -489,7 +489,7 @@ class Serialization {
     public JsonElement serialize(ConsoleMessagesFilter src, Type typeOfSrc, JsonSerializationContext context) {
       switch (src) {
         case ALL: return new JsonPrimitive("all");
-        case SINCE_NAVIGATION: return new JsonPrimitive("sinceNavigation");
+        case SINCE_NAVIGATION: return new JsonPrimitive("since-navigation");
         default: throw new PlaywrightException("Unknown ConsoleMessagesFilter: " + src);
       }
     }

@@ -20,13 +20,35 @@ public class Annotate {
   /**
    * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
    */
-  public Integer delay;
+  public Double duration;
+  /**
+   * Position of the action title overlay. Defaults to {@code "top-right"}.
+   */
+  public AnnotatePosition position;
+  /**
+   * Font size of the action title in pixels. Defaults to {@code 24}.
+   */
+  public Integer fontSize;
 
   /**
    * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
    */
-  public Annotate setDelay(int delay) {
-    this.delay = delay;
+  public Annotate setDuration(double duration) {
+    this.duration = duration;
+    return this;
+  }
+  /**
+   * Position of the action title overlay. Defaults to {@code "top-right"}.
+   */
+  public Annotate setPosition(AnnotatePosition position) {
+    this.position = position;
+    return this;
+  }
+  /**
+   * Font size of the action title in pixels. Defaults to {@code 24}.
+   */
+  public Annotate setFontSize(int fontSize) {
+    this.fontSize = fontSize;
     return this;
   }
 }

@@ -21,6 +21,10 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Tracing;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -29,6 +33,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
   private Path tracesDir;
   private boolean isTracing;
   private String stacksId;
+  private final Set<String> additionalSources = new HashSet<>();
 
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -41,6 +46,9 @@ class TracingImpl extends ChannelOwner implements Tracing {
       connection.setIsTracing(false);
     }
     JsonObject params = new JsonObject();
+
+    List<String> capturedAdditionalSources = new ArrayList<>(additionalSources);
+    additionalSources.clear();
 
     // Not interested in artifacts.
     if (path == null) {
@@ -57,7 +65,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
       params.addProperty("mode", "entries");
       JsonObject json = sendMessage("tracingStopChunk", params, NO_TIMEOUT).getAsJsonObject();
       JsonArray entries = json.getAsJsonArray("entries");
-      connection.localUtils.zip(path, entries, stacksId, false, includeSources);
+      connection.localUtils.zip(path, entries, stacksId, false, includeSources, capturedAdditionalSources);
       return;
     }
 
@@ -74,7 +82,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     artifact.saveAs(path);
     artifact.delete();
 
-    connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources);
+    connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources, capturedAdditionalSources);
   }
 
   @Override
@@ -94,6 +102,9 @@ class TracingImpl extends ChannelOwner implements Tracing {
   private void groupImpl(String name, GroupOptions options) {
     if (options == null) {
       options = new GroupOptions();
+    }
+    if (options.location != null) {
+      additionalSources.add(options.location.file);
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("name", name);
