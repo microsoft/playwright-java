@@ -19,7 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Debugger;
 import com.microsoft.playwright.options.Location;
-import com.microsoft.playwright.options.PausedDetails;
+import com.microsoft.playwright.options.DebuggerPausedDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 
 class DebuggerImpl extends ChannelOwner implements Debugger {
   private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
-  private PausedDetails pausedDetails;
+  private DebuggerPausedDetails pausedDetails;
 
   DebuggerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -38,7 +38,7 @@ class DebuggerImpl extends ChannelOwner implements Debugger {
   protected void handleEvent(String event, JsonObject params) {
     if ("pausedStateChanged".equals(event)) {
       if (params.has("pausedDetails") && !params.get("pausedDetails").isJsonNull()) {
-        pausedDetails = gson().fromJson(params.get("pausedDetails"), PausedDetails.class);
+        pausedDetails = gson().fromJson(params.get("pausedDetails"), DebuggerPausedDetails.class);
       } else {
         pausedDetails = null;
       }
@@ -59,7 +59,7 @@ class DebuggerImpl extends ChannelOwner implements Debugger {
   }
 
   @Override
-  public PausedDetails pausedDetails() {
+  public DebuggerPausedDetails pausedDetails() {
     return pausedDetails;
   }
 

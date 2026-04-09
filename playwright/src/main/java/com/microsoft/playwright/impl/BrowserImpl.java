@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.Bind;
+import com.microsoft.playwright.options.BindResult;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -197,7 +197,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   @Override
-  public Bind bind(String title, BindOptions options) {
+  public BindResult bind(String title, BindOptions options) {
     JsonObject params = new JsonObject();
     params.addProperty("title", title);
     if (options != null) {
@@ -212,9 +212,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
     }
     JsonObject result = sendMessage("startServer", params, NO_TIMEOUT).getAsJsonObject();
-    Bind bind = new Bind();
-    bind.endpoint = result.get("endpoint").getAsString();
-    return bind;
+    BindResult bindResult = new BindResult();
+    bindResult.endpoint = result.get("endpoint").getAsString();
+    return bindResult;
   }
 
   @Override

@@ -1448,7 +1448,7 @@ public interface Browser extends AutoCloseable {
    * @param title Title of the browser server, used for identification.
    * @since v1.59
    */
-  default Bind bind(String title) {
+  default BindResult bind(String title) {
     return bind(title, null);
   }
   /**
@@ -1457,7 +1457,7 @@ public interface Browser extends AutoCloseable {
    * @param title Title of the browser server, used for identification.
    * @since v1.59
    */
-  Bind bind(String title, BindOptions options);
+  BindResult bind(String title, BindOptions options);
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
    * which is a low-level chromium-specific debugging tool. API to control <a

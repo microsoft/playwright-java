@@ -283,40 +283,20 @@ abstract class Element {
 class TypeRef extends Element {
   String customType;
 
-  private static final Map<String, String> customTypeNames = new HashMap<>();
-  static {
-    customTypeNames.put("APIRequest.newContext.options.clientCertificates", "ClientCertificate");
-    customTypeNames.put("Browser.newContext.options.clientCertificates", "ClientCertificate");
-    customTypeNames.put("Browser.newPage.options.clientCertificates", "ClientCertificate");
-    customTypeNames.put("BrowserType.launchPersistentContext.options.clientCertificates", "ClientCertificate");
-
-    customTypeNames.put("BrowserContext.addCookies.cookies", "Cookie");
-    customTypeNames.put("BrowserContext.cookies", "Cookie");
-
-    customTypeNames.put("Request.headersArray", "HttpHeader");
-    customTypeNames.put("Response.headersArray", "HttpHeader");
-    customTypeNames.put("APIResponse.headersArray", "HttpHeader");
-
-    customTypeNames.put("Locator.selectOption.values", "SelectOption");
-    customTypeNames.put("ElementHandle.selectOption.values", "SelectOption");
-    customTypeNames.put("Frame.selectOption.values", "SelectOption");
-    customTypeNames.put("Page.selectOption.values", "SelectOption");
-
-    customTypeNames.put("Locator.setInputFiles.files", "FilePayload");
-    customTypeNames.put("ElementHandle.setInputFiles.files", "FilePayload");
-    customTypeNames.put("FileChooser.setFiles.files", "FilePayload");
-    customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
-    customTypeNames.put("Page.setInputFiles.files", "FilePayload");
-    customTypeNames.put("Page.setInputFiles.files", "FilePayload");
-    customTypeNames.put("FormData.append.value", "FilePayload");
-    customTypeNames.put("FormData.set.value", "FilePayload");
-
-    customTypeNames.put("Locator.dragTo.options.sourcePosition", "Position");
-    customTypeNames.put("Page.dragAndDrop.options.sourcePosition", "Position");
-    customTypeNames.put("Frame.dragAndDrop.options.sourcePosition", "Position");
-    customTypeNames.put("Locator.dragTo.options.targetPosition", "Position");
-    customTypeNames.put("Page.dragAndDrop.options.targetPosition", "Position");
-    customTypeNames.put("Frame.dragAndDrop.options.targetPosition", "Position");
+  // Returns the Java-specific type alias declared in the api docs (e.g. `alias-java: Cookie`),
+  // falling back to the language-agnostic `alias` if no Java-specific override is provided.
+  private static String javaAlias(JsonObject jsonType) {
+    if (!jsonType.has("langAliases")) {
+      return null;
+    }
+    JsonObject langAliases = jsonType.getAsJsonObject("langAliases");
+    if (langAliases.has("java")) {
+      return langAliases.get("java").getAsString();
+    }
+    if (langAliases.has("default")) {
+      return langAliases.get("default").getAsString();
+    }
+    return null;
   }
 
   TypeRef(Element parent, JsonElement jsonElement) {
@@ -355,8 +335,9 @@ class TypeRef extends Element {
         customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
         typeScope().createNestedClass(customType, this, jsonObject);
       } else {
-        if (customTypeNames.containsKey(jsonPath)) {
-          customType = customTypeNames.get(jsonPath);
+        String alias = javaAlias(jsonObject);
+        if (alias != null) {
+          customType = alias;
         } else {
           customType = toTitle(parent.jsonName);
         }
@@ -534,15 +515,12 @@ class TypeRef extends Element {
       return convertTemplateParams(jsonType);
     }
     if ("function".equals(name)) {
+      String alias = javaAlias(jsonType);
+      if (alias != null) {
+        return alias;
+      }
       if (!jsonType.has("args")) {
-        switch (jsonPath) {
-          case "BrowserContext.exposeBinding.callback": return "BindingCallback";
-          case "BrowserContext.exposeFunction.callback": return "FunctionCallback";
-          case "Page.exposeBinding.callback": return "BindingCallback";
-          case "Page.exposeFunction.callback": return "FunctionCallback";
-          default:
-            throw new RuntimeException("Missing mapping for " + jsonPath);
-        }
+        throw new RuntimeException("Missing mapping for " + jsonPath);
       }
       if ("WebSocketRoute.onClose.handler".equals(jsonPath)) {
         return "BiConsumer<Integer, String>";
