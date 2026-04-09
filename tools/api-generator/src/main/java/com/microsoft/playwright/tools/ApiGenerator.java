@@ -506,6 +506,12 @@ class TypeRef extends Element {
       if (customType != null) {
         return customType;
       }
+      // Inner Objects (e.g. function arguments) are not visited by createClassesAndEnums,
+      // so resolve their Java type name from langAliases here.
+      String alias = javaAlias(jsonType);
+      if (alias != null) {
+        return alias;
+      }
       return "Map<" + convertTemplateParams(jsonType) + ">";
     }
     if ("Map".equals(name)) {
@@ -524,9 +530,6 @@ class TypeRef extends Element {
       }
       if ("WebSocketRoute.onClose.handler".equals(jsonPath)) {
         return "BiConsumer<Integer, String>";
-      }
-      if ("Screencast.start.options.onFrame".equals(jsonPath)) {
-        return "Consumer<ScreencastFrame>";
       }
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
