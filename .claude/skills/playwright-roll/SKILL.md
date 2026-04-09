@@ -94,6 +94,17 @@ Common patterns:
 
 **Protocol parameter renames** — protocol parameter names can change between versions (e.g. `wsEndpoint` → `endpoint` in `BrowserType.connect`). When a test fails with `expected string, got undefined` or similar validation errors from the driver, check `packages/protocol/src/protocol.yml` for the current parameter names and update the corresponding `params.addProperty(...)` call in the Impl class. Also check the JS client (`src/client/`) to see how it builds the params object.
 
+## Rebuilding the driver-bundle after a roll
+
+`./scripts/roll_driver.sh` does the whole roll pipeline end-to-end: bumps `DRIVER_VERSION`, downloads new driver files into `driver-bundle/src/main/resources/driver/<platform>/`, regenerates `api.json` and the Java interfaces, and updates the README. When all of that succeeds, the next `mvn` invocation that touches `driver-bundle` will pick up the new files and you don't need to think about it.
+
+But if any step in the pipeline fails (the very common case is the API generator throwing on a new type — see *Fixing generator and compilation errors*), the run aborts before `driver-bundle/target/classes/` has been refreshed. From that point on, until you manually rebuild `driver-bundle`, the test JVM will load the **old** driver from the cached `target/classes`/installed jar even though the source resources have already been swapped to the new version.
+
+Fix — rebuild `driver-bundle` once before re-running tests:
+```
+mvn -f driver-bundle/pom.xml install -DskipTests
+```
+
 ## Porting and verifying tests
 
 **Before porting an upstream test file, check the API exists in Java.** The upstream repo may have test files for brand-new APIs that haven't been added to the Java interface yet (e.g., `screencast.spec.ts` tests `page.screencast` which may not be in the generated `Page.java`). Check `git diff main --name-only` to see what interfaces were added this roll, and verify the method exists in the generated Java interface before porting.
@@ -103,6 +114,21 @@ Common patterns:
 **Remove tests for behavior that was removed upstream.** When the JS client drops a client-side error check (e.g., "Page is not yet closed before saveAs", "Page did not produce any video frames"), delete the corresponding Java tests rather than trying to keep them passing. Check the upstream `tests/library/` spec to confirm the behavior is gone.
 
 **Run the full suite to catch regressions, re-run flaky failures in isolation.** Some tests (e.g., `TestClientCertificates#shouldKeepSupportingHttp`) time out only under heavy parallel load. Run the failing test alone to confirm it's flaky before investigating further.
+
+## Diagnosing hanging tests
+
+When `mvn test` hangs and surefire eventually times the JVM out, it writes thread dumps to `playwright/target/surefire-reports/<timestamp>-jvmRun*.dump`. To find the stuck test:
+
+```
+grep "com.microsoft.playwright.Test" playwright/target/surefire-reports/*-jvmRun1.dump | sort -u
+```
+
+Each line is a stack frame inside a test method — typically you'll see one or two test methods blocked on a `Future.get()`, `waitForCondition`, or similar. That's the hanging test.
+
+When you've identified a hanging test:
+1. Run it in isolation: `mvn -f playwright/pom.xml test -Dtest='TestClass#testMethod'`. If it passes alone, it's a parallel-load flake — note it but move on.
+2. If it still hangs in isolation, look for a recent fix in the upstream repo for the *same* test name. Use `git log --oneline tests/library/<spec>.spec.ts` in `~/playwright`. Upstream fixes for client-side hangs are often small and portable (e.g. `about:blank` → `server.EMPTY_PAGE` from microsoft/playwright#39840 fixed `route-web-socket.spec.ts` arraybuffer hangs — apparently some browser changed the WebSocket origin policy on `about:blank`).
+3. When porting an upstream fix, mirror the helper signature change rather than hard-coding workarounds. E.g. if upstream added a `server` parameter to `setupWS`, do the same in Java by injecting `Server server` via the JUnit fixture (`@FixtureTest` already wires up `ServerLifecycle`, so adding `Server server` to the test method signature is enough — no class-level boilerplate). Watch for local-variable shadowing when you add a `Server server` parameter to a method that already has a `WebSocketRoute server` local; rename the local.
 
 ## Commit Convention
 

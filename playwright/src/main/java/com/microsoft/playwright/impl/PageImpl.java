@@ -46,7 +46,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
-  private final OverlayImpl overlay;
+  private final ScreencastImpl screencast;
   final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
@@ -136,7 +136,7 @@ public class PageImpl extends ChannelOwner implements Page {
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
-    overlay = new OverlayImpl(this);
+    screencast = new ScreencastImpl(this);
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
     waitableClosedOrCrashed = createWaitForCloseHelper();
@@ -232,6 +232,8 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
       didClose();
+    } else if ("screencastFrame".equals(event)) {
+      screencast.handleScreencastFrame(params);
     }
   }
 
@@ -1350,8 +1352,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Overlay overlay() {
-    return overlay;
+  public Screencast screencast() {
+    return screencast;
   }
 
   @Override

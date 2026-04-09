@@ -1222,6 +1222,44 @@ public interface Browser extends AutoCloseable {
       return this;
     }
   }
+  class BindOptions {
+    /**
+     * Host to bind the web socket server to. When specified, a web socket server is created instead of a named pipe.
+     */
+    public String host;
+    /**
+     * Port to bind the web socket server to. When specified, a web socket server is created instead of a named pipe. Use
+     * {@code 0} to let the OS pick an available port.
+     */
+    public Integer port;
+    /**
+     * Working directory associated with this browser server.
+     */
+    public String workspaceDir;
+
+    /**
+     * Host to bind the web socket server to. When specified, a web socket server is created instead of a named pipe.
+     */
+    public BindOptions setHost(String host) {
+      this.host = host;
+      return this;
+    }
+    /**
+     * Port to bind the web socket server to. When specified, a web socket server is created instead of a named pipe. Use
+     * {@code 0} to let the OS pick an available port.
+     */
+    public BindOptions setPort(int port) {
+      this.port = port;
+      return this;
+    }
+    /**
+     * Working directory associated with this browser server.
+     */
+    public BindOptions setWorkspaceDir(String workspaceDir) {
+      this.workspaceDir = workspaceDir;
+      return this;
+    }
+  }
   class StartTracingOptions {
     /**
      * specify custom categories to use instead of default.
@@ -1405,6 +1443,22 @@ public interface Browser extends AutoCloseable {
    */
   Page newPage(NewPageOptions options);
   /**
+   * Binds the browser to a named pipe or web socket, making it available for other clients to connect to.
+   *
+   * @param title Title of the browser server, used for identification.
+   * @since v1.59
+   */
+  default Bind bind(String title) {
+    return bind(title, null);
+  }
+  /**
+   * Binds the browser to a named pipe or web socket, making it available for other clients to connect to.
+   *
+   * @param title Title of the browser server, used for identification.
+   * @since v1.59
+   */
+  Bind bind(String title, BindOptions options);
+  /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
    * which is a low-level chromium-specific debugging tool. API to control <a
    * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
@@ -1484,6 +1538,12 @@ public interface Browser extends AutoCloseable {
    * @since v1.11
    */
   byte[] stopTracing();
+  /**
+   * Unbinds the browser server previously bound with {@link com.microsoft.playwright.Browser#bind Browser.bind()}.
+   *
+   * @since v1.59
+   */
+  void unbind();
   /**
    * Returns the browser version.
    *

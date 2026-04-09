@@ -16,19 +16,15 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Video;
-
-import static com.microsoft.playwright.impl.Serialization.gson;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class VideoImpl implements Video {
   private final PageImpl page;
-  private ArtifactImpl artifact;
-  private Path savePath;
+  ArtifactImpl artifact;
 
   VideoImpl(PageImpl page) {
     this.page = page;
@@ -53,33 +49,6 @@ class VideoImpl implements Video {
     if (artifact == null)
       throw new PlaywrightException("Video recording has not been started.");
     return Paths.get(artifact.initializer.get("absolutePath").getAsString());
-  }
-
-  @Override
-  public AutoCloseable start(StartOptions options) {
-    JsonObject params = new JsonObject();
-    if (options != null) {
-      if (options.size != null) {
-        params.add("size", gson().toJsonTree(options.size));
-      }
-      if (options.annotate != null) {
-        params.add("annotate", gson().toJsonTree(options.annotate));
-      }
-      savePath = options.path;
-    }
-    JsonObject result = page.sendMessage("videoStart", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
-    String artifactGuid = result.getAsJsonObject("artifact").get("guid").getAsString();
-    artifact = page.connection.getExistingObject(artifactGuid);
-    return new DisposableStub(this::stop);
-  }
-
-  @Override
-  public void stop() {
-    page.sendMessage("videoStop", new JsonObject(), ChannelOwner.NO_TIMEOUT);
-    if (savePath != null) {
-      saveAs(savePath);
-      savePath = null;
-    }
   }
 
   @Override

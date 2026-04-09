@@ -16,12 +16,14 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.ScreencastFrame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,4 +99,131 @@ public class TestScreencast extends TestBase {
     assertTrue(Files.size(files.get(0)) > 0);
   }
 
+  @Test
+  void screencastStartShouldDeliverFramesViaOnFrame() throws Exception {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(500, 400));
+    Page page = context.newPage();
+    try {
+      List<ScreencastFrame> frames = new ArrayList<>();
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
+      page.navigate(server.EMPTY_PAGE);
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(500);
+      page.screencast().stop();
+      assertFalse(frames.isEmpty(), "expected at least one frame");
+      // JPEG-encoded frames start with FF D8.
+      for (ScreencastFrame frame : frames) {
+        assertNotNull(frame.data);
+        assertEquals((byte) 0xFF, frame.data[0]);
+        assertEquals((byte) 0xD8, frame.data[1]);
+      }
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastStartShouldThrowIfAlreadyStarted() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
+      PlaywrightException e = assertThrows(PlaywrightException.class,
+        () -> page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {})));
+      assertTrue(e.getMessage().contains("Screencast is already started"), e.getMessage());
+      page.screencast().stop();
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastStartShouldRecordVideoToPath(@TempDir Path tmpDir) throws Exception {
+    Path videoPath = tmpDir.resolve("video.webm");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(800, 600));
+    Page page = context.newPage();
+    try {
+      page.screencast().start(new Screencast.StartOptions().setPath(videoPath));
+      page.navigate(server.EMPTY_PAGE);
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(500);
+      page.screencast().stop();
+      assertTrue(Files.exists(videoPath), "video file should exist: " + videoPath);
+      assertTrue(Files.size(videoPath) > 0);
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastStartReturnsDisposable() throws Exception {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      AutoCloseable disposable = page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
+      disposable.close();
+      // After dispose, starting again should succeed.
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
+      page.screencast().stop();
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastShowOverlay() throws Exception {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      AutoCloseable disposable = page.screencast().showOverlay("<div>Hello Overlay</div>");
+      assertNotNull(disposable);
+      disposable.close();
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastShowChapter() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      page.screencast().showChapter("Chapter Title");
+      page.screencast().showChapter("With Description",
+        new Screencast.ShowChapterOptions().setDescription("Some details").setDuration(100));
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastHideShowOverlays() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      page.screencast().showOverlay("<div>visible</div>");
+      page.screencast().hideOverlays();
+      page.screencast().showOverlays();
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastShowAndHideActions() throws Exception {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      AutoCloseable disposable = page.screencast().showActions();
+      assertNotNull(disposable);
+      disposable.close();
+      page.screencast().hideActions();
+    } finally {
+      context.close();
+    }
+  }
 }

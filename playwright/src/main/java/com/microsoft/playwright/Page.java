@@ -5881,12 +5881,6 @@ public interface Page extends AutoCloseable {
    */
   Mouse mouse();
   /**
-   *
-   *
-   * @since v1.59
-   */
-  Overlay overlay();
-  /**
    * Adds one-off {@code Dialog} handler. The handler will be removed immediately after next {@code Dialog} is created.
    * <pre>{@code
    * page.onceDialog(dialog -> {
@@ -6880,6 +6874,14 @@ public interface Page extends AutoCloseable {
    */
   void routeWebSocket(Predicate<String> url, Consumer<WebSocketRoute> handler);
   /**
+   * {@code Screencast} object associated with this page.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * @since v1.59
+   */
+  Screencast screencast();
+  /**
    * Returns the buffer with the captured screenshot.
    *
    * @since v1.8
@@ -7756,9 +7758,8 @@ public interface Page extends AutoCloseable {
    */
   String url();
   /**
-   * Video object associated with this page. Can be used to control video recording with {@link
-   * com.microsoft.playwright.Video#start Video.start()} and {@link com.microsoft.playwright.Video#stop Video.stop()}, or to
-   * access the video file when using the {@code recordVideo} context option.
+   * Video object associated with this page. Can be used to access the video file when using the {@code recordVideo} context
+   * option.
    *
    * @since v1.8
    */

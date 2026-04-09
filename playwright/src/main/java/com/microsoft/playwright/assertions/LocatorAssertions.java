@@ -888,7 +888,7 @@ public interface LocatorAssertions {
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
    * class lists. Each element's class attribute is matched against the corresponding class in the array:
    * <pre>{@code
-   * assertThat(page.locator(".list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * assertThat(page.locator(".list > .component")).containsClass(Arrays.asList("inactive", "active", "inactive"));
    * }</pre>
    *
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
@@ -912,7 +912,7 @@ public interface LocatorAssertions {
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
    * class lists. Each element's class attribute is matched against the corresponding class in the array:
    * <pre>{@code
-   * assertThat(page.locator(".list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * assertThat(page.locator(".list > .component")).containsClass(Arrays.asList("inactive", "active", "inactive"));
    * }</pre>
    *
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
@@ -934,7 +934,7 @@ public interface LocatorAssertions {
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
    * class lists. Each element's class attribute is matched against the corresponding class in the array:
    * <pre>{@code
-   * assertThat(page.locator(".list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * assertThat(page.locator(".list > .component")).containsClass(Arrays.asList("inactive", "active", "inactive"));
    * }</pre>
    *
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
@@ -958,7 +958,7 @@ public interface LocatorAssertions {
    * <p> When an array is passed, the method asserts that the list of elements located matches the corresponding list of expected
    * class lists. Each element's class attribute is matched against the corresponding class in the array:
    * <pre>{@code
-   * assertThat(page.locator(".list > .component")).containsClass(new String[] {"inactive", "active", "inactive"});
+   * assertThat(page.locator(".list > .component")).containsClass(Arrays.asList("inactive", "active", "inactive"));
    * }</pre>
    *
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.

@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.Bind;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -193,6 +194,32 @@ class BrowserImpl extends ChannelOwner implements Browser {
       params.add("page", ((PageImpl) page).toProtocolRef());
     }
     sendMessage("startTracing", params, NO_TIMEOUT);
+  }
+
+  @Override
+  public Bind bind(String title, BindOptions options) {
+    JsonObject params = new JsonObject();
+    params.addProperty("title", title);
+    if (options != null) {
+      if (options.host != null) {
+        params.addProperty("host", options.host);
+      }
+      if (options.port != null) {
+        params.addProperty("port", options.port);
+      }
+      if (options.workspaceDir != null) {
+        params.addProperty("workspaceDir", options.workspaceDir);
+      }
+    }
+    JsonObject result = sendMessage("startServer", params, NO_TIMEOUT).getAsJsonObject();
+    Bind bind = new Bind();
+    bind.endpoint = result.get("endpoint").getAsString();
+    return bind;
+  }
+
+  @Override
+  public void unbind() {
+    sendMessage("stopServer", new JsonObject(), NO_TIMEOUT);
   }
 
   @Override
