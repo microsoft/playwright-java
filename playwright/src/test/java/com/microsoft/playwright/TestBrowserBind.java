@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.Bind;
+import com.microsoft.playwright.options.BindResult;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestBrowserBind extends TestBase {
   @Test
   void shouldBindAndUnbindBrowser() {
-    Bind serverInfo = browser.bind("default");
+    BindResult serverInfo = browser.bind("default");
     try {
       assertNotNull(serverInfo);
       assertNotNull(serverInfo.endpoint);
@@ -36,7 +36,7 @@ public class TestBrowserBind extends TestBase {
 
   @Test
   void shouldBindWithCustomTitleAndOptions() {
-    Bind serverInfo = browser.bind("my-title",
+    BindResult serverInfo = browser.bind("my-title",
       new Browser.BindOptions().setHost("127.0.0.1").setPort(0));
     try {
       assertNotNull(serverInfo);

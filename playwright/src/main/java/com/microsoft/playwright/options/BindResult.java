@@ -16,8 +16,7 @@
 
 package com.microsoft.playwright.options;
 
-public class PausedDetails {
-  public Location location;
-  public String title;
+public class BindResult {
+  public String endpoint;
 
 }

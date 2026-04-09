@@ -39,7 +39,7 @@ public interface Debugger {
    *
    * @since v1.59
    */
-  PausedDetails pausedDetails();
+  DebuggerPausedDetails pausedDetails();
   /**
    * Configures the debugger to pause before the next action is executed.
    *

@@ -16,7 +16,8 @@
 
 package com.microsoft.playwright.options;
 
-public class Bind {
-  public String endpoint;
+public class DebuggerPausedDetails {
+  public Location location;
+  public String title;
 
 }

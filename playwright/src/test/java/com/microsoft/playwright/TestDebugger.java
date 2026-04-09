@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.PausedDetails;
+import com.microsoft.playwright.options.DebuggerPausedDetails;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +40,7 @@ public class TestDebugger extends TestBase {
     dbg.onPausedStateChanged(() -> {
       if (!paused[0]) {
         paused[0] = true;
-        PausedDetails details = dbg.pausedDetails();
+        DebuggerPausedDetails details = dbg.pausedDetails();
         assertNotNull(details);
         assertTrue(details.title.contains("Click"), "title: " + details.title);
         dbg.resume();
@@ -63,7 +63,7 @@ public class TestDebugger extends TestBase {
     dbg.onPausedStateChanged(() -> {
       if (!paused[0]) {
         paused[0] = true;
-        PausedDetails details = dbg.pausedDetails();
+        DebuggerPausedDetails details = dbg.pausedDetails();
         assertNotNull(details);
         assertTrue(details.title.contains("Click"), "title: " + details.title);
         dbg.next();
@@ -88,7 +88,7 @@ public class TestDebugger extends TestBase {
     dbg.onPausedStateChanged(() -> {
       if (!paused[0]) {
         paused[0] = true;
-        PausedDetails details = dbg.pausedDetails();
+        DebuggerPausedDetails details = dbg.pausedDetails();
         assertNotNull(details);
         assertTrue(details.title.contains("Pause"), "title: " + details.title);
         dbg.resume();
