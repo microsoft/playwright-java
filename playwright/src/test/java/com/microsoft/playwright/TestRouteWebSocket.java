@@ -40,11 +40,11 @@ public class TestRouteWebSocket {
     webSocketServer.reset();
   }
 
-  private void setupWS(Page target, int port, String binaryType) {
-    setupWS(target.mainFrame(), port, binaryType);
+  private void setupWS(Page target, Server server, int port, String binaryType) {
+    setupWS(target.mainFrame(), server, port, binaryType);
   }
-  private void setupWS(Frame target, int port, String binaryType) {
-    target.navigate("about:blank");
+  private void setupWS(Frame target, Server server, int port, String binaryType) {
+    target.navigate(server.EMPTY_PAGE);
     target.evaluate("({ port, binaryType }) => {\n" +
       "    window.log = [];\n" +
       "    window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -92,10 +92,10 @@ public class TestRouteWebSocket {
 
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithTextMessage(String mock, Page page) throws Exception {
+  public void shouldWorkWithTextMessage(String mock, Page page, Server server) throws Exception {
     setupRoute(page, mock);
     Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, webSocketServer.getPort(), "blob");
+    setupWS(page, server, webSocketServer.getPort(), "blob");
 
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
@@ -134,10 +134,10 @@ public class TestRouteWebSocket {
 
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithBinaryTypeBlob(String mock, Page page) throws Exception {
+  public void shouldWorkWithBinaryTypeBlob(String mock, Page page, Server server) throws Exception {
     setupRoute(page, mock);
     Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, webSocketServer.getPort(), "blob");
+    setupWS(page, server, webSocketServer.getPort(), "blob");
     org.java_websocket.WebSocket ws = wsPromise.get();
     ws.send("hi".getBytes(StandardCharsets.UTF_8));
     page.waitForCondition(() -> {
@@ -157,10 +157,10 @@ public class TestRouteWebSocket {
 
   @ParameterizedTest
   @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithBinaryTypeArrayBuffer(String mock, Page page) throws Exception {
+  public void shouldWorkWithBinaryTypeArrayBuffer(String mock, Page page, Server server) throws Exception {
     setupRoute(page, mock);
     Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, webSocketServer.getPort(), "arraybuffer");
+    setupWS(page, server, webSocketServer.getPort(), "arraybuffer");
     org.java_websocket.WebSocket ws = wsPromise.get();
     ws.send("hi".getBytes(StandardCharsets.UTF_8));
     page.waitForCondition(() -> {
@@ -179,10 +179,10 @@ public class TestRouteWebSocket {
   }
 
   @Test
-  public void shouldWorkWithServer(Page page) throws ExecutionException, InterruptedException {
+  public void shouldWorkWithServer(Page page, Server server) throws ExecutionException, InterruptedException {
     WebSocketRoute[] wsRoute = new WebSocketRoute[]{null};
     page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
-      WebSocketRoute server = ws.connectToServer();
+      WebSocketRoute serverRoute = ws.connectToServer();
       ws.onMessage(frame -> {
         String message = frame.text();
         switch (message) {
@@ -192,13 +192,13 @@ public class TestRouteWebSocket {
           case "to-block":
             break;
           case "to-modify":
-            server.send("modified");
+            serverRoute.send("modified");
             break;
           default:
-            server.send(message);
+            serverRoute.send(message);
         }
       });
-      server.onMessage(frame -> {
+      serverRoute.onMessage(frame -> {
         String message = frame.text();
         switch (message) {
           case "to-block":
@@ -210,12 +210,12 @@ public class TestRouteWebSocket {
             ws.send(message);
         }
       });
-      server.send("fake");
+      serverRoute.send("fake");
       wsRoute[0] = ws;
     });
 
     Future<WebSocket> ws = webSocketServer.waitForWebSocket();
-    setupWS(page, webSocketServer.getPort(), "blob");
+    setupWS(page, server, webSocketServer.getPort(), "blob");
     page.waitForCondition(() -> webSocketServer.logCopy().size() >= 1);
     assertEquals(
       asList("message: fake"),
@@ -277,7 +277,7 @@ public class TestRouteWebSocket {
   }
 
   @Test
-  public void shouldWorkWithoutServer(Page page) {
+  public void shouldWorkWithoutServer(Page page, Server server) {
     WebSocketRoute[] wsRoute = new WebSocketRoute[]{ null };
     page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
       ws.onMessage(frame -> {
@@ -288,7 +288,7 @@ public class TestRouteWebSocket {
       });
       wsRoute[0] = ws;
     });
-    setupWS(page, webSocketServer.getPort(), "blob");
+    setupWS(page, server, webSocketServer.getPort(), "blob");
 
     page.evaluate("async () => {\n" +
       "    await window.wsOpened;\n" +
@@ -321,7 +321,7 @@ public class TestRouteWebSocket {
   }
 
   @Test
-  public void shouldWorkWithBaseURL(Browser browser) throws Exception {
+  public void shouldWorkWithBaseURL(Browser browser, Server server) throws Exception {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBaseURL("http://localhost:" + webSocketServer.getPort()));
     Page newPage = context.newPage();
 
@@ -335,7 +335,7 @@ public class TestRouteWebSocket {
       });
     });
 
-    setupWS(newPage, webSocketServer.getPort(), "blob");
+    setupWS(newPage, server, webSocketServer.getPort(), "blob");
 
     newPage.evaluate("async () => {\n" +
       "    await window.wsOpened;\n" +
@@ -353,7 +353,7 @@ public class TestRouteWebSocket {
   }
 
   @Test
-  public void shouldWorkWithNoTrailingSlash(Page page) throws Exception {  
+  public void shouldWorkWithNoTrailingSlash(Page page) throws Exception {
     List<String> log = new ArrayList<>();
 
     // No trailing slash in the route pattern
@@ -384,7 +384,7 @@ public class TestRouteWebSocket {
     page.waitForCondition(() -> log.size() >= 1);
     assertEquals(asList("query"), log);
 
-    // Wait and verify client received response 
+    // Wait and verify client received response
     page.waitForCondition(() -> {
       Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
       return result;

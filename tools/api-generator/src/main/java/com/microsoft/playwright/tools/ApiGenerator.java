@@ -547,14 +547,20 @@ class TypeRef extends Element {
       if ("WebSocketRoute.onClose.handler".equals(jsonPath)) {
         return "BiConsumer<Integer, String>";
       }
+      if ("Screencast.start.options.onFrame".equals(jsonPath)) {
+        return "Consumer<ScreencastFrame>";
+      }
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
         if (!jsonType.has("returnType") || jsonType.get("returnType").isJsonNull()) {
           return "Consumer<" + paramType + ">";
         }
-        if (jsonType.has("returnType")
-          && "boolean".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
+        String returnTypeName = jsonType.getAsJsonObject("returnType").get("name").getAsString();
+        if ("boolean".equals(returnTypeName)) {
           return "Predicate<" + paramType + ">";
+        }
+        if ("Promise".equals(returnTypeName) || "void".equals(returnTypeName)) {
+          return "Consumer<" + paramType + ">";
         }
         throw new RuntimeException("Missing mapping for " + jsonType);
       }
@@ -989,25 +995,25 @@ class Interface extends TypeDefinition {
     if (methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger", "Screencast").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video", "Screencast").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");
     }
-    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker", "CDPSession", "WebSocketRoute").contains(jsonName)) {
+    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker", "CDPSession", "WebSocketRoute", "Screencast").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "BrowserContext").contains(jsonName)) {

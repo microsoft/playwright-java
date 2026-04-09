@@ -2261,7 +2261,7 @@ public interface Locator {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * String[] texts = page.getByRole(AriaRole.LINK).allInnerTexts();
+   * List<String> texts = page.getByRole(AriaRole.LINK).allInnerTexts();
    * }</pre>
    *
    * @since v1.14
@@ -2276,7 +2276,7 @@ public interface Locator {
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
-   * String[] texts = page.getByRole(AriaRole.LINK).allTextContents();
+   * List<String> texts = page.getByRole(AriaRole.LINK).allTextContents();
    * }</pre>
    *
    * @since v1.14
