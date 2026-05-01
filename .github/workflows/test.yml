@@ -18,6 +18,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         browser: [chromium, firefox, webkit]
+        exclude:
+          # macos-latest is the free M1 runner (3 vCPU / 7 GB); WebKit needs more headroom.
+          # Upstream's webkit matrix runs on macos-15-xlarge for the same reason.
+          - os: macos-latest
+            browser: webkit
+        include:
+          - os: macos-15-xlarge
+            browser: webkit
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v6

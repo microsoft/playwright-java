@@ -45,13 +45,13 @@ public class TestRouteWebSocket {
   }
   private void setupWS(Frame target, Server server, int port, String binaryType) {
     target.navigate(server.EMPTY_PAGE);
+    // No 'error' listener: WebKit fires a spurious 'error' before 'close' on non-normal closures (e.g. 1008).
     target.evaluate("({ port, binaryType }) => {\n" +
       "    window.log = [];\n" +
       "    window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
       "    window.ws.binaryType = binaryType;\n" +
       "    window.ws.addEventListener('open', () => window.log.push('open'));\n" +
       "    window.ws.addEventListener('close', event => window.log.push(`close code=${event.code} reason=${event.reason}`));\n" +
-      "    window.ws.addEventListener('error', event => window.log.push(`error`));\n" +
       "    window.ws.addEventListener('message', async event => {\n" +
       "      let data;\n" +
       "      if (typeof event.data === 'string')\n" +

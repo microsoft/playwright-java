@@ -50,7 +50,7 @@ do
   if command -v wget &> /dev/null; then
       wget $URL
   else
-      curl -O $URL
+      curl --retry 5 --retry-delay 2 -fL -O $URL
   fi
   unzip $FILE_NAME -d .
   rm $FILE_NAME
