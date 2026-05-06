@@ -44,6 +44,15 @@ import java.util.regex.Pattern;
 public interface Browser extends AutoCloseable {
 
   /**
+   * Emitted when a new browser context is created.
+   */
+  void onContext(Consumer<BrowserContext> handler);
+  /**
+   * Removes handler that was previously added with {@link #onContext onContext(handler)}.
+   */
+  void offContext(Consumer<BrowserContext> handler);
+
+  /**
    * Emitted when Browser gets disconnected from the browser application. This might happen because of one of the following:
    * <ul>
    * <li> Browser application is closed or crashed.</li>

@@ -165,63 +165,12 @@ public class TestPageExposeFunction extends TestBase {
   }
 
   @Test
-  void exposeBindingHandleShouldWork() {
-    JSHandle[] target = { null };
-    page.exposeBinding("logme", (source, args) -> {
-      target[0] = (JSHandle) args[0];
-      return 17;
-    }, new Page.ExposeBindingOptions().setHandle(true));
-    Object result = page.evaluate("async function() {\n" +
-      "  return window['logme']({ foo: 42 });\n" +
-      "}");
-    assertEquals(42, target[0].evaluate("x => x.foo"));
-    assertEquals(17, result);
-  }
-
-  @Test
-  void exposeBindingHandleShouldNotThrowDuringNavigation() {
-    page.exposeBinding("logme", (source, args) -> {
-      return 17;
-    }, new Page.ExposeBindingOptions().setHandle(true));
-    page.navigate(server.EMPTY_PAGE);
-
-    page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(LOAD), () -> {
-      page.evaluate("async url => {\n" +
-        "  window['logme']({ foo: 42 });\n" +
-        "  window.location.href = url;\n" +
-        "}", server.PREFIX + "/one-style.html");
-    });
-  }
-
-  @Test
   void shouldThrowForDuplicateRegistrations() {
     page.exposeFunction("foo", args -> null);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.exposeFunction("foo", args -> null);
     });
     assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
-  }
-
-  @Test
-  void exposeBindingHandleShouldThrowForMultipleArguments() {
-    page.exposeBinding("logme", (source, args) -> {
-      return 17;
-    }, new Page.ExposeBindingOptions().setHandle(true));
-    assertEquals(17, page.evaluate("async function() {\n" +
-      "  return window['logme']({ foo: 42 });\n" +
-      "}"));
-    assertEquals(17, page.evaluate("async function() {\n" +
-      "  return window['logme']({ foo: 42 }, undefined, undefined);\n" +
-      "}"));
-    assertEquals(17, page.evaluate("async function() {\n" +
-      "  return window['logme'](undefined, undefined, undefined);\n" +
-      "}"));
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
-      page.evaluate("async function() {\n" +
-        "  return window['logme'](1, 2);\n" +
-        "}");
-    });
-    assertTrue(e.getMessage().contains("exposeBindingHandle supports a single argument, 2 received"));
   }
 
   @Test

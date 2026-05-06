@@ -186,4 +186,90 @@ public class TestBrowserContextEvents extends TestBase {
     assertTrue(webError[0].error().contains("boom"), webError[0].error());
   }
 
+  @Test
+  void weberrorEventShouldIncludeLocation() {
+    server.setRoute("/error.js", exchange -> {
+      exchange.getResponseHeaders().add("content-type", "application/javascript");
+      exchange.sendResponseHeaders(200, 0);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("\nfunction foo() {\n  throw new Error('boom');\n}\nfoo();\n");
+      }
+    });
+    server.setRoute("/error.html", exchange -> {
+      exchange.getResponseHeaders().add("content-type", "text/html");
+      exchange.sendResponseHeaders(200, 0);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("<script src=\"/error.js\"></script>");
+      }
+    });
+    WebError[] webError = { null };
+    context.onWebError(e -> webError[0] = e);
+    page.navigate(server.PREFIX + "/error.html");
+    waitForCondition(() -> webError[0] != null);
+    com.microsoft.playwright.options.WebErrorLocation location = webError[0].location();
+    assertEquals(server.PREFIX + "/error.js", location.url);
+    assertEquals(2, location.line);
+    assertTrue(location.column > 0, "expected column > 0, got " + location.column);
+  }
+
+  @Test
+  void pageLoadEventShouldWork() {
+    Page[] loaded = { null };
+    context.onPageLoad(p -> loaded[0] = p);
+    page.navigate(server.EMPTY_PAGE);
+    waitForCondition(() -> loaded[0] != null);
+    assertEquals(page, loaded[0]);
+  }
+
+  @Test
+  void frameNavigatedEventShouldWork() {
+    Frame[] navigated = { null };
+    context.onFrameNavigated(f -> navigated[0] = f);
+    page.navigate(server.EMPTY_PAGE);
+    waitForCondition(() -> navigated[0] != null);
+    assertEquals(page.mainFrame(), navigated[0]);
+    assertEquals(server.EMPTY_PAGE, navigated[0].url());
+  }
+
+  @Test
+  void pageCloseEventShouldWork() {
+    Page newPage = context.newPage();
+    Page[] closed = { null };
+    context.onPageClose(p -> closed[0] = p);
+    newPage.close();
+    waitForCondition(() -> closed[0] != null);
+    assertEquals(newPage, closed[0]);
+  }
+
+  @Test
+  void frameAttachedEventShouldWork() {
+    page.navigate(server.EMPTY_PAGE);
+    Frame[] attached = { null };
+    context.onFrameAttached(f -> attached[0] = f);
+    page.evaluate("() => {\n" +
+      "  const iframe = document.createElement('iframe');\n" +
+      "  iframe.src = 'about:blank';\n" +
+      "  document.body.appendChild(iframe);\n" +
+      "}");
+    waitForCondition(() -> attached[0] != null);
+    assertEquals(page.mainFrame(), attached[0].parentFrame());
+  }
+
+  @Test
+  void frameDetachedEventShouldWork() {
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("() => {\n" +
+      "  const iframe = document.createElement('iframe');\n" +
+      "  iframe.id = 'x';\n" +
+      "  iframe.src = 'about:blank';\n" +
+      "  document.body.appendChild(iframe);\n" +
+      "}");
+    page.waitForSelector("iframe");
+    Frame[] detached = { null };
+    context.onFrameDetached(f -> detached[0] = f);
+    page.evaluate("() => document.getElementById('x').remove()");
+    waitForCondition(() -> detached[0] != null);
+    assertEquals(page.mainFrame(), detached[0].parentFrame());
+  }
+
 }

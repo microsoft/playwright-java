@@ -84,19 +84,4 @@ public class TestBrowserContextExposeFunction extends TestBase {
     assertEquals(asList("context", "page"), actualArgs);
   }
 
-  @Test
-  void exposeBindingHandleShouldWork() {
-    JSHandle[] target = { null };
-    context.exposeBinding("logme", (source, args) -> {
-      target[0] = (JSHandle) args[0];
-      return 17;
-    }, new BrowserContext.ExposeBindingOptions().setHandle(true));
-    Page page = context.newPage();
-    Object result = page.evaluate("async function() {\n" +
-      "  return window['logme']({ foo: 42 });\n" +
-      "}");
-    assertNotNull(target[0]);
-    assertEquals(42, target[0].evaluate("x => x.foo"));
-    assertEquals(17, result);
-  }
 }

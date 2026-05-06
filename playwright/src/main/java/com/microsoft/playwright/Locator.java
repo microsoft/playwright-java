@@ -31,6 +31,13 @@ import java.util.regex.Pattern;
 public interface Locator {
   class AriaSnapshotOptions {
     /**
+     * When {@code true}, appends each element's bounding box as {@code [box=x,y,width,height]} to the snapshot. Coordinates
+     * are relative to the viewport, in CSS pixels, as returned by <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
+     * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
+     */
+    public Boolean boxes;
+    /**
      * When specified, limits the depth of the snapshot.
      */
     public Integer depth;
@@ -47,6 +54,16 @@ public interface Locator {
      */
     public Double timeout;
 
+    /**
+     * When {@code true}, appends each element's bounding box as {@code [box=x,y,width,height]} to the snapshot. Coordinates
+     * are relative to the viewport, in CSS pixels, as returned by <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
+     * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
+     */
+    public AriaSnapshotOptions setBoxes(boolean boxes) {
+      this.boxes = boxes;
+      return this;
+    }
     /**
      * When specified, limits the depth of the snapshot.
      */
@@ -645,6 +662,46 @@ public interface Locator {
       return this;
     }
   }
+  class DropOptions {
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public Double timeout;
+
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public DropOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public DropOptions setPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public DropOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class ElementHandleOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
@@ -944,6 +1001,13 @@ public interface Locator {
      */
     public Boolean checked;
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public Object description;
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -951,8 +1015,8 @@ public interface Locator {
      */
     public Boolean disabled;
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
     /**
@@ -1005,6 +1069,26 @@ public interface Locator {
       return this;
     }
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+    /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(Pattern description) {
+      this.description = description;
+      return this;
+    }
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -1015,8 +1099,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public GetByRoleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -1119,6 +1203,20 @@ public interface Locator {
      */
     public GetByTitleOptions setExact(boolean exact) {
       this.exact = exact;
+      return this;
+    }
+  }
+  class HighlightOptions {
+    /**
+     * Additional inline CSS applied to the highlight overlay, e.g. {@code "outline: 2px dashed red"}.
+     */
+    public String style;
+
+    /**
+     * Additional inline CSS applied to the highlight overlay, e.g. {@code "outline: 2px dashed red"}.
+     */
+    public HighlightOptions setStyle(String style) {
+      this.style = style;
       return this;
     }
   }
@@ -2901,6 +2999,54 @@ public interface Locator {
    */
   void dragTo(Locator target, DragToOptions options);
   /**
+   * Simulate an external drag-and-drop of files or clipboard-like data onto this locator.
+   *
+   * <p> <strong>Details</strong>
+   *
+   * <p> Dispatches the native {@code dragenter}, {@code dragover}, and {@code drop} events at the center of the target element
+   * with a synthetic [DataTransfer] carrying the provided files and/or data entries. Works cross-browser by constructing the
+   * [DataTransfer] in the page context.
+   *
+   * <p> If the target element's {@code dragover} listener does not call {@code preventDefault()}, the target is considered to
+   * have rejected the drop: Playwright dispatches {@code dragleave} and this method throws.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Drop a file buffer onto an upload area:
+   *
+   * <p> Drop plain text and a URL together:
+   *
+   * @param payload Data to drop onto the target. Provide {@code files} (file paths or in-memory buffers), {@code data} (a mime-type →
+   * string map for clipboard-like content such as {@code text/plain}, {@code text/html}, {@code text/uri-list}), or both.
+   * @since v1.60
+   */
+  default void drop(DropPayload payload) {
+    drop(payload, null);
+  }
+  /**
+   * Simulate an external drag-and-drop of files or clipboard-like data onto this locator.
+   *
+   * <p> <strong>Details</strong>
+   *
+   * <p> Dispatches the native {@code dragenter}, {@code dragover}, and {@code drop} events at the center of the target element
+   * with a synthetic [DataTransfer] carrying the provided files and/or data entries. Works cross-browser by constructing the
+   * [DataTransfer] in the page context.
+   *
+   * <p> If the target element's {@code dragover} listener does not call {@code preventDefault()}, the target is considered to
+   * have rejected the drop: Playwright dispatches {@code dragleave} and this method throws.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Drop a file buffer onto an upload area:
+   *
+   * <p> Drop plain text and a URL together:
+   *
+   * @param payload Data to drop onto the target. Provide {@code files} (file paths or in-memory buffers), {@code data} (a mime-type →
+   * string map for clipboard-like content such as {@code text/plain}, {@code text/html}, {@code text/uri-list}), or both.
+   * @since v1.60
+   */
+  void drop(DropPayload payload, DropOptions options);
+  /**
    * Resolves given locator to the first matching DOM element. If there are no matching elements, waits for one. If multiple
    * elements match the locator, throws.
    *
@@ -3880,12 +4026,27 @@ public interface Locator {
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
+   * Hides the element highlight previously added by {@link com.microsoft.playwright.Locator#highlight Locator.highlight()}.
+   *
+   * @since v1.60
+   */
+  void hideHighlight();
+  /**
    * Highlight the corresponding element(s) on the screen. Useful for debugging, don't commit the code that uses {@link
    * com.microsoft.playwright.Locator#highlight Locator.highlight()}.
    *
    * @since v1.20
    */
-  void highlight();
+  default AutoCloseable highlight() {
+    return highlight(null);
+  }
+  /**
+   * Highlight the corresponding element(s) on the screen. Useful for debugging, don't commit the code that uses {@link
+   * com.microsoft.playwright.Locator#highlight Locator.highlight()}.
+   *
+   * @since v1.20
+   */
+  AutoCloseable highlight(HighlightOptions options);
   /**
    * Hover over the matching element.
    *

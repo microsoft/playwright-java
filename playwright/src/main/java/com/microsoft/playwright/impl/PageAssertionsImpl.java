@@ -74,6 +74,16 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   }
 
   @Override
+  public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions snapshotOptions) {
+    if (snapshotOptions == null) {
+      snapshotOptions = new MatchesAriaSnapshotOptions();
+    }
+    FrameExpectOptions options = convertType(snapshotOptions, FrameExpectOptions.class);
+    options.expectedValue = Serialization.serializeArgument(expected);
+    expectImpl("to.match.aria", options, expected, "Page expected to match Aria snapshot", "Assert \"matchesAriaSnapshot\"");
+  }
+
+  @Override
   public PageAssertions not() {
     return new PageAssertionsImpl(actualPage, !isNot);
   }

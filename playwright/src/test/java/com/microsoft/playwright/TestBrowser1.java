@@ -113,4 +113,13 @@ public class TestBrowser1 {
     assertTrue(e.getMessage().contains("The reason."), e.getMessage());
   }
 
+  @Test
+  void shouldFireContextEvent(Browser browser) {
+    BrowserContext[] contextEvent = { null };
+    browser.onContext(c -> contextEvent[0] = c);
+    BrowserContext context = browser.newContext();
+    assertEquals(context, contextEvent[0]);
+    context.close();
+  }
+
 }

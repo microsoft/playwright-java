@@ -448,7 +448,7 @@ public class TestSelectorsRole extends TestBase {
     assertTrue(e0.getMessage().contains("Role must not be empty"), e0.getMessage());
 
     PlaywrightException e1 = assertThrows(PlaywrightException.class, () -> page.querySelector("role=foo[sElected]"));
-    assertTrue(e1.getMessage().contains("Unknown attribute \"sElected\", must be one of \"checked\", \"disabled\", \"expanded\", \"include-hidden\", \"level\", \"name\", \"pressed\", \"selected\""), e1.getMessage());
+    assertTrue(e1.getMessage().contains("Unknown attribute \"sElected\", must be one of \"checked\", \"description\", \"disabled\", \"expanded\", \"include-hidden\", \"level\", \"name\", \"pressed\", \"selected\""), e1.getMessage());
 
     PlaywrightException e2 = assertThrows(PlaywrightException.class, () -> page.querySelector("role=foo[bar . qux=true]"));
     assertTrue(e2.getMessage().contains("Unknown attribute \"bar.qux\""), e2.getMessage());

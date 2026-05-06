@@ -68,23 +68,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>(eventSubscriptions(), this);
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
-  final Map<String, HarRecorder> harRecorders = new HashMap<>();
-
-  static class HarRecorder {
-    final Path path;
-    final HarContentPolicy contentPolicy;
-
-    HarRecorder(Path har, HarContentPolicy policy) {
-      path = har;
-      contentPolicy = policy;
-    }
-  }
 
   enum EventType {
     CLOSE,
     CONSOLE,
     DIALOG,
+    DOWNLOAD,
+    FRAMEATTACHED,
+    FRAMEDETACHED,
+    FRAMENAVIGATED,
     PAGE,
+    PAGECLOSE,
+    PAGELOAD,
     WEBERROR,
     REQUEST,
     REQUESTFAILED,
@@ -140,6 +135,20 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public void onDownload(Consumer<Download> handler) {
+    listeners.add(EventType.DOWNLOAD, handler);
+  }
+
+  @Override
+  public void offDownload(Consumer<Download> handler) {
+    listeners.remove(EventType.DOWNLOAD, handler);
+  }
+
+  void notifyDownload(Download download) {
+    listeners.notify(EventType.DOWNLOAD, download);
+  }
+
+  @Override
   public void onClose(Consumer<BrowserContext> handler) {
     listeners.add(EventType.CLOSE, handler);
   }
@@ -177,6 +186,76 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offPage(Consumer<Page> handler) {
     listeners.remove(EventType.PAGE, handler);
+  }
+
+  @Override
+  public void onFrameAttached(Consumer<Frame> handler) {
+    listeners.add(EventType.FRAMEATTACHED, handler);
+  }
+
+  @Override
+  public void offFrameAttached(Consumer<Frame> handler) {
+    listeners.remove(EventType.FRAMEATTACHED, handler);
+  }
+
+  void notifyFrameAttached(FrameImpl frame) {
+    listeners.notify(EventType.FRAMEATTACHED, frame);
+  }
+
+  @Override
+  public void onFrameDetached(Consumer<Frame> handler) {
+    listeners.add(EventType.FRAMEDETACHED, handler);
+  }
+
+  @Override
+  public void offFrameDetached(Consumer<Frame> handler) {
+    listeners.remove(EventType.FRAMEDETACHED, handler);
+  }
+
+  void notifyFrameDetached(FrameImpl frame) {
+    listeners.notify(EventType.FRAMEDETACHED, frame);
+  }
+
+  @Override
+  public void onFrameNavigated(Consumer<Frame> handler) {
+    listeners.add(EventType.FRAMENAVIGATED, handler);
+  }
+
+  @Override
+  public void offFrameNavigated(Consumer<Frame> handler) {
+    listeners.remove(EventType.FRAMENAVIGATED, handler);
+  }
+
+  void notifyFrameNavigated(FrameImpl frame) {
+    listeners.notify(EventType.FRAMENAVIGATED, frame);
+  }
+
+  @Override
+  public void onPageClose(Consumer<Page> handler) {
+    listeners.add(EventType.PAGECLOSE, handler);
+  }
+
+  @Override
+  public void offPageClose(Consumer<Page> handler) {
+    listeners.remove(EventType.PAGECLOSE, handler);
+  }
+
+  void notifyPageClose(PageImpl page) {
+    listeners.notify(EventType.PAGECLOSE, page);
+  }
+
+  @Override
+  public void onPageLoad(Consumer<Page> handler) {
+    listeners.add(EventType.PAGELOAD, handler);
+  }
+
+  @Override
+  public void offPageLoad(Consumer<Page> handler) {
+    listeners.remove(EventType.PAGELOAD, handler);
+  }
+
+  void notifyPageLoad(PageImpl page) {
+    listeners.notify(EventType.PAGELOAD, page);
   }
 
   @Override
@@ -284,27 +363,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
       closeReason = options.reason;
       request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
-      for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
-        JsonObject params = new JsonObject();
-        params.addProperty("harId", entry.getKey());
-        JsonObject json = sendMessage("harExport", params, NO_TIMEOUT).getAsJsonObject();
-        ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-        // Server side will compress artifact if content is attach or if file is .zip.
-        HarRecorder harParams = entry.getValue();
-        boolean isCompressed = harParams.contentPolicy == HarContentPolicy.ATTACH || harParams.path.toString().endsWith(".zip");
-        boolean needCompressed = harParams.path.toString().endsWith(".zip");
-        if (isCompressed && !needCompressed) {
-          String tmpPath = harParams.path + ".tmp";
-          artifact.saveAs(Paths.get(tmpPath));
-          JsonObject unzipParams = new JsonObject();
-          unzipParams.addProperty("zipFile", tmpPath);
-          unzipParams.addProperty("harFile", harParams.path.toString());
-          connection.localUtils.sendMessage("harUnzip", unzipParams, NO_TIMEOUT);
-        } else {
-          artifact.saveAs(harParams.path);
-        }
-        artifact.delete();
-      }
+      tracing.exportAllHars();
       JsonObject params = gson().toJsonTree(options).getAsJsonObject();
       sendMessage("close", params, NO_TIMEOUT);
     }
@@ -392,11 +451,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
-    return exposeBindingImpl(name, playwrightBinding, options);
+  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding) {
+    return exposeBindingImpl(name, playwrightBinding);
   }
 
-  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -409,16 +468,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
     JsonObject params = new JsonObject();
     params.addProperty("name", name);
-    if (options != null && options.handle != null && options.handle) {
-      params.addProperty("needsHandle", true);
-    }
     JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
     return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
   public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
-    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
+    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args));
   }
 
   @Override
@@ -515,24 +571,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (contentPolicy == null) {
       contentPolicy = Utils.convertType(options.updateContent, HarContentPolicy.class);
     }
-    if (contentPolicy == null) {
-      contentPolicy = HarContentPolicy.ATTACH;
-    }
-
-    JsonObject params = new JsonObject();
-    if (page != null) {
-      params.add("page", page.toProtocolRef());
-    }
-    JsonObject recordHarArgs = new JsonObject();
-    recordHarArgs.addProperty("zip", har.toString().endsWith(".zip"));
-    recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
-    recordHarArgs.addProperty("mode", (options.updateMode == null ? HarMode.MINIMAL : options.updateMode).name().toLowerCase());
-    addHarUrlFilter(recordHarArgs, options.url);
-
-    params.add("options", recordHarArgs);
-    JsonObject json = sendMessage("harStart", params, NO_TIMEOUT).getAsJsonObject();
-    String harId = json.get("harId").getAsString();
-    harRecorders.put(harId, new HarRecorder(har, contentPolicy));
+    tracing.recordIntoHar(page, har, options.url, contentPolicy, options.updateMode, null);
   }
 
   @Override
@@ -818,7 +857,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       } catch (PlaywrightException e) {
         page = null;
       }
-      listeners.notify(BrowserContextImpl.EventType.WEBERROR, new WebErrorImpl(page, errorStr));
+      WebErrorLocation location = null;
+      if (params.has("location")) {
+        location = gson().fromJson(params.getAsJsonObject("location"), WebErrorLocation.class);
+      }
+      listeners.notify(BrowserContextImpl.EventType.WEBERROR, new WebErrorImpl(page, errorStr, location));
       if (page != null) {
         page.listeners.notify(PageImpl.EventType.PAGEERROR, errorStr);
       }

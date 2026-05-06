@@ -134,6 +134,15 @@ public interface BrowserType {
      */
     public Boolean isLocal;
     /**
+     * When true, Playwright will not apply its default overrides to the existing default browser context. Specifically, {@code
+     * acceptDownloads} is left at the browser's setting, focus emulation is not enabled, and media emulation options (such as
+     * {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are not applied. Useful when
+     * attaching to a user's daily-driver browser where these overrides would interfere with existing browser state. New
+     * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
+     * to {@code false}.
+     */
+    public Boolean noDefaults;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -157,6 +166,18 @@ public interface BrowserType {
      */
     public ConnectOverCDPOptions setIsLocal(boolean isLocal) {
       this.isLocal = isLocal;
+      return this;
+    }
+    /**
+     * When true, Playwright will not apply its default overrides to the existing default browser context. Specifically, {@code
+     * acceptDownloads} is left at the browser's setting, focus emulation is not enabled, and media emulation options (such as
+     * {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are not applied. Useful when
+     * attaching to a user's daily-driver browser where these overrides would interfere with existing browser state. New
+     * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
+     * to {@code false}.
+     */
+    public ConnectOverCDPOptions setNoDefaults(boolean noDefaults) {
+      this.noDefaults = noDefaults;
       return this;
     }
     /**

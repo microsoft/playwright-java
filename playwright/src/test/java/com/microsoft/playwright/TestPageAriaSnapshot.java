@@ -341,4 +341,14 @@ public class TestPageAriaSnapshot {
       "  - /placeholder: Placeholder");
   }
 
+  @Test
+  void pageMatchesAriaSnapshot(Page page) {
+    page.setContent("<h1>hello</h1>");
+    assertThat(page).matchesAriaSnapshot("- heading \"hello\" [level=1]");
+    AssertionFailedError e = assertThrows(AssertionFailedError.class,
+      () -> assertThat(page).matchesAriaSnapshot("- heading \"world\"",
+        new com.microsoft.playwright.assertions.PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
+    org.junit.jupiter.api.Assertions.assertTrue(e.getMessage().contains("Page expected to match Aria snapshot"), e.getMessage());
+  }
+
 }

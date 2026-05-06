@@ -18,14 +18,21 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
+import com.microsoft.playwright.options.HarContentPolicy;
+import com.microsoft.playwright.options.HarMode;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl extends ChannelOwner implements Tracing {
@@ -34,6 +41,17 @@ class TracingImpl extends ChannelOwner implements Tracing {
   private boolean isTracing;
   private String stacksId;
   private final Set<String> additionalSources = new HashSet<>();
+  final Map<String, HarRecorder> harRecorders = new HashMap<>();
+
+  static class HarRecorder {
+    final Path path;
+    final HarContentPolicy contentPolicy;
+
+    HarRecorder(Path har, HarContentPolicy policy) {
+      this.path = har;
+      this.contentPolicy = policy;
+    }
+  }
 
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -159,6 +177,110 @@ class TracingImpl extends ChannelOwner implements Tracing {
   @Override
   public void stopChunk(StopChunkOptions options) {
     stopChunkImpl(options == null ? null : options.path);
+  }
+
+  private String currentHarId;
+
+  @Override
+  public AutoCloseable startHar(Path path, StartHarOptions options) {
+    if (currentHarId != null) {
+      throw new PlaywrightException("HAR recording has already been started");
+    }
+    if (options == null) {
+      options = new StartHarOptions();
+    }
+    boolean isZip = path.toString().endsWith(".zip");
+    HarContentPolicy contentPolicy = options.content != null
+      ? options.content
+      : (isZip ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED);
+    HarMode mode = options.mode != null ? options.mode : HarMode.FULL;
+    currentHarId = recordIntoHar(null, path, options.urlFilter, contentPolicy, mode, null);
+    return new DisposableStub(this::stopHar);
+  }
+
+  @Override
+  public void stopHar() {
+    if (currentHarId == null) {
+      throw new PlaywrightException("HAR recording has not been started");
+    }
+    String harId = currentHarId;
+    currentHarId = null;
+    exportHar(harId);
+  }
+
+  String recordIntoHar(PageImpl page, Path har, Object urlFilter, HarContentPolicy contentPolicy, HarMode mode, Path resourcesDir) {
+    if (contentPolicy == null) {
+      contentPolicy = HarContentPolicy.ATTACH;
+    }
+    if (mode == null) {
+      mode = HarMode.MINIMAL;
+    }
+
+    JsonObject params = new JsonObject();
+    if (page != null) {
+      params.add("page", page.toProtocolRef());
+    }
+    JsonObject recordHarArgs = new JsonObject();
+    recordHarArgs.addProperty("zip", har.toString().endsWith(".zip"));
+    recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
+    recordHarArgs.addProperty("mode", mode.name().toLowerCase());
+    addHarUrlFilter(recordHarArgs, urlFilter);
+    if (resourcesDir != null) {
+      recordHarArgs.addProperty("resourcesDir", resourcesDir.toString());
+    }
+    if (!har.toString().endsWith(".zip")) {
+      recordHarArgs.addProperty("harPath", har.toString());
+    }
+
+    params.add("options", recordHarArgs);
+    JsonObject json = sendMessage("harStart", params, NO_TIMEOUT).getAsJsonObject();
+    String harId = json.get("harId").getAsString();
+    harRecorders.put(harId, new HarRecorder(har, contentPolicy));
+    return harId;
+  }
+
+  void exportHar(String harId) {
+    HarRecorder harParams = harRecorders.remove(harId);
+    if (harParams == null) {
+      return;
+    }
+    boolean isLocal = !connection.isRemote;
+    boolean isZip = harParams.path.toString().endsWith(".zip");
+
+    JsonObject params = new JsonObject();
+    params.addProperty("harId", harId);
+    if (isLocal) {
+      params.addProperty("mode", "entries");
+      JsonObject json = sendMessage("harExport", params, NO_TIMEOUT).getAsJsonObject();
+      if (!isZip) {
+        return;
+      }
+      JsonArray entries = json.getAsJsonArray("entries");
+      connection.localUtils.zip(harParams.path, entries, null, false, false, java.util.Collections.emptyList());
+      return;
+    }
+
+    params.addProperty("mode", "archive");
+    JsonObject json = sendMessage("harExport", params, NO_TIMEOUT).getAsJsonObject();
+    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
+    if (isZip) {
+      artifact.saveAs(harParams.path);
+      artifact.delete();
+      return;
+    }
+    String tmpPath = harParams.path + ".tmp";
+    artifact.saveAs(Paths.get(tmpPath));
+    JsonObject unzipParams = new JsonObject();
+    unzipParams.addProperty("zipFile", tmpPath);
+    unzipParams.addProperty("harFile", harParams.path.toString());
+    connection.localUtils.sendMessage("harUnzip", unzipParams, NO_TIMEOUT);
+    artifact.delete();
+  }
+
+  void exportAllHars() {
+    for (String harId : new ArrayList<>(harRecorders.keySet())) {
+      exportHar(harId);
+    }
   }
 
   void setTracesDir(Path tracesDir) {

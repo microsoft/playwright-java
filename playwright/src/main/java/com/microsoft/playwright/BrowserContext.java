@@ -115,6 +115,48 @@ public interface BrowserContext extends AutoCloseable {
   void offDialog(Consumer<Dialog> handler);
 
   /**
+   * Emitted when attachment download started in any page belonging to this context. User can access basic file operations on
+   * downloaded content via the passed {@code Download} instance. See also {@link com.microsoft.playwright.Page#onDownload
+   * Page.onDownload()} to receive events about a specific page.
+   */
+  void onDownload(Consumer<Download> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDownload onDownload(handler)}.
+   */
+  void offDownload(Consumer<Download> handler);
+
+  /**
+   * Emitted when a frame is attached in any page belonging to this context. See also {@link
+   * com.microsoft.playwright.Page#onFrameAttached Page.onFrameAttached()} to receive events about a specific page.
+   */
+  void onFrameAttached(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameAttached onFrameAttached(handler)}.
+   */
+  void offFrameAttached(Consumer<Frame> handler);
+
+  /**
+   * Emitted when a frame is detached in any page belonging to this context. See also {@link
+   * com.microsoft.playwright.Page#onFrameDetached Page.onFrameDetached()} to receive events about a specific page.
+   */
+  void onFrameDetached(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameDetached onFrameDetached(handler)}.
+   */
+  void offFrameDetached(Consumer<Frame> handler);
+
+  /**
+   * Emitted when a frame is navigated to a new url in any page belonging to this context. See also {@link
+   * com.microsoft.playwright.Page#onFrameNavigated Page.onFrameNavigated()} to receive events about navigations in a
+   * specific page.
+   */
+  void onFrameNavigated(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameNavigated onFrameNavigated(handler)}.
+   */
+  void offFrameNavigated(Consumer<Frame> handler);
+
+  /**
    * The event is emitted when a new Page is created in the BrowserContext. The page may still be loading. The event will
    * also fire for popup pages. See also {@link com.microsoft.playwright.Page#onPopup Page.onPopup()} to receive events about
    * popups relevant to a specific page.
@@ -140,6 +182,27 @@ public interface BrowserContext extends AutoCloseable {
    * Removes handler that was previously added with {@link #onPage onPage(handler)}.
    */
   void offPage(Consumer<Page> handler);
+
+  /**
+   * Emitted when a page in this context is closed. See also {@link com.microsoft.playwright.Page#onClose Page.onClose()} to
+   * receive events about a specific page.
+   */
+  void onPageClose(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onPageClose onPageClose(handler)}.
+   */
+  void offPageClose(Consumer<Page> handler);
+
+  /**
+   * Emitted when the JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/Events/load">{@code load}</a> event is
+   * dispatched in any page belonging to this context. See also {@link com.microsoft.playwright.Page#onLoad Page.onLoad()} to
+   * receive events about a specific page.
+   */
+  void onPageLoad(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onPageLoad onPageLoad(handler)}.
+   */
+  void offPageLoad(Consumer<Page> handler);
 
   /**
    * Emitted when exception is unhandled in any of the pages in this context. To listen for errors from a particular page,
@@ -268,20 +331,6 @@ public interface BrowserContext extends AutoCloseable {
      */
     public CloseOptions setReason(String reason) {
       this.reason = reason;
-      return this;
-    }
-  }
-  class ExposeBindingOptions {
-    /**
-     * @deprecated This option will be removed in the future.
-     */
-    public Boolean handle;
-
-    /**
-     * @deprecated This option will be removed in the future.
-     */
-    public ExposeBindingOptions setHandle(boolean handle) {
-      this.handle = handle;
       return this;
     }
   }
@@ -736,54 +785,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  default AutoCloseable exposeBinding(String name, BindingCallback callback) {
-    return exposeBinding(name, callback, null);
-  }
-  /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
-   * When called, the function executes {@code callback} and returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
-   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
-   * awaited.
-   *
-   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext:
-   * BrowserContext, page: Page, frame: Frame }}.
-   *
-   * <p> See {@link com.microsoft.playwright.Page#exposeBinding Page.exposeBinding()} for page-only version.
-   *
-   * <p> <strong>Usage</strong>
-   *
-   * <p> An example of exposing page URL to all frames in all pages in the context:
-   * <pre>{@code
-   * import com.microsoft.playwright.*;
-   *
-   * public class Example {
-   *   public static void main(String[] args) {
-   *     try (Playwright playwright = Playwright.create()) {
-   *       BrowserType webkit = playwright.webkit();
-   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
-   *       BrowserContext context = browser.newContext();
-   *       context.exposeBinding("pageURL", (source, args) -> source.page().url());
-   *       Page page = context.newPage();
-   *       page.setContent("<script>\n" +
-   *         "  async function onClick() {\n" +
-   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
-   *         "  }\n" +
-   *         "</script>\n" +
-   *         "<button onclick=\"onClick()\">Click me</button>\n" +
-   *         "<div></div>");
-   *       page.getByRole(AriaRole.BUTTON).click();
-   *     }
-   *   }
-   * }
-   * }</pre>
-   *
-   * @param name Name of the function on the window object.
-   * @param callback Callback function that will be called in the Playwright's context.
-   * @since v1.8
-   */
-  AutoCloseable exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
+  AutoCloseable exposeBinding(String name, BindingCallback callback);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
    * When called, the function executes {@code callback} and returns a <a

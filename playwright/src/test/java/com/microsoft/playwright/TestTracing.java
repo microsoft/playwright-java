@@ -158,6 +158,7 @@ public class TestTracing extends TestBase {
         Pattern.compile("Set content"),
         Pattern.compile("Click")
       });
+      traceViewer.selectAction("Click");
       traceViewer.showSourceTab();
       assertThat(traceViewer.stackFrames()).containsText(new Pattern[] {
         Pattern.compile("myMethodInner"),
@@ -378,5 +379,16 @@ public class TestTracing extends TestBase {
         Pattern.compile("Wait for load state \"load\""),
       });
     });
+  }
+
+  @Test
+  public void shouldRecordHarWithStartHarStopHar(@TempDir Path tempDir) throws Exception {
+    Path harPath = tempDir.resolve("tracing.har");
+    context.tracing().startHar(harPath, new Tracing.StartHarOptions().setMode(com.microsoft.playwright.options.HarMode.MINIMAL));
+    page.navigate(server.PREFIX + "/one-style.html");
+    context.tracing().stopHar();
+    String content = new String(Files.readAllBytes(harPath));
+    assertTrue(content.contains("\"log\""), content);
+    assertTrue(content.contains("/one-style.html"), content);
   }
 }

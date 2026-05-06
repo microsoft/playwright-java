@@ -868,6 +868,13 @@ public interface Frame {
      */
     public Boolean checked;
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public Object description;
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -875,8 +882,8 @@ public interface Frame {
      */
     public Boolean disabled;
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
     /**
@@ -929,6 +936,26 @@ public interface Frame {
       return this;
     }
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+    /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(Pattern description) {
+      this.description = description;
+      return this;
+    }
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -939,8 +966,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public GetByRoleOptions setExact(boolean exact) {
       this.exact = exact;

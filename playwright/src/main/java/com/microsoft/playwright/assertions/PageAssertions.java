@@ -37,6 +37,20 @@ import java.util.regex.Pattern;
  * }</pre>
  */
 public interface PageAssertions {
+  class MatchesAriaSnapshotOptions {
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public MatchesAriaSnapshotOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class HasTitleOptions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -91,6 +105,40 @@ public interface PageAssertions {
    * @since v1.20
    */
   PageAssertions not();
+  /**
+   * Asserts that the page body matches the given <a href="https://playwright.dev/java/docs/aria-snapshots">accessibility
+   * snapshot</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.navigate("https://demo.playwright.dev/todomvc/");
+   * assertThat(page).matchesAriaSnapshot("""
+   *   - heading "todos"
+   *   - textbox "What needs to be done?"
+   * """);
+   * }</pre>
+   *
+   * @since v1.60
+   */
+  default void matchesAriaSnapshot(String expected) {
+    matchesAriaSnapshot(expected, null);
+  }
+  /**
+   * Asserts that the page body matches the given <a href="https://playwright.dev/java/docs/aria-snapshots">accessibility
+   * snapshot</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.navigate("https://demo.playwright.dev/todomvc/");
+   * assertThat(page).matchesAriaSnapshot("""
+   *   - heading "todos"
+   *   - textbox "What needs to be done?"
+   * """);
+   * }</pre>
+   *
+   * @since v1.60
+   */
+  void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
   /**
    * Ensures the page has the given title.
    *

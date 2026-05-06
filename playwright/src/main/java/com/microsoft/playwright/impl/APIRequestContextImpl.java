@@ -47,6 +47,11 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
+  public com.microsoft.playwright.Tracing tracing() {
+    return tracing;
+  }
+
+  @Override
   public APIResponse delete(String url, RequestOptions options) {
     return fetch(url, ensureOptions(options, "DELETE"));
   }

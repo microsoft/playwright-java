@@ -36,4 +36,18 @@ public class TestLocatorHighlight extends TestBase {
     BoundingBox box2 = page.locator("x-pw-highlight").boundingBox();
     assertEquals(new Gson().toJson(box2), new Gson().toJson(box1));
   }
+
+  @Test
+  void highlightAndHideHighlightShouldNotThrow() {
+    page.setContent("<input type='text' />");
+    AutoCloseable disposable = page.locator("input").highlight(new Locator.HighlightOptions().setStyle("outline: 2px dashed red"));
+    try {
+      disposable.close();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    page.locator("input").highlight();
+    page.locator("input").hideHighlight();
+    page.hideHighlight();
+  }
 }

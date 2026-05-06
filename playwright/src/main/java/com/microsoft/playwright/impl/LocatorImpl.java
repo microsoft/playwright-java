@@ -371,8 +371,20 @@ class LocatorImpl implements Locator {
   }
 
   @Override
-  public void highlight() {
-    frame.highlightImpl(selector);
+  public void drop(DropPayload payload, DropOptions options) {
+    frame.dropImpl(selector, payload, options);
+  }
+
+  @Override
+  public AutoCloseable highlight(HighlightOptions options) {
+    String style = options == null ? null : options.style;
+    frame.highlightImpl(selector, style);
+    return new DisposableStub(this::hideHighlight);
+  }
+
+  @Override
+  public void hideHighlight() {
+    frame.hideHighlightImpl(selector);
   }
 
   @Override
