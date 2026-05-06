@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 
 /**
  * {@code WebError} class represents an unhandled exception thrown in the page. It is dispatched via the {@link
@@ -43,5 +44,11 @@ public interface WebError {
    * @since v1.38
    */
   String error();
+  /**
+   *
+   *
+   * @since v1.60
+   */
+  WebErrorLocation location();
 }
 

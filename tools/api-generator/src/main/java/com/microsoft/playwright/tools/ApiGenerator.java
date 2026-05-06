@@ -976,7 +976,7 @@ class Interface extends TypeDefinition {
     if (methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger", "Screencast").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger", "Screencast", "WebError").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if ("Download".equals(jsonName)) {
@@ -988,7 +988,7 @@ class Interface extends TypeDefinition {
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {
@@ -1004,7 +1004,7 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }
-    if (asList("Page", "Frame", "FrameLocator", "Locator", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions").contains(jsonName)) {
+    if (asList("Page", "Frame", "FrameLocator", "Locator", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions", "Tracing").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
     }
     if ("CDPSession".equals(jsonName)) {
@@ -1012,6 +1012,7 @@ class Interface extends TypeDefinition {
     }
     if ("LocatorAssertions".equals(jsonName)) {
       output.add("import com.microsoft.playwright.options.AriaRole;");
+      output.add("import com.microsoft.playwright.options.PseudoElement;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {
       output.add("import com.microsoft.playwright.APIResponse;");
@@ -1109,6 +1110,10 @@ class CustomClass extends TypeDefinition {
       output.add("import java.nio.file.Path;");
       output.add("");
     }
+    if (asList("DropPayload").contains(name)) {
+      output.add("import java.util.Map;");
+      output.add("");
+    }
     String access = (parent.typeScope() instanceof CustomClass) || topLevelTypes().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
@@ -1185,12 +1190,30 @@ public class ApiGenerator {
     filterOtherLangs(api, new Stack<>());
 
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
+    File optionsDir = new File(dir, "options");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
-    generate(api, dir, "com.microsoft.playwright", isAssertion().negate());
+    Map<String, TypeDefinition> sharedTypes = new HashMap<>();
+    generate(api, dir, "com.microsoft.playwright", isAssertion().negate(), sharedTypes);
 
     File assertionsDir = new File(cwd,"playwright/src/main/java/com/microsoft/playwright/assertions");
     System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
-    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion().and(isSoftAssertion().negate()));
+    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion().and(isSoftAssertion().negate()), sharedTypes);
+
+    writeTopLevelTypes(sharedTypes, optionsDir, "com.microsoft.playwright");
+  }
+
+  private void writeTopLevelTypes(Map<String, TypeDefinition> topLevelTypes, File optionsDir, String packageName) throws IOException {
+    for (TypeDefinition e : topLevelTypes.values()) {
+      List<String> lines = new ArrayList<>();
+      lines.add(Interface.header);
+      lines.add("package " + packageName + ".options;");
+      lines.add("");
+      e.writeTo(lines, "");
+      String text = String.join("\n", lines);
+      try (FileWriter writer = new FileWriter(new File(optionsDir, e.name() + ".java"))) {
+        writer.write(text);
+      }
+    }
   }
 
   private static Predicate<String> isAssertion() {
@@ -1206,8 +1229,7 @@ public class ApiGenerator {
     return className -> className.contains("SoftAssertions");
   }
 
-  private void generate(JsonArray api, File dir, String packageName, Predicate<String> classFilter) throws IOException {
-    Map<String, TypeDefinition> topLevelTypes = new HashMap<>();
+  private void generate(JsonArray api, File dir, String packageName, Predicate<String> classFilter, Map<String, TypeDefinition> topLevelTypes) throws IOException {
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       // We write this one manually.
@@ -1233,23 +1255,6 @@ public class ApiGenerator {
       }
     }
 
-    // No options under assertions.
-    if (packageName.contains(".assertions")) {
-      return;
-    }
-
-    dir = new File(dir, "options");
-    for (TypeDefinition e : topLevelTypes.values()) {
-      List<String> lines = new ArrayList<>();
-      lines.add(Interface.header);
-      lines.add("package " + packageName + ".options;");
-      lines.add("");
-      e.writeTo(lines, "");
-      String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(dir, e.name() + ".java"))) {
-        writer.write(text);
-      }
-    }
   }
 
   private static void filterOtherLangs(JsonElement json, Stack<String> path) {

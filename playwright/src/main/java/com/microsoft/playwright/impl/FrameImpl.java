@@ -1051,10 +1051,56 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return result.get("value").getAsInt();
   }
 
-  void highlightImpl(String selector) {
+  void dropImpl(String selector, DropPayload payload, com.microsoft.playwright.Locator.DropOptions options) {
+    if (options == null) {
+      options = new com.microsoft.playwright.Locator.DropOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("strict", true);
+    if (payload != null) {
+      if (payload.files != null) {
+        if (payload.files instanceof Path) {
+          addFilePathUploadParams(new Path[] { (Path) payload.files }, params, page.context());
+        } else if (payload.files instanceof Path[]) {
+          addFilePathUploadParams((Path[]) payload.files, params, page.context());
+        } else if (payload.files instanceof com.microsoft.playwright.options.FilePayload) {
+          checkFilePayloadSize(new com.microsoft.playwright.options.FilePayload[] { (com.microsoft.playwright.options.FilePayload) payload.files });
+          params.add("payloads", toJsonArray(new com.microsoft.playwright.options.FilePayload[] { (com.microsoft.playwright.options.FilePayload) payload.files }));
+        } else if (payload.files instanceof com.microsoft.playwright.options.FilePayload[]) {
+          checkFilePayloadSize((com.microsoft.playwright.options.FilePayload[]) payload.files);
+          params.add("payloads", toJsonArray((com.microsoft.playwright.options.FilePayload[]) payload.files));
+        } else {
+          throw new com.microsoft.playwright.PlaywrightException("Unsupported files type: " + payload.files.getClass());
+        }
+      }
+      if (payload.data != null) {
+        com.google.gson.JsonArray dataArray = new com.google.gson.JsonArray();
+        for (java.util.Map.Entry<String, String> entry : payload.data.entrySet()) {
+          JsonObject e = new JsonObject();
+          e.addProperty("mimeType", entry.getKey());
+          e.addProperty("value", entry.getValue());
+          dataArray.add(e);
+        }
+        params.add("data", dataArray);
+      }
+    }
+    sendMessage("drop", params, timeout(options.timeout));
+  }
+
+  void highlightImpl(String selector, String style) {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
+    if (style != null) {
+      params.addProperty("style", style);
+    }
     sendMessage("highlight", params, NO_TIMEOUT);
+  }
+
+  void hideHighlightImpl(String selector) {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("hideHighlight", params, NO_TIMEOUT);
   }
 
   protected void handleEvent(String event, JsonObject params) {
@@ -1066,6 +1112,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
         if (parentFrame == null && page != null) {
           if (state == LOAD) {
             page.listeners.notify(PageImpl.EventType.LOAD, page);
+            page.browserContext.notifyPageLoad(page);
           } else if (state == DOMCONTENTLOADED) {
             page.listeners.notify(PageImpl.EventType.DOMCONTENTLOADED, page);
           }

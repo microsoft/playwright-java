@@ -43,11 +43,22 @@ class BrowserImpl extends ChannelOwner implements Browser {
   String closeReason;
 
   enum EventType {
+    CONTEXT,
     DISCONNECTED,
   }
 
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+  }
+
+  @Override
+  public void onContext(Consumer<BrowserContext> handler) {
+    listeners.add(EventType.CONTEXT, handler);
+  }
+
+  @Override
+  public void offContext(Consumer<BrowserContext> handler) {
+    listeners.remove(EventType.CONTEXT, handler);
   }
 
   @Override
@@ -302,6 +313,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.tracing().setTracesDir(tracePath);
       browserType.playwright.selectors.contextsForSelectors.add(context);
     }
+    listeners.notify(EventType.CONTEXT, context);
   }
 
   private void didClose() {

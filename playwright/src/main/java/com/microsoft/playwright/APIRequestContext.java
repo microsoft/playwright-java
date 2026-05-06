@@ -23,24 +23,23 @@ import java.nio.file.Path;
  * This API is used for the Web API testing. You can use it to trigger API endpoints, configure micro-services, prepare
  * environment or the service to your e2e test.
  *
- * <p> Each Playwright browser context has associated with it {@code APIRequestContext} instance which shares cookie storage
- * with the browser context and can be accessed via {@link com.microsoft.playwright.BrowserContext#request
- * BrowserContext.request()} or {@link com.microsoft.playwright.Page#request Page.request()}. It is also possible to create
- * a new APIRequestContext instance manually by calling {@link com.microsoft.playwright.APIRequest#newContext
- * APIRequest.newContext()}.
+ * <p> Each Playwright browser context has an associated {@code APIRequestContext}, accessible via {@link
+ * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} or {@link
+ * com.microsoft.playwright.Page#request Page.request()} (these return the
+ *
+ * <p> **same instance** — {@code page.request} is a shortcut for {@code page.context().request}). You can also create a
+ * standalone, isolated instance with {@link com.microsoft.playwright.APIRequest#newContext APIRequest.newContext()}.
  *
  * <p> <strong>Cookie management</strong>
  *
- * <p> {@code APIRequestContext} returned by {@link com.microsoft.playwright.BrowserContext#request BrowserContext.request()}
- * and {@link com.microsoft.playwright.Page#request Page.request()} shares cookie storage with the corresponding {@code
- * BrowserContext}. Each API request will have {@code Cookie} header populated with the values from the browser context. If
- * the API response contains {@code Set-Cookie} header it will automatically update {@code BrowserContext} cookies and
- * requests made from the page will pick them up. This means that if you log in using this API, your e2e test will be
- * logged in and vice versa.
+ * <p> The {@code APIRequestContext} returned by {@link com.microsoft.playwright.BrowserContext#request
+ * BrowserContext.request()} and
  *
- * <p> If you want API requests to not interfere with the browser cookies you should create a new {@code APIRequestContext} by
- * calling {@link com.microsoft.playwright.APIRequest#newContext APIRequest.newContext()}. Such {@code APIRequestContext}
- * object will have its own isolated cookie storage.
+ * <p> {@link com.microsoft.playwright.Page#request Page.request()} uses the same cookie jar as its {@code BrowserContext}:
+ *
+ * <p> If you want API requests that do **not** share cookies with the browser, create an isolated context via {@link
+ * com.microsoft.playwright.APIRequest#newContext APIRequest.newContext()}. Such {@code APIRequestContext} object will have
+ * its own isolated cookie storage.
  */
 public interface APIRequestContext {
   class DisposeOptions {
@@ -484,5 +483,11 @@ public interface APIRequestContext {
    * @since v1.16
    */
   String storageState(StorageStateOptions options);
+  /**
+   *
+   *
+   * @since v1.60
+   */
+  Tracing tracing();
 }
 

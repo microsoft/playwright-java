@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 /**
  * API for collecting and saving Playwright traces. Playwright traces can be opened in <a
@@ -162,6 +163,59 @@ public interface Tracing {
      */
     public StartChunkOptions setTitle(String title) {
       this.title = title;
+      return this;
+    }
+  }
+  class StartHarOptions {
+    /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
+     * is specified, content is stored inline the HAR file as per HAR specification. Defaults to {@code attach} for {@code
+     * .zip} output files and to {@code embed} for all other file extensions.
+     */
+    public HarContentPolicy content;
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
+     */
+    public HarMode mode;
+    /**
+     * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
+     */
+    public Object urlFilter;
+
+    /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
+     * is specified, content is stored inline the HAR file as per HAR specification. Defaults to {@code attach} for {@code
+     * .zip} output files and to {@code embed} for all other file extensions.
+     */
+    public StartHarOptions setContent(HarContentPolicy content) {
+      this.content = content;
+      return this;
+    }
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
+     */
+    public StartHarOptions setMode(HarMode mode) {
+      this.mode = mode;
+      return this;
+    }
+    /**
+     * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
+     */
+    public StartHarOptions setUrlFilter(String urlFilter) {
+      this.urlFilter = urlFilter;
+      return this;
+    }
+    /**
+     * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
+     */
+    public StartHarOptions setUrlFilter(Pattern urlFilter) {
+      this.urlFilter = urlFilter;
       return this;
     }
   }
@@ -329,6 +383,48 @@ public interface Tracing {
    */
   void startChunk(StartChunkOptions options);
   /**
+   * Start recording a HAR (HTTP Archive) of network activity in this context. The HAR file is written to disk when {@link
+   * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is
+   * disposed.
+   *
+   * <p> Only one HAR recording can be active at a time per {@code BrowserContext}.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * context.tracing().startHar(Paths.get("trace.har"));
+   * Page page = context.newPage();
+   * page.navigate("https://playwright.dev");
+   * context.tracing().stopHar();
+   * }</pre>
+   *
+   * @param path Path on the filesystem to write the HAR file to. If the file name ends with {@code .zip}, the HAR is saved as a zip
+   * archive with response bodies attached as separate files.
+   * @since v1.60
+   */
+  default AutoCloseable startHar(Path path) {
+    return startHar(path, null);
+  }
+  /**
+   * Start recording a HAR (HTTP Archive) of network activity in this context. The HAR file is written to disk when {@link
+   * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is
+   * disposed.
+   *
+   * <p> Only one HAR recording can be active at a time per {@code BrowserContext}.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * context.tracing().startHar(Paths.get("trace.har"));
+   * Page page = context.newPage();
+   * page.navigate("https://playwright.dev");
+   * context.tracing().stopHar();
+   * }</pre>
+   *
+   * @param path Path on the filesystem to write the HAR file to. If the file name ends with {@code .zip}, the HAR is saved as a zip
+   * archive with response bodies attached as separate files.
+   * @since v1.60
+   */
+  AutoCloseable startHar(Path path, StartHarOptions options);
+  /**
    * <strong>NOTE:</strong> Use {@code test.step} instead when available.
    *
    * <p> Creates a new group within the trace, assigning any subsequent API calls to this group, until {@link
@@ -408,5 +504,12 @@ public interface Tracing {
    * @since v1.15
    */
   void stopChunk(StopChunkOptions options);
+  /**
+   * Stop HAR recording and save the HAR file to the path given to {@link com.microsoft.playwright.Tracing#startHar
+   * Tracing.startHar()}.
+   *
+   * @since v1.60
+   */
+  void stopHar();
 }
 

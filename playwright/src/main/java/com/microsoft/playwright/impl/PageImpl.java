@@ -41,7 +41,7 @@ import static java.util.Arrays.asList;
 
 
 public class PageImpl extends ChannelOwner implements Page {
-  private final BrowserContextImpl browserContext;
+  final BrowserContextImpl browserContext;
   private final FrameImpl mainFrame;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
@@ -171,6 +171,7 @@ public class PageImpl extends ChannelOwner implements Page {
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
       DownloadImpl download = new DownloadImpl(this, artifact, params);
       listeners.notify(EventType.DOWNLOAD, download);
+      browserContext.notifyDownload(download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
       ElementHandleImpl elementHandle = connection.getExistingObject(guid);
@@ -201,6 +202,7 @@ public class PageImpl extends ChannelOwner implements Page {
         frame.parentFrame.childFrames.add(frame);
       }
       listeners.notify(EventType.FRAMEATTACHED, frame);
+      browserContext.notifyFrameAttached(frame);
     } else if ("frameDetached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);
@@ -210,6 +212,7 @@ public class PageImpl extends ChannelOwner implements Page {
         frame.parentFrame.childFrames.remove(frame);
       }
       listeners.notify(EventType.FRAMEDETACHED, frame);
+      browserContext.notifyFrameDetached(frame);
     } else if ("locatorHandlerTriggered".equals(event)) {
       int uid = params.get("uid").getAsInt();
       onLocatorHandlerTriggered(uid);
@@ -245,6 +248,7 @@ public class PageImpl extends ChannelOwner implements Page {
     isClosed = true;
     browserContext.pages.remove(this);
     listeners.notify(EventType.CLOSE, this);
+    browserContext.notifyPageClose(this);
   }
 
   private String effectiveCloseReason() {
@@ -753,11 +757,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
-    return exposeBindingImpl(name, playwrightBinding, options);
+  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding) {
+    return exposeBindingImpl(name, playwrightBinding);
   }
 
-  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
+  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -768,16 +772,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
     JsonObject params = new JsonObject();
     params.addProperty("name", name);
-    if (options != null && options.handle != null && options.handle) {
-      params.addProperty("needsHandle", true);
-    }
     JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
     return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
   }
 
   @Override
   public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
-    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null);
+    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args));
   }
 
   @Override
@@ -1058,6 +1059,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Frame mainFrame() {
     return mainFrame;
+  }
+
+  @Override
+  public void hideHighlight() {
+    sendMessage("hideHighlight", new JsonObject(), NO_TIMEOUT);
   }
 
   @Override
@@ -1457,6 +1463,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   void frameNavigated(FrameImpl frame) {
     listeners.notify(EventType.FRAMENAVIGATED, frame);
+    browserContext.notifyFrameNavigated(frame);
   }
 
   private class WaitableFrameDetach extends WaitableEvent<EventType, Frame> {

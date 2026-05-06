@@ -86,6 +86,10 @@ public class LocatorUtils {
         String name = escapeForAttributeSelector(options.name, options.exact != null && options.exact);
         addAttr(result, "name", name);
       }
+      if (options.description != null) {
+        String description = escapeForAttributeSelector(options.description, options.exact != null && options.exact);
+        addAttr(result, "description", description);
+      }
       if (options.pressed != null)
         addAttr(result, "pressed", options.pressed.toString());
     }

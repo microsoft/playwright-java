@@ -17,14 +17,17 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.WebError;
+import com.microsoft.playwright.options.WebErrorLocation;
 
 public class WebErrorImpl implements WebError {
   private final PageImpl page;
   private final String error;
+  private final WebErrorLocation location;
 
-  WebErrorImpl(PageImpl page, String error) {
+  WebErrorImpl(PageImpl page, String error, WebErrorLocation location) {
     this.page = page;
     this.error = error;
+    this.location = location;
   }
 
   @Override
@@ -35,5 +38,10 @@ public class WebErrorImpl implements WebError {
   @Override
   public String error() {
     return error;
+  }
+
+  @Override
+  public WebErrorLocation location() {
+    return location;
   }
 }

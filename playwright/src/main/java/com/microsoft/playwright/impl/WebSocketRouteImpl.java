@@ -1,11 +1,14 @@
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.WebSocketFrame;
 import com.microsoft.playwright.WebSocketRoute;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -65,6 +68,11 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     public String url() {
       return initializer.get("url").getAsString();
     }
+
+    @Override
+    public List<String> protocols() {
+      return readProtocols();
+    }
   };
 
   WebSocketRouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -121,6 +129,22 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
   @Override
   public String url() {
     return initializer.get("url").getAsString();
+  }
+
+  @Override
+  public List<String> protocols() {
+    return readProtocols();
+  }
+
+  private List<String> readProtocols() {
+    List<String> result = new ArrayList<>();
+    if (!initializer.has("protocols")) {
+      return result;
+    }
+    for (JsonElement element : initializer.getAsJsonArray("protocols")) {
+      result.add(element.getAsString());
+    }
+    return result;
   }
 
   void afterHandle() {

@@ -112,8 +112,12 @@ class FrameExpectOptions {
 }
 
 class FrameExpectResult {
+  static class Received {
+    SerializedValue value;
+    String ariaSnapshot;
+  }
   boolean matches;
-  SerializedValue received;
+  Received received;
   String errorMessage;
   List<String> log;
 }

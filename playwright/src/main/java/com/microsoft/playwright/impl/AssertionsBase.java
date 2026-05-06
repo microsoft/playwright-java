@@ -57,7 +57,14 @@ abstract class AssertionsBase {
     }
     FrameExpectResult result = doExpect(expression, expectOptions, title);
     if (result.matches == isNot) {
-      Object actual = result.received == null ? null : Serialization.deserialize(result.received);
+      Object actual;
+      if (result.received == null) {
+        actual = null;
+      } else if (result.received.value != null) {
+        actual = Serialization.deserialize(result.received.value);
+      } else {
+        actual = result.received.ariaSnapshot;
+      }
       String log = (result.log == null) ? "" : String.join("\n", result.log);
       if (!log.isEmpty()) {
         log = "\nCall log:\n" + log;

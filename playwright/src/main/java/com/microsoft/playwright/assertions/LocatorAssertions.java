@@ -19,6 +19,7 @@ package com.microsoft.playwright.assertions;
 import java.util.*;
 import java.util.regex.Pattern;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.PseudoElement;
 
 /**
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code
@@ -428,10 +429,21 @@ public interface LocatorAssertions {
   }
   class HasCSSOptions {
     /**
+     * Pseudo-element to read computed styles from.
+     */
+    public PseudoElement pseudo;
+    /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
+    /**
+     * Pseudo-element to read computed styles from.
+     */
+    public HasCSSOptions setPseudo(PseudoElement pseudo) {
+      this.pseudo = pseudo;
+      return this;
+    }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */

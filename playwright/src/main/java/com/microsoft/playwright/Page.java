@@ -1058,20 +1058,6 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
-  class ExposeBindingOptions {
-    /**
-     * @deprecated This option will be removed in the future.
-     */
-    public Boolean handle;
-
-    /**
-     * @deprecated This option will be removed in the future.
-     */
-    public ExposeBindingOptions setHandle(boolean handle) {
-      this.handle = handle;
-      return this;
-    }
-  }
   class FillOptions {
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1251,6 +1237,13 @@ public interface Page extends AutoCloseable {
      */
     public Boolean checked;
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public Object description;
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -1258,8 +1251,8 @@ public interface Page extends AutoCloseable {
      */
     public Boolean disabled;
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
     /**
@@ -1312,6 +1305,26 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+    /**
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
+     * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+     */
+    public GetByRoleOptions setDescription(Pattern description) {
+      this.description = description;
+      return this;
+    }
+    /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
@@ -1322,8 +1335,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
-     * is a regular expression. Note that exact match still trims whitespace.
+     * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
+     * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
     public GetByRoleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -2982,6 +2995,13 @@ public interface Page extends AutoCloseable {
   }
   class AriaSnapshotOptions {
     /**
+     * When {@code true}, appends each element's bounding box as {@code [box=x,y,width,height]} to the snapshot. Coordinates
+     * are relative to the viewport, in CSS pixels, as returned by <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
+     * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
+     */
+    public Boolean boxes;
+    /**
      * When specified, limits the depth of the snapshot.
      */
     public Integer depth;
@@ -2998,6 +3018,16 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When {@code true}, appends each element's bounding box as {@code [box=x,y,width,height]} to the snapshot. Coordinates
+     * are relative to the viewport, in CSS pixels, as returned by <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
+     * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
+     */
+    public AriaSnapshotOptions setBoxes(boolean boxes) {
+      this.boxes = boxes;
+      return this;
+    }
     /**
      * When specified, limits the depth of the snapshot.
      */
@@ -4676,57 +4706,7 @@ public interface Page extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
    */
-  default AutoCloseable exposeBinding(String name, BindingCallback callback) {
-    return exposeBinding(name, callback, null);
-  }
-  /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called,
-   * the function executes {@code callback} and returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
-   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
-   * awaited.
-   *
-   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext:
-   * BrowserContext, page: Page, frame: Frame }}.
-   *
-   * <p> See {@link com.microsoft.playwright.BrowserContext#exposeBinding BrowserContext.exposeBinding()} for the context-wide
-   * version.
-   *
-   * <p> <strong>NOTE:</strong> Functions installed via {@link com.microsoft.playwright.Page#exposeBinding Page.exposeBinding()} survive navigations.
-   *
-   * <p> <strong>Usage</strong>
-   *
-   * <p> An example of exposing page URL to all frames in a page:
-   * <pre>{@code
-   * import com.microsoft.playwright.*;
-   *
-   * public class Example {
-   *   public static void main(String[] args) {
-   *     try (Playwright playwright = Playwright.create()) {
-   *       BrowserType webkit = playwright.webkit();
-   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
-   *       BrowserContext context = browser.newContext();
-   *       Page page = context.newPage();
-   *       page.exposeBinding("pageURL", (source, args) -> source.page().url());
-   *       page.setContent("<script>\n" +
-   *         "  async function onClick() {\n" +
-   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
-   *         "  }\n" +
-   *         "</script>\n" +
-   *         "<button onclick=\"onClick()\">Click me</button>\n" +
-   *         "<div></div>");
-   *       page.click("button");
-   *     }
-   *   }
-   * }
-   * }</pre>
-   *
-   * @param name Name of the function on the window object.
-   * @param callback Callback function that will be called in the Playwright's context.
-   * @since v1.8
-   */
-  AutoCloseable exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
+  AutoCloseable exposeBinding(String name, BindingCallback callback);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the
    * function executes {@code callback} and returns a <a
@@ -5597,6 +5577,13 @@ public interface Page extends AutoCloseable {
    * @since v1.8
    */
   Response navigate(String url, NavigateOptions options);
+  /**
+   * Hide all locator highlight overlays previously added by {@link com.microsoft.playwright.Locator#highlight
+   * Locator.highlight()} on this page.
+   *
+   * @since v1.60
+   */
+  void hideHighlight();
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>

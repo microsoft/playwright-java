@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -213,6 +214,27 @@ public interface WebSocketRoute {
    * @since v1.48
    */
   void send(byte[] message);
+  /**
+   * The list of WebSocket subprotocols requested by the page, as passed via the second argument to the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket">{@code WebSocket} constructor</a>.
+   * Corresponds to the {@code Sec-WebSocket-Protocol} request header.
+   *
+   * <p> Returns an empty array if no protocols were specified.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * page.routeWebSocket("wss://example.com/ws", ws -> {
+   *   if (ws.protocols().contains("chat.v2")) {
+   *     ws.onMessage(frame -> ws.send("v2:" + frame.text()));
+   *   } else {
+   *     ws.close(1002, "Unsupported protocol");
+   *   }
+   * });
+   * }</pre>
+   *
+   * @since v1.60
+   */
+  List<String> protocols();
   /**
    * URL of the WebSocket created in the page.
    *
