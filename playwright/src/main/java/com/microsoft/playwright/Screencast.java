@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 public interface Screencast {
   class StartOptions {
     /**
-     * Callback that receives JPEG-encoded frame data.
+     * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
     public Consumer<ScreencastFrame> onFrame;
     /**
@@ -40,7 +40,7 @@ public interface Screencast {
     public Integer quality;
 
     /**
-     * Callback that receives JPEG-encoded frame data.
+     * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
     public StartOptions setOnFrame(Consumer<ScreencastFrame> onFrame) {
       this.onFrame = onFrame;

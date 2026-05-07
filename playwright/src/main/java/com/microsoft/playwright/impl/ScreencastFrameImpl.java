@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.options;
+package com.microsoft.playwright.impl;
 
-/**
- * A single screencast frame delivered to {@link com.microsoft.playwright.Screencast#start Screencast.start()}'s
- * {@code onFrame} callback.
- */
-public class ScreencastFrame {
-  /**
-   * JPEG-encoded frame data.
-   */
-  public byte[] data;
+import com.microsoft.playwright.ScreencastFrame;
 
-  public ScreencastFrame(byte[] data) {
+class ScreencastFrameImpl implements ScreencastFrame {
+  private final byte[] data;
+  private final int viewportWidth;
+  private final int viewportHeight;
+
+  ScreencastFrameImpl(byte[] data, int viewportWidth, int viewportHeight) {
     this.data = data;
+    this.viewportWidth = viewportWidth;
+    this.viewportHeight = viewportHeight;
+  }
+
+  @Override
+  public byte[] data() {
+    return data;
+  }
+
+  @Override
+  public int viewportWidth() {
+    return viewportWidth;
+  }
+
+  @Override
+  public int viewportHeight() {
+    return viewportHeight;
   }
 }

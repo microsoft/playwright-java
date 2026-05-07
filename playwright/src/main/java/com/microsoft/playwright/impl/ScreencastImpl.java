@@ -19,7 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Screencast;
-import com.microsoft.playwright.options.ScreencastFrame;
+import com.microsoft.playwright.ScreencastFrame;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -44,7 +44,9 @@ class ScreencastImpl implements Screencast {
     }
     String dataBase64 = params.get("data").getAsString();
     byte[] data = java.util.Base64.getDecoder().decode(dataBase64);
-    onFrame.accept(new ScreencastFrame(data));
+    int viewportWidth = params.get("viewportWidth").getAsInt();
+    int viewportHeight = params.get("viewportHeight").getAsInt();
+    onFrame.accept(new ScreencastFrameImpl(data, viewportWidth, viewportHeight));
   }
 
   @Override

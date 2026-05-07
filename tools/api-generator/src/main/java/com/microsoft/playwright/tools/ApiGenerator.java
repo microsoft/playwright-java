@@ -326,6 +326,22 @@ class TypeRef extends Element {
       }
       return;
     }
+    if ("function".equals(jsonObject.get("name").getAsString()) && jsonObject.has("args")) {
+      for (JsonElement item : jsonObject.getAsJsonArray("args")) {
+        if (!item.isJsonObject()) {
+          continue;
+        }
+        JsonObject argObject = item.getAsJsonObject();
+        if (!"Object".equals(argObject.get("name").getAsString())) {
+          continue;
+        }
+        String alias = javaAlias(argObject);
+        if (alias != null) {
+          typeScope().createTopLevelInterface(alias, this, argObject);
+        }
+      }
+      return;
+    }
     if ("Object".equals(jsonObject.get("name").getAsString())) {
       if (customType != null) {
         // Same type maybe referenced as 'Object' in several union values, e.g. Object|Array<Object>
@@ -506,8 +522,8 @@ class TypeRef extends Element {
       if (customType != null) {
         return customType;
       }
-      // Inner Objects (e.g. function arguments) are not visited by createClassesAndEnums,
-      // so resolve their Java type name from langAliases here.
+      // Inner Objects without langAliases (e.g. unaliased function arguments) are not visited
+      // by createClassesAndEnums, so resolve their Java type name from langAliases here.
       String alias = javaAlias(jsonType);
       if (alias != null) {
         return alias;
@@ -598,6 +614,14 @@ abstract class TypeDefinition extends Element {
     TypeDefinition existing = map.putIfAbsent(name, new CustomClass(parent, name, jsonObject));
     if (existing != null && (!(existing instanceof CustomClass))) {
       throw new RuntimeException("Two classes with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
+    }
+  }
+
+  void createTopLevelInterface(String name, Element parent, JsonObject jsonObject) {
+    Map<String, TypeDefinition> map = topLevelTypes();
+    TypeDefinition existing = map.putIfAbsent(name, new CustomInterface(parent, name, jsonObject));
+    if (existing != null && !(existing instanceof CustomInterface)) {
+      throw new RuntimeException("Two interfaces with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
     }
   }
 
@@ -840,7 +864,7 @@ class Field extends Element {
   final String name;
   final TypeRef type;
 
-  Field(CustomClass parent, String name, JsonObject jsonElement) {
+  Field(TypeDefinition parent, String name, JsonObject jsonElement) {
     super(parent, jsonElement);
     this.name = name;
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
@@ -1151,6 +1175,43 @@ class CustomClass extends TypeDefinition {
   }
 }
 
+class CustomInterface extends TypeDefinition {
+  final String name;
+  final List<Field> fields = new ArrayList<>();
+
+  CustomInterface(Element parent, String name, JsonObject jsonElement) {
+    super(parent, true, jsonElement);
+    this.name = name;
+    if (jsonElement.has("properties")) {
+      for (JsonElement item : jsonElement.getAsJsonArray("properties")) {
+        JsonObject propertyJson = item.getAsJsonObject();
+        fields.add(new Field(this, propertyJson.get("name").getAsString(), propertyJson));
+      }
+    }
+  }
+
+  @Override
+  String name() {
+    return name;
+  }
+
+  @Override
+  void writeTo(List<String> output, String offset) {
+    output.add(offset + "public interface " + name + " {");
+    String bodyOffset = offset + "  ";
+    boolean first = true;
+    for (Field f : fields) {
+      if (!first) {
+        output.add("");
+      }
+      first = false;
+      writeJavadoc(output, bodyOffset, f.comment());
+      output.add(bodyOffset + f.type.toJava() + " " + f.name + "();");
+    }
+    output.add(offset + "}");
+  }
+}
+
 class Enum extends TypeDefinition {
   final List<String> enumValues;
 
@@ -1199,18 +1260,25 @@ public class ApiGenerator {
     System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
     generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion().and(isSoftAssertion().negate()), sharedTypes);
 
-    writeTopLevelTypes(sharedTypes, optionsDir, "com.microsoft.playwright");
+    writeTopLevelTypes(sharedTypes, dir, optionsDir, "com.microsoft.playwright");
   }
 
-  private void writeTopLevelTypes(Map<String, TypeDefinition> topLevelTypes, File optionsDir, String packageName) throws IOException {
+  private void writeTopLevelTypes(Map<String, TypeDefinition> topLevelTypes, File dir, File optionsDir, String packageName) throws IOException {
     for (TypeDefinition e : topLevelTypes.values()) {
       List<String> lines = new ArrayList<>();
       lines.add(Interface.header);
-      lines.add("package " + packageName + ".options;");
+      File targetDir;
+      if (e instanceof CustomInterface) {
+        lines.add("package " + packageName + ";");
+        targetDir = dir;
+      } else {
+        lines.add("package " + packageName + ".options;");
+        targetDir = optionsDir;
+      }
       lines.add("");
       e.writeTo(lines, "");
       String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(optionsDir, e.name() + ".java"))) {
+      try (FileWriter writer = new FileWriter(new File(targetDir, e.name() + ".java"))) {
         writer.write(text);
       }
     }
