@@ -16,17 +16,23 @@
 
 package com.microsoft.playwright.options;
 
-/**
- * A single screencast frame delivered to {@link com.microsoft.playwright.Screencast#start Screencast.start()}'s
- * {@code onFrame} callback.
- */
 public class ScreencastFrame {
   /**
    * JPEG-encoded frame data.
    */
   public byte[] data;
+  /**
+   * Width of the page viewport at the time the frame was captured.
+   */
+  public int viewportWidth;
+  /**
+   * Height of the page viewport at the time the frame was captured.
+   */
+  public int viewportHeight;
 
-  public ScreencastFrame(byte[] data) {
+  public ScreencastFrame(byte[] data, int viewportWidth, int viewportHeight) {
     this.data = data;
+    this.viewportWidth = viewportWidth;
+    this.viewportHeight = viewportHeight;
   }
 }

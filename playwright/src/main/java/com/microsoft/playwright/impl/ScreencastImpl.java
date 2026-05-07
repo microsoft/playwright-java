@@ -44,7 +44,9 @@ class ScreencastImpl implements Screencast {
     }
     String dataBase64 = params.get("data").getAsString();
     byte[] data = java.util.Base64.getDecoder().decode(dataBase64);
-    onFrame.accept(new ScreencastFrame(data));
+    int viewportWidth = params.get("viewportWidth").getAsInt();
+    int viewportHeight = params.get("viewportHeight").getAsInt();
+    onFrame.accept(new ScreencastFrame(data, viewportWidth, viewportHeight));
   }
 
   @Override

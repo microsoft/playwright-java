@@ -123,6 +123,27 @@ public class TestScreencast extends TestBase {
   }
 
   @Test
+  void onFrameShouldReceiveViewportSize() {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1000, 400));
+    Page page = context.newPage();
+    try {
+      List<ScreencastFrame> frames = new ArrayList<>();
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
+      page.navigate(server.EMPTY_PAGE);
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(500);
+      page.screencast().stop();
+      assertFalse(frames.isEmpty(), "expected at least one frame");
+      for (ScreencastFrame frame : frames) {
+        assertEquals(1000, frame.viewportWidth);
+        assertEquals(400, frame.viewportHeight);
+      }
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
   void screencastStartShouldThrowIfAlreadyStarted() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();

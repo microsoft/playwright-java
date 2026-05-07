@@ -326,6 +326,14 @@ class TypeRef extends Element {
       }
       return;
     }
+    if ("function".equals(jsonObject.get("name").getAsString()) && jsonObject.has("args")) {
+      for (JsonElement item : jsonObject.getAsJsonArray("args")) {
+        if (item.isJsonObject() && javaAlias(item.getAsJsonObject()) != null) {
+          createClassesAndEnums(item.getAsJsonObject());
+        }
+      }
+      return;
+    }
     if ("Object".equals(jsonObject.get("name").getAsString())) {
       if (customType != null) {
         // Same type maybe referenced as 'Object' in several union values, e.g. Object|Array<Object>
@@ -506,8 +514,8 @@ class TypeRef extends Element {
       if (customType != null) {
         return customType;
       }
-      // Inner Objects (e.g. function arguments) are not visited by createClassesAndEnums,
-      // so resolve their Java type name from langAliases here.
+      // Inner Objects without langAliases (e.g. unaliased function arguments) are not visited
+      // by createClassesAndEnums, so resolve their Java type name from langAliases here.
       String alias = javaAlias(jsonType);
       if (alias != null) {
         return alias;
