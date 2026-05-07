@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.ScreencastFrame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -113,9 +112,9 @@ public class TestScreencast extends TestBase {
       assertFalse(frames.isEmpty(), "expected at least one frame");
       // JPEG-encoded frames start with FF D8.
       for (ScreencastFrame frame : frames) {
-        assertNotNull(frame.data);
-        assertEquals((byte) 0xFF, frame.data[0]);
-        assertEquals((byte) 0xD8, frame.data[1]);
+        assertNotNull(frame.data());
+        assertEquals((byte) 0xFF, frame.data()[0]);
+        assertEquals((byte) 0xD8, frame.data()[1]);
       }
     } finally {
       context.close();
@@ -135,8 +134,8 @@ public class TestScreencast extends TestBase {
       page.screencast().stop();
       assertFalse(frames.isEmpty(), "expected at least one frame");
       for (ScreencastFrame frame : frames) {
-        assertEquals(1000, frame.viewportWidth);
-        assertEquals(400, frame.viewportHeight);
+        assertEquals(1000, frame.viewportWidth());
+        assertEquals(400, frame.viewportHeight());
       }
     } finally {
       context.close();
