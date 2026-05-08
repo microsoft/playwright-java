@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
@@ -30,6 +31,7 @@ import static com.microsoft.playwright.options.LoadState.LOAD;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("smoke")
 public class TestPageBasic extends TestBase {
 
   @Test

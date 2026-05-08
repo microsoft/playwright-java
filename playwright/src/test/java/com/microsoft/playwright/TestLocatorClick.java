@@ -17,12 +17,14 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.KeyboardModifier;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("smoke")
 public class TestLocatorClick extends TestBase {
 
   @Test

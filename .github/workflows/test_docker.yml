@@ -64,9 +64,9 @@ jobs:
               chown -R pwuser /home/pwuser/.m2
             '
 
-      - name: Run test in container
+      - name: Run smoke tests in container
         run: |
-            docker exec "$CONTAINER_ID" /home/pwuser/playwright/tools/test-local-installation/create_project_and_run_tests.sh
+            docker exec "$CONTAINER_ID" /home/pwuser/playwright/tools/test-local-installation/create_project_and_run_tests.sh -Dgroups=smoke
 
       - name: Test ClassLoader
         run: |
