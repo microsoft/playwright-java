@@ -47,6 +47,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
   private final ScreencastImpl screencast;
+  private final CoverageImpl coverage;
   final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
@@ -140,6 +141,8 @@ public class PageImpl extends ChannelOwner implements Page {
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
     waitableClosedOrCrashed = createWaitForCloseHelper();
+    coverage = new CoverageImpl(this);
+
     if (initializer.has("opener")) {
       opener = connection.getExistingObject(initializer.getAsJsonObject("opener").get("guid").getAsString());
     } else {
@@ -721,6 +724,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public BrowserContextImpl context() {
     return browserContext;
+  }
+
+  @Override
+  public CoverageImpl coverage() {
+    return coverage;
   }
 
   @Override

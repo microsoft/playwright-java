@@ -4098,6 +4098,10 @@ public interface Page extends AutoCloseable {
    */
   BrowserContext context();
   /**
+   * Get the coverage report associated to the page.
+   */
+  Coverage coverage();
+  /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
