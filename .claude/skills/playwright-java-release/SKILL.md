@@ -74,7 +74,3 @@ gh pr create --repo microsoft/playwright-java --head <user>:mark-v-1.X.0 --base 
 ## 4. Publish
 
 The user publishes the draft release manually once the `mark-v-1.X.0` PR is merged. After publishing, CI pushes the artifacts to Maven Central and runs the Docker workflow automatically: https://github.com/microsoft/playwright-java/actions.
-
-## Authenticated access to the internal checklist
-
-The default `GITHUB_TOKEN` in this environment lacks the `repo` scope needed to read/edit private `microsoft/playwright-internal` issues, so direct `gh` calls return 404. The user's personal `gh` token in `~/.config/gh/hosts.yml` has the needed scope; `unset GITHUB_TOKEN; gh ...` falls back to it. Do not try to pass the OAuth token explicitly via env vars — the sandbox blocks that as credential exploration.
