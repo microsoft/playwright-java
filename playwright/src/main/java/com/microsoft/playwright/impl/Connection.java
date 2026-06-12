@@ -39,6 +39,7 @@ class Message {
   JsonObject params;
   JsonElement result;
   SerializedError error;
+  JsonObject errorDetails;
   JsonArray log;
 
   @Override
@@ -132,13 +133,20 @@ public class Connection {
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    return internalSendMessage(guid, method, params, true);
+    return internalSendMessage(guid, method, params, true, true);
   }
 
-  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, boolean sendStack) {
+  // Fire-and-forget: the server intentionally never replies to this message.
+  public void sendMessageNoReply(String guid, String method, JsonObject params) {
+    internalSendMessage(guid, method, params, false, false);
+  }
+
+  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, boolean sendStack, boolean expectsReply) {
     int id = ++lastId;
     WaitableResult<JsonElement> result = new WaitableResult<>();
-    callbacks.put(id, result);
+    if (expectsReply) {
+      callbacks.put(id, result);
+    }
     JsonObject message = new JsonObject();
     message.addProperty("id", id);
     message.addProperty("guid", guid);
@@ -175,7 +183,7 @@ public class Connection {
       callData.add("stack", stack);
       JsonObject stackParams = new JsonObject();
       stackParams.add("callData", callData);
-      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, false);
+      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, false, true);
     }
     return result;
   }
@@ -251,16 +259,22 @@ public class Connection {
         callback.complete(message.result);
       } else {
         String callLog = formatCallLog(message.log);
+        PlaywrightException exception;
         if (message.error.error == null) {
-          callback.completeExceptionally(new PlaywrightException(message.error + callLog));
+          exception = new PlaywrightException(message.error + callLog);
         } else if ("TimeoutError".equals(message.error.error.name)) {
-          callback.completeExceptionally(new TimeoutError(message.error.error + callLog));
+          exception = new TimeoutError(message.error.error + callLog);
         } else if ("TargetClosedError".equals(message.error.error.name)) {
-          callback.completeExceptionally(new TargetClosedError(message.error.error + callLog));
-
+          exception = new TargetClosedError(message.error.error + callLog);
         } else {
-          callback.completeExceptionally(new DriverException(message.error.error + callLog));
+          exception = new DriverException(message.error.error + callLog);
         }
+        // The server attaches errorDetails to errors of the methods that declare them
+        // in the protocol (currently only Frame.expect and Page.expectScreenshot).
+        if (message.errorDetails != null) {
+          exception = new ServerErrorWithDetails(exception, message.errorDetails, message.log);
+        }
+        callback.completeExceptionally(exception);
       }
       return;
     }

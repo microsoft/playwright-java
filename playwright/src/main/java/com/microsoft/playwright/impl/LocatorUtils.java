@@ -43,8 +43,14 @@ public class LocatorUtils {
     return "internal:describe=" + gson().toJson(description);
   }
 
+  // Multiple test id attribute names can be joined with a comma. Attribute names cannot contain commas.
+  private static String encodeTestIdAttributeName(String testIdAttributeName) {
+    return testIdAttributeName.contains(",") ? gson().toJson(testIdAttributeName) : testIdAttributeName;
+  }
+
   static String getByTestIdSelector(Object testId, PlaywrightImpl playwright) {
-    return getByAttributeTextSelector(playwright.selectors.testIdAttributeName, testId, true);
+    String attributeName = encodeTestIdAttributeName(playwright.selectors.testIdAttributeName);
+    return "internal:testid=[" + attributeName + "=" + escapeForAttributeSelector(testId, true) + "]";
   }
 
   static String getByAltTextSelector(Object text, Locator.GetByAltTextOptions options) {

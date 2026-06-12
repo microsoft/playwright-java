@@ -47,6 +47,8 @@ public class PageImpl extends ChannelOwner implements Page {
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
   private final ScreencastImpl screencast;
+  private final WebStorageImpl localStorage;
+  private final WebStorageImpl sessionStorage;
   final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
@@ -137,6 +139,8 @@ public class PageImpl extends ChannelOwner implements Page {
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
     screencast = new ScreencastImpl(this);
+    localStorage = new WebStorageImpl(this, "local");
+    sessionStorage = new WebStorageImpl(this, "session");
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
     waitableClosedOrCrashed = createWaitForCloseHelper();
@@ -555,8 +559,13 @@ public class PageImpl extends ChannelOwner implements Page {
     try {
       if (ownedContext != null) {
         ownedContext.close();
+      } else if (options.runBeforeUnload != null && options.runBeforeUnload) {
+        sendMessage("runBeforeUnload", new JsonObject(), NO_TIMEOUT);
       } else {
-        JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+        JsonObject params = new JsonObject();
+        if (options.reason != null) {
+          params.addProperty("reason", options.reason);
+        }
         sendMessage("close", params, NO_TIMEOUT);
       }
     } catch (PlaywrightException exception) {
@@ -1360,6 +1369,16 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Screencast screencast() {
     return screencast;
+  }
+
+  @Override
+  public WebStorage localStorage() {
+    return localStorage;
+  }
+
+  @Override
+  public WebStorage sessionStorage() {
+    return sessionStorage;
   }
 
   @Override

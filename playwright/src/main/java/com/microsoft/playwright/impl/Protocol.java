@@ -122,4 +122,11 @@ class FrameExpectResult {
   List<String> log;
 }
 
+// Sent by the server as `errorDetails` when Frame.expect fails.
+class FrameExpectErrorDetails {
+  FrameExpectResult.Received received;
+  Boolean timedOut;
+  String customErrorMessage;
+}
+
 

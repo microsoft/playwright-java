@@ -18,11 +18,11 @@ package com.microsoft.playwright.options;
 
 public class Size {
   /**
-   * Video frame width.
+   * Max frame width in pixels.
    */
   public int width;
   /**
-   * Video frame height.
+   * Max frame height in pixels.
    */
   public int height;
 

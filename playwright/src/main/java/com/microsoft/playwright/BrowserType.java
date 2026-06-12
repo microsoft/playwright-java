@@ -125,6 +125,10 @@ public interface BrowserType {
   }
   class ConnectOverCDPOptions {
     /**
+     * If specified, browser artifacts (such as traces and downloads) are saved into this directory.
+     */
+    public Path artifactsDir;
+    /**
      * Additional HTTP headers to be sent with connect request. Optional.
      */
     public Map<String, String> headers;
@@ -153,6 +157,13 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    /**
+     * If specified, browser artifacts (such as traces and downloads) are saved into this directory.
+     */
+    public ConnectOverCDPOptions setArtifactsDir(Path artifactsDir) {
+      this.artifactsDir = artifactsDir;
+      return this;
+    }
     /**
      * Additional HTTP headers to be sent with connect request. Optional.
      */

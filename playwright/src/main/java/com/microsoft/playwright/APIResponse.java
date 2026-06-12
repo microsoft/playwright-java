@@ -56,6 +56,20 @@ public interface APIResponse {
    */
   boolean ok();
   /**
+   * Returns SSL and other security information. Resolves to {@code null} for non-HTTPS responses. For redirected requests,
+   * returns the information for the last request in the redirect chain.
+   *
+   * @since v1.61
+   */
+  SecurityDetails securityDetails();
+  /**
+   * Returns the IP address and port of the server. Resolves to {@code null} if the server address is not available. For
+   * redirected requests, returns the information for the last request in the redirect chain.
+   *
+   * @since v1.61
+   */
+  ServerAddr serverAddr();
+  /**
    * Contains the status code of the response (e.g., 200 for a success).
    *
    * @since v1.16

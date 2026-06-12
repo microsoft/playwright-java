@@ -201,7 +201,8 @@ public interface Selectors {
    * Defines custom attribute name to be used in {@link com.microsoft.playwright.Page#getByTestId Page.getByTestId()}. {@code
    * data-testid} is used by default.
    *
-   * @param attributeName Test id attribute name.
+   * @param attributeName Test id attribute name. To match elements with any of several attributes, pass them as a comma-separated list, e.g.
+   * {@code "data-pw,data-ti"}.
    * @since v1.27
    */
   void setTestIdAttribute(String attributeName);

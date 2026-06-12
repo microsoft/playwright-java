@@ -22,6 +22,7 @@ import com.microsoft.playwright.options.HttpCredentials;
 import com.microsoft.playwright.options.HttpCredentialsSend;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.RequestOptions;
+import com.microsoft.playwright.options.ServerAddr;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -250,6 +251,25 @@ public class TestGlobalFetch extends TestBase {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(httpsServer.PREFIX + "/redir", RequestOptions.create().setIgnoreHTTPSErrors(true));
     assertEquals(200, response.status());
+  }
+
+  @Test
+  void shouldReturnServerAddressFromResponse() {
+    APIRequestContext request = playwright.request().newContext();
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    ServerAddr address = response.serverAddr();
+    assertNotNull(address);
+    assertEquals(server.PORT, address.port);
+    assertTrue(asList("127.0.0.1", "::1").contains(address.ipAddress), address.ipAddress);
+    request.dispose();
+  }
+
+  @Test
+  void shouldReturnNullSecurityDetailsForHttpResponse() {
+    APIRequestContext request = playwright.request().newContext();
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertNull(response.securityDetails());
+    request.dispose();
   }
 
   @Test

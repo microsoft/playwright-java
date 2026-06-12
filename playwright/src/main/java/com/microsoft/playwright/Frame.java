@@ -2965,7 +2965,7 @@ public interface Frame {
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluate
    * Frame.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = frame.evaluate("document.body");
+   * ElementHandle bodyHandle = frame.evaluateHandle("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -3005,7 +3005,7 @@ public interface Frame {
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluate
    * Frame.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = frame.evaluate("document.body");
+   * ElementHandle bodyHandle = frame.evaluateHandle("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>

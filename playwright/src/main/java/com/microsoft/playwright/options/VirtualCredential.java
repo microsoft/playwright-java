@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public interface ScreencastFrame {
+public class VirtualCredential {
   /**
-   * JPEG-encoded frame data.
+   * Base64url-encoded credential id.
    */
-  byte[] data();
+  public String id;
+  /**
+   * Relying party id.
+   */
+  public String rpId;
+  /**
+   * Base64url-encoded user handle.
+   */
+  public String userHandle;
+  /**
+   * Base64url-encoded PKCS#8 (DER) private key.
+   */
+  public String privateKey;
+  /**
+   * Base64url-encoded SPKI (DER) public key.
+   */
+  public String publicKey;
 
-  /**
-   * The timestamp of when the frame was presented by the browser, in milliseconds since the Unix epoch.
-   */
-  double timestamp();
-
-  /**
-   * Width of the page viewport at the time the frame was captured.
-   */
-  int viewportWidth();
-
-  /**
-   * Height of the page viewport at the time the frame was captured.
-   */
-  int viewportHeight();
 }

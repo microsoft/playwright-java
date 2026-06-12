@@ -110,6 +110,15 @@ class ChannelOwner extends LoggingSupport {
     return connection.sendMessageAsync(guid, method, params);
   }
 
+  // Fire-and-forget: the server intentionally never replies to this message,
+  // so silently drop it if the object was collected.
+  void sendMessageNoReply(String method, JsonObject params) {
+    if (wasCollected) {
+      return;
+    }
+    connection.sendMessageNoReply(guid, method, params);
+  }
+
   JsonElement sendMessage(String method) {
     return sendMessage(method, new JsonObject(), NO_TIMEOUT);
   }

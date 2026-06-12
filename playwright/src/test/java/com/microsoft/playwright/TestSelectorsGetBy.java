@@ -52,6 +52,20 @@ public class TestSelectorsGetBy extends TestBase {
   }
 
   @Test
+  void getByTestIdWithCommaSeparatedTestIdAttributesShouldMatchAny() {
+    page.setContent("<section>\n" +
+      "  <div data-pw='Hello'>first</div>\n" +
+      "  <div data-ti='Hello'>second</div>\n" +
+      "  <div data-testid='Hello'>third</div>\n" +
+      "</section>");
+    playwright.selectors().setTestIdAttribute("data-pw,data-ti");
+    assertThat(page.getByTestId("Hello")).hasCount(2);
+    assertThat(page.getByTestId("Hello")).hasText(new String[]{"first", "second"});
+    assertThat(page.mainFrame().getByTestId("Hello")).hasCount(2);
+    assertThat(page.locator("section").getByTestId("Hello")).hasCount(2);
+  }
+
+  @Test
   void shouldUseDataTestidInStrictErrors() {
     playwright.selectors().setTestIdAttribute("data-custom-id");
     page.setContent("" +

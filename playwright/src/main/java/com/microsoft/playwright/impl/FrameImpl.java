@@ -1154,8 +1154,17 @@ public class FrameImpl extends ChannelOwner implements Frame {
   FrameExpectResult expect(String expression, FrameExpectOptions options) {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("expression", expression);
-    JsonElement json = sendMessage("expect", params, options.timeout);
-    FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
+    FrameExpectResult result = new FrameExpectResult();
+    try {
+      sendMessage("expect", params, options.timeout);
+      result.matches = !options.isNot;
+    } catch (ServerErrorWithDetails e) {
+      FrameExpectErrorDetails details = gson().fromJson(e.errorDetails(), FrameExpectErrorDetails.class);
+      result.matches = options.isNot;
+      result.received = details.received;
+      result.errorMessage = details.customErrorMessage == null ? null : "Error: " + details.customErrorMessage;
+      result.log = e.log();
+    }
     return result;
   }
 }

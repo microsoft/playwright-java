@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public interface ScreencastFrame {
-  /**
-   * JPEG-encoded frame data.
-   */
-  byte[] data();
-
-  /**
-   * The timestamp of when the frame was presented by the browser, in milliseconds since the Unix epoch.
-   */
-  double timestamp();
-
-  /**
-   * Width of the page viewport at the time the frame was captured.
-   */
-  int viewportWidth();
-
-  /**
-   * Height of the page viewport at the time the frame was captured.
-   */
-  int viewportHeight();
+public enum ScreencastCursor {
+  NONE,
+  POINTER
 }

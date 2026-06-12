@@ -122,12 +122,12 @@ public class TestScreencast extends TestBase {
   }
 
   @Test
-  void onFrameShouldReceiveViewportSize() {
+  void onFrameShouldReceiveViewportSizeAndTimestamp() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1000, 400));
     Page page = context.newPage();
     try {
       List<ScreencastFrame> frames = new ArrayList<>();
-      page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add).setSize(500, 400));
       page.navigate(server.EMPTY_PAGE);
       page.evaluate("() => document.body.style.backgroundColor = 'red'");
       page.waitForTimeout(500);
@@ -136,6 +136,7 @@ public class TestScreencast extends TestBase {
       for (ScreencastFrame frame : frames) {
         assertEquals(1000, frame.viewportWidth());
         assertEquals(400, frame.viewportHeight());
+        assertTrue(frame.timestamp() > 0, "expected a positive timestamp, got " + frame.timestamp());
       }
     } finally {
       context.close();

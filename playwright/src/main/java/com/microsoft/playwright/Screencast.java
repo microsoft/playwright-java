@@ -38,6 +38,13 @@ public interface Screencast {
      * The quality of the image, between 0-100.
      */
     public Integer quality;
+    /**
+     * Specifies the dimensions of screencast frames. The actual frame is scaled to preserve the page's aspect ratio and may be
+     * smaller than these bounds. If a screencast is already active (e.g. started by tracing or video recording), the existing
+     * configuration takes precedence and the frame size may exceed these bounds or this option may be ignored. If not
+     * specified the size will be equal to page viewport scaled down to fit into 800×800.
+     */
+    public Size size;
 
     /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
@@ -58,6 +65,25 @@ public interface Screencast {
      */
     public StartOptions setQuality(int quality) {
       this.quality = quality;
+      return this;
+    }
+    /**
+     * Specifies the dimensions of screencast frames. The actual frame is scaled to preserve the page's aspect ratio and may be
+     * smaller than these bounds. If a screencast is already active (e.g. started by tracing or video recording), the existing
+     * configuration takes precedence and the frame size may exceed these bounds or this option may be ignored. If not
+     * specified the size will be equal to page viewport scaled down to fit into 800×800.
+     */
+    public StartOptions setSize(int width, int height) {
+      return setSize(new Size(width, height));
+    }
+    /**
+     * Specifies the dimensions of screencast frames. The actual frame is scaled to preserve the page's aspect ratio and may be
+     * smaller than these bounds. If a screencast is already active (e.g. started by tracing or video recording), the existing
+     * configuration takes precedence and the frame size may exceed these bounds or this option may be ignored. If not
+     * specified the size will be equal to page viewport scaled down to fit into 800×800.
+     */
+    public StartOptions setSize(Size size) {
+      this.size = size;
       return this;
     }
   }
@@ -104,6 +130,11 @@ public interface Screencast {
   }
   class ShowActionsOptions {
     /**
+     * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
+     * the previous action point to the next one. {@code "none"} disables the cursor decoration.
+     */
+    public ScreencastCursor cursor;
+    /**
      * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
      */
     public Double duration;
@@ -116,6 +147,14 @@ public interface Screencast {
      */
     public AnnotatePosition position;
 
+    /**
+     * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
+     * the previous action point to the next one. {@code "none"} disables the cursor decoration.
+     */
+    public ShowActionsOptions setCursor(ScreencastCursor cursor) {
+      this.cursor = cursor;
+      return this;
+    }
     /**
      * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
      */
