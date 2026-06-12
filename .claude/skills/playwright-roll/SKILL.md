@@ -164,39 +164,3 @@ When you've identified a hanging test:
 1. Run it in isolation: `mvn -f playwright/pom.xml test -Dtest='TestClass#testMethod'`. If it passes alone, it's a parallel-load flake — note it but move on.
 2. If it still hangs in isolation, look for a recent fix in the upstream repo for the *same* test name. Use `git log --oneline tests/library/<spec>.spec.ts` in `~/playwright`. Upstream fixes for client-side hangs are often small and portable (e.g. `about:blank` → `server.EMPTY_PAGE` from microsoft/playwright#39840 fixed `route-web-socket.spec.ts` arraybuffer hangs — apparently some browser changed the WebSocket origin policy on `about:blank`).
 3. When porting an upstream fix, mirror the helper signature change rather than hard-coding workarounds. E.g. if upstream added a `server` parameter to `setupWS`, do the same in Java by injecting `Server server` via the JUnit fixture (`@FixtureTest` already wires up `ServerLifecycle`, so adding `Server server` to the test method signature is enough — no class-level boilerplate). Watch for local-variable shadowing when you add a `Server server` parameter to a method that already has a `WebSocketRoute server` local; rename the local.
-
-## Commit Convention
-
-Semantic commit messages: `label(scope): description`
-
-Labels: `fix`, `feat`, `chore`, `docs`, `test`, `devops`
-
-```bash
-git checkout -b fix-39562
-# ... make changes ...
-git add <changed-files>
-git commit -m "$(cat <<'EOF'
-fix(proxy): handle SOCKS proxy authentication
-
-Fixes: https://github.com/microsoft/playwright-java/issues/39562
-EOF
-)"
-git push origin fix-39562
-gh pr create --repo microsoft/playwright-java --head username:fix-39562 \
-  --title "fix(proxy): handle SOCKS proxy authentication" \
-  --body "$(cat <<'EOF'
-## Summary
-- <describe the change very! briefly>
-
-Fixes https://github.com/microsoft/playwright-java/issues/39562
-EOF
-)"
-```
-
-Never add Co-Authored-By agents in commit message.
-Never add "Generated with" in commit message.
-Branch naming for issue fixes: `fix-<issue-number>`
-
-## Tips & Tricks
-- Project checkouts are in the parent directory (`../`).
-- use the "gh" cli to interact with GitHub
