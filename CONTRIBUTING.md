@@ -20,11 +20,13 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Run the following script to download Playwright driver for all platforms into `driver-bundle/src/main/resources/driver/` directory (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
+2. Run the following script to download and assemble the Playwright driver for all platforms into `driver-bundle/src/main/resources/driver/` directory (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
 
 ```bash
 scripts/download_driver.sh
 ```
+
+Each driver is assembled from the [`playwright-core`](https://www.npmjs.com/package/playwright-core) npm package (version pinned in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION)) and the matching Node.js binary from https://nodejs.org, the same way the upstream Playwright build does it.
 
 ### Building and running the tests with Maven
 
@@ -39,10 +41,9 @@ BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes
 
 ### Generating API
 
-Public Java API is generated from api.json which is produced by `print-api-json` command of playwright CLI. To regenerate Java interfaces for the current driver run the following commands:
+Public Java API is generated from api.json, which is generated from the upstream Playwright source at the exact commit that produced the driver version in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION) (resolved via `npm view playwright@<version> gitHead`). `scripts/generate_api.sh` fetches a minimal upstream checkout automatically; set `PW_SRC_DIR` to reuse an existing `microsoft/playwright` checkout instead. To regenerate Java interfaces for the current driver run:
 
 ```bash
-./scripts/download_driver.sh
 ./scripts/generate_api.sh
 ```
 
