@@ -53,7 +53,7 @@ Rolling includes:
 
 ## Mimicking the JavaScript implementation
 
-The Java client is a port of the JS client in `../playwright/packages/playwright-core/src/client/` (see CLAUDE.md). When implementing a new or changed method, always read the corresponding JS file first and mirror its logic:
+The Java client is a port of the JS client in `../playwright/packages/playwright-core/src/client/`. When implementing a new or changed method, always read the corresponding JS file first and mirror its logic:
 
 ```
 ../playwright/packages/playwright-core/src/client/browserContext.ts
@@ -164,7 +164,3 @@ When you've identified a hanging test:
 1. Run it in isolation: `mvn -f playwright/pom.xml test -Dtest='TestClass#testMethod'`. If it passes alone, it's a parallel-load flake — note it but move on.
 2. If it still hangs in isolation, look for a recent fix in the upstream repo for the *same* test name. Use `git log --oneline tests/library/<spec>.spec.ts` in `~/playwright`. Upstream fixes for client-side hangs are often small and portable (e.g. `about:blank` → `server.EMPTY_PAGE` from microsoft/playwright#39840 fixed `route-web-socket.spec.ts` arraybuffer hangs — apparently some browser changed the WebSocket origin policy on `about:blank`).
 3. When porting an upstream fix, mirror the helper signature change rather than hard-coding workarounds. E.g. if upstream added a `server` parameter to `setupWS`, do the same in Java by injecting `Server server` via the JUnit fixture (`@FixtureTest` already wires up `ServerLifecycle`, so adding `Server server` to the test method signature is enough — no class-level boilerplate). Watch for local-variable shadowing when you add a `Server server` parameter to a method that already has a `WebSocketRoute server` local; rename the local.
-
-## Commit Convention
-
-Commit and PR conventions live in CLAUDE.md. Use the running notes file as the PR body: list each upstream PR ported, each skipped (with reason), and each verified-already-supported.

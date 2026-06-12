@@ -4,6 +4,11 @@ The Java client is a port of the JavaScript client in `../playwright/packages/pl
 
 Project checkouts (including the upstream `playwright` repo) live in the parent directory (`../`). Use the `gh` cli to interact with GitHub.
 
+## Skills
+
+- **playwright-roll** (`.claude/skills/playwright-roll/SKILL.md`) — roll Playwright Java to a new upstream version: bump the driver, regenerate the API, and port relevant upstream changes.
+- **playwright-java-release** (`.claude/skills/playwright-java-release/SKILL.md`) — prepare a release after the rolling PR merges: cut the release branch, mark the Maven version, and draft the GitHub release.
+
 ## Commit Convention
 
 Semantic commit messages: `label(scope): description`
