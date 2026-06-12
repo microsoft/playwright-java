@@ -131,8 +131,9 @@ public class TestBrowserContextCDPSession extends TestBase {
     CDPSession session = page.context().newCDPSession(page);
     page.close();
 
-    PlaywrightException exception = assertThrows(PlaywrightException.class, session::detach);
-    assertTrue(exception.getMessage().contains("Target page, context or browser has been closed"), exception.getMessage());
+    // Like the upstream test, only check that detach fails — the error depends on
+    // whether the session detached before or after the page closed.
+    assertThrows(PlaywrightException.class, session::detach);
     context.close();
   }
 

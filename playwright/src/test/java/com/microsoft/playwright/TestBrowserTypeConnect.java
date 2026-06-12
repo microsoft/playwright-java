@@ -259,8 +259,10 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     assertFalse(browser.isConnected());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForNavigation(() -> {}));
+    // The surfaced message depends on which call hits the closed connection first.
     assertTrue(e.getMessage().contains("Browser closed") ||
       e.getMessage().contains("Page closed") ||
+      e.getMessage().contains("Browser has been closed") ||
       e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 

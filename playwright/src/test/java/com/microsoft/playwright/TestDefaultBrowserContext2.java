@@ -22,6 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -46,7 +47,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
 
 
   private BrowserContext persistentContext;
-  @TempDir Path tempDir;
+  // No cleanup: on Windows Chromium may keep chrome_debug.log in the user data dir
+  // locked briefly after close, failing the deletion.
+  @TempDir(cleanup = CleanupMode.NEVER) Path tempDir;
 
   @AfterEach
   void closePersistentContext() {
