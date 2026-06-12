@@ -53,7 +53,7 @@ Rolling includes:
 
 ## Mimicking the JavaScript implementation
 
-The Java client is a port of the JS client in `../playwright/packages/playwright-core/src/client/`. When implementing a new or changed method, always read the corresponding JS file first and mirror its logic:
+The Java client is a port of the JS client in `../playwright/packages/playwright-core/src/client/` (see CLAUDE.md). When implementing a new or changed method, always read the corresponding JS file first and mirror its logic:
 
 ```
 ../playwright/packages/playwright-core/src/client/browserContext.ts
@@ -167,36 +167,4 @@ When you've identified a hanging test:
 
 ## Commit Convention
 
-Semantic commit messages: `label(scope): description`
-
-Labels: `fix`, `feat`, `chore`, `docs`, `test`, `devops`
-
-```bash
-git checkout -b fix-39562
-# ... make changes ...
-git add <changed-files>
-git commit -m "$(cat <<'EOF'
-fix(proxy): handle SOCKS proxy authentication
-
-Fixes: https://github.com/microsoft/playwright-java/issues/39562
-EOF
-)"
-git push origin fix-39562
-gh pr create --repo microsoft/playwright-java --head username:fix-39562 \
-  --title "fix(proxy): handle SOCKS proxy authentication" \
-  --body "$(cat <<'EOF'
-## Summary
-- <describe the change very! briefly>
-
-Fixes https://github.com/microsoft/playwright-java/issues/39562
-EOF
-)"
-```
-
-Never add Co-Authored-By agents in commit message.
-Never add "Generated with" in commit message.
-Branch naming for issue fixes: `fix-<issue-number>`
-
-## Tips & Tricks
-- Project checkouts are in the parent directory (`../`).
-- use the "gh" cli to interact with GitHub
+Commit and PR conventions live in CLAUDE.md. Use the running notes file as the PR body: list each upstream PR ported, each skipped (with reason), and each verified-already-supported.
