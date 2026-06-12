@@ -34,4 +34,8 @@ fi
 
 PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 
+# Assemble the driver on the host where npm is available; the Dockerfile picks
+# it up via `COPY . /tmp/pw-java`.
+../../scripts/download_driver.sh
+
 docker build --platform "${PLATFORM}" --build-arg "PW_TARGET_ARCH=${PW_TARGET_ARCH}" -t "$3" -f "Dockerfile.$2" ../../

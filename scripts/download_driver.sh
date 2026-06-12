@@ -37,22 +37,16 @@ download() {
 DRIVER_VERSION=$(head -1 ./DRIVER_VERSION)
 
 # Resolve the exact upstream commit that produced this driver version, so that the
-# bundled Node.js version matches the driver exactly. Query the npm registry over
-# HTTP instead of the npm CLI which is not available in the docker image build.
-VERSION_MANIFEST=$(mktemp)
-download "https://registry.npmjs.org/playwright/$DRIVER_VERSION" "$VERSION_MANIFEST"
-GIT_HEAD=$(grep -o '"gitHead"[[:space:]]*:[[:space:]]*"[0-9a-f]\{40\}"' "$VERSION_MANIFEST" | head -1 | grep -o '[0-9a-f]\{40\}')
-rm -f "$VERSION_MANIFEST"
+# bundled Node.js version matches the driver exactly.
+GIT_HEAD=$(npm view playwright@"$DRIVER_VERSION" gitHead)
 if [[ -z "$GIT_HEAD" ]]; then
   echo "Failed to resolve upstream commit (gitHead) for playwright@$DRIVER_VERSION"
   exit 1
 fi
 
 # The Node.js version is kept in sync with the driver version in the upstream build script.
-BUILD_SCRIPT=$(mktemp)
-download "https://raw.githubusercontent.com/microsoft/playwright/$GIT_HEAD/utils/build/build-playwright-driver.sh" "$BUILD_SCRIPT"
-NODE_VERSION=$(sed -n 's/^NODE_VERSION="\([^"]*\)".*/\1/p' "$BUILD_SCRIPT")
-rm -f "$BUILD_SCRIPT"
+NODE_VERSION=$(curl -fsSL "https://raw.githubusercontent.com/microsoft/playwright/$GIT_HEAD/utils/build/build-playwright-driver.sh" \
+  | sed -n 's/^NODE_VERSION="\([^"]*\)".*/\1/p')
 if [[ -z "$NODE_VERSION" ]]; then
   echo "Failed to determine Node.js version for playwright@$DRIVER_VERSION ($GIT_HEAD)"
   exit 1
