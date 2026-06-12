@@ -24,7 +24,6 @@ import com.microsoft.playwright.PlaywrightException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Server error with the structured details declared in the protocol for the failed method.
 class ServerErrorWithDetails extends PlaywrightException {
   private final JsonObject errorDetails;
   private final JsonArray log;
@@ -35,7 +34,7 @@ class ServerErrorWithDetails extends PlaywrightException {
     this.log = log;
   }
 
-  // Used to rethrow with the stack trace of the calling thread, see WaitableResult.get().
+  // Rethrown with the calling thread's stack trace, see WaitableResult.get().
   ServerErrorWithDetails(ServerErrorWithDetails cause) {
     super(cause.getMessage(), cause);
     this.errorDetails = cause.errorDetails;

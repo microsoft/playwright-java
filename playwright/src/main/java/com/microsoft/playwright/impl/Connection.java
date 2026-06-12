@@ -136,7 +136,7 @@ public class Connection {
     return internalSendMessage(guid, method, params, true, true);
   }
 
-  // Fire-and-forget: the server intentionally never replies to this message.
+  // Fire-and-forget: the server never replies.
   public void sendMessageNoReply(String guid, String method, JsonObject params) {
     internalSendMessage(guid, method, params, false, false);
   }
@@ -269,8 +269,6 @@ public class Connection {
         } else {
           exception = new DriverException(message.error.error + callLog);
         }
-        // The server attaches errorDetails to errors of the methods that declare them
-        // in the protocol (currently only Frame.expect and Page.expectScreenshot).
         if (message.errorDetails != null) {
           exception = new ServerErrorWithDetails(exception, message.errorDetails, message.log);
         }

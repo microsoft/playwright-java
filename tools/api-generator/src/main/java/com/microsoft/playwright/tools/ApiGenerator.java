@@ -997,7 +997,7 @@ class Interface extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
-    // Interfaces with a static factory method delegating to the Impl class, see Method.writeTo.
+    // Interfaces with a static factory method, see Method.writeTo.
     if (asList("Playwright", "FormData", "RequestOptions").contains(jsonName) && methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
