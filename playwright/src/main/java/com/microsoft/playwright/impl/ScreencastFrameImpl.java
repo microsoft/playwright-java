@@ -20,11 +20,13 @@ import com.microsoft.playwright.ScreencastFrame;
 
 class ScreencastFrameImpl implements ScreencastFrame {
   private final byte[] data;
+  private final double timestamp;
   private final int viewportWidth;
   private final int viewportHeight;
 
-  ScreencastFrameImpl(byte[] data, int viewportWidth, int viewportHeight) {
+  ScreencastFrameImpl(byte[] data, double timestamp, int viewportWidth, int viewportHeight) {
     this.data = data;
+    this.timestamp = timestamp;
     this.viewportWidth = viewportWidth;
     this.viewportHeight = viewportHeight;
   }
@@ -32,6 +34,11 @@ class ScreencastFrameImpl implements ScreencastFrame {
   @Override
   public byte[] data() {
     return data;
+  }
+
+  @Override
+  public double timestamp() {
+    return timestamp;
   }
 
   @Override

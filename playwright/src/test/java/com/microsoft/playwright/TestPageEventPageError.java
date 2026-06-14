@@ -30,7 +30,7 @@ public class TestPageEventPageError extends TestBase {
     page.evaluate("async () => {\n" +
       "    for (let i = 0; i < 301; i++)\n" +
       "      window.setTimeout(() => { throw new Error('error' + i); }, 0);\n" +
-      "    await new Promise(f => window.setTimeout(f, 100));\n" +
+      "    await new Promise(f => window.setTimeout(f, 2000));\n" +
       "  }");
 
     List<String> errors = page.pageErrors();

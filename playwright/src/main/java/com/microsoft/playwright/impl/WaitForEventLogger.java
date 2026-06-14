@@ -41,7 +41,8 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
     {
       JsonObject info = new JsonObject();
       info.addProperty("phase", "before");
-      sendWaitForEventInfo(info);
+      info.addProperty("event", "");
+      sendWaitInfo(info);
     }
     JsonObject info = new JsonObject();
     info.addProperty("phase", "after");
@@ -51,7 +52,7 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
       info.addProperty("error", e.getMessage());
       throw e;
     } finally {
-      sendWaitForEventInfo(info);
+      sendWaitInfo(info);
     }
   }
 
@@ -61,14 +62,15 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
     JsonObject info = new JsonObject();
     info.addProperty("phase", "log");
     info.addProperty("message", message);
-    sendWaitForEventInfo(info);
+    sendWaitInfo(info);
   }
 
-  private void sendWaitForEventInfo(JsonObject info) {
-    info.addProperty("event", "");
+  private void sendWaitInfo(JsonObject info) {
     info.addProperty("waitId", waitId);
-    JsonObject params = new JsonObject();
-    params.add("info", info);
-    channel.sendMessageAsync("waitForEventInfo", params);
+    try {
+      channel.sendMessageNoReply("__waitInfo__", info);
+    } catch (RuntimeException e) {
+      // Fire-and-forget: never throw to the caller.
+    }
   }
 }

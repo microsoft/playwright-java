@@ -564,6 +564,13 @@ public interface BrowserContext extends AutoCloseable {
    */
   Clock clock();
   /**
+   * Virtual WebAuthn authenticator for this context. Lets tests seed credentials and intercept {@code
+   * navigator.credentials.create()} / {@code navigator.credentials.get()} ceremonies.
+   *
+   * @since v1.61
+   */
+  Credentials credentials();
+  /**
    * Debugger allows to pause and resume the execution.
    *
    * @since v1.59

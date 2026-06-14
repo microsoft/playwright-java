@@ -122,4 +122,10 @@ class FrameExpectResult {
   List<String> log;
 }
 
+class FrameExpectErrorDetails {
+  FrameExpectResult.Received received;
+  Boolean timedOut;
+  String customErrorMessage;
+}
+
 

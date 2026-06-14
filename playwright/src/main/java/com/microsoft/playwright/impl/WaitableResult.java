@@ -52,6 +52,8 @@ class WaitableResult<T> implements Waitable<T> {
         throw new TimeoutError(exception.getMessage(), exception);
       } if (exception instanceof TargetClosedError) {
         throw new TargetClosedError(exception.getMessage(), exception);
+      } if (exception instanceof ServerErrorWithDetails) {
+        throw new ServerErrorWithDetails((ServerErrorWithDetails) exception);
       }
       throw new PlaywrightException(exception.getMessage(), exception);
     }

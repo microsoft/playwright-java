@@ -22,6 +22,8 @@ import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.HttpHeader;
+import com.microsoft.playwright.options.SecurityDetails;
+import com.microsoft.playwright.options.ServerAddr;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -83,6 +85,22 @@ class APIResponseImpl implements APIResponse {
   public boolean ok() {
     int status = status();
     return status == 0 || (status >= 200 && status <= 299);
+  }
+
+  @Override
+  public SecurityDetails securityDetails() {
+    if (!initializer.has("securityDetails")) {
+      return null;
+    }
+    return gson().fromJson(initializer.get("securityDetails"), SecurityDetails.class);
+  }
+
+  @Override
+  public ServerAddr serverAddr() {
+    if (!initializer.has("serverAddr")) {
+      return null;
+    }
+    return gson().fromJson(initializer.get("serverAddr"), ServerAddr.class);
   }
 
   @Override

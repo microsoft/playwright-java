@@ -112,8 +112,8 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options) {
-    if (!"chromium".equals(name())) {
-      throw new PlaywrightException("Connecting over CDP is only supported in Chromium.");
+    if (!"chromium".equals(name()) && !"webkit".equals(name())) {
+      throw new PlaywrightException("Connecting over CDP is only supported in Chromium and WebKit.");
     }
     if (options == null) {
       options = new ConnectOverCDPOptions();

@@ -4529,7 +4529,7 @@ public interface Page extends AutoCloseable {
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Page#evaluate
    * Page.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = page.evaluate("document.body");
+   * ElementHandle bodyHandle = page.evaluateHandle("document.body");
    * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -4571,7 +4571,7 @@ public interface Page extends AutoCloseable {
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Page#evaluate
    * Page.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = page.evaluate("document.body");
+   * ElementHandle bodyHandle = page.evaluateHandle("document.body");
    * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -5808,6 +5808,18 @@ public interface Page extends AutoCloseable {
    * @since v1.59
    */
   void clearPageErrors();
+  /**
+   * Provides access to the page's {@code localStorage} for the current origin. See {@code WebStorage}.
+   *
+   * @since v1.61
+   */
+  WebStorage localStorage();
+  /**
+   * Provides access to the page's {@code sessionStorage} for the current origin. See {@code WebStorage}.
+   *
+   * @since v1.61
+   */
+  WebStorage sessionStorage();
   /**
    * Returns up to (currently) 200 last console messages from this page. See {@link
    * com.microsoft.playwright.Page#onConsoleMessage Page.onConsoleMessage()} for more details.
@@ -7552,8 +7564,8 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#tap Page.tap()} the method will throw if {@code hasTouch} option of the browser
-   * context is false.
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#tap Page.tap()} will throw if the {@code hasTouch} option of the browser context is
+   * false.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
@@ -7575,8 +7587,8 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#tap Page.tap()} the method will throw if {@code hasTouch} option of the browser
-   * context is false.
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#tap Page.tap()} will throw if the {@code hasTouch} option of the browser context is
+   * false.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8

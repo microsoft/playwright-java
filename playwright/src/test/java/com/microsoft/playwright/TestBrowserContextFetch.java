@@ -741,10 +741,12 @@ public class TestBrowserContextFetch extends TestBase {
     });
     page.evaluate("() => setTimeout(closeContext, 1000);");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.EMPTY_PAGE));
-    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Request context disposed") ||
+      e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
 
     e = assertThrows(PlaywrightException.class, () ->  context.request().post(server.EMPTY_PAGE));
-    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Request context disposed") ||
+      e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
   @Test
