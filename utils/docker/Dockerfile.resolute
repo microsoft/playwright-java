@@ -19,7 +19,7 @@ RUN apt-get update && \
     gpg && \
     rm -rf /var/lib/apt/lists/* && \
     # Create the pwuser
-    adduser pwuser
+    useradd -m -s /bin/bash pwuser
 
 # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
 # Java 25, so we install latest Maven from Apache instead.
