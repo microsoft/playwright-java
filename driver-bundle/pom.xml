@@ -28,4 +28,18 @@
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- The driver binaries for all platforms live in src/main/resources and must not
+           be packaged into the sources JAR (see issue #1913). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludeResources>true</excludeResources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
