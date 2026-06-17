@@ -77,6 +77,7 @@ class Serialization {
 
   static final Gson jsonDataSerializer = new GsonBuilder().disableHtmlEscaping()
     .registerTypeAdapter(Date.class, new DateSerializer())
+    .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
     .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer())
     .serializeNulls().create();
@@ -568,6 +569,15 @@ class Serialization {
     @Override
     public JsonElement serialize(OffsetDateTime src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(dateFormat.format(Date.from(src.toInstant())));
+    }
+  }
+
+  private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+    @Override
+    public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+      // LocalDate has no time or zone, so emit the ISO-8601 date (yyyy-MM-dd) as-is to
+      // avoid shifting the calendar date when converting through a time zone.
+      return new JsonPrimitive(src.toString());
     }
   }
 
