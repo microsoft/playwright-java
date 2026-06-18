@@ -119,7 +119,26 @@ public class DriverJar extends Driver {
   }
 
   void extractDriverToTempDir() throws URISyntaxException, IOException {
-    URI originalUri = getDriverResourceURI();
+    // The platform-independent driver code (the playwright-core package) ships in the driver
+    // module and is always on the classpath.
+    extractResourceToDir("driver/package", driverTempDir.resolve("package"));
+    // The Node.js binary is only needed when it is not preinstalled on the host. It ships in the
+    // optional driver-bundle module, one binary per platform; a user with a preinstalled Node.js
+    // can exclude that dependency entirely.
+    if (preinstalledNodePath == null) {
+      String platformResource = "driver/" + platformDir();
+      if (DriverJar.class.getClassLoader().getResource(platformResource) == null) {
+        throw new RuntimeException("Failed to find the bundled Node.js for platform '" + platformDir()
+          + "'. Add the com.microsoft.playwright:driver-bundle dependency, or set the "
+          + PLAYWRIGHT_NODEJS_PATH + " environment variable (or the playwright.nodejs.path system "
+          + "property) to point at a preinstalled Node.js.");
+      }
+      extractResourceToDir(platformResource, driverTempDir);
+    }
+  }
+
+  private void extractResourceToDir(String resourcePath, Path destDir) throws URISyntaxException, IOException {
+    URI originalUri = DriverJar.class.getClassLoader().getResource(resourcePath).toURI();
     URI uri = maybeExtractNestedJar(originalUri);
 
     // Create zip filesystem if loading from jar.
@@ -131,14 +150,8 @@ public class DriverJar extends Driver {
       // See https://github.com/microsoft/playwright-java/issues/306
       Path srcRootDefaultFs = Paths.get(srcRoot.toString());
       Files.walk(srcRoot).forEach(fromPath -> {
-        if (preinstalledNodePath != null) {
-          String fileName = fromPath.getFileName().toString();
-          if ("node.exe".equals(fileName) || "node".equals(fileName)) {
-            return;
-          }
-        }
         Path relative = srcRootDefaultFs.relativize(Paths.get(fromPath.toString()));
-        Path toPath = driverTempDir.resolve(relative.toString());
+        Path toPath = destDir.resolve(relative.toString());
         try {
           if (Files.isDirectory(fromPath)) {
             Files.createDirectories(toPath);

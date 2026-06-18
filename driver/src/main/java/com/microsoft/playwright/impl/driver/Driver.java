@@ -25,8 +25,9 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
 
 /**
  * This class provides access to playwright-cli. It can be either preinstalled
- * in the host system and its path is passed as a system property or it can be
- * loaded from the driver-bundle module if that module is in the classpath.
+ * in the host system and its path is passed as a system property, or it can be
+ * loaded from the classpath: the platform-independent driver code ships in the
+ * driver module and the Node.js binary in the optional driver-bundle module.
  */
 public abstract class Driver {
   protected final Map<String, String> env = new LinkedHashMap<>(System.getenv());
