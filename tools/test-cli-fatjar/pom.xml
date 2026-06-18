@@ -29,9 +29,10 @@
       <artifactId>playwright</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- A distributable CLI fat JAR must run on any platform, so bundle every driver. -->
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
-      <artifactId>driver-bundle</artifactId>
+      <artifactId>driver-bundle-all</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

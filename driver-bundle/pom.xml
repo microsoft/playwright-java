@@ -10,10 +10,14 @@
   </parent>
 
   <artifactId>driver-bundle</artifactId>
-  <name>Playwright - Drivers For All Platforms</name>
+  <name>Playwright - Driver For The Host Platform</name>
   <description>
-    This module includes Playwright driver and related utilities for all supported platforms.
-    It is intended to be used on the systems where Playwright driver is not preinstalled.
+    This module loads the Playwright driver from the classpath (DriverJar) and, via the
+    platform-specific profiles below, pulls in the driver binaries for the host platform only.
+    Maven activates exactly one profile based on the build machine's operating system and
+    architecture, so a build downloads just the driver it needs. To bundle every platform (for
+    example a cross-platform fat JAR) depend on driver-bundle-all, or add the individual
+    driver-bundle-&lt;platform&gt; artifacts explicitly.
   </description>
 
   <dependencies>
@@ -29,17 +33,80 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <!-- The driver binaries for all platforms live in src/main/resources and must not
-           be packaged into the sources JAR (see issue #1913). -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <configuration>
-          <excludeResources>true</excludeResources>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <profiles>
+    <!-- Each profile activates on the host OS/arch and contributes the matching driver
+         binaries as a runtime dependency. The activation is evaluated against the consumer's
+         build environment during transitive dependency resolution, so users that depend on
+         playwright automatically get the driver for their platform with no extra configuration. -->
+    <profile>
+      <id>driver-linux</id>
+      <activation>
+        <os><name>linux</name><arch>amd64</arch></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.playwright</groupId>
+          <artifactId>driver-bundle-linux-x64</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>driver-linux-arm64</id>
+      <activation>
+        <os><name>linux</name><arch>aarch64</arch></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.playwright</groupId>
+          <artifactId>driver-bundle-linux-arm64</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>driver-mac</id>
+      <activation>
+        <os><family>mac</family><arch>x86_64</arch></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.playwright</groupId>
+          <artifactId>driver-bundle-mac-x64</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>driver-mac-arm64</id>
+      <activation>
+        <os><family>mac</family><arch>aarch64</arch></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.playwright</groupId>
+          <artifactId>driver-bundle-mac-arm64</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>driver-win-x64</id>
+      <activation>
+        <os><family>windows</family></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.playwright</groupId>
+          <artifactId>driver-bundle-win-x64</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>

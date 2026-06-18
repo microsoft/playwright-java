@@ -183,20 +183,20 @@ public class DriverJar extends Driver {
     String arch = System.getProperty("os.arch").toLowerCase();
 
     if (name.contains("windows")) {
-      return "win32_x64";
+      return "win-x64";
     }
     if (name.contains("linux")) {
       if (arch.equals("aarch64")) {
         return "linux-arm64";
       } else {
-        return "linux";
+        return "linux-x64";
       }
     }
     if (name.contains("mac os x")) {
       if (arch.equals("aarch64")) {
         return "mac-arm64";
       } else {
-        return "mac";
+        return "mac-x64";
       }
     }
     throw new RuntimeException("Unexpected os.name value: " + name);

@@ -37,6 +37,12 @@
 
   <modules>
     <module>driver</module>
+    <module>driver-bundle-mac-x64</module>
+    <module>driver-bundle-mac-arm64</module>
+    <module>driver-bundle-linux-x64</module>
+    <module>driver-bundle-linux-arm64</module>
+    <module>driver-bundle-win-x64</module>
+    <module>driver-bundle-all</module>
     <module>driver-bundle</module>
     <module>playwright</module>
   </modules>
@@ -62,6 +68,36 @@
       <dependency>
         <groupId>com.microsoft.playwright</groupId>
         <artifactId>driver-bundle</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-all</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-mac-x64</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-mac-arm64</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-linux-x64</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-linux-arm64</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>driver-bundle-win-x64</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

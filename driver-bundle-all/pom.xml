@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.microsoft.playwright</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>1.50.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>driver-bundle-all</artifactId>
+  <name>Playwright - Drivers For All Platforms</name>
+  <description>
+    Aggregates the Playwright driver for every supported platform (macOS, Linux and Windows).
+    Depend on this artifact when a single build must run on more than the host platform, for
+    example a cross-platform fat JAR. For the common case where only the host platform is needed,
+    rely on the transitive driver-bundle dependency, which selects the right platform automatically.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle-mac-x64</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle-mac-arm64</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle-linux-x64</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle-linux-arm64</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle-win-x64</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>

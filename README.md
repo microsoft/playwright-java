@@ -54,6 +54,51 @@ public class PageScreenshot {
 }
 ```
 
+## Driver bundles and platform selection
+
+Playwright ships the driver (a Node.js binary plus the `playwright-core` package) as
+per-platform Maven artifacts. With **Maven**, the right one is selected automatically for the
+machine that runs the build, so depending on `playwright` is all you need — no extra
+configuration:
+
+| Artifact | Platform |
+| --- | --- |
+| `driver-bundle-mac-x64` | macOS Intel |
+| `driver-bundle-mac-arm64` | macOS Apple Silicon |
+| `driver-bundle-linux-x64` | Linux x64 |
+| `driver-bundle-linux-arm64` | Linux arm64 |
+| `driver-bundle-win-x64` | Windows x64 |
+
+### Bundling every platform (cross-platform / fat JARs)
+
+The automatic selection picks the driver for the build host, so a JAR built on Linux contains
+only the Linux driver. If you build on one OS and run on another (for example a distributable
+fat JAR), depend on `driver-bundle-all`, which bundles every platform:
+
+```xml
+<dependency>
+  <groupId>com.microsoft.playwright</groupId>
+  <artifactId>driver-bundle-all</artifactId>
+  <version>${playwright.version}</version>
+</dependency>
+```
+
+### Gradle
+
+Gradle does not evaluate the Maven POM profiles that drive the automatic selection, so a Gradle
+build will not pick a platform on its own (and converting the dependency from Maven does not
+carry the selection over). Declare the driver explicitly — either a single platform:
+
+```kotlin
+runtimeOnly("com.microsoft.playwright:driver-bundle-linux-x64:$playwrightVersion")
+```
+
+or every platform:
+
+```kotlin
+runtimeOnly("com.microsoft.playwright:driver-bundle-all:$playwrightVersion")
+```
+
 ## Other languages
 
 More comfortable in another programming language? [Playwright](https://playwright.dev) is also available in

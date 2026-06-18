@@ -11,7 +11,8 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo "This script downloads and assembles the Playwright driver for all platforms."
   echo "Each driver is assembled from the 'playwright-core' npm package and the matching"
   echo "Node.js binary from https://nodejs.org, the same way the upstream Playwright build"
-  echo "does it. The result is put under 'driver-bundle/src/main/resources/driver'."
+  echo "does it. Each platform is written to its own module under"
+  echo "'driver-bundle-<platform>/src/main/resources/driver/<platform>'."
   echo ""
   echo "Usage: scripts/download_driver.sh [option]"
   echo ""
@@ -56,50 +57,52 @@ echo "Driver version:  $DRIVER_VERSION"
 echo "Upstream commit: $GIT_HEAD"
 echo "Node.js version: $NODE_VERSION"
 
-cd ../driver-bundle/src/main/resources
+# Each platform's driver is assembled into its own Maven module
+# (driver-bundle-<platform>/src/main/resources/driver/<platform>), so that a consumer build
+# only pulls in the driver for the host platform. See issue #1196. The platform token uses an
+# <os>-<arch> scheme (e.g. mac-x64) that matches both the artifact name and the directory that
+# DriverJar.platformDir() looks up.
+ROOT="$(cd .. && pwd)"
 
-if [[ -d 'driver' ]]; then
-  echo "Deleting existing drivers from $(pwd)"
-  rm -rf driver
-fi
-
-mkdir -p driver
-cd driver
-
-# Download the platform-independent driver package (playwright-core) once.
-CORE_TGZ="$(pwd)/playwright-core-$DRIVER_VERSION.tgz"
+# Download once into a temporary directory shared across platforms.
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+CORE_TGZ="$TMP_DIR/playwright-core-$DRIVER_VERSION.tgz"
 download "https://registry.npmjs.org/playwright-core/-/playwright-core-$DRIVER_VERSION.tgz" "$CORE_TGZ"
 
 # <java platform dir>:<nodejs platform suffix>:<archive extension>
 for ENTRY in \
-  "mac:darwin-x64:tar.gz" \
+  "mac-x64:darwin-x64:tar.gz" \
   "mac-arm64:darwin-arm64:tar.gz" \
-  "linux:linux-x64:tar.gz" \
+  "linux-x64:linux-x64:tar.gz" \
   "linux-arm64:linux-arm64:tar.gz" \
-  "win32_x64:win-x64:zip"
+  "win-x64:win-x64:zip"
 do
   IFS=':' read -r PLATFORM NODE_SUFFIX ARCHIVE <<< "$ENTRY"
-  echo "Assembling driver for $PLATFORM to $(pwd)/$PLATFORM"
-  mkdir "$PLATFORM"
+  DEST="$ROOT/driver-bundle-$PLATFORM/src/main/resources/driver"
+  if [[ -d "$DEST" ]]; then
+    echo "Deleting existing driver from $DEST"
+    rm -rf "$DEST"
+  fi
+  mkdir -p "$DEST/$PLATFORM"
+  echo "Assembling driver for $PLATFORM to $DEST/$PLATFORM"
 
   # 1. playwright-core package contents -> $PLATFORM/package
-  tar -xzf "$CORE_TGZ" -C "$PLATFORM"
+  tar -xzf "$CORE_TGZ" -C "$DEST/$PLATFORM"
 
   # 2. Node.js binary and its license from the official Node.js distribution.
   NODE_DIR="node-v$NODE_VERSION-$NODE_SUFFIX"
-  NODE_ARCHIVE="$NODE_DIR.$ARCHIVE"
+  NODE_ARCHIVE="$TMP_DIR/$NODE_DIR.$ARCHIVE"
   download "https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIR.$ARCHIVE" "$NODE_ARCHIVE"
   if [[ $ARCHIVE == "zip" ]]; then
-    unzip -joq "$NODE_ARCHIVE" "$NODE_DIR/node.exe" -d "$PLATFORM"
-    unzip -joq "$NODE_ARCHIVE" "$NODE_DIR/LICENSE" -d "$PLATFORM"
+    unzip -joq "$NODE_ARCHIVE" "$NODE_DIR/node.exe" -d "$DEST/$PLATFORM"
+    unzip -joq "$NODE_ARCHIVE" "$NODE_DIR/LICENSE" -d "$DEST/$PLATFORM"
   else
-    tar -xzf "$NODE_ARCHIVE" -C "$PLATFORM" --strip-components=2 "$NODE_DIR/bin/node"
-    tar -xzf "$NODE_ARCHIVE" -C "$PLATFORM" --strip-components=1 "$NODE_DIR/LICENSE"
+    tar -xzf "$NODE_ARCHIVE" -C "$DEST/$PLATFORM" --strip-components=2 "$NODE_DIR/bin/node"
+    tar -xzf "$NODE_ARCHIVE" -C "$DEST/$PLATFORM" --strip-components=1 "$NODE_DIR/LICENSE"
   fi
   rm -f "$NODE_ARCHIVE"
 done
-
-rm -f "$CORE_TGZ"
 
 echo ""
 echo "All drivers have been successfully assembled."
