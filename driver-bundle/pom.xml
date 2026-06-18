@@ -12,10 +12,8 @@
   <artifactId>driver-bundle</artifactId>
   <name>Playwright - Node.js For All Platforms</name>
   <description>
-    This module bundles the Node.js binaries needed to run the Playwright driver on every supported
-    platform. The platform-independent driver code lives in the driver module. It is intended for
-    systems where Node.js is not preinstalled; when Node.js is available on the host (see the
-    PLAYWRIGHT_NODEJS_PATH environment variable) this dependency can be excluded.
+    Node.js binaries for the Playwright driver on every supported platform. Can be excluded when
+    Node.js is preinstalled on the host (see PLAYWRIGHT_NODEJS_PATH).
   </description>
 
   <build>

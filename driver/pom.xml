@@ -12,9 +12,8 @@
   <artifactId>driver</artifactId>
   <name>Playwright - Driver</name>
   <description>
-    This module provides the API for discovery and launching of the Playwright driver. It also
-    bundles the platform-independent driver code (the playwright-core package); the matching
-    Node.js binary is provided by the driver-bundle module or by a preinstalled Node.js.
+    API for launching the Playwright driver. Bundles the platform-independent playwright-core
+    package; the Node.js binary comes from the driver-bundle module or a preinstalled Node.js.
   </description>
 
   <dependencies>

@@ -119,12 +119,7 @@ public class DriverJar extends Driver {
   }
 
   void extractDriverToTempDir() throws URISyntaxException, IOException {
-    // The platform-independent driver code (the playwright-core package) ships in the driver
-    // module and is always on the classpath.
     extractResourceToDir("driver/package", driverTempDir.resolve("package"));
-    // The Node.js binary is only needed when it is not preinstalled on the host. It ships in the
-    // optional driver-bundle module, one binary per platform; a user with a preinstalled Node.js
-    // can exclude that dependency entirely.
     if (preinstalledNodePath == null) {
       String platformResource = "driver/" + platformDir();
       if (DriverJar.class.getClassLoader().getResource(platformResource) == null) {
