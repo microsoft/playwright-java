@@ -75,6 +75,7 @@ CORE_TGZ="$TMP_DIR/playwright-core-$DRIVER_VERSION.tgz"
 download "https://registry.npmjs.org/playwright-core/-/playwright-core-$DRIVER_VERSION.tgz" "$CORE_TGZ"
 # The npm tarball has a top-level package/ directory, so this creates $CORE_DEST/package.
 tar -xzf "$CORE_TGZ" -C "$CORE_DEST"
+rm -f "$CORE_TGZ"
 
 # 2. Node.js binary for each platform -> driver-bundle module.
 # <java platform dir>:<nodejs platform suffix>:<archive extension>
