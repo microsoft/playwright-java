@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.microsoft.playwright</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>1.50.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>driver-bundle-linux-arm64</artifactId>
+  <name>Playwright - Driver For Linux arm64</name>
+  <description>
+    Playwright driver (Node.js binary and playwright-core package) for the Linux arm64 platform.
+    This artifact is normally selected automatically for the host platform via the driver-bundle
+    module; depend on it directly (or on driver-bundle-all) to bundle additional platforms.
+  </description>
+
+  <build>
+    <plugins>
+      <!-- The driver binaries live in src/main/resources and must not be packaged
+           into the sources JAR (see issue #1913). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludeResources>true</excludeResources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
