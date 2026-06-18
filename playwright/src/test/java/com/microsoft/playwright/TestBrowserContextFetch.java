@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -531,6 +532,23 @@ public class TestBrowserContextFetch extends TestBase {
     request.get(server.EMPTY_PAGE, RequestOptions.create().setData(mapOf("date", offsetDateTime)));
     byte[] body = serverRequest.get().postBody;
     assertEquals("{\"date\":\"2024-07-10T18:15:30.000Z\"}", new String(body));
+  }
+
+  public static class LocalDateData {
+    public String name;
+    public LocalDate date;
+  }
+
+  @Test
+  void shouldSupportLocalDateInData() throws ExecutionException, InterruptedException {
+    APIRequestContext request = playwright.request().newContext();
+    LocalDateData testData = new LocalDateData();
+    testData.name = "foo";
+    testData.date = LocalDate.of(2022, 12, 23);
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    request.post(server.EMPTY_PAGE, RequestOptions.create().setData(testData));
+    byte[] body = serverRequest.get().postBody;
+    assertEquals("{\"name\":\"foo\",\"date\":\"2022-12-23\"}", new String(body));
   }
 
   @Test
