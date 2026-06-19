@@ -12,7 +12,8 @@
   <artifactId>driver</artifactId>
   <name>Playwright - Driver</name>
   <description>
-    This module provides API for discovery and launching of Playwright driver.
+    API for launching the Playwright driver. Bundles the platform-independent playwright-core
+    package; the Node.js binary comes from the driver-bundle module or a preinstalled Node.js.
   </description>
 
   <dependencies>
@@ -21,4 +22,18 @@
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- The playwright-core package lives in src/main/resources and must not be packaged
+           into the sources JAR (see issue #1913). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludeResources>true</excludeResources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

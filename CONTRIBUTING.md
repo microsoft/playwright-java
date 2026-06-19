@@ -20,7 +20,7 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Run the following script to download and assemble the Playwright driver for all platforms into `driver-bundle/src/main/resources/driver/` directory (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
+2. Run the following script to download and assemble the Playwright driver. The platform-independent `playwright-core` package is assembled once into `driver/src/main/resources/driver/package/`, and the Node.js binary for each platform into `driver-bundle/src/main/resources/driver/<platform>/` (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
 
 ```bash
 scripts/download_driver.sh

@@ -10,28 +10,15 @@
   </parent>
 
   <artifactId>driver-bundle</artifactId>
-  <name>Playwright - Drivers For All Platforms</name>
+  <name>Playwright - Node.js For All Platforms</name>
   <description>
-    This module includes Playwright driver and related utilities for all supported platforms.
-    It is intended to be used on the systems where Playwright driver is not preinstalled.
+    Node.js binaries for the Playwright driver on every supported platform. Can be excluded when
+    Node.js is preinstalled on the host (see PLAYWRIGHT_NODEJS_PATH).
   </description>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.microsoft.playwright</groupId>
-      <artifactId>driver</artifactId>
-      <version>${project.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-    </dependency>
-  </dependencies>
 
   <build>
     <plugins>
-      <!-- The driver binaries for all platforms live in src/main/resources and must not
+      <!-- The Node.js binaries for all platforms live in src/main/resources and must not
            be packaged into the sources JAR (see issue #1913). -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
