@@ -3,6 +3,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Clock;
 
+import java.time.Instant;
 import java.util.Date;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
@@ -72,9 +73,12 @@ class ClockImpl implements Clock {
 
   @Override
   public void pauseAt(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("pauseAt", params);
+    pauseAt(time.getTime());
+  }
+
+  @Override
+  public void pauseAt(Instant time) {
+    pauseAt(time.toEpochMilli());
   }
 
   @Override
@@ -98,9 +102,12 @@ class ClockImpl implements Clock {
 
   @Override
   public void setFixedTime(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("setFixedTime", params);
+    setFixedTime(time.getTime());
+  }
+
+  @Override
+  public void setFixedTime(Instant time) {
+    setFixedTime(time.toEpochMilli());
   }
 
   @Override
@@ -119,9 +126,12 @@ class ClockImpl implements Clock {
 
   @Override
   public void setSystemTime(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("setSystemTime", params);
+    setSystemTime(time.getTime());
+  }
+
+  @Override
+  public void setSystemTime(Instant time) {
+    setSystemTime(time.toEpochMilli());
   }
 
   private static void parseTime(Object time, JsonObject params) {
@@ -129,6 +139,8 @@ class ClockImpl implements Clock {
       params.addProperty("timeNumber", (Long) time);
     } else if (time instanceof Date) {
       params.addProperty("timeNumber", ((Date) time).getTime());
+    } else if (time instanceof Instant) {
+      params.addProperty("timeNumber", ((Instant) time).toEpochMilli());
     } else if (time instanceof String) {
       params.addProperty("timeString", (String) time);
     }

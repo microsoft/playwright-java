@@ -402,13 +402,23 @@ class TypeRef extends Element {
     return result;
   }
 
+  // The Clock time parameters are a union of number|string|Date. java.util.Date is a legacy type,
+  // so for Date-typed unions we additionally generate a java.time.Instant overload.
+  private static boolean hasDate(List<JsonObject> unionTypes) {
+    return unionTypes.stream().anyMatch(o -> "Date".equals(o.get("name").getAsString()));
+  }
+
   int unionSize() {
-    return supportedUnionTypes().size();
+    List<JsonObject> types = supportedUnionTypes();
+    return types.size() + (hasDate(types) ? 1 : 0);
   }
 
   String formatTypeFromUnion(int i) {
-    JsonElement overloadedType = supportedUnionTypes().get(i);
-    return convertBuiltinType(overloadedType.getAsJsonObject());
+    List<JsonObject> types = supportedUnionTypes();
+    if (i == types.size() && hasDate(types)) {
+      return "Instant";
+    }
+    return convertBuiltinType(types.get(i));
   }
 
   boolean isNullable() {
@@ -1012,6 +1022,7 @@ class Interface extends TypeDefinition {
     }
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
+      output.add("import java.time.Instant;");
     }
     if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute", "Credentials", "WebStorage").contains(jsonName)) {
       output.add("import java.util.*;");

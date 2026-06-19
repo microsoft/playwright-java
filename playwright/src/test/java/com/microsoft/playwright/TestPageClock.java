@@ -9,6 +9,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -348,6 +351,25 @@ public class TestPageClock {
     page.clock().runFor(0);
     assertEquals(1, calls.size());
     assertEquals(200, ((Object[]) calls.get(0))[0]);
+  }
+
+  @Test
+  void acceptsInstant(Page page) {
+    // A LocalDateTime has no time zone, so convert it to an Instant at an explicit offset.
+    page.clock().install(new Clock.InstallOptions().setTime(
+      LocalDateTime.of(2024, 12, 10, 8, 0, 0).toInstant(ZoneOffset.UTC)));
+
+    Instant paused = LocalDateTime.of(2024, 12, 10, 10, 0, 0).toInstant(ZoneOffset.UTC);
+    page.clock().pauseAt(paused);
+    assertEquals(paused.toEpochMilli(), ((Number) page.evaluate("() => Date.now()")).longValue());
+
+    Instant system = LocalDateTime.of(2024, 12, 10, 12, 0, 0).toInstant(ZoneOffset.UTC);
+    page.clock().setSystemTime(system);
+    assertEquals(system.toEpochMilli(), ((Number) page.evaluate("() => Date.now()")).longValue());
+
+    Instant fixed = LocalDateTime.of(2024, 12, 10, 14, 0, 0).toInstant(ZoneOffset.UTC);
+    page.clock().setFixedTime(fixed);
+    assertEquals(fixed.toEpochMilli(), ((Number) page.evaluate("() => Date.now()")).longValue());
   }
 
   @Test
