@@ -38,6 +38,10 @@ ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk-${PW_TARGET_ARCH}
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
+# Extract the Playwright driver into the image once so the library reuses it instead of unpacking
+# it into /tmp on every launch. See https://github.com/microsoft/playwright-java/issues/1268.
+ENV PLAYWRIGHT_DRIVER_DIR=/ms-playwright-driver
+
 RUN mkdir /ms-playwright && \
     mkdir /tmp/pw-java
 
@@ -45,6 +49,8 @@ COPY . /tmp/pw-java
 
 RUN cd /tmp/pw-java && \
     mvn install -D skipTests --no-transfer-progress && \
+    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="install-driver" -f playwright/pom.xml --no-transfer-progress && \
     DEBIAN_FRONTEND=noninteractive mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
@@ -52,4 +58,5 @@ RUN cd /tmp/pw-java && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="mark-docker-image '${DOCKER_IMAGE_NAME_TEMPLATE}'" -f playwright/pom.xml --no-transfer-progress && \
     rm -rf /tmp/pw-java && \
-    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH && \
+    chmod -R 777 $PLAYWRIGHT_DRIVER_DIR

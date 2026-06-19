@@ -30,17 +30,11 @@ public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
   private static final String SELENIUM_REMOTE_URL = "SELENIUM_REMOTE_URL";
   private final Path driverTempDir;
+  private final boolean deleteOnExit;
   private Path preinstalledNodePath;
 
   public DriverJar() throws IOException {
-    // Allow specifying custom path for the driver installation
-    // See https://github.com/microsoft/playwright-java/issues/728
-    String alternativeTmpdir = System.getProperty("playwright.driver.tmpdir");
-    String prefix = "playwright-java-";
-    driverTempDir = alternativeTmpdir == null
-      ? Files.createTempDirectory(prefix)
-      : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
-    driverTempDir.toFile().deleteOnExit();
+    this(createTempDriverDir(), true);
     String nodePath = System.getProperty("playwright.nodejs.path");
     if (nodePath != null) {
       preinstalledNodePath = Paths.get(nodePath);
@@ -49,6 +43,32 @@ public class DriverJar extends Driver {
       }
     }
     logMessage("created DriverJar: " + driverTempDir);
+  }
+
+  private DriverJar(Path driverDir, boolean deleteOnExit) {
+    this.driverTempDir = driverDir;
+    this.deleteOnExit = deleteOnExit;
+    if (deleteOnExit) {
+      driverTempDir.toFile().deleteOnExit();
+    }
+  }
+
+  private static Path createTempDriverDir() throws IOException {
+    // Allow specifying custom path for the driver installation
+    // See https://github.com/microsoft/playwright-java/issues/728
+    String alternativeTmpdir = System.getProperty("playwright.driver.tmpdir");
+    String prefix = "playwright-java-";
+    return alternativeTmpdir == null
+      ? Files.createTempDirectory(prefix)
+      : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
+  }
+
+  // Extracts the driver (playwright-core package and the Node.js binary for the current platform)
+  // into the given directory, persistently. Point playwright.cli.dir / PLAYWRIGHT_DRIVER_DIR at it
+  // to run without extracting to a temp directory on every launch. See issue #1268.
+  public static void installDriverTo(Path driverDir) throws IOException, URISyntaxException {
+    Files.createDirectories(driverDir);
+    new DriverJar(driverDir, false).extractDriverToTempDir();
   }
 
   @Override
@@ -156,7 +176,9 @@ public class DriverJar extends Driver {
               toPath.toFile().setExecutable(true, true);
             }
           }
-          toPath.toFile().deleteOnExit();
+          if (deleteOnExit) {
+            toPath.toFile().deleteOnExit();
+          }
         } catch (IOException e) {
           throw new RuntimeException("Failed to extract driver from " + uri + ", full uri: " + originalUri, e);
         }
@@ -179,7 +201,9 @@ public class DriverJar extends Driver {
       Path fromPath = Paths.get(jarUri);
       Path toPath = driverTempDir.resolve(fromPath.getFileName().toString());
       Files.copy(fromPath, toPath);
-      toPath.toFile().deleteOnExit();
+      if (deleteOnExit) {
+        toPath.toFile().deleteOnExit();
+      }
       return new URI("jar:" + toPath.toUri() + JAR_URL_SEPARATOR + parts[2]);
     } catch (IOException e) {
       throw new RuntimeException("Failed to extract driver's nested .jar from " + jarUri + "; full uri: " + uri, e);
