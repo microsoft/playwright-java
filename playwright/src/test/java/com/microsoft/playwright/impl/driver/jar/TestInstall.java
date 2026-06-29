@@ -132,6 +132,30 @@ public class TestInstall {
   }
 
 
+  @Test
+  void canInstallDriverToDirectoryAndReuseIt(@TempDir Path tmpDir) throws Exception {
+    Path driverDir = tmpDir.resolve("driver");
+    DriverJar.installDriverTo(driverDir);
+    // The directory is self-contained: the playwright-core package and the Node.js binary.
+    assertTrue(Files.exists(driverDir.resolve("package").resolve("cli.js")));
+    assertTrue(Files.exists(driverDir.resolve(isWindows() ? "node.exe" : "node")));
+
+    // Pointing playwright.cli.dir at it must reuse it as-is, without extracting to a temp directory.
+    System.setProperty("playwright.cli.dir", driverDir.toString());
+    Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
+    assertEquals(driverDir, driver.driverDir());
+
+    ProcessBuilder pb = driver.createProcessBuilder();
+    pb.command().add("--version");
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    Path out = tmpDir.resolve("out.txt");
+    pb.redirectOutput(out.toFile());
+    Process p = pb.start();
+    assertTrue(p.waitFor(1, TimeUnit.MINUTES), "Timed out waiting for version to be printed");
+    String stdout = new String(Files.readAllBytes(out), StandardCharsets.UTF_8);
+    assertTrue(stdout.contains("Version "), stdout);
+  }
+
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
     DriverJar auxDriver = new DriverJar();
     auxDriver.extractDriverToTempDir();
