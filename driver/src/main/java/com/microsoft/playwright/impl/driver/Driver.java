@@ -32,6 +32,7 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
 public abstract class Driver {
   protected final Map<String, String> env = new LinkedHashMap<>(System.getenv());
   public static final String PLAYWRIGHT_NODEJS_PATH = "PLAYWRIGHT_NODEJS_PATH";
+  public static final String PLAYWRIGHT_DRIVER_DIR = "PLAYWRIGHT_DRIVER_DIR";
 
   private static Driver instance;
 
@@ -108,9 +109,12 @@ public abstract class Driver {
   }
 
   private static Driver newInstance() throws Exception {
-    String pathFromProperty = System.getProperty("playwright.cli.dir");
-    if (pathFromProperty != null) {
-      return new PreinstalledDriver(Paths.get(pathFromProperty));
+    String driverDir = System.getProperty("playwright.cli.dir");
+    if (driverDir == null) {
+      driverDir = System.getenv(PLAYWRIGHT_DRIVER_DIR);
+    }
+    if (driverDir != null) {
+      return new PreinstalledDriver(Paths.get(driverDir));
     }
 
     String driverImpl =
