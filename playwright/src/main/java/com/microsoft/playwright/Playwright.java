@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
+import com.microsoft.playwright.impl.driver.Driver;
+
 import java.util.*;
 
 /**
@@ -96,6 +98,14 @@ public interface Playwright extends AutoCloseable {
   /**
    * Launches new Playwright driver process and connects to it. {@link com.microsoft.playwright.Playwright#close
    * Playwright.close()} should be called when the instance is no longer needed.
+   *
+   * <p>
+   * Uses a default driver from the pre-installed location specified in
+   * system property 'playwright.cli.dir' or env variable 'PLAYWRIGHT_DRIVER_DIR'
+   * If none is provided, then a singleton instance will be created from the class
+   * provided in system property 'playwright.driver.impl' defaulting to {@link com.microsoft.playwright.impl.driver.jar.DriverJar DriverJar}.
+   * </p>
+   *
    * <pre>{@code
    * Playwright playwright = Playwright.create();
    * Browser browser = playwright.webkit().launch();
@@ -108,6 +118,20 @@ public interface Playwright extends AutoCloseable {
    */
   static Playwright create(CreateOptions options) {
     return PlaywrightImpl.create(options);
+  }
+
+  /**
+   * Launches the new Playwright driver process using the provided 3rd party driver instance and connects to it.
+   * {@link com.microsoft.playwright.Playwright#close Playwright.close()} should be called when the instance is no longer needed.
+   *
+   * <p>
+   * <b>Warning!</b> Use of 3rd party drivers may not work as expected and can be a source of failures.
+   * Make sure you use a compatible driver with the current Playwright version.
+   *</p>
+   * @since v1.62.0
+   */
+  static Playwright create(CreateOptions options, Driver.ThirdPartyDriver driver) {
+    return PlaywrightImpl.createWithThirdPartyDriver(options, driver);
   }
 
   static Playwright create() {

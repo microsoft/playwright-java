@@ -24,38 +24,99 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 import com.microsoft.playwright.impl.driver.Driver;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.Channels;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
-  private Process driverProcess;
+  private Closeable driverCloseable;
 
   public static PlaywrightImpl create(CreateOptions options) {
     return createImpl(options, false);
   }
 
   public static PlaywrightImpl createImpl(CreateOptions options, boolean forceNewDriverInstanceForTests) {
+    Map<String, String> env = getEnv(options);
+
+    Driver driver = forceNewDriverInstanceForTests ?
+      Driver.createAndInstall(env, true) :
+      Driver.ensureDriverInstalled(env, true);
+
+    ProcessBuilder pb = driver.createProcessBuilder();
+    pb.command().add("run-driver");
+
+    return createFromProcessBuilder(env, pb);
+  }
+
+  public static PlaywrightImpl createWithThirdPartyDriver(CreateOptions options, Driver.ThirdPartyDriver driver) {
+    Map<String, String> env = getEnv(options);
+
+    if (driver instanceof Driver.ByteChannelDriver) {
+      Driver.ByteChannelDriver byteChannelDriver = (Driver.ByteChannelDriver) driver;
+      return createFromByteChannel(env, byteChannelDriver);
+    } if (driver instanceof Driver.ExternalProcessDriver) {
+      Driver.ExternalProcessDriver externalProcessDriver = (Driver.ExternalProcessDriver) driver;
+      ProcessBuilder pb = externalProcessDriver.createProcessBuilder();
+      return createFromProcessBuilder(env, pb);
+    } else {
+      throw new PlaywrightException("Unsupported 3rd party driver type: " + driver.getClass().getName());
+    }
+  }
+
+  private static PlaywrightImpl createFromByteChannel(Map<String, String> env, Driver.ByteChannelDriver byteChannelDriver) {
+    ByteChannel channel = byteChannelDriver.createByteChannel();
+    InputStream in = Channels.newInputStream(channel);
+    OutputStream out = Channels.newOutputStream(channel);
+    Closeable closeable = () -> {
+        in.close();
+        out.close();
+        channel.close();
+    };
+    return createWithStreams(env, in, out, closeable);
+  }
+
+  private static PlaywrightImpl createWithStreams(Map<String, String> env,
+                                                  InputStream in,
+                                                  OutputStream out,
+                                                  Closeable driverCloseable) {
+    Connection connection = new Connection(new PipeTransport(in, out), env);
+    PlaywrightImpl result = connection.initializePlaywright();
+    result.driverCloseable = driverCloseable;
+    return result;
+  }
+
+  private static PlaywrightImpl createFromProcessBuilder(Map<String, String> env, ProcessBuilder pb) {
+    try {
+      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+
+      //noinspection resource it is wrapped to closeable lambda
+      Process p = pb.start();
+      return createWithStreams(env, p.getInputStream(), p.getOutputStream(), () -> {
+        // playwright-cli will exit when its stdin is closed, we wait for that.
+        try {
+          boolean didClose = p.waitFor(30, TimeUnit.SECONDS);
+          if (!didClose) {
+            System.err.println("WARNING: Timed out while waiting for driver process to exit");
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new PlaywrightException("Operation interrupted", e);
+        }
+      });
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to launch driver", e);
+    }
+  }
+
+  private static Map<String, String> getEnv(CreateOptions options) {
     Map<String, String> env = Collections.emptyMap();
     if (options != null && options.env != null) {
       env = options.env;
     }
-    Driver driver = forceNewDriverInstanceForTests ?
-      Driver.createAndInstall(env, true) :
-      Driver.ensureDriverInstalled(env, true);
-    try {
-      ProcessBuilder pb = driver.createProcessBuilder();
-      pb.command().add("run-driver");
-      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-      Process p = pb.start();
-      Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()), env);
-      PlaywrightImpl result = connection.initializePlaywright();
-      result.driverProcess = p;
-      return result;
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to launch driver", e);
-    }
+    return env;
   }
 
   private final BrowserTypeImpl chromium;
@@ -115,16 +176,9 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   public void close() {
     try {
       connection.close();
-      // playwright-cli will exit when its stdin is closed, we wait for that.
-      boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
-      if (!didClose) {
-        System.err.println("WARNING: Timed out while waiting for driver process to exit");
-      }
+      if (driverCloseable != null) driverCloseable.close();
     } catch (IOException e) {
       throw new PlaywrightException("Failed to terminate", e);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new PlaywrightException("Operation interrupted", e);
     }
   }
 }

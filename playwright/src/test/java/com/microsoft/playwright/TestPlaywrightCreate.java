@@ -17,13 +17,17 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
+import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.microsoft.playwright.Utils.getBrowserTypeFromEnv;
@@ -47,6 +51,93 @@ public class TestPlaywrightCreate {
           fail("Unexpected file: " + child.toString());
         }
       }
+    }
+  }
+
+  private static class CustomProcessBuilderDriver implements Driver.ThirdPartyDriver, Driver.ExternalProcessDriver {
+    private final Driver defaultDriver = Driver.createAndInstall(Collections.emptyMap(), false);
+
+    @Override
+    public ProcessBuilder createProcessBuilder() {
+      ProcessBuilder pb = defaultDriver.createProcessBuilder();
+      pb.command().add("run-driver");
+      return pb;
+    }
+  }
+
+  @Test
+  void shouldAcceptThirdPartyExternalProcessDriver() {
+    Driver.ThirdPartyDriver customProxyDriver = new CustomProcessBuilderDriver();
+    try (Playwright playwright = Playwright.create(null, customProxyDriver)) {
+      assertNotNull(playwright.chromium());
+    }
+  }
+
+  private static class CustomByteChannelDriver implements Driver.ThirdPartyDriver, Driver.ByteChannelDriver {
+    private final Driver defaultDriver = Driver.createAndInstall(Collections.emptyMap(), false);
+
+    @Override
+    public ByteChannel createByteChannel() {
+      ProcessBuilder pb = defaultDriver.createProcessBuilder();
+      pb.command().add("run-driver");
+      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+
+      try {
+        Process process = pb.start();
+        return new ByteChannel() {
+          @Override
+          public int read(ByteBuffer dst) throws IOException {
+            int available = process.getInputStream().available();
+            if (available == 0) {
+              int b = process.getInputStream().read();
+              if (b == -1) {
+                return -1;
+              }
+              dst.put((byte) b);
+              return 1;
+            }
+            int toRead = Math.min(available, dst.remaining());
+            byte[] buffer = new byte[toRead];
+            int bytesRead = process.getInputStream().read(buffer);
+            if (bytesRead > 0) {
+              dst.put(buffer, 0, bytesRead);
+            }
+            return bytesRead;
+          }
+
+          @Override
+          public int write(ByteBuffer src) throws IOException {
+            int bytesToWrite = src.remaining();
+            byte[] buffer = new byte[bytesToWrite];
+            src.get(buffer);
+            process.getOutputStream().write(buffer);
+            process.getOutputStream().flush();
+            return bytesToWrite;
+          }
+
+          @Override
+          public boolean isOpen() {
+            return process.isAlive();
+          }
+
+          @Override
+          public void close() throws IOException {
+            process.getOutputStream().close();
+            process.getInputStream().close();
+            process.destroy();
+          }
+        };
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to start Playwright driver process", e);
+      }
+    }
+  }
+
+  @Test
+  void shouldAcceptThirdPartyByteChannelDriver() {
+    Driver.ThirdPartyDriver customProxyDriver = new CustomByteChannelDriver();
+    try (Playwright playwright = Playwright.create(null, customProxyDriver)) {
+      assertNotNull(playwright.chromium());
     }
   }
 

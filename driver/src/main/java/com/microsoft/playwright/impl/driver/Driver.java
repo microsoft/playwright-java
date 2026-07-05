@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl.driver;
 
+import java.nio.channels.ByteChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
@@ -24,10 +25,19 @@ import java.util.Map;
 import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestamp;
 
 /**
- * This class provides access to playwright-cli. It can be either preinstalled
- * in the host system and its path is passed as a system property, or it can be
- * loaded from the classpath: the platform-independent driver code ships in the
- * driver module and the Node.js binary in the optional driver-bundle module.
+ * This class provides access to playwright-cli.
+ * Default implementations come in two variants:
+ * <ul>
+ * <li><b>preinstalled</b> in the host system and its path is passed as a system property</li>
+ * <li><b>classpath loaded:</b> the platform-independent driver code ships in the driver module and the Node.js binary in the optional driver-bundle module.</li>
+ * </ul>
+ *
+ * User can implement their own driver by implementing {@link Driver.ThirdPartyDriver}
+ * and one of the expecting driver interfaces:
+ * <ul>
+ * <li>{@link Driver.ExternalProcessDriver}</li>
+ * <li>{@link Driver.ByteChannelDriver}</li>
+ * </ul>
  */
 public abstract class Driver {
   protected final Map<String, String> env = new LinkedHashMap<>(System.getenv());
@@ -35,6 +45,27 @@ public abstract class Driver {
   public static final String PLAYWRIGHT_DRIVER_DIR = "PLAYWRIGHT_DRIVER_DIR";
 
   private static Driver instance;
+
+  /**
+   * Marker interface to identify third-party drivers.
+   * Playwright doesn't provide any guarantees about the stability of the third-party drivers.
+   * The most reliable communication is to proxy to the standard driver bundled to the current version of Playwright.
+   */
+  public interface ThirdPartyDriver {}
+
+  public interface ExternalProcessDriver {
+    /**
+     * Creates a process builder to launch the Playwright driver.
+     */
+    ProcessBuilder createProcessBuilder();
+  }
+
+  public interface ByteChannelDriver {
+    /**
+     * Creates a new channel to communicate with the Playwright driver.
+     */
+    ByteChannel createByteChannel();
+  }
 
   private static class PreinstalledDriver extends Driver {
     private final Path driverDir;
