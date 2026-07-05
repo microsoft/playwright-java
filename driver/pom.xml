@@ -16,6 +16,10 @@
     package; the Node.js binary comes from the driver-bundle module or a preinstalled Node.js.
   </description>
 
+  <properties>
+    <automatic.module.name>com.microsoft.playwright.driver</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
