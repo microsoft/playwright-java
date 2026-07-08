@@ -28,7 +28,7 @@ jobs:
             browser: webkit
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set up JDK 1.8
       uses: actions/setup-java@v5
       with:
@@ -73,7 +73,7 @@ jobs:
             browser-channel: msedge
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install Media Pack
         if: matrix.os == 'windows-latest'
         shell: powershell
@@ -108,7 +108,7 @@ jobs:
         browser: [chromium, firefox, webkit]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:

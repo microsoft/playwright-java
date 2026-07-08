@@ -34,7 +34,7 @@ jobs:
           - runs-on: ubuntu-24.04-arm
             arch: arm64
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build Docker image
         run: |
           bash utils/docker/build.sh --${{ matrix.arch }} ${{ matrix.flavor }} playwright-java:localbuild-${{ matrix.flavor }}

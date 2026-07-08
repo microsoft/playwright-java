@@ -13,7 +13,7 @@ jobs:
     environment: Docker
     if: github.repository == 'microsoft/playwright-java'
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Azure login
       uses: azure/login@v3
       with:
@@ -26,5 +26,5 @@ jobs:
       uses: docker/setup-qemu-action@v4
       with:
         platforms: arm64
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - run: ./utils/docker/publish_docker.sh stable
