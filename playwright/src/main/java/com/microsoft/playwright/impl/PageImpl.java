@@ -47,6 +47,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
   private final ScreencastImpl screencast;
+  private final CoverageImpl coverage;
   private final WebStorageImpl localStorage;
   private final WebStorageImpl sessionStorage;
   final Waitable<?> waitableClosedOrCrashed;
@@ -139,6 +140,7 @@ public class PageImpl extends ChannelOwner implements Page {
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
     screencast = new ScreencastImpl(this);
+    coverage = new CoverageImpl(this);
     localStorage = new WebStorageImpl(this, "local");
     sessionStorage = new WebStorageImpl(this, "session");
     frames.add(mainFrame);
@@ -455,6 +457,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public ClockImpl clock() {
     return browserContext.clock();
+  }
+
+  @Override
+  public Coverage coverage() {
+    return coverage;
   }
 
   @Override

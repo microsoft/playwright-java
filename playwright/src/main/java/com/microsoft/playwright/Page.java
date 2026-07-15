@@ -3875,6 +3875,12 @@ public interface Page extends AutoCloseable {
    */
   Clock clock();
   /**
+   * Browser-specific coverage implementation.
+   *
+   * <p> Coverage APIs are only supported on Chromium-based browsers.
+   */
+  Coverage coverage();
+  /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever the page is navigated.</li>
@@ -8721,4 +8727,3 @@ public interface Page extends AutoCloseable {
    */
   List<Worker> workers();
 }
-
