@@ -1246,6 +1246,45 @@ public class PageImpl extends ChannelOwner implements Page {
     return selectOption(selector, values, options);
   }
 
+  static class ExpectScreenshotResult {
+    byte[] actual;
+    byte[] previous;
+    byte[] diff;
+    String errorMessage;
+    List<String> log;
+    boolean timedOut;
+  }
+
+  ExpectScreenshotResult expectScreenshot(PageExpectScreenshotOptions options, String title) {
+    return withTitle(title, () -> expectScreenshot(options));
+  }
+
+  ExpectScreenshotResult expectScreenshot(PageExpectScreenshotOptions options) {
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    ExpectScreenshotResult result = new ExpectScreenshotResult();
+    try {
+      JsonObject json = sendMessage("expectScreenshot", params, options.timeout).getAsJsonObject();
+      if (json.has("actual")) {
+        result.actual = Base64.getDecoder().decode(json.get("actual").getAsString());
+      }
+    } catch (ServerErrorWithDetails e) {
+      PageExpectScreenshotErrorDetails details = gson().fromJson(e.errorDetails(), PageExpectScreenshotErrorDetails.class);
+      if (details.actual != null) {
+        result.actual = Base64.getDecoder().decode(details.actual);
+      }
+      if (details.previous != null) {
+        result.previous = Base64.getDecoder().decode(details.previous);
+      }
+      if (details.diff != null) {
+        result.diff = Base64.getDecoder().decode(details.diff);
+      }
+      result.errorMessage = details.customErrorMessage;
+      result.log = details.log;
+      result.timedOut = Boolean.TRUE.equals(details.timedOut);
+    }
+    return result;
+  }
+
   private byte[] screenshotImpl(ScreenshotOptions options) {
     if (options == null) {
       options = new ScreenshotOptions();

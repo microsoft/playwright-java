@@ -128,4 +128,40 @@ class FrameExpectErrorDetails {
   String customErrorMessage;
 }
 
+class PageExpectScreenshotOptions {
+  String expected;
+  boolean isNot;
+  LocatorImpl locator;
+  String comparator;
+  Double maxDiffPixels;
+  Double maxDiffPixelRatio;
+  Double threshold;
+  Boolean fullPage;
+  com.microsoft.playwright.options.Clip clip;
+  // Only "png" or "webp" are valid here, computed internally based on the snapshot
+  // file extension (there is no public "webp" value in ScreenshotType).
+  String type;
+  Boolean omitBackground;
+  com.microsoft.playwright.options.ScreenshotCaret caret;
+  com.microsoft.playwright.options.ScreenshotAnimations animations;
+  com.microsoft.playwright.options.ScreenshotScale scale;
+  List<LocatorImpl> mask;
+  String maskColor;
+  String style;
+  Double timeout;
+}
+
+class PageExpectScreenshotResult {
+  String actual;
+}
+
+class PageExpectScreenshotErrorDetails {
+  String diff;
+  String customErrorMessage;
+  String actual;
+  String previous;
+  Boolean timedOut;
+  List<String> log;
+}
+
 

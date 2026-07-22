@@ -84,6 +84,26 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   }
 
   @Override
+  public void hasScreenshot(String name, HasScreenshotOptions options) {
+    hasScreenshotImpl(name, options);
+  }
+
+  @Override
+  public void hasScreenshot(String[] nameSegments, HasScreenshotOptions options) {
+    hasScreenshotImpl(nameSegments, options);
+  }
+
+  @Override
+  public void hasScreenshot(HasScreenshotOptions options) {
+    hasScreenshotImpl(null, options);
+  }
+
+  private void hasScreenshotImpl(Object nameOrNames, HasScreenshotOptions options) {
+    ScreenshotAssertionsOptions screenshotOptions = convertType(options, ScreenshotAssertionsOptions.class);
+    new ScreenshotAssertionsHelper(actualPage, null, isNot).assertScreenshot(nameOrNames, screenshotOptions, "Assert \"hasScreenshot\"");
+  }
+
+  @Override
   public PageAssertions not() {
     return new PageAssertionsImpl(actualPage, !isNot);
   }
