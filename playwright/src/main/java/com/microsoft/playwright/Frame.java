@@ -166,6 +166,13 @@ public interface Frame {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -212,6 +219,16 @@ public interface Frame {
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public CheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -275,6 +292,13 @@ public interface Frame {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
@@ -356,6 +380,16 @@ public interface Frame {
       return this;
     }
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ClickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
+      return this;
+    }
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -413,6 +447,13 @@ public interface Frame {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
@@ -484,6 +525,16 @@ public interface Frame {
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DblclickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -559,6 +610,13 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
@@ -605,6 +663,16 @@ public interface Frame {
      */
     public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DragAndDropOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1157,6 +1225,13 @@ public interface Frame {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -1213,6 +1288,16 @@ public interface Frame {
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public HoverOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1773,6 +1858,13 @@ public interface Frame {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -1819,6 +1911,16 @@ public interface Frame {
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public SetCheckedOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1964,6 +2066,13 @@ public interface Frame {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -2020,6 +2129,16 @@ public interface Frame {
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public TapOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -2155,6 +2274,13 @@ public interface Frame {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -2201,6 +2327,16 @@ public interface Frame {
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public UncheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**

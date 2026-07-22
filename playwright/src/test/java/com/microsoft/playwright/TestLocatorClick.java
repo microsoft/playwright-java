@@ -17,12 +17,13 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.KeyboardModifier;
+import com.microsoft.playwright.options.ScrollMode;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("smoke")
 public class TestLocatorClick extends TestBase {
@@ -103,5 +104,25 @@ public class TestLocatorClick extends TestBase {
       ),
       page.evaluate("result")
     );
+  }
+
+  @Test
+  void shouldNotScrollWhenScrollIsNone() {
+    page.setContent("<div style='height: 2000px;'>filler</div>\n" +
+      "<button onclick='window._clicked=true'>click me</button>");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.locator("button").click(new Locator.ClickOptions().setScroll(ScrollMode.NONE).setTimeout(2000)));
+    assertTrue(e.getMessage().contains("element is outside of the viewport"), e.getMessage());
+    assertNull(page.evaluate("window._clicked"));
+    assertEquals(0, page.evaluate("() => window.scrollY"));
+  }
+
+  @Test
+  void shouldClickInViewportElementWhenScrollIsNone() {
+    page.setContent("<button onclick='window._clicked=true'>click me</button>\n" +
+      "<div style='height: 2000px;'></div>");
+    page.locator("button").click(new Locator.ClickOptions().setScroll(ScrollMode.NONE).setTimeout(2000));
+    assertEquals(true, page.evaluate("window._clicked"));
+    assertEquals(0, page.evaluate("() => window.scrollY"));
   }
 }

@@ -46,9 +46,15 @@ if [[ -z "$GIT_HEAD" ]]; then
   exit 1
 fi
 
-# The Node.js version is kept in sync with the driver version in the upstream build script.
-NODE_VERSION=$(curl -fsSL "https://raw.githubusercontent.com/microsoft/playwright/$GIT_HEAD/utils/build/build-playwright-driver.sh" \
+# The Node.js version used to be pinned in the upstream driver build script. The script was
+# removed in microsoft/playwright#41518, so for newer versions we follow the same policy it
+# had: the latest Node.js LTS (see upstream utils/build/update-playwright-node.mjs).
+NODE_VERSION=$(curl -fsSL "https://raw.githubusercontent.com/microsoft/playwright/$GIT_HEAD/utils/build/build-playwright-driver.sh" 2>/dev/null \
   | sed -n 's/^NODE_VERSION="\([^"]*\)".*/\1/p')
+if [[ -z "$NODE_VERSION" ]]; then
+  NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
+    | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1)))")
+fi
 if [[ -z "$NODE_VERSION" ]]; then
   echo "Failed to determine Node.js version for playwright@$DRIVER_VERSION ($GIT_HEAD)"
   exit 1

@@ -38,6 +38,7 @@ import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.impl.Utils.addFilePathUploadParams;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
+import static com.microsoft.playwright.options.ScreenshotType.WEBP;
 
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   private final FrameImpl frame;
@@ -278,6 +279,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
           String extension = fileName.substring(extStart).toLowerCase();
           if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
             options.type = JPEG;
+          } else if (".webp".equals(extension)) {
+            options.type = WEBP;
           }
         }
       }

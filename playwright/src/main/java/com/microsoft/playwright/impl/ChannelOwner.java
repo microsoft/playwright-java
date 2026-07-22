@@ -125,11 +125,12 @@ class ChannelOwner extends LoggingSupport {
   JsonElement sendMessage(String method, JsonObject params, Double timeout) {
     checkNotCollected();
     if (timeout != null) {
-      params.addProperty("timeout", timeout);
+      // Timeout is passed in the message metadata, remove potential leftover from serialized options.
+      params.remove("timeout");
     } else if (params.has("timeout")) {
       throw new PlaywrightException("Internal error: timeout must be passed explicitly.");
     }
-    return connection.sendMessage(guid, method, params);
+    return connection.sendMessage(guid, method, params, timeout);
   }
 
   private void checkNotCollected() {

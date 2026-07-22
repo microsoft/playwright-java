@@ -82,7 +82,10 @@ public class TestPageAriaSnapshotAI {
       "Link with a button <button style=\"cursor: pointer\">Button</button>" +
       "</a>");
     String snapshot = aiSnapshot(page);
-    assertTrue(snapshot.contains("link \"Link with a button Button\" [ref=e2] [cursor=pointer]"), snapshot);
+    // The link's name is redundant - "Link with a button" prints as text and "Button" as the button -
+    // so it is dropped even though the node is clickable.
+    assertTrue(snapshot.contains("link [ref=e2] [cursor=pointer]"), snapshot);
+    assertTrue(snapshot.contains("text: Link with a button"), snapshot);
     // The button inside a cursor-pointer link should not get a redundant [cursor=pointer]
     assertTrue(snapshot.contains("button \"Button\" [ref=e3]"), snapshot);
     assertFalse(snapshot.contains("button \"Button\" [ref=e3] [cursor=pointer]"), snapshot);

@@ -57,6 +57,22 @@ public class TestBrowserContextFetch extends TestBase {
   }
 
   @Test
+  void getShouldReturnTiming() {
+    APIResponse response = context.request().get(server.PREFIX + "/simple.json");
+    assertTrue(response.ok());
+    Timing timing = response.timing();
+    assertTrue(timing.startTime > 0, "startTime = " + timing.startTime);
+    assertTrue(timing.domainLookupEnd >= timing.domainLookupStart);
+    assertTrue(timing.connectStart >= timing.domainLookupEnd);
+    assertEquals(-1, timing.secureConnectionStart);
+    assertTrue(timing.connectEnd >= timing.connectStart);
+    assertTrue(timing.requestStart >= timing.connectEnd);
+    assertTrue(timing.responseStart >= timing.requestStart);
+    assertTrue(timing.responseEnd >= timing.responseStart);
+    assertTrue(timing.responseEnd < 60_000, "responseEnd = " + timing.responseEnd);
+  }
+
+  @Test
   void fetchShouldWork() {
     APIResponse response = context.request().fetch(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());

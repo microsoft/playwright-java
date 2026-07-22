@@ -24,7 +24,7 @@ import java.util.*;
  * passkeys and answer {@code navigator.credentials.create()} / {@code navigator.credentials.get()} ceremonies in the page,
  * without a real authenticator or hardware security key.
  *
- * <p> There are two common ways to use it:
+ * <p> There are three common ways to use it:
  *
  * <p> <strong>Usage: seed a known credential</strong>
  * <pre>{@code
@@ -43,7 +43,7 @@ import java.util.*;
  * // The page's navigator.credentials.get() is answered with the seeded passkey.
  * }</pre>
  *
- * <p> <strong>Usage: capture a passkey, then reuse it</strong>
+ * <p> <strong>Usage: capture a credential, then reuse it</strong>
  * <pre>{@code
  * // setup test: let the app register a passkey, then save it.
  * BrowserContext context = browser.newContext();
@@ -74,6 +74,11 @@ import java.util.*;
  * page.navigate("https://example.com/login");
  * // navigator.credentials.get() resolves the captured passkey — already signed in.
  * }</pre>
+ *
+ * <p> <strong>Usage: save credentials in the storage state, restore later</strong>
+ *
+ * <p> See <a href="https://playwright.dev/java/docs/auth">authentication guide</a> for examples of using saving and resotring
+ * the storage state.
  *
  * <p> <strong>Defaults</strong>
  */

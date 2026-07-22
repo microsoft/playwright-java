@@ -24,6 +24,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.SecurityDetails;
 import com.microsoft.playwright.options.ServerAddr;
+import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -116,6 +117,26 @@ class APIResponseImpl implements APIResponse {
   @Override
   public String text() {
     return new String(body(), StandardCharsets.UTF_8);
+  }
+
+  @Override
+  public Timing timing() {
+    Timing timing;
+    if (initializer.has("timing")) {
+      timing = gson().fromJson(initializer.get("timing"), Timing.class);
+    } else {
+      timing = new Timing();
+      timing.startTime = -1;
+      timing.domainLookupStart = -1;
+      timing.domainLookupEnd = -1;
+      timing.connectStart = -1;
+      timing.secureConnectionStart = -1;
+      timing.connectEnd = -1;
+      timing.requestStart = -1;
+      timing.responseStart = -1;
+    }
+    timing.responseEnd = initializer.has("responseEndTiming") ? initializer.get("responseEndTiming").getAsDouble() : -1;
+    return timing;
   }
 
   @Override
