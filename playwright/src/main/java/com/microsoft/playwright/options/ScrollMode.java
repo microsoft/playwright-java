@@ -16,8 +16,7 @@
 
 package com.microsoft.playwright.options;
 
-public enum ScreenshotType {
-  PNG,
-  JPEG,
-  WEBP
+public enum ScrollMode {
+  AUTO,
+  NONE
 }

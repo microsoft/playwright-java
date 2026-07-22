@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class LocatorImpl implements Locator {
@@ -664,6 +665,16 @@ class LocatorImpl implements Locator {
       options = new WaitForOptions();
     }
     frame.waitForSelectorImpl(selector, convertType(options, Frame.WaitForSelectorOptions.class).setStrict(true), true);
+  }
+
+  @Override
+  public void waitForFunction(String expression, Object arg, WaitForFunctionOptions options) {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("strict", true);
+    params.addProperty("expression", expression);
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
+    frame.sendMessage("waitForFunction", params, frame.timeout(options == null ? null : options.timeout));
   }
 
   @Override

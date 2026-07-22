@@ -39,15 +39,21 @@ class ScreencastImpl implements Screencast {
   }
 
   void handleScreencastFrame(JsonObject params) {
-    if (onFrame == null) {
-      return;
+    try {
+      if (onFrame != null) {
+        String dataBase64 = params.get("data").getAsString();
+        byte[] data = java.util.Base64.getDecoder().decode(dataBase64);
+        double timestamp = params.get("timestamp").getAsDouble();
+        int viewportWidth = params.get("viewportWidth").getAsInt();
+        int viewportHeight = params.get("viewportHeight").getAsInt();
+        onFrame.accept(new ScreencastFrameImpl(data, timestamp, viewportWidth, viewportHeight));
+      }
+    } finally {
+      // The server sends the next frame only after the previous one is acknowledged.
+      JsonObject ackParams = new JsonObject();
+      ackParams.add("frameId", params.get("frameId"));
+      page.sendMessageAsync("screencastFrameAck", ackParams);
     }
-    String dataBase64 = params.get("data").getAsString();
-    byte[] data = java.util.Base64.getDecoder().decode(dataBase64);
-    double timestamp = params.get("timestamp").getAsDouble();
-    int viewportWidth = params.get("viewportWidth").getAsInt();
-    int viewportHeight = params.get("viewportHeight").getAsInt();
-    onFrame.accept(new ScreencastFrameImpl(data, timestamp, viewportWidth, viewportHeight));
   }
 
   @Override

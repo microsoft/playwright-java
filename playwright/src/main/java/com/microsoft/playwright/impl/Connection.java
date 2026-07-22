@@ -129,19 +129,23 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    return root.runUntil(() -> {}, sendMessageAsync(guid, method, params));
+    return sendMessage(guid, method, params, null);
+  }
+
+  public JsonElement sendMessage(String guid, String method, JsonObject params, Double timeout) {
+    return root.runUntil(() -> {}, internalSendMessage(guid, method, params, timeout, true, true));
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    return internalSendMessage(guid, method, params, true, true);
+    return internalSendMessage(guid, method, params, null, true, true);
   }
 
   // Fire-and-forget: the server never replies.
   public void sendMessageNoReply(String guid, String method, JsonObject params) {
-    internalSendMessage(guid, method, params, false, false);
+    internalSendMessage(guid, method, params, null, false, false);
   }
 
-  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, boolean sendStack, boolean expectsReply) {
+  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
     int id = ++lastId;
     WaitableResult<JsonElement> result = new WaitableResult<>();
     if (expectsReply) {
@@ -154,6 +158,9 @@ public class Connection {
     message.add("params", params);
     JsonObject metadata = new JsonObject();
     metadata.addProperty("wallTime", currentTimeMillis());
+    if (timeout != null) {
+      metadata.addProperty("timeout", timeout);
+    }
     JsonArray stack = null;
     if (titleReported) {
       metadata.addProperty("internal", true);
@@ -183,7 +190,7 @@ public class Connection {
       callData.add("stack", stack);
       JsonObject stackParams = new JsonObject();
       stackParams.add("callData", callData);
-      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, false, true);
+      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, null, false, true);
     }
     return result;
   }

@@ -140,4 +140,49 @@ public class TestLocatorMisc extends TestBase{
     assertThat(page.locator(".item").filter(new Locator.FilterOptions().setVisible(true)).getByText("data3")).hasText("visible data3");
     assertThat(page.locator(".item").filter(new Locator.FilterOptions().setVisible(false)).getByText("data1")).hasText("Hidden data1");
   }
+
+  @Test
+  void waitForFunctionShouldWaitForAnAttributeToAppear() {
+    page.setContent("<button id=toggle>Menu</button>");
+    page.evaluate("() => setTimeout(() => document.querySelector('#toggle').setAttribute('aria-expanded', 'true'), 500)");
+    page.locator("#toggle").waitForFunction("element => element.hasAttribute('aria-expanded')");
+  }
+
+  @Test
+  void waitForFunctionShouldReturnImmediatelyWhenAlreadyTruthy() {
+    page.setContent("<div id=target>yes</div>");
+    page.locator("#target").waitForFunction("element => element.textContent === 'yes'");
+  }
+
+  @Test
+  void waitForFunctionShouldAcceptElementHandleArguments() {
+    page.setContent("<div id=a></div><div id=b>value</div>");
+    ElementHandle handle = page.querySelector("#b");
+    page.locator("#a").waitForFunction("(element, other) => other.textContent === 'value'", handle);
+  }
+
+  @Test
+  void waitForFunctionShouldThrowWhenPredicateThrows() {
+    page.setContent("<div id=target>no</div>");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.locator("#target").waitForFunction("() => { throw new Error('oh my'); }"));
+    assertTrue(e.getMessage().contains("oh my"), e.getMessage());
+  }
+
+  @Test
+  void waitForFunctionShouldThrowOnStrictModeViolation() {
+    page.setContent("<div class=x>1</div><div class=x>2</div>");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.locator("div.x").waitForFunction("() => true"));
+    assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
+  }
+
+  @Test
+  void waitForFunctionShouldRespectTimeout() {
+    page.setContent("<div id=target>no</div>");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.locator("#target").waitForFunction("element => element.textContent === 'yes'", null,
+        new Locator.WaitForFunctionOptions().setTimeout(500)));
+    assertTrue(e.getMessage().contains("Timeout 500ms exceeded"), e.getMessage());
+  }
 }

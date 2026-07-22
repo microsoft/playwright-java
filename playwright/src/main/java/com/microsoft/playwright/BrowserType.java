@@ -1314,6 +1314,9 @@ public interface BrowserType {
    * advanced functionality, you probably want to use {@link com.microsoft.playwright.BrowserType#connect
    * BrowserType.connect()}.
    *
+   * <p> <strong>NOTE:</strong> Playwright maintains a curated list of arguments for launching the browser. If you launch the browser without Playwright
+   * and do not pass the exact same arguments, some of Playwright functionality may be broken upon connecting to the browser.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222");
@@ -1339,6 +1342,9 @@ public interface BrowserType {
    * com.microsoft.playwright.BrowserType#connect BrowserType.connect()}. If you are experiencing issues or attempting to use
    * advanced functionality, you probably want to use {@link com.microsoft.playwright.BrowserType#connect
    * BrowserType.connect()}.
+   *
+   * <p> <strong>NOTE:</strong> Playwright maintains a curated list of arguments for launching the browser. If you launch the browser without Playwright
+   * and do not pass the exact same arguments, some of Playwright functionality may be broken upon connecting to the browser.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

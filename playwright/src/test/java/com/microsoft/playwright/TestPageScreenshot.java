@@ -20,9 +20,11 @@ import com.microsoft.playwright.options.Clip;
 import com.microsoft.playwright.options.ScreenshotAnimations;
 import com.microsoft.playwright.options.ScreenshotCaret;
 import com.microsoft.playwright.options.ScreenshotScale;
+import com.microsoft.playwright.options.ScreenshotType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.io.TempDir;
 import org.opentest4j.AssertionFailedError;
 
 import javax.imageio.ImageIO;
@@ -63,6 +65,39 @@ public class TestPageScreenshot extends TestBase {
     assertEquals(150, image.getWidth());
     assertEquals(100, image.getHeight());
 //    expect(screenshot).toMatchSnapshot("screenshot-clip-rect.png");
+  }
+
+  private static void assertWebp(byte[] screenshot) {
+    // WebP magic: "RIFF" at offset 0, "WEBP" at offset 8.
+    assertTrue(screenshot.length > 12);
+    assertEquals("RIFF", new String(screenshot, 0, 4, java.nio.charset.StandardCharsets.US_ASCII));
+    assertEquals("WEBP", new String(screenshot, 8, 4, java.nio.charset.StandardCharsets.US_ASCII));
+  }
+
+  @Test
+  void shouldProduceAValidWebpScreenshot() {
+    page.setViewportSize(300, 300);
+    page.navigate(server.EMPTY_PAGE);
+    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP));
+    assertWebp(screenshot);
+  }
+
+  @Test
+  void pathOptionShouldDetectWebp(@TempDir Path tmpDir) throws IOException {
+    page.setViewportSize(300, 300);
+    page.navigate(server.EMPTY_PAGE);
+    Path outputPath = tmpDir.resolve("screenshot.webp");
+    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setPath(outputPath));
+    assertWebp(screenshot);
+    assertWebp(Files.readAllBytes(outputPath));
+  }
+
+  @Test
+  void qualityOptionShouldWorkForWebp() {
+    page.navigate(server.PREFIX + "/grid.html");
+    byte[] lowQuality = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP).setQuality(0));
+    byte[] highQuality = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP).setQuality(100));
+    assertTrue(lowQuality.length < highQuality.length);
   }
 
   static private void rafraf(Page page) {

@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import com.microsoft.playwright.options.RouteFromHarUpdateContentPolicy;
+import com.microsoft.playwright.options.Timing;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
@@ -499,6 +500,63 @@ public class TestBrowserContextHar extends TestBase {
         "}", server.PREFIX + "/x");
       page2.waitForTimeout(1000);
       assertNull(page.evaluate("window.result"));
+    }
+  }
+
+  private void setJsonRoute(String path, String json) {
+    server.setRoute(path, exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "application/json");
+      byte[] body = json.getBytes(StandardCharsets.UTF_8);
+      exchange.sendResponseHeaders(200, body.length);
+      try (OutputStream out = exchange.getResponseBody()) {
+        out.write(body);
+      }
+    });
+  }
+
+  @Test
+  void shouldFulfillAPIRequestContextRequestsFromHAR(@TempDir Path tmpDir) {
+    setJsonRoute("/api/data", "{\"hello\": \"live\"}");
+    Path harPath = tmpDir.resolve("api.har");
+    try (BrowserContext context1 = browser.newContext()) {
+      context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
+      Page page1 = context1.newPage();
+      page1.navigate(server.EMPTY_PAGE);
+      APIResponse recorded = page1.request().get(server.PREFIX + "/api/data");
+      assertEquals("{\"hello\": \"live\"}", recorded.text());
+    }
+
+    // Now stop serving on the network side - the request must come from the HAR.
+    setJsonRoute("/api/data", "NOT_FROM_HAR");
+    try (BrowserContext context2 = browser.newContext()) {
+      context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setInterceptAPIRequests(true));
+      Page page2 = context2.newPage();
+      APIResponse replayed = page2.request().get(server.PREFIX + "/api/data");
+      assertEquals("{\"hello\": \"live\"}", replayed.text());
+      Timing timing = replayed.timing();
+      assertEquals(-1, timing.startTime);
+      assertEquals(-1, timing.responseEnd);
+    }
+  }
+
+  @Test
+  void shouldNotInterceptAPIRequestContextRequestsByDefault(@TempDir Path tmpDir) {
+    setJsonRoute("/api/data", "{\"hello\": \"live\"}");
+    Path harPath = tmpDir.resolve("api.har");
+    try (BrowserContext context1 = browser.newContext()) {
+      context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
+      Page page1 = context1.newPage();
+      page1.navigate(server.EMPTY_PAGE);
+      page1.request().get(server.PREFIX + "/api/data");
+    }
+
+    // Without the option, the live network is hit.
+    setJsonRoute("/api/data", "{\"hello\": \"fresh\"}");
+    try (BrowserContext context2 = browser.newContext()) {
+      context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.FALLBACK));
+      Page page2 = context2.newPage();
+      APIResponse replayed = page2.request().get(server.PREFIX + "/api/data");
+      assertEquals("{\"hello\": \"fresh\"}", replayed.text());
     }
   }
 }

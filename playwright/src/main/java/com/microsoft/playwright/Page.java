@@ -436,6 +436,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -482,6 +489,16 @@ public interface Page extends AutoCloseable {
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public CheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -545,6 +562,13 @@ public interface Page extends AutoCloseable {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
@@ -623,6 +647,16 @@ public interface Page extends AutoCloseable {
      */
     public ClickOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ClickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -711,6 +745,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -781,6 +822,16 @@ public interface Page extends AutoCloseable {
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DblclickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -856,6 +907,13 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
@@ -902,6 +960,16 @@ public interface Page extends AutoCloseable {
      */
     public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DragAndDropOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1624,6 +1692,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -1680,6 +1755,16 @@ public interface Page extends AutoCloseable {
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public HoverOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -2598,7 +2683,9 @@ public interface Page extends AutoCloseable {
      */
     public Path path;
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public Integer quality;
     /**
@@ -2707,7 +2794,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
@@ -2824,6 +2913,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -2870,6 +2966,16 @@ public interface Page extends AutoCloseable {
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public SetCheckedOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -3076,6 +3182,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -3132,6 +3245,16 @@ public interface Page extends AutoCloseable {
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public TapOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -3267,6 +3390,13 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
@@ -3313,6 +3443,16 @@ public interface Page extends AutoCloseable {
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public UncheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -5464,6 +5604,11 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the previous page in history.
    *
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
+   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
+   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
+   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   *
    * @since v1.8
    */
   default Response goBack() {
@@ -5475,6 +5620,11 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the previous page in history.
    *
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
+   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
+   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
+   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   *
    * @since v1.8
    */
   Response goBack(GoBackOptions options);
@@ -5483,6 +5633,11 @@ public interface Page extends AutoCloseable {
    * last redirect. If cannot go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
+   *
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
+   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
+   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
+   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */
@@ -5494,6 +5649,11 @@ public interface Page extends AutoCloseable {
    * last redirect. If cannot go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
+   *
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
+   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
+   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
+   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */

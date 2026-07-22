@@ -88,6 +88,16 @@ public interface APIResponse {
    */
   String text();
   /**
+   * Returns resource timing information for given response. For redirected requests, returns the information for the last
+   * request in the redirect chain. When the response is served <a
+   * href="https://playwright.dev/java/docs/mock#replaying-from-har">from the HAR file</a>, timing information is not
+   * available and all the values are -1. Find more information at <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming">Resource Timing API</a>.
+   *
+   * @since v1.62
+   */
+  Timing timing();
+  /**
    * Contains the URL of the response.
    *
    * @since v1.16

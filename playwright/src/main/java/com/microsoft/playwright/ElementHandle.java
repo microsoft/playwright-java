@@ -74,6 +74,13 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -115,6 +122,16 @@ public interface ElementHandle extends JSHandle {
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public CheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -170,6 +187,13 @@ public interface ElementHandle extends JSHandle {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
@@ -251,6 +275,16 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ClickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
+      return this;
+    }
+    /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
@@ -308,6 +342,13 @@ public interface ElementHandle extends JSHandle {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
@@ -379,6 +420,16 @@ public interface ElementHandle extends JSHandle {
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DblclickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -476,6 +527,13 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -529,6 +587,16 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public HoverOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
+      return this;
+    }
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -550,18 +618,12 @@ public interface ElementHandle extends JSHandle {
   }
   class InputValueOptions {
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * @deprecated This option is ignored. The value is returned immediately.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
-     * methods.
+     * @deprecated This option is ignored. The value is returned immediately.
      */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -652,7 +714,9 @@ public interface ElementHandle extends JSHandle {
      */
     public Path path;
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public Integer quality;
     /**
@@ -740,7 +804,9 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
@@ -897,6 +963,13 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -938,6 +1011,16 @@ public interface ElementHandle extends JSHandle {
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public SetCheckedOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1013,6 +1096,13 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -1063,6 +1153,16 @@ public interface ElementHandle extends JSHandle {
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public TapOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1143,6 +1243,13 @@ public interface ElementHandle extends JSHandle {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -1184,6 +1291,16 @@ public interface ElementHandle extends JSHandle {
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public UncheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**

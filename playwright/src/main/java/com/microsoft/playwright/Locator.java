@@ -146,6 +146,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -187,6 +194,16 @@ public interface Locator {
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public CheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -287,6 +304,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
@@ -368,6 +392,16 @@ public interface Locator {
       return this;
     }
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ClickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
+      return this;
+    }
+    /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
@@ -426,6 +460,13 @@ public interface Locator {
      * element.
      */
     public Position position;
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
@@ -501,6 +542,16 @@ public interface Locator {
       return this;
     }
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DblclickOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
+      return this;
+    }
+    /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
@@ -561,6 +612,13 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
@@ -602,6 +660,16 @@ public interface Locator {
      */
     public DragToOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public DragToOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1242,6 +1310,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -1293,6 +1368,16 @@ public interface Locator {
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public HoverOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -1710,7 +1795,9 @@ public interface Locator {
      */
     public Path path;
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public Integer quality;
     /**
@@ -1798,7 +1885,9 @@ public interface Locator {
       return this;
     }
     /**
-     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
+     * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
+     * compression.
      */
     public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
@@ -1955,6 +2044,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -1996,6 +2092,16 @@ public interface Locator {
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public SetCheckedOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -2071,6 +2177,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -2122,6 +2235,16 @@ public interface Locator {
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public TapOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -2223,6 +2346,13 @@ public interface Locator {
      */
     public Position position;
     /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public ScrollMode scroll;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
@@ -2264,6 +2394,16 @@ public interface Locator {
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
+     * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
+     * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
+     * is useful to assert that an element is reachable by the user without additional scrolling.
+     */
+    public UncheckOptions setScroll(ScrollMode scroll) {
+      this.scroll = scroll;
       return this;
     }
     /**
@@ -2329,6 +2469,26 @@ public interface Locator {
      * methods.
      */
     public WaitForOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForFunctionOptions {
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public Double timeout;
+
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
+     */
+    public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -5696,5 +5856,83 @@ public interface Locator {
    * @since v1.16
    */
   void waitFor(WaitForOptions options);
+  /**
+   * Returns when {@code expression} returns a truthy value, called with the matching element as a first argument, and {@code
+   * arg} as a second argument.
+   *
+   * <p> This is a generic way to wait for an element to reach a custom condition without asserting it. The locator is
+   * re-resolved on each retry, so it tolerates the element being re-rendered while waiting.
+   *
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve before checking its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Wait for an attribute to appear:
+   *
+   * <p> Passing argument to {@code expression}:
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * automatically invoked.
+   * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.62
+   */
+  default void waitForFunction(String expression, Object arg) {
+    waitForFunction(expression, arg, null);
+  }
+  /**
+   * Returns when {@code expression} returns a truthy value, called with the matching element as a first argument, and {@code
+   * arg} as a second argument.
+   *
+   * <p> This is a generic way to wait for an element to reach a custom condition without asserting it. The locator is
+   * re-resolved on each retry, so it tolerates the element being re-rendered while waiting.
+   *
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve before checking its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Wait for an attribute to appear:
+   *
+   * <p> Passing argument to {@code expression}:
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * automatically invoked.
+   * @since v1.62
+   */
+  default void waitForFunction(String expression) {
+    waitForFunction(expression, null);
+  }
+  /**
+   * Returns when {@code expression} returns a truthy value, called with the matching element as a first argument, and {@code
+   * arg} as a second argument.
+   *
+   * <p> This is a generic way to wait for an element to reach a custom condition without asserting it. The locator is
+   * re-resolved on each retry, so it tolerates the element being re-rendered while waiting.
+   *
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve before checking its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Wait for an attribute to appear:
+   *
+   * <p> Passing argument to {@code expression}:
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * automatically invoked.
+   * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.62
+   */
+  void waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
 }
 
