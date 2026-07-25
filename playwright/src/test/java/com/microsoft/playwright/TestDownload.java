@@ -250,6 +250,32 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
+  @Test
+  void shouldNotBreakMessageDispatchWhenListenerThrows() throws IOException {
+    // Reproduces issue #1952: a listener throwing during the message pump of
+    // an API call (e.g. download.path() or page.close()) would propagate up
+    // through Connection.dispatch and break the unrelated API call.
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Download download = page.waitForDownload(() -> page.click("a"));
+    // Verify the download path is accessible before the listener is wired up.
+    Path path = download.path();
+    assertTrue(Files.exists(path));
+    byte[] bytes = readAllBytes(path);
+    assertEquals("Hello world", new String(bytes, UTF_8));
+
+    // Register a close listener that throws, mimicking a listener that calls
+    // page.waitForLoadState() on a closing page — which throws TargetClosedError
+    // (see the stack trace in issue #1952).
+    page.onClose(p -> {
+      throw new RuntimeException("listener threw during message dispatch");
+    });
+    // page.close() pumps messages; the close listener fires and throws.
+    // Before the fix in ListenerCollection.notify, this exception would
+    // propagate up and break page.close().
+    assertDoesNotThrow(() -> page.close());
+  }
+
   void shouldErrorWhenSavingAfterDeletionWhenConnectedRemotely() {
   // TODO: Support connect
   }

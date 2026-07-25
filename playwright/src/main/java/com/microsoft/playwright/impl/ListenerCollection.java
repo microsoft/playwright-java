@@ -35,6 +35,7 @@ class ListenerCollection <EventType> {
     this.channelOwner = channelOwner;
   }
 
+  @SuppressWarnings("unchecked")
   <T> void notify(EventType eventType, T param) {
     List<Consumer<?>> list = listeners.get(eventType);
     if (list == null) {
@@ -42,7 +43,18 @@ class ListenerCollection <EventType> {
     }
 
     for (Consumer<?> listener: new ArrayList<>(list)) {
-      ((Consumer<T>) listener).accept(param);
+      try {
+        ((Consumer<T>) listener).accept(param);
+      } catch (RuntimeException e) {
+        // Listeners run on the message dispatch thread. A thrown exception
+        // must not break the dispatch loop or propagate to unrelated API
+        // calls that happen to pump messages while a listener runs (see
+        // issue #1952). Mirrors the JS client where async listener rejections
+        // surface as unhandled rejections on stderr without interrupting the
+        // caller — so print to stderr and keep dispatching.
+        System.err.println("Listener for " + eventType + " threw: " + e);
+        LoggingSupport.logApiIfEnabled("Listener threw exception: " + e.getMessage());
+      }
     }
   }
 
