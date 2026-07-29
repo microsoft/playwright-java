@@ -515,31 +515,6 @@ public class TestBrowserContextHar extends TestBase {
   }
 
   @Test
-  void shouldFulfillAPIRequestContextRequestsFromHAR(@TempDir Path tmpDir) {
-    setJsonRoute("/api/data", "{\"hello\": \"live\"}");
-    Path harPath = tmpDir.resolve("api.har");
-    try (BrowserContext context1 = browser.newContext()) {
-      context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
-      Page page1 = context1.newPage();
-      page1.navigate(server.EMPTY_PAGE);
-      APIResponse recorded = page1.request().get(server.PREFIX + "/api/data");
-      assertEquals("{\"hello\": \"live\"}", recorded.text());
-    }
-
-    // Now stop serving on the network side - the request must come from the HAR.
-    setJsonRoute("/api/data", "NOT_FROM_HAR");
-    try (BrowserContext context2 = browser.newContext()) {
-      context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setInterceptAPIRequests(true));
-      Page page2 = context2.newPage();
-      APIResponse replayed = page2.request().get(server.PREFIX + "/api/data");
-      assertEquals("{\"hello\": \"live\"}", replayed.text());
-      Timing timing = replayed.timing();
-      assertEquals(-1, timing.startTime);
-      assertEquals(-1, timing.responseEnd);
-    }
-  }
-
-  @Test
   void shouldNotInterceptAPIRequestContextRequestsByDefault(@TempDir Path tmpDir) {
     setJsonRoute("/api/data", "{\"hello\": \"live\"}");
     Path harPath = tmpDir.resolve("api.har");

@@ -25,23 +25,18 @@ import com.microsoft.playwright.Route;
 import com.microsoft.playwright.options.HarNotFound;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.LoggingSupport.*;
 import static com.microsoft.playwright.impl.Serialization.fromNameValues;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 public class HARRouter {
   private final LocalUtils localUtils;
   private final HarNotFound defaultAction;
   private final String harId;
-  private final List<Map.Entry<BrowserContextImpl, String>> apiRequestRegistrations = new ArrayList<>();
 
   HARRouter(LocalUtils localUtils, Path harFile, HarNotFound defaultAction) {
     this.localUtils = localUtils;
@@ -54,21 +49,6 @@ public class HARRouter {
       throw new PlaywrightException(json.get("error").getAsString());
     }
     harId = json.get("harId").getAsString();
-  }
-
-  void addAPIRequestRoute(BrowserContextImpl context, Object url) {
-    JsonObject params = new JsonObject();
-    params.addProperty("harId", harId);
-    if (url instanceof String) {
-      params.addProperty("urlGlob", (String) url);
-    } else if (url instanceof Pattern) {
-      Pattern pattern = (Pattern) url;
-      params.addProperty("urlRegexSource", pattern.pattern());
-      params.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
-    }
-    params.addProperty("notFound", defaultAction == HarNotFound.FALLBACK ? "fallback" : "abort");
-    JsonObject result = context.sendMessage("routeAPIRequestsFromHar", params, NO_TIMEOUT).getAsJsonObject();
-    apiRequestRegistrations.add(new java.util.AbstractMap.SimpleEntry<>(context, result.get("registrationId").getAsString()));
   }
 
   void handle(Route route) {
@@ -147,12 +127,6 @@ public class HARRouter {
   }
 
   void dispose() {
-    for (Map.Entry<BrowserContextImpl, String> registration : apiRequestRegistrations) {
-      JsonObject unrouteParams = new JsonObject();
-      unrouteParams.addProperty("registrationId", registration.getValue());
-      registration.getKey().sendMessageAsync("unrouteAPIRequestsFromHar", unrouteParams);
-    }
-    apiRequestRegistrations.clear();
     JsonObject params = new JsonObject();
     params.addProperty("harId", harId);
     localUtils.sendMessageAsync("harClose", params);
