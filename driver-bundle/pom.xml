@@ -16,6 +16,10 @@
     Node.js is preinstalled on the host (see PLAYWRIGHT_NODEJS_PATH).
   </description>
 
+  <properties>
+    <automatic.module.name>com.microsoft.playwright.driver.bundle</automatic.module.name>
+  </properties>
+
   <build>
     <plugins>
       <!-- The Node.js binaries for all platforms live in src/main/resources and must not
