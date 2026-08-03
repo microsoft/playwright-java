@@ -547,9 +547,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
-    if (options.interceptAPIRequests != null && options.interceptAPIRequests) {
-      harRouter.addAPIRequestRoute(this, options.url);
-    }
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {

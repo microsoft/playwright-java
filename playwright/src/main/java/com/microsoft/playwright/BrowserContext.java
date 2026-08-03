@@ -364,13 +364,6 @@ public interface BrowserContext extends AutoCloseable {
   }
   class RouteFromHAROptions {
     /**
-     * If set to {@code true}, requests made via {@code APIRequestContext} (such as {@link
-     * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} or {@link
-     * com.microsoft.playwright.Page#request Page.request()}) are also served from the HAR file. By default these requests are
-     * sent to the network, matching the behavior prior to v1.62. Defaults to {@code false} for backward compatibility.
-     */
-    public Boolean interceptAPIRequests;
-    /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
      * <li> If set to 'fallback' falls through to the next route handler in the handler chain.</li>
@@ -401,16 +394,6 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Object url;
 
-    /**
-     * If set to {@code true}, requests made via {@code APIRequestContext} (such as {@link
-     * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} or {@link
-     * com.microsoft.playwright.Page#request Page.request()}) are also served from the HAR file. By default these requests are
-     * sent to the network, matching the behavior prior to v1.62. Defaults to {@code false} for backward compatibility.
-     */
-    public RouteFromHAROptions setInterceptAPIRequests(boolean interceptAPIRequests) {
-      this.interceptAPIRequests = interceptAPIRequests;
-      return this;
-    }
     /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
