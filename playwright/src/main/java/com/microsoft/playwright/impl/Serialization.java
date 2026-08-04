@@ -45,6 +45,7 @@ class Serialization {
     .registerTypeAdapter(Date.class, new DateSerializer())
     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
     .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
+    .registerTypeAdapter(AnnotatePosition.class, new ToLowerCaseAndDashSerializer<AnnotatePosition>())
     .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
     .registerTypeAdapter(Contrast.class, new ToLowerCaseAndDashSerializer<Contrast>())

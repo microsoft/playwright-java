@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AnnotatePosition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -243,6 +244,23 @@ public class TestScreencast extends TestBase {
       assertNotNull(disposable);
       disposable.close();
       page.screencast().hideActions();
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastShowActionsShouldAcceptEveryPosition() throws Exception {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      for (AnnotatePosition position : AnnotatePosition.values()) {
+        AutoCloseable disposable = page.screencast().showActions(
+          new Screencast.ShowActionsOptions().setPosition(position));
+        assertNotNull(disposable);
+        disposable.close();
+      }
     } finally {
       context.close();
     }
