@@ -21,3 +21,4 @@ target/
 .idea
 *.iml
 
+.npmrc
