@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -62,20 +63,20 @@ public interface BrowserType {
      * <li> {@code "*.test.internal-domain,*.staging.internal-domain,<loopback>"} to expose test/staging deployments and localhost.</li>
      * </ol>
      */
-    public String exposeNetwork;
+    public @Nullable String exposeNetwork;
     /**
      * Additional HTTP headers to be sent with web socket connect request. Optional.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
-    public Double slowMo;
+    public @Nullable Double slowMo;
     /**
      * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 0} (no timeout).
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * This option exposes network available on the connecting client to the browser being connected to. Consists of a list of
@@ -127,16 +128,16 @@ public interface BrowserType {
     /**
      * If specified, browser artifacts (such as traces and downloads) are saved into this directory.
      */
-    public Path artifactsDir;
+    public @Nullable Path artifactsDir;
     /**
      * Additional HTTP headers to be sent with connect request. Optional.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * Tells Playwright that it runs on the same host as the CDP server. It will enable certain optimizations that rely upon
      * the file system being the same between Playwright and the Browser.
      */
-    public Boolean isLocal;
+    public @Nullable Boolean isLocal;
     /**
      * When true, Playwright will not apply its default overrides to the existing default browser context. Specifically, {@code
      * acceptDownloads} is left at the browser's setting, focus emulation is not enabled, and media emulation options (such as
@@ -145,17 +146,17 @@ public interface BrowserType {
      * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
      * to {@code false}.
      */
-    public Boolean noDefaults;
+    public @Nullable Boolean noDefaults;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
-    public Double slowMo;
+    public @Nullable Double slowMo;
     /**
      * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * If specified, browser artifacts (such as traces and downloads) are saved into this directory.
@@ -215,13 +216,13 @@ public interface BrowserType {
      * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
-    public List<String> args;
+    public @Nullable List<String> args;
     /**
      * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
      * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
      * closes.
      */
-    public Path artifactsDir;
+    public @Nullable Path artifactsDir;
     /**
      * Browser distribution channel.
      *
@@ -232,27 +233,27 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public Object channel;
+    public @Nullable Object channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
-    public Boolean chromiumSandbox;
+    public @Nullable Boolean chromiumSandbox;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
      */
-    public Path downloadsPath;
+    public @Nullable Path downloadsPath;
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public Map<String, String> env;
+    public @Nullable Map<String, String> env;
     /**
      * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
      * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
-    public Path executablePath;
+    public @Nullable Path executablePath;
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
@@ -260,52 +261,52 @@ public interface BrowserType {
      * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
      * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
-    public Map<String, Object> firefoxUserPrefs;
+    public @Nullable Map<String, Object> firefoxUserPrefs;
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
      */
-    public Boolean handleSIGHUP;
+    public @Nullable Boolean handleSIGHUP;
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
-    public Boolean handleSIGINT;
+    public @Nullable Boolean handleSIGINT;
     /**
      * Close the browser process on SIGTERM. Defaults to {@code true}.
      */
-    public Boolean handleSIGTERM;
+    public @Nullable Boolean handleSIGTERM;
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
-    public Boolean headless;
+    public @Nullable Boolean headless;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care. Defaults to {@code false}.
      */
-    public Boolean ignoreAllDefaultArgs;
+    public @Nullable Boolean ignoreAllDefaultArgs;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care.
      */
-    public List<String> ignoreDefaultArgs;
+    public @Nullable List<String> ignoreDefaultArgs;
     /**
      * Network proxy settings.
      */
-    public Proxy proxy;
+    public @Nullable Proxy proxy;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
-    public Double slowMo;
+    public @Nullable Double slowMo;
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * If specified, traces are saved into this directory.
      */
-    public Path tracesDir;
+    public @Nullable Path tracesDir;
 
     /**
      * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
@@ -484,20 +485,20 @@ public interface BrowserType {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public Boolean acceptDownloads;
+    public @Nullable Boolean acceptDownloads;
     /**
      * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
      *
      * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
-    public List<String> args;
+    public @Nullable List<String> args;
     /**
      * If specified, artifacts (traces, videos, downloads, HAR files, etc.) are saved into this directory. The directory is not
      * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
      * closes.
      */
-    public Path artifactsDir;
+    public @Nullable Path artifactsDir;
     /**
      * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
      * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
@@ -514,11 +515,11 @@ public interface BrowserType {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public String baseURL;
+    public @Nullable String baseURL;
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public Boolean bypassCSP;
+    public @Nullable Boolean bypassCSP;
     /**
      * Browser distribution channel.
      *
@@ -529,11 +530,11 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public Object channel;
+    public @Nullable Object channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
-    public Boolean chromiumSandbox;
+    public @Nullable Boolean chromiumSandbox;
     /**
      * TLS Client Authentication allows the server to request a client certificate and verify it.
      *
@@ -551,7 +552,7 @@ public interface BrowserType {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public List<ClientCertificate> clientCertificates;
+    public @Nullable List<ClientCertificate> clientCertificates;
     /**
      * Emulates <a
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
@@ -559,38 +560,38 @@ public interface BrowserType {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public Optional<ColorScheme> colorScheme;
+    public @Nullable Optional<ColorScheme> colorScheme;
     /**
      * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<Contrast> contrast;
+    public @Nullable Optional<Contrast> contrast;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public Double deviceScaleFactor;
+    public @Nullable Double deviceScaleFactor;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
      */
-    public Path downloadsPath;
+    public @Nullable Path downloadsPath;
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public Map<String, String> env;
+    public @Nullable Map<String, String> env;
     /**
      * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
      * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
-    public Path executablePath;
+    public @Nullable Path executablePath;
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public Map<String, String> extraHTTPHeaders;
+    public @Nullable Map<String, String> extraHTTPHeaders;
     /**
      * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
@@ -598,37 +599,37 @@ public interface BrowserType {
      * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
      * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
-    public Map<String, Object> firefoxUserPrefs;
+    public @Nullable Map<String, Object> firefoxUserPrefs;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public Optional<ForcedColors> forcedColors;
-    public Geolocation geolocation;
+    public @Nullable Optional<ForcedColors> forcedColors;
+    public @Nullable Geolocation geolocation;
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
      */
-    public Boolean handleSIGHUP;
+    public @Nullable Boolean handleSIGHUP;
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
-    public Boolean handleSIGINT;
+    public @Nullable Boolean handleSIGINT;
     /**
      * Close the browser process on SIGTERM. Defaults to {@code true}.
      */
-    public Boolean handleSIGTERM;
+    public @Nullable Boolean handleSIGTERM;
     /**
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public Boolean hasTouch;
+    public @Nullable Boolean hasTouch;
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
-    public Boolean headless;
+    public @Nullable Boolean headless;
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
@@ -636,99 +637,99 @@ public interface BrowserType {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public Object httpCredentials;
+    public @Nullable Object httpCredentials;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care. Defaults to {@code false}.
      */
-    public Boolean ignoreAllDefaultArgs;
+    public @Nullable Boolean ignoreAllDefaultArgs;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care.
      */
-    public List<String> ignoreDefaultArgs;
+    public @Nullable List<String> ignoreDefaultArgs;
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public Boolean ignoreHTTPSErrors;
+    public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public Boolean isMobile;
+    public @Nullable Boolean isMobile;
     /**
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public Boolean javaScriptEnabled;
+    public @Nullable Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
      * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public String locale;
+    public @Nullable String locale;
     /**
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public Boolean offline;
+    public @Nullable Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public List<String> permissions;
+    public @Nullable List<String> permissions;
     /**
      * Network proxy settings.
      */
-    public Proxy proxy;
+    public @Nullable Proxy proxy;
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public HarContentPolicy recordHarContent;
+    public @Nullable HarContentPolicy recordHarContent;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public HarMode recordHarMode;
+    public @Nullable HarMode recordHarMode;
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public Boolean recordHarOmitContent;
+    public @Nullable Boolean recordHarOmitContent;
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public Path recordHarPath;
-    public Object recordHarUrlFilter;
+    public @Nullable Path recordHarPath;
+    public @Nullable Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public Path recordVideoDir;
+    public @Nullable Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public RecordVideoSize recordVideoSize;
+    public @Nullable RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<ReducedMotion> reducedMotion;
+    public @Nullable Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public ScreenSize screenSize;
+    public @Nullable ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
@@ -737,37 +738,37 @@ public interface BrowserType {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public ServiceWorkerPolicy serviceWorkers;
+    public @Nullable ServiceWorkerPolicy serviceWorkers;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
-    public Double slowMo;
+    public @Nullable Double slowMo;
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public Boolean strictSelectors;
+    public @Nullable Boolean strictSelectors;
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public String timezoneId;
+    public @Nullable String timezoneId;
     /**
      * If specified, traces are saved into this directory.
      */
-    public Path tracesDir;
+    public @Nullable Path tracesDir;
     /**
      * Specific user agent to use in this context.
      */
-    public String userAgent;
+    public @Nullable String userAgent;
     /**
      * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
      * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
@@ -776,7 +777,7 @@ public interface BrowserType {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public Optional<ViewportSize> viewportSize;
+    public @Nullable Optional<ViewportSize> viewportSize;
 
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
@@ -895,7 +896,7 @@ public interface BrowserType {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
+    public LaunchPersistentContextOptions setColorScheme(@Nullable ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
@@ -904,7 +905,7 @@ public interface BrowserType {
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public LaunchPersistentContextOptions setContrast(Contrast contrast) {
+    public LaunchPersistentContextOptions setContrast(@Nullable Contrast contrast) {
       this.contrast = Optional.ofNullable(contrast);
       return this;
     }
@@ -964,7 +965,7 @@ public interface BrowserType {
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public LaunchPersistentContextOptions setForcedColors(ForcedColors forcedColors) {
+    public LaunchPersistentContextOptions setForcedColors(@Nullable ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
@@ -1197,7 +1198,7 @@ public interface BrowserType {
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public LaunchPersistentContextOptions setReducedMotion(ReducedMotion reducedMotion) {
+    public LaunchPersistentContextOptions setReducedMotion(@Nullable ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
@@ -1295,7 +1296,7 @@ public interface BrowserType {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public LaunchPersistentContextOptions setViewportSize(ViewportSize viewportSize) {
+    public LaunchPersistentContextOptions setViewportSize(@Nullable ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
@@ -1321,7 +1322,7 @@ public interface BrowserType {
    * @param endpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via {@code BrowserServer.wsEndpoint}.
    * @since v1.8
    */
-  Browser connect(String endpoint, ConnectOptions options);
+  Browser connect(String endpoint, @Nullable ConnectOptions options);
   /**
    * This method attaches Playwright to an existing browser instance using the Chrome DevTools Protocol.
    *
@@ -1377,7 +1378,7 @@ public interface BrowserType {
    * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
    * @since v1.9
    */
-  Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options);
+  Browser connectOverCDP(String endpointURL, @Nullable ConnectOverCDPOptions options);
   /**
    * A path where Playwright expects to find a bundled browser executable.
    *
@@ -1453,7 +1454,7 @@ public interface BrowserType {
    *
    * @since v1.8
    */
-  Browser launch(LaunchOptions options);
+  Browser launch(@Nullable LaunchOptions options);
   /**
    * Returns the persistent browser context instance.
    *
@@ -1501,7 +1502,7 @@ public interface BrowserType {
    * as your automation profile instead. See https://developer.chrome.com/blog/remote-debugging-port for details.
    * @since v1.8
    */
-  BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
+  BrowserContext launchPersistentContext(Path userDataDir, @Nullable LaunchPersistentContextOptions options);
   /**
    * Returns browser name. For example: {@code "chromium"}, {@code "webkit"} or {@code "firefox"}.
    *

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import com.google.gson.JsonObject;
 
@@ -81,7 +82,7 @@ public interface CDPSession {
    * @param args Optional method parameters.
    * @since v1.8
    */
-  JsonObject send(String method, JsonObject args);
+  JsonObject send(String method, @Nullable JsonObject args);
   /**
    * Register an event handler for events with the specified event name. The given handler will be called for every event
    * with the given name.

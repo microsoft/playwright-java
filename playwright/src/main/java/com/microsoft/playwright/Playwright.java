@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.impl.PlaywrightImpl;
 import java.util.*;
 
@@ -45,7 +46,7 @@ public interface Playwright extends AutoCloseable {
      * Additional environment variables that will be passed to the driver process. By default driver process inherits
      * environment variables of the Playwright process.
      */
-    public Map<String, String> env;
+    public @Nullable Map<String, String> env;
 
     /**
      * Additional environment variables that will be passed to the driver process. By default driver process inherits
@@ -106,7 +107,7 @@ public interface Playwright extends AutoCloseable {
    *
    * @since v1.10
    */
-  static Playwright create(CreateOptions options) {
+  static Playwright create(@Nullable CreateOptions options) {
     return PlaywrightImpl.create(options);
   }
 

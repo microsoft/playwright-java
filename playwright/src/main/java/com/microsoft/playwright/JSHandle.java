@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
@@ -40,7 +41,7 @@ public interface JSHandle {
    *
    * @since v1.8
    */
-  ElementHandle asElement();
+  @Nullable ElementHandle asElement();
   /**
    * The {@code jsHandle.dispose} method stops referencing the element handle.
    *
@@ -66,7 +67,7 @@ public interface JSHandle {
    * automatically invoked.
    * @since v1.8
    */
-  default Object evaluate(String expression) {
+  default @Nullable Object evaluate(String expression) {
     return evaluate(expression, null);
   }
   /**
@@ -89,7 +90,7 @@ public interface JSHandle {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  Object evaluate(String expression, Object arg);
+  @Nullable Object evaluate(String expression, @Nullable Object arg);
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
@@ -130,7 +131,7 @@ public interface JSHandle {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  JSHandle evaluateHandle(String expression, Object arg);
+  JSHandle evaluateHandle(String expression, @Nullable Object arg);
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
    *
@@ -161,6 +162,6 @@ public interface JSHandle {
    *
    * @since v1.8
    */
-  Object jsonValue();
+  @Nullable Object jsonValue();
 }
 

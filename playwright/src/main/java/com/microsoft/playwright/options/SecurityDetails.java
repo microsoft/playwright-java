@@ -16,28 +16,30 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class SecurityDetails {
   /**
    * Common Name component of the Issuer field. from the certificate. This should only be used for informational purposes.
    * Optional.
    */
-  public String issuer;
+  public @Nullable String issuer;
   /**
    * The specific TLS protocol used. (e.g. {@code TLS 1.3}). Optional.
    */
-  public String protocol;
+  public @Nullable String protocol;
   /**
    * Common Name component of the Subject field from the certificate. This should only be used for informational purposes.
    * Optional.
    */
-  public String subjectName;
+  public @Nullable String subjectName;
   /**
    * Unix timestamp (in seconds) specifying when this cert becomes valid. Optional.
    */
-  public Double validFrom;
+  public @Nullable Double validFrom;
   /**
    * Unix timestamp (in seconds) specifying when this cert becomes invalid. Optional.
    */
-  public Double validTo;
+  public @Nullable Double validTo;
 
 }

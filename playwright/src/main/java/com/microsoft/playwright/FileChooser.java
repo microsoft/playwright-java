@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 
@@ -32,14 +33,14 @@ public interface FileChooser {
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * @deprecated This option has no effect.
@@ -92,7 +93,7 @@ public interface FileChooser {
    *
    * @since v1.8
    */
-  void setFiles(Path files, SetFilesOptions options);
+  void setFiles(Path files, @Nullable SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
    * then they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -108,7 +109,7 @@ public interface FileChooser {
    *
    * @since v1.8
    */
-  void setFiles(Path[] files, SetFilesOptions options);
+  void setFiles(Path[] files, @Nullable SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
    * then they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -124,7 +125,7 @@ public interface FileChooser {
    *
    * @since v1.8
    */
-  void setFiles(FilePayload files, SetFilesOptions options);
+  void setFiles(FilePayload files, @Nullable SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
    * then they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -140,6 +141,6 @@ public interface FileChooser {
    *
    * @since v1.8
    */
-  void setFiles(FilePayload[] files, SetFilesOptions options);
+  void setFiles(FilePayload[] files, @Nullable SetFilesOptions options);
 }
 

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -47,7 +48,7 @@ public interface WebStorage {
    * @param name Name of the item to retrieve.
    * @since v1.61
    */
-  String getItem(String name);
+  @Nullable String getItem(String name);
   /**
    * Sets the value for the given {@code name}. Overwrites any existing value for that name.
    *

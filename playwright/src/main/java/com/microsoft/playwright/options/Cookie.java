@@ -16,44 +16,46 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class Cookie {
   public String name;
   public String value;
   /**
    * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public String url;
+  public @Nullable String url;
   /**
    * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either {@code
    * url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public String domain;
+  public @Nullable String domain;
   /**
    * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public String path;
+  public @Nullable String path;
   /**
    * Unix time in seconds. Optional.
    */
-  public Double expires;
+  public @Nullable Double expires;
   /**
    * Optional.
    */
-  public Boolean httpOnly;
+  public @Nullable Boolean httpOnly;
   /**
    * Optional.
    */
-  public Boolean secure;
+  public @Nullable Boolean secure;
   /**
    * Optional.
    */
-  public SameSiteAttribute sameSite;
+  public @Nullable SameSiteAttribute sameSite;
   /**
    * For partitioned third-party cookies (aka <a
    * href="https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies">CHIPS</a>), the
    * partition key. Optional.
    */
-  public String partitionKey;
+  public @Nullable String partitionKey;
 
   public Cookie(String name, String value) {
     this.name = name;

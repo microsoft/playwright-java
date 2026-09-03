@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -87,19 +88,19 @@ public interface Credentials {
     /**
      * Base64url-encoded credential id. Auto-generated if omitted.
      */
-    public String id;
+    public @Nullable String id;
     /**
      * Base64url-encoded PKCS#8 (DER) private key. Auto-generated if omitted.
      */
-    public String privateKey;
+    public @Nullable String privateKey;
     /**
      * Base64url-encoded SPKI (DER) public key. Auto-generated if omitted.
      */
-    public String publicKey;
+    public @Nullable String publicKey;
     /**
      * Base64url-encoded user handle. Auto-generated if omitted.
      */
-    public String userHandle;
+    public @Nullable String userHandle;
 
     /**
      * Base64url-encoded credential id. Auto-generated if omitted.
@@ -134,11 +135,11 @@ public interface Credentials {
     /**
      * Only return the credential with this base64url-encoded id.
      */
-    public String id;
+    public @Nullable String id;
     /**
      * Only return credentials for this relying party id.
      */
-    public String rpId;
+    public @Nullable String rpId;
 
     /**
      * Only return the credential with this base64url-encoded id.
@@ -203,7 +204,7 @@ public interface Credentials {
    * @param rpId Relying party id (typically the site's effective domain).
    * @since v1.61
    */
-  VirtualCredential create(String rpId, CreateOptions options);
+  VirtualCredential create(String rpId, @Nullable CreateOptions options);
   /**
    * Removes a credential from the authenticator by its id. Works for any credential currently held — both those seeded with
    * {@link com.microsoft.playwright.Credentials#create Credentials.create()} and those the page registered itself by calling
@@ -238,6 +239,6 @@ public interface Credentials {
    *
    * @since v1.61
    */
-  List<VirtualCredential> get(GetOptions options);
+  List<VirtualCredential> get(@Nullable GetOptions options);
 }
 

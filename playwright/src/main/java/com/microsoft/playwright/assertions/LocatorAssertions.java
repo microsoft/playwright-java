@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.assertions;
 
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 import com.microsoft.playwright.options.AriaRole;
@@ -41,11 +42,11 @@ import com.microsoft.playwright.options.PseudoElement;
  */
 public interface LocatorAssertions {
   class IsAttachedOptions {
-    public Boolean attached;
+    public @Nullable Boolean attached;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     public IsAttachedOptions setAttached(boolean attached) {
       this.attached = attached;
@@ -64,16 +65,16 @@ public interface LocatorAssertions {
      * Provides state to assert for. Asserts for input to be checked by default. This option can't be used when {@code
      * indeterminate} is set to true.
      */
-    public Boolean checked;
+    public @Nullable Boolean checked;
     /**
      * Asserts that the element is in the indeterminate (mixed) state. Only supported for checkboxes and radio buttons. This
      * option can't be true when {@code checked} is provided.
      */
-    public Boolean indeterminate;
+    public @Nullable Boolean indeterminate;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Provides state to assert for. Asserts for input to be checked by default. This option can't be used when {@code
@@ -103,7 +104,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -114,11 +115,11 @@ public interface LocatorAssertions {
     }
   }
   class IsEditableOptions {
-    public Boolean editable;
+    public @Nullable Boolean editable;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     public IsEditableOptions setEditable(boolean editable) {
       this.editable = editable;
@@ -136,7 +137,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -147,11 +148,11 @@ public interface LocatorAssertions {
     }
   }
   class IsEnabledOptions {
-    public Boolean enabled;
+    public @Nullable Boolean enabled;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     public IsEnabledOptions setEnabled(boolean enabled) {
       this.enabled = enabled;
@@ -169,7 +170,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -183,7 +184,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -198,11 +199,11 @@ public interface LocatorAssertions {
      * The minimal ratio of the element to intersect viewport. If equals to {@code 0}, then element should intersect viewport
      * at any positive ratio. Defaults to {@code 0}.
      */
-    public Double ratio;
+    public @Nullable Double ratio;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * The minimal ratio of the element to intersect viewport. If equals to {@code 0}, then element should intersect viewport
@@ -224,8 +225,8 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
-    public Boolean visible;
+    public @Nullable Double timeout;
+    public @Nullable Boolean visible;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -243,7 +244,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -258,15 +259,15 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * Whether to use {@code element.innerText} instead of {@code element.textContent} when retrieving DOM node text.
      */
-    public Boolean useInnerText;
+    public @Nullable Boolean useInnerText;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -296,11 +297,11 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -323,11 +324,11 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -350,11 +351,11 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -377,11 +378,11 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -403,7 +404,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -417,7 +418,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -431,11 +432,11 @@ public interface LocatorAssertions {
     /**
      * Pseudo-element to read computed styles from.
      */
-    public PseudoElement pseudo;
+    public @Nullable PseudoElement pseudo;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Pseudo-element to read computed styles from.
@@ -456,7 +457,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -470,7 +471,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -484,7 +485,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -499,15 +500,15 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * Whether to use {@code element.innerText} instead of {@code element.textContent} when retrieving DOM node text.
      */
-    public Boolean useInnerText;
+    public @Nullable Boolean useInnerText;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -536,7 +537,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -550,7 +551,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -564,7 +565,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -612,7 +613,7 @@ public interface LocatorAssertions {
    *
    * @since v1.33
    */
-  void isAttached(IsAttachedOptions options);
+  void isAttached(@Nullable IsAttachedOptions options);
   /**
    * Ensures the {@code Locator} points to a checked input.
    *
@@ -636,7 +637,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isChecked(IsCheckedOptions options);
+  void isChecked(@Nullable IsCheckedOptions options);
   /**
    * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is
    * disabled via <a
@@ -670,7 +671,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isDisabled(IsDisabledOptions options);
+  void isDisabled(@Nullable IsDisabledOptions options);
   /**
    * Ensures the {@code Locator} points to an editable element.
    *
@@ -694,7 +695,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isEditable(IsEditableOptions options);
+  void isEditable(@Nullable IsEditableOptions options);
   /**
    * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
    *
@@ -718,7 +719,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isEmpty(IsEmptyOptions options);
+  void isEmpty(@Nullable IsEmptyOptions options);
   /**
    * Ensures the {@code Locator} points to an enabled element.
    *
@@ -742,7 +743,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isEnabled(IsEnabledOptions options);
+  void isEnabled(@Nullable IsEnabledOptions options);
   /**
    * Ensures the {@code Locator} points to a focused DOM node.
    *
@@ -766,7 +767,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isFocused(IsFocusedOptions options);
+  void isFocused(@Nullable IsFocusedOptions options);
   /**
    * Ensures that {@code Locator} either does not resolve to any DOM node, or resolves to a <a
    * href="https://playwright.dev/java/docs/actionability#visible">non-visible</a> one.
@@ -792,7 +793,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isHidden(IsHiddenOptions options);
+  void isHidden(@Nullable IsHiddenOptions options);
   /**
    * Ensures the {@code Locator} points to an element that intersects viewport, according to the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">intersection observer API</a>.
@@ -830,7 +831,7 @@ public interface LocatorAssertions {
    *
    * @since v1.31
    */
-  void isInViewport(IsInViewportOptions options);
+  void isInViewport(@Nullable IsInViewportOptions options);
   /**
    * Ensures that {@code Locator} points to an attached and <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
@@ -884,7 +885,7 @@ public interface LocatorAssertions {
    *
    * @since v1.20
    */
-  void isVisible(IsVisibleOptions options);
+  void isVisible(@Nullable IsVisibleOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
    * by spaces, must be present in the <a
@@ -930,7 +931,7 @@ public interface LocatorAssertions {
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
    * @since v1.52
    */
-  void containsClass(String expected, ContainsClassOptions options);
+  void containsClass(String expected, @Nullable ContainsClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. All classes from the asserted value, separated
    * by spaces, must be present in the <a
@@ -976,7 +977,7 @@ public interface LocatorAssertions {
    * @param expected A string containing expected class names, separated by spaces, or a list of such strings to assert multiple elements.
    * @since v1.52
    */
-  void containsClass(List<String> expected, ContainsClassOptions options);
+  void containsClass(List<String> expected, @Nullable ContainsClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
    * when computing the text content of the element. You can use regular expressions for the value as well.
@@ -1064,7 +1065,7 @@ public interface LocatorAssertions {
    * @param expected Expected substring or RegExp or a list of those.
    * @since v1.20
    */
-  void containsText(String expected, ContainsTextOptions options);
+  void containsText(String expected, @Nullable ContainsTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
    * when computing the text content of the element. You can use regular expressions for the value as well.
@@ -1152,7 +1153,7 @@ public interface LocatorAssertions {
    * @param expected Expected substring or RegExp or a list of those.
    * @since v1.20
    */
-  void containsText(Pattern expected, ContainsTextOptions options);
+  void containsText(Pattern expected, @Nullable ContainsTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
    * when computing the text content of the element. You can use regular expressions for the value as well.
@@ -1240,7 +1241,7 @@ public interface LocatorAssertions {
    * @param expected Expected substring or RegExp or a list of those.
    * @since v1.20
    */
-  void containsText(String[] expected, ContainsTextOptions options);
+  void containsText(String[] expected, @Nullable ContainsTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
    * when computing the text content of the element. You can use regular expressions for the value as well.
@@ -1328,7 +1329,7 @@ public interface LocatorAssertions {
    * @param expected Expected substring or RegExp or a list of those.
    * @since v1.20
    */
-  void containsText(Pattern[] expected, ContainsTextOptions options);
+  void containsText(Pattern[] expected, @Nullable ContainsTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
@@ -1358,7 +1359,7 @@ public interface LocatorAssertions {
    * @param description Expected accessible description.
    * @since v1.44
    */
-  void hasAccessibleDescription(String description, HasAccessibleDescriptionOptions options);
+  void hasAccessibleDescription(String description, @Nullable HasAccessibleDescriptionOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
@@ -1388,7 +1389,7 @@ public interface LocatorAssertions {
    * @param description Expected accessible description.
    * @since v1.44
    */
-  void hasAccessibleDescription(Pattern description, HasAccessibleDescriptionOptions options);
+  void hasAccessibleDescription(Pattern description, @Nullable HasAccessibleDescriptionOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/aria/#aria-errormessage">aria errormessage</a>.
@@ -1418,7 +1419,7 @@ public interface LocatorAssertions {
    * @param errorMessage Expected accessible error message.
    * @since v1.50
    */
-  void hasAccessibleErrorMessage(String errorMessage, HasAccessibleErrorMessageOptions options);
+  void hasAccessibleErrorMessage(String errorMessage, @Nullable HasAccessibleErrorMessageOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/aria/#aria-errormessage">aria errormessage</a>.
@@ -1448,7 +1449,7 @@ public interface LocatorAssertions {
    * @param errorMessage Expected accessible error message.
    * @since v1.50
    */
-  void hasAccessibleErrorMessage(Pattern errorMessage, HasAccessibleErrorMessageOptions options);
+  void hasAccessibleErrorMessage(Pattern errorMessage, @Nullable HasAccessibleErrorMessageOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
@@ -1478,7 +1479,7 @@ public interface LocatorAssertions {
    * @param name Expected accessible name.
    * @since v1.44
    */
-  void hasAccessibleName(String name, HasAccessibleNameOptions options);
+  void hasAccessibleName(String name, @Nullable HasAccessibleNameOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
@@ -1508,7 +1509,7 @@ public interface LocatorAssertions {
    * @param name Expected accessible name.
    * @since v1.44
    */
-  void hasAccessibleName(Pattern name, HasAccessibleNameOptions options);
+  void hasAccessibleName(Pattern name, @Nullable HasAccessibleNameOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
    *
@@ -1536,7 +1537,7 @@ public interface LocatorAssertions {
    * @param value Expected attribute value.
    * @since v1.20
    */
-  void hasAttribute(String name, String value, HasAttributeOptions options);
+  void hasAttribute(String name, String value, @Nullable HasAttributeOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
    *
@@ -1564,7 +1565,7 @@ public interface LocatorAssertions {
    * @param value Expected attribute value.
    * @since v1.20
    */
-  void hasAttribute(String name, Pattern value, HasAttributeOptions options);
+  void hasAttribute(String name, Pattern value, @Nullable HasAttributeOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
    * the element's {@code class} attribute. To match individual classes use {@link
@@ -1610,7 +1611,7 @@ public interface LocatorAssertions {
    * @param expected Expected class or RegExp or a list of those.
    * @since v1.20
    */
-  void hasClass(String expected, HasClassOptions options);
+  void hasClass(String expected, @Nullable HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
    * the element's {@code class} attribute. To match individual classes use {@link
@@ -1656,7 +1657,7 @@ public interface LocatorAssertions {
    * @param expected Expected class or RegExp or a list of those.
    * @since v1.20
    */
-  void hasClass(Pattern expected, HasClassOptions options);
+  void hasClass(Pattern expected, @Nullable HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
    * the element's {@code class} attribute. To match individual classes use {@link
@@ -1702,7 +1703,7 @@ public interface LocatorAssertions {
    * @param expected Expected class or RegExp or a list of those.
    * @since v1.20
    */
-  void hasClass(String[] expected, HasClassOptions options);
+  void hasClass(String[] expected, @Nullable HasClassOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
    * the element's {@code class} attribute. To match individual classes use {@link
@@ -1748,7 +1749,7 @@ public interface LocatorAssertions {
    * @param expected Expected class or RegExp or a list of those.
    * @since v1.20
    */
-  void hasClass(Pattern[] expected, HasClassOptions options);
+  void hasClass(Pattern[] expected, @Nullable HasClassOptions options);
   /**
    * Ensures the {@code Locator} resolves to an exact number of DOM nodes.
    *
@@ -1774,7 +1775,7 @@ public interface LocatorAssertions {
    * @param count Expected count.
    * @since v1.20
    */
-  void hasCount(int count, HasCountOptions options);
+  void hasCount(int count, @Nullable HasCountOptions options);
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    *
@@ -1802,7 +1803,7 @@ public interface LocatorAssertions {
    * @param value CSS property value.
    * @since v1.20
    */
-  void hasCSS(String name, String value, HasCSSOptions options);
+  void hasCSS(String name, String value, @Nullable HasCSSOptions options);
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    *
@@ -1830,7 +1831,7 @@ public interface LocatorAssertions {
    * @param value CSS property value.
    * @since v1.20
    */
-  void hasCSS(String name, Pattern value, HasCSSOptions options);
+  void hasCSS(String name, Pattern value, @Nullable HasCSSOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    *
@@ -1856,7 +1857,7 @@ public interface LocatorAssertions {
    * @param id Element id.
    * @since v1.20
    */
-  void hasId(String id, HasIdOptions options);
+  void hasId(String id, @Nullable HasIdOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    *
@@ -1882,7 +1883,7 @@ public interface LocatorAssertions {
    * @param id Element id.
    * @since v1.20
    */
-  void hasId(Pattern id, HasIdOptions options);
+  void hasId(Pattern id, @Nullable HasIdOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a
    * primitive type as well as a plain serializable JavaScript object.
@@ -1912,7 +1913,7 @@ public interface LocatorAssertions {
    * @param value Property value.
    * @since v1.20
    */
-  void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
+  void hasJSProperty(String name, Object value, @Nullable HasJSPropertyOptions options);
   /**
    * Ensures the {@code Locator} points to an element with a given <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA
    * role</a>.
@@ -1948,7 +1949,7 @@ public interface LocatorAssertions {
    * @param role Required aria role.
    * @since v1.44
    */
-  void hasRole(AriaRole role, HasRoleOptions options);
+  void hasRole(AriaRole role, @Nullable HasRoleOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
    * computing the text content of the element. You can use regular expressions for the value as well.
@@ -2036,7 +2037,7 @@ public interface LocatorAssertions {
    * @param expected Expected string or RegExp or a list of those.
    * @since v1.20
    */
-  void hasText(String expected, HasTextOptions options);
+  void hasText(String expected, @Nullable HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
    * computing the text content of the element. You can use regular expressions for the value as well.
@@ -2124,7 +2125,7 @@ public interface LocatorAssertions {
    * @param expected Expected string or RegExp or a list of those.
    * @since v1.20
    */
-  void hasText(Pattern expected, HasTextOptions options);
+  void hasText(Pattern expected, @Nullable HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
    * computing the text content of the element. You can use regular expressions for the value as well.
@@ -2212,7 +2213,7 @@ public interface LocatorAssertions {
    * @param expected Expected string or RegExp or a list of those.
    * @since v1.20
    */
-  void hasText(String[] expected, HasTextOptions options);
+  void hasText(String[] expected, @Nullable HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
    * computing the text content of the element. You can use regular expressions for the value as well.
@@ -2300,7 +2301,7 @@ public interface LocatorAssertions {
    * @param expected Expected string or RegExp or a list of those.
    * @since v1.20
    */
-  void hasText(Pattern[] expected, HasTextOptions options);
+  void hasText(Pattern[] expected, @Nullable HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
    * value as well.
@@ -2328,7 +2329,7 @@ public interface LocatorAssertions {
    * @param value Expected value.
    * @since v1.20
    */
-  void hasValue(String value, HasValueOptions options);
+  void hasValue(String value, @Nullable HasValueOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
    * value as well.
@@ -2356,7 +2357,7 @@ public interface LocatorAssertions {
    * @param value Expected value.
    * @since v1.20
    */
-  void hasValue(Pattern value, HasValueOptions options);
+  void hasValue(Pattern value, @Nullable HasValueOptions options);
   /**
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
    * and the specified values are selected.
@@ -2390,7 +2391,7 @@ public interface LocatorAssertions {
    * @param values Expected options currently selected.
    * @since v1.23
    */
-  void hasValues(String[] values, HasValuesOptions options);
+  void hasValues(String[] values, @Nullable HasValuesOptions options);
   /**
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
    * and the specified values are selected.
@@ -2424,7 +2425,7 @@ public interface LocatorAssertions {
    * @param values Expected options currently selected.
    * @since v1.23
    */
-  void hasValues(Pattern[] values, HasValuesOptions options);
+  void hasValues(Pattern[] values, @Nullable HasValuesOptions options);
   /**
    * Asserts that the target element matches the given <a
    * href="https://playwright.dev/java/docs/aria-snapshots">accessibility snapshot</a>.
@@ -2458,6 +2459,6 @@ public interface LocatorAssertions {
    *
    * @since v1.49
    */
-  void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
+  void matchesAriaSnapshot(String expected, @Nullable MatchesAriaSnapshotOptions options);
 }
 

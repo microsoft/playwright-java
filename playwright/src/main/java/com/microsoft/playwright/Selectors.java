@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.nio.file.Path;
 
 /**
@@ -29,7 +30,7 @@ public interface Selectors {
      * not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
      * not guaranteed when this engine is used together with other registered engines.
      */
-    public Boolean contentScript;
+    public @Nullable Boolean contentScript;
 
     /**
      * Whether to run this selector engine in isolated JavaScript environment. This environment has access to the same DOM, but
@@ -118,7 +119,7 @@ public interface Selectors {
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * @since v1.8
    */
-  void register(String name, String script, RegisterOptions options);
+  void register(String name, String script, @Nullable RegisterOptions options);
   /**
    * Selectors must be registered before creating the page.
    *
@@ -196,7 +197,7 @@ public interface Selectors {
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * @since v1.8
    */
-  void register(String name, Path script, RegisterOptions options);
+  void register(String name, Path script, @Nullable RegisterOptions options);
   /**
    * Defines custom attribute name to be used in {@link com.microsoft.playwright.Page#getByTestId Page.getByTestId()}. {@code
    * data-testid} is used by default.

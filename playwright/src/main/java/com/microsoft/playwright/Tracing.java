@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
@@ -48,42 +49,42 @@ public interface Tracing {
     /**
      * Whether to capture aria snapshot of the page on every action.
      */
-    public Boolean ariaSnapshots;
+    public @Nullable Boolean ariaSnapshots;
     /**
      * When enabled, the trace is written to an unarchived file that is updated in real time as actions occur, instead of
      * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
      * execution.
      */
-    public Boolean live;
+    public @Nullable Boolean live;
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
      * tracesDir} directory specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify
      * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
      * Tracing.stop()} instead.
      */
-    public String name;
+    public @Nullable String name;
     /**
      * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
      */
-    public Boolean screenshots;
+    public @Nullable Boolean screenshots;
     /**
      * Whether to capture a screenshot of the page on every action.
      */
-    public Boolean screenSnapshots;
+    public @Nullable Boolean screenSnapshots;
     /**
      * Whether to capture DOM snapshot and record network activity on every action.
      */
-    public Boolean snapshots;
+    public @Nullable Boolean snapshots;
     /**
      * Whether to include source files for trace actions. List of the directories with source code for the application must be
      * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows and by
      * ':' on other platforms).
      */
-    public Boolean sources;
+    public @Nullable Boolean sources;
     /**
      * Trace name to be shown in the Trace Viewer.
      */
-    public String title;
+    public @Nullable String title;
 
     /**
      * Whether to capture aria snapshot of the page on every action.
@@ -156,11 +157,11 @@ public interface Tracing {
      * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
      * Tracing.stopChunk()} instead.
      */
-    public String name;
+    public @Nullable String name;
     /**
      * Trace name to be shown in the Trace Viewer.
      */
-    public String title;
+    public @Nullable String title;
 
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
@@ -187,17 +188,17 @@ public interface Tracing {
      * is specified, content is stored inline the HAR file as per HAR specification. Defaults to {@code attach} for {@code
      * .zip} output files and to {@code embed} for all other file extensions.
      */
-    public HarContentPolicy content;
+    public @Nullable HarContentPolicy content;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public HarMode mode;
+    public @Nullable HarMode mode;
     /**
      * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
      */
-    public Object urlFilter;
+    public @Nullable Object urlFilter;
 
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
@@ -238,7 +239,7 @@ public interface Tracing {
      * Specifies a custom location for the group to be shown in the trace viewer. Defaults to the location of the {@link
      * com.microsoft.playwright.Tracing#group Tracing.group()} call.
      */
-    public Location location;
+    public @Nullable Location location;
 
     /**
      * Specifies a custom location for the group to be shown in the trace viewer. Defaults to the location of the {@link
@@ -260,7 +261,7 @@ public interface Tracing {
     /**
      * Export trace into the file with the given path.
      */
-    public Path path;
+    public @Nullable Path path;
 
     /**
      * Export trace into the file with the given path.
@@ -275,7 +276,7 @@ public interface Tracing {
      * Export trace collected since the last {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} call into
      * the file with the given path.
      */
-    public Path path;
+    public @Nullable Path path;
 
     /**
      * Export trace collected since the last {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} call into
@@ -333,7 +334,7 @@ public interface Tracing {
    *
    * @since v1.12
    */
-  void start(StartOptions options);
+  void start(@Nullable StartOptions options);
   /**
    * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link
    * com.microsoft.playwright.Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link
@@ -395,7 +396,7 @@ public interface Tracing {
    *
    * @since v1.15
    */
-  void startChunk(StartChunkOptions options);
+  void startChunk(@Nullable StartChunkOptions options);
   /**
    * Start recording a HAR (HTTP Archive) of network activity in this context. The HAR file is written to disk when {@link
    * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is
@@ -437,7 +438,7 @@ public interface Tracing {
    * archive with response bodies attached as separate files.
    * @since v1.60
    */
-  AutoCloseable startHar(Path path, StartHarOptions options);
+  AutoCloseable startHar(Path path, @Nullable StartHarOptions options);
   /**
    * <strong>NOTE:</strong> Use {@code test.step} instead when available.
    *
@@ -481,7 +482,7 @@ public interface Tracing {
    * @param name Group name shown in the trace viewer.
    * @since v1.49
    */
-  AutoCloseable group(String name, GroupOptions options);
+  AutoCloseable group(String name, @Nullable GroupOptions options);
   /**
    * Closes the last group created by {@link com.microsoft.playwright.Tracing#group Tracing.group()}.
    *
@@ -501,7 +502,7 @@ public interface Tracing {
    *
    * @since v1.12
    */
-  void stop(StopOptions options);
+  void stop(@Nullable StopOptions options);
   /**
    * Stop the trace chunk. See {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} for more details
    * about multiple trace chunks.
@@ -517,7 +518,7 @@ public interface Tracing {
    *
    * @since v1.15
    */
-  void stopChunk(StopChunkOptions options);
+  void stopChunk(@Nullable StopChunkOptions options);
   /**
    * Stop HAR recording and save the HAR file to the path given to {@link com.microsoft.playwright.Tracing#startHar
    * Tracing.startHar()}.

@@ -16,10 +16,12 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class Location {
   public String file;
-  public Integer line;
-  public Integer column;
+  public @Nullable Integer line;
+  public @Nullable Integer column;
 
   public Location(String file) {
     this.file = file;

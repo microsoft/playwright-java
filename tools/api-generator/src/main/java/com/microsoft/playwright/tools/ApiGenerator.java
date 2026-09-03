@@ -369,6 +369,39 @@ class TypeRef extends Element {
     return convertBuiltinType(stripNullable());
   }
 
+  String toJavaWithNullability() {
+    String javaType = toJava();
+    return isNullableInJava() ? nullable(javaType) : javaType;
+  }
+
+  // Serializable is mapped to Object and JSON null is a valid value for it.
+  boolean isNullableInJava() {
+    return isNullable() || "Serializable".equals(stripNullable().get("name").getAsString());
+  }
+
+  static String nullable(String javaType) {
+    if (javaType.endsWith("[]")) {
+      return javaType.substring(0, javaType.length() - 2) + " @Nullable []";
+    }
+    return "@Nullable " + javaType;
+  }
+
+  // Primitive types produced by convertBuiltinType and their boxed counterparts.
+  private static final Map<String, String> BOXED_TYPES = new HashMap<>();
+  static {
+    BOXED_TYPES.put("int", "Integer");
+    BOXED_TYPES.put("double", "Double");
+    BOXED_TYPES.put("boolean", "Boolean");
+  }
+
+  static boolean isPrimitive(String javaType) {
+    return "void".equals(javaType) || BOXED_TYPES.containsKey(javaType);
+  }
+
+  static String boxed(String javaType) {
+    return BOXED_TYPES.getOrDefault(javaType, javaType);
+  }
+
   boolean isCustomClass() {
     JsonObject jsonObject = stripNullable();
     if (!"Object".equals(jsonObject.get("name").getAsString())) {
@@ -675,7 +708,7 @@ class Event extends Element {
   void writeListenerMethods(List<String> output, String offset) {
     writeJavadoc(output, offset, comment());
     String name = toTitle(jsonName);
-    String paramType = type.toJava();
+    String paramType = type.toJavaWithNullability();
     String listenerType = "void".equals(paramType) ? "Runnable" : "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     writeJavadoc(output, offset, "Removes handler that was previously added with {@link #on" + name + " on" + name + "(handler)}.");
@@ -705,7 +738,7 @@ class Method extends Element {
   void writeTo(List<String> output, String offset) {
     if ("Playwright.create".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
-      output.add(offset + "static Playwright create(CreateOptions options) {");
+      output.add(offset + "static Playwright create(" + params.get(0).toJava() + ") {");
       output.add(offset + "  return PlaywrightImpl.create(options);");
       output.add(offset + "}");
       output.add("");
@@ -787,7 +820,7 @@ class Method extends Element {
 
     List<String> paramList = params.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava()).collect(toList());
     writeJavadoc(params, output, offset);
-    output.add(offset + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
+    output.add(offset + returnType.toJavaWithNullability() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
   }
 
 
@@ -820,7 +853,7 @@ class Method extends Element {
       .collect(joining(", "));
     String returns = returnType.toJava().equals("void") ? "" : "return ";
     writeJavadoc(paramList, output, offset);
-    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramsStr + ") {");
+    output.add(offset + "default " + returnType.toJavaWithNullability() + " " + jsonName + "(" + paramsStr + ") {");
     output.add(offset + "  " + returns + jsonName + "(" + String.join(", ", argList) + ");");
     output.add(offset + "}");
   }
@@ -875,11 +908,16 @@ class Param extends Element {
   }
 
   String toJavaOverload(int overoadIndex) {
-    return type.formatTypeFromUnion(overoadIndex) + " " + jsonName;
+    return withNullability(type.formatTypeFromUnion(overoadIndex)) + " " + jsonName;
   }
 
   String toJava() {
-    return type.toJava() + " " + jsonName;
+    return withNullability(type.toJava()) + " " + jsonName;
+  }
+
+  private String withNullability(String javaType) {
+    boolean nullable = type.isNullableInJava() || (isOptional() && !TypeRef.isPrimitive(javaType));
+    return nullable ? TypeRef.nullable(javaType) : javaType;
   }
 }
 
@@ -906,16 +944,13 @@ class Field extends Element {
     }
     // Convert optional fields to boxed types.
     if (!isRequired()) {
-      if (typeStr.equals("int")) {
-        typeStr = "Integer";
-      } else if (typeStr.equals("double")) {
-        typeStr = "Double";
-      } else if (typeStr.equals("boolean")) {
-        typeStr = "Boolean";
-      }
+      typeStr = TypeRef.boxed(typeStr);
     }
     if (isBrowserChannelOption()) {
       typeStr = "Object";
+    }
+    if (!isRequired()) {
+      typeStr = TypeRef.nullable(typeStr);
     }
     output.add(offset + "public " + typeStr + " " + name + ";");
   }
@@ -957,7 +992,7 @@ class Field extends Element {
       if (!f.isRequired()) {
         continue;
       }
-      params.add(f.type.toJava() + " " + f.name);
+      params.add(f.type.toJavaWithNullability() + " " + f.name);
       args.add(f.name);
     }
     if (params.isEmpty()) {
@@ -971,6 +1006,9 @@ class Field extends Element {
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
     writeJavadoc(output, offset, comment());
+    if (type.isNullable()) {
+      paramType = TypeRef.nullable(paramType);
+    }
     output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + paramType + " " + name + ") {");
     String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
     output.add(offset + "  this." + name + " = " + rvalue + ";");
@@ -1204,7 +1242,7 @@ class CustomClass extends TypeDefinition {
     if (requiredFields.isEmpty()) {
       return;
     }
-    List<String> args = requiredFields.stream().map(f -> f.type.toJava() + " " + f.name).collect(toList());
+    List<String> args = requiredFields.stream().map(f -> f.type.toJavaWithNullability() + " " + f.name).collect(toList());
     output.add(bodyOffset + "public " + name + "(" + String.join(", ", args) + ") {");
     requiredFields.forEach(f -> output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";"));
     output.add(bodyOffset + "}");
@@ -1242,7 +1280,11 @@ class CustomInterface extends TypeDefinition {
       }
       first = false;
       writeJavadoc(output, bodyOffset, f.comment());
-      output.add(bodyOffset + f.type.toJava() + " " + f.name + "();");
+      String returnType = f.type.toJava();
+      if (!f.isRequired() || f.type.isNullable()) {
+        returnType = TypeRef.nullable(returnType);
+      }
+      output.add(bodyOffset + returnType + " " + f.name + "();");
     }
     output.add(offset + "}");
   }
@@ -1313,10 +1355,22 @@ public class ApiGenerator {
       }
       lines.add("");
       e.writeTo(lines, "");
-      String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(targetDir, e.name() + ".java"))) {
-        writer.write(text);
+      writeFile(lines, new File(targetDir, e.name() + ".java"));
+    }
+  }
+
+  // Lines are expected to start with the license header, package declaration and an empty line.
+  private static void writeFile(List<String> lines, File file) throws IOException {
+    if (lines.stream().anyMatch(line -> line.contains("@Nullable"))) {
+      int index = 3;
+      lines.add(index++, "import org.jspecify.annotations.Nullable;");
+      String next = lines.get(index);
+      if (!next.isEmpty() && !next.startsWith("import ")) {
+        lines.add(index, "");
       }
+    }
+    try (FileWriter writer = new FileWriter(file)) {
+      writer.write(String.join("\n", lines));
     }
   }
 
@@ -1353,10 +1407,7 @@ public class ApiGenerator {
       lines.add("package " + packageName + ";");
       lines.add("");
       iface.writeTo(lines, "");
-      String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
-        writer.write(text);
-      }
+      writeFile(lines, new File(dir, name + ".java"));
     }
 
   }
