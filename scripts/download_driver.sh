@@ -46,30 +46,17 @@ npm_at_root() {
   (cd "$ROOT" && npm "$@")
 }
 
-# Resolve the exact upstream commit that produced this driver version, so that the
-# bundled Node.js version matches the driver exactly.
-GIT_HEAD=$(npm_at_root view playwright@"$DRIVER_VERSION" gitHead)
-if [[ -z "$GIT_HEAD" ]]; then
-  echo "Failed to resolve upstream commit (gitHead) for playwright@$DRIVER_VERSION"
-  exit 1
-fi
-
 # The Node.js version used to be pinned in the upstream driver build script. The script was
-# removed in microsoft/playwright#41518, so for newer versions we follow the same policy it
-# had: the latest Node.js LTS (see upstream utils/build/update-playwright-node.mjs).
-NODE_VERSION=$(curl -fsSL "https://raw.githubusercontent.com/microsoft/playwright/$GIT_HEAD/utils/build/build-playwright-driver.sh" 2>/dev/null \
-  | sed -n 's/^NODE_VERSION="\([^"]*\)".*/\1/p')
+# removed in microsoft/playwright#41518, so we follow the same policy it had: the latest
+# Node.js LTS (see upstream utils/build/update-playwright-node.mjs).
+NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
+  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1)))")
 if [[ -z "$NODE_VERSION" ]]; then
-  NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
-    | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1)))")
-fi
-if [[ -z "$NODE_VERSION" ]]; then
-  echo "Failed to determine Node.js version for playwright@$DRIVER_VERSION ($GIT_HEAD)"
+  echo "Failed to determine the latest Node.js LTS version"
   exit 1
 fi
 
 echo "Driver version:  $DRIVER_VERSION"
-echo "Upstream commit: $GIT_HEAD"
 echo "Node.js version: $NODE_VERSION"
 
 # The platform-independent driver code (playwright-core) is assembled once into the driver module;
