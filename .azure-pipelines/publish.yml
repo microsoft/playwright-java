@@ -45,6 +45,8 @@ extends:
           env:
             CURRENT_BRANCH: ${{ variables['Build.SourceBranchName'] }}
           displayName: "Check the branch is a release branch"
+          # Allow manual runs on any branch to exercise the build without publishing.
+          condition: ne(variables['Build.Reason'], 'Manual')
         
         - bash: |
             echo "importing GPG key:"
@@ -56,9 +58,33 @@ extends:
            GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
           displayName: "Import gpg key"
         
+        - task: Bash@3
+          displayName: "setup .npmrc"
+          inputs:
+            targetType: "inline"
+            script: |
+              echo "registry=https://devdiv.pkgs.visualstudio.com/DevDiv/_packaging/DevDiv_PublicPackages/npm/registry/" >> .npmrc
+
+        - task: npmAuthenticate@0
+          displayName: "authenticate the private npm registry"
+          inputs:
+            workingFile: .npmrc
+
         - bash: ./scripts/download_driver.sh
           displayName: 'Download driver'
-        
+
+        # Must run before MavenAuthenticate@0 so the credentials it injects into
+        # ~/.m2/settings.xml are not overwritten by the copy.
+        - bash: |
+            mkdir -p ~/.m2
+            cp .azure-pipelines/settings.xml ~/.m2/settings.xml
+          displayName: 'Copy settings.xml (mirror Maven Central to DevDiv_PublicPackages)'
+
+        - task: MavenAuthenticate@0
+          displayName: 'Authenticate to DevDiv_PublicPackages feed'
+          inputs:
+            artifactsFeeds: DevDiv_PublicPackages
+
         - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(Build.ArtifactStagingDirectory)/esrp-build
           displayName: 'Build and deploy to a local directory'
           env:
@@ -66,6 +92,8 @@ extends:
 
       - job: Publish
         dependsOn: Build
+        # Only publish from release tags; manual runs stop after Build.
+        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'))
         templateContext:
           type: releaseJob
           isProduction: true

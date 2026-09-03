@@ -37,10 +37,18 @@ download() {
 }
 
 DRIVER_VERSION=$(head -1 ./DRIVER_VERSION)
+ROOT="$(cd .. && pwd)"
+
+# All npm commands run from the repository root so that a root-level .npmrc (e.g. the one
+# the release pipeline writes to point at the internal Azure Artifacts feed) is honoured.
+# Locally, NPM_CONFIG_REGISTRY=<url> can be used to the same effect.
+npm_at_root() {
+  (cd "$ROOT" && npm "$@")
+}
 
 # Resolve the exact upstream commit that produced this driver version, so that the
 # bundled Node.js version matches the driver exactly.
-GIT_HEAD=$(npm view playwright@"$DRIVER_VERSION" gitHead)
+GIT_HEAD=$(npm_at_root view playwright@"$DRIVER_VERSION" gitHead)
 if [[ -z "$GIT_HEAD" ]]; then
   echo "Failed to resolve upstream commit (gitHead) for playwright@$DRIVER_VERSION"
   exit 1
@@ -66,7 +74,6 @@ echo "Node.js version: $NODE_VERSION"
 
 # The platform-independent driver code (playwright-core) is assembled once into the driver module;
 # the Node.js binary for each platform is assembled into the driver-bundle module. See issue #1196.
-ROOT="$(cd .. && pwd)"
 CORE_DEST="$ROOT/driver/src/main/resources/driver"
 NODE_DEST="$ROOT/driver-bundle/src/main/resources/driver"
 
@@ -77,8 +84,11 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 echo "Assembling playwright-core package to $CORE_DEST/package"
 rm -rf "$CORE_DEST/package"
 mkdir -p "$CORE_DEST"
+# Fetched via npm rather than a hard-coded registry URL so that the configured registry
+# (and its credentials) are used.
 CORE_TGZ="$TMP_DIR/playwright-core-$DRIVER_VERSION.tgz"
-download "https://registry.npmjs.org/playwright-core/-/playwright-core-$DRIVER_VERSION.tgz" "$CORE_TGZ"
+echo "Downloading playwright-core@$DRIVER_VERSION from $(npm_at_root config get registry)"
+npm_at_root pack "playwright-core@$DRIVER_VERSION" --pack-destination "$TMP_DIR" --silent > /dev/null
 # The npm tarball has a top-level package/ directory, so this creates $CORE_DEST/package.
 tar -xzf "$CORE_TGZ" -C "$CORE_DEST"
 rm -f "$CORE_TGZ"

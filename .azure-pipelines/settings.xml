@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven settings used only by the Azure Pipelines release build (publish.yml).
+
+  Routes all remote artifact and plugin resolution through the DevDiv_PublicPackages
+  Azure Artifacts feed instead of Maven Central, as required by SFI-ES4.2.4.
+  The mirror id must match the feed name passed to MavenAuthenticate@0, which
+  injects matching <server> credentials into this file on the build agent.
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>DevDiv_PublicPackages</id>
+      <url>https://pkgs.dev.azure.com/devdiv/DevDiv/_packaging/DevDiv_PublicPackages/maven/v1</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>
