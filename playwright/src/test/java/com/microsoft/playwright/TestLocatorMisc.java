@@ -185,4 +185,21 @@ public class TestLocatorMisc extends TestBase{
         new Locator.WaitForFunctionOptions().setTimeout(500)));
     assertTrue(e.getMessage().contains("Timeout 500ms exceeded"), e.getMessage());
   }
+
+
+  @Test
+  public void shouldSupportVisible() {
+    page.setContent("<div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data0</div>\n" +
+      "  <div class=\"item\">visible data1</div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data1</div>\n" +
+      "  <div class=\"item\">visible data2</div>\n" +
+      "  <div class=\"item\" style=\"display: none\">Hidden data2</div>\n" +
+      "  <div class=\"item\">visible data3</div>\n" +
+      "</div>");
+    Locator locator = page.locator(".item").visible().nth(1);
+    assertThat(locator).hasText("visible data2");
+    assertThat(page.locator(".item").visible().getByText("data3")).hasText("visible data3");
+    assertThat(page.locator(".item").visible()).hasCount(3);
+  }
 }

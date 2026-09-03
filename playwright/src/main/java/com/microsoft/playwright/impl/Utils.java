@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
@@ -372,6 +373,26 @@ public class Utils {
     }
     params.remove("clientCertificates");
     params.add("clientCertificates", clientCertificates);
+  }
+
+  // Mirrors toHttpCredentialsProtocol() in the JS client: the protocol always takes a list.
+  static void addHttpCredentialsToProtocol(JsonObject params) {
+    JsonElement credentials = params.get("httpCredentials");
+    if (credentials == null || credentials.isJsonNull()) {
+      params.remove("httpCredentials");
+      return;
+    }
+    if (credentials.isJsonObject()) {
+      JsonArray list = new JsonArray();
+      list.add(credentials);
+      params.add("httpCredentials", list);
+    } else if (credentials.isJsonArray()) {
+      if (credentials.getAsJsonArray().size() == 0) {
+        params.remove("httpCredentials");
+      }
+    } else {
+      throw new PlaywrightException("httpCredentials must be an HttpCredentials object or a list of HttpCredentials");
+    }
   }
 
   private static String base64Buffer(byte[] bytes, Path path) throws IOException {

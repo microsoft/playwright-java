@@ -46,6 +46,10 @@ import java.util.regex.Pattern;
 public interface Tracing {
   class StartOptions {
     /**
+     * Whether to capture aria snapshot of the page on every action.
+     */
+    public Boolean ariaSnapshots;
+    /**
      * When enabled, the trace is written to an unarchived file that is updated in real time as actions occur, instead of
      * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
      * execution.
@@ -63,11 +67,11 @@ public interface Tracing {
      */
     public Boolean screenshots;
     /**
-     * If this option is true tracing will
-     * <ul>
-     * <li> capture DOM snapshot on every action</li>
-     * <li> record network activity</li>
-     * </ul>
+     * Whether to capture a screenshot of the page on every action.
+     */
+    public Boolean screenSnapshots;
+    /**
+     * Whether to capture DOM snapshot and record network activity on every action.
      */
     public Boolean snapshots;
     /**
@@ -81,6 +85,13 @@ public interface Tracing {
      */
     public String title;
 
+    /**
+     * Whether to capture aria snapshot of the page on every action.
+     */
+    public StartOptions setAriaSnapshots(boolean ariaSnapshots) {
+      this.ariaSnapshots = ariaSnapshots;
+      return this;
+    }
     /**
      * When enabled, the trace is written to an unarchived file that is updated in real time as actions occur, instead of
      * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
@@ -108,11 +119,14 @@ public interface Tracing {
       return this;
     }
     /**
-     * If this option is true tracing will
-     * <ul>
-     * <li> capture DOM snapshot on every action</li>
-     * <li> record network activity</li>
-     * </ul>
+     * Whether to capture a screenshot of the page on every action.
+     */
+    public StartOptions setScreenSnapshots(boolean screenSnapshots) {
+      this.screenSnapshots = screenSnapshots;
+      return this;
+    }
+    /**
+     * Whether to capture DOM snapshot and record network activity on every action.
      */
     public StartOptions setSnapshots(boolean snapshots) {
       this.snapshots = snapshots;
@@ -387,7 +401,7 @@ public interface Tracing {
    * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is
    * disposed.
    *
-   * <p> Only one HAR recording can be active at a time per {@code BrowserContext}.
+   * <p> Only one HAR recording can be active at a time per {@code Tracing} instance.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -409,7 +423,7 @@ public interface Tracing {
    * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is
    * disposed.
    *
-   * <p> Only one HAR recording can be active at a time per {@code BrowserContext}.
+   * <p> Only one HAR recording can be active at a time per {@code Tracing} instance.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

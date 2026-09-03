@@ -16,6 +16,22 @@
 
 package com.microsoft.playwright;
 
+import static java.util.Arrays.asList;
+
+import java.util.stream.Collectors;
+
+import java.util.Map;
+
+import java.util.List;
+
+import java.util.ArrayList;
+
+import java.nio.charset.StandardCharsets;
+
+import com.google.gson.JsonObject;
+
+import com.google.gson.Gson;
+
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
@@ -62,7 +78,7 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile));
     TraceViewerPage.showTraceViewer(this.browserType, traceFile, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
         Pattern.compile("Click"),
         Pattern.compile("Close")
@@ -92,7 +108,7 @@ public class TestTracing extends TestBase {
     
     TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
         Pattern.compile("Click")
       });
@@ -154,7 +170,7 @@ public class TestTracing extends TestBase {
 
     TraceViewerPage.showTraceViewer(this.browserType, trace, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
         Pattern.compile("Click")
       });
@@ -210,7 +226,7 @@ public class TestTracing extends TestBase {
       
       TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace1.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-          Pattern.compile("Navigate to \"/one-style.html\"")
+          Pattern.compile("Navigate.*/one-style.html")
         });
         FrameLocator frame = traceViewer.snapshotFrame("Navigate", 0, false);
         assertThat(frame.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
@@ -219,7 +235,7 @@ public class TestTracing extends TestBase {
       
       TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace2.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-          Pattern.compile("Navigate to \"/har.html\"")
+          Pattern.compile("Navigate.*/har.html")
         });
         FrameLocator frame = traceViewer.snapshotFrame("Navigate", 0, false);
         assertThat(frame.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
@@ -246,7 +262,7 @@ public class TestTracing extends TestBase {
     context.tracing().groupEnd();
 
     TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
-      assertThat(traceViewer.actionTitles()).containsText(new String[] {"actual", "Navigate to \"/empty.html\""});
+      assertThat(traceViewer.actionTitles()).containsText(new Pattern[] {Pattern.compile("actual"), Pattern.compile("Navigate.*/empty.html")});
     });
   }
 
@@ -270,7 +286,7 @@ public class TestTracing extends TestBase {
       traceViewer.expandAction("inner group 1");
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("outer group"),
-        Pattern.compile("Navigate to \"data:"),
+        Pattern.compile("Navigate.*data:"),
         Pattern.compile("inner group 1"),
         Pattern.compile("Click"),
         Pattern.compile("inner group 2"),
@@ -356,7 +372,7 @@ public class TestTracing extends TestBase {
 
     TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-        Pattern.compile("Navigate to \"/empty.html\"")
+        Pattern.compile("Navigate.*/empty.html")
       });
     });
   }
@@ -375,7 +391,7 @@ public class TestTracing extends TestBase {
 
     TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
-        Pattern.compile("Navigate to \"/empty.html\""),
+        Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Wait for load state \"load\""),
       });
     });
@@ -390,5 +406,96 @@ public class TestTracing extends TestBase {
     String content = new String(Files.readAllBytes(harPath));
     assertTrue(content.contains("\"log\""), content);
     assertTrue(content.contains("/one-style.html"), content);
+  }
+
+
+  @Test
+  void shouldRecoverTracingAfterAFailedStop(@TempDir Path tempDir) throws Exception {
+    // https://github.com/microsoft/playwright/issues/42423
+    context.tracing().start();
+    // Saving fails: a parent of the destination is a file, not a directory.
+    Path blocker = tempDir.resolve("blocker");
+    Files.write(blocker, new byte[0]);
+    assertThrows(PlaywrightException.class, () -> context.tracing().stop(
+      new Tracing.StopOptions().setPath(blocker.resolve("trace1.zip"))));
+
+    // The failed stop must not wedge tracing for the rest of the context lifetime.
+    context.tracing().start();
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.click("button");
+    Path trace = tempDir.resolve("trace2.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    List<JsonObject> events = traceEvents(Utils.parseZip(trace));
+    assertEquals("context-options", events.get(0).get("type").getAsString());
+    assertTrue(events.stream().anyMatch(e -> "before".equals(e.get("type").getAsString())
+      && "click".equals(e.get("method").getAsString())));
+  }
+
+  @Test
+  void shouldCollectActionScreenshots(@TempDir Path tempDir) throws Exception {
+    context.tracing().start(new Tracing.StartOptions().setScreenSnapshots(true));
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.click("button");
+    Path trace = tempDir.resolve("trace.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    Map<String, byte[]> resources = Utils.parseZip(trace);
+    List<JsonObject> events = traceEvents(resources);
+    String clickCallId = findCallId(events, "click");
+    List<JsonObject> screenshots = events.stream().filter(e -> "screenshot".equals(e.get("type").getAsString())
+      && clickCallId.equals(e.get("callId").getAsString())).collect(Collectors.toList());
+    assertEquals(asList("before", "action", "after"),
+      screenshots.stream().map(e -> e.get("phase").getAsString()).collect(Collectors.toList()));
+    for (JsonObject screenshot : screenshots) {
+      String file = screenshot.get("file").getAsString();
+      assertEquals("screenshots/" + clickCallId + "-" + screenshot.get("phase").getAsString() + ".png", file);
+      assertTrue(resources.containsKey(file), file);
+      assertTrue(resources.get(file).length > 0, file);
+    }
+  }
+
+  @Test
+  void shouldCollectAriaSnapshots(@TempDir Path tempDir) throws Exception {
+    context.tracing().start(new Tracing.StartOptions().setAriaSnapshots(true));
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.click("button");
+    Path trace = tempDir.resolve("trace.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    Map<String, byte[]> resources = Utils.parseZip(trace);
+    List<JsonObject> events = traceEvents(resources);
+    String clickCallId = findCallId(events, "click");
+    List<JsonObject> snapshots = events.stream().filter(e -> "aria-snapshot".equals(e.get("type").getAsString())
+      && clickCallId.equals(e.get("callId").getAsString())).collect(Collectors.toList());
+    assertEquals(asList("before", "action", "after"),
+      snapshots.stream().map(e -> e.get("phase").getAsString()).collect(Collectors.toList()));
+    for (JsonObject snapshot : snapshots) {
+      String file = snapshot.get("file").getAsString();
+      assertEquals("aria/" + clickCallId + "-" + snapshot.get("phase").getAsString() + ".json", file);
+      assertTrue(resources.containsKey(file), file);
+      String content = new String(resources.get(file), StandardCharsets.UTF_8);
+      assertTrue(content.contains("Click target"), content);
+    }
+  }
+
+  private static List<JsonObject> traceEvents(Map<String, byte[]> resources) {
+    List<JsonObject> events = new ArrayList<>();
+    for (Map.Entry<String, byte[]> entry : resources.entrySet()) {
+      if (!entry.getKey().endsWith(".trace")) {
+        continue;
+      }
+      for (String line : new String(entry.getValue(), StandardCharsets.UTF_8).split("\n")) {
+        if (!line.trim().isEmpty()) {
+          events.add(new Gson().fromJson(line, JsonObject.class));
+        }
+      }
+    }
+    return events;
+  }
+
+  private static String findCallId(List<JsonObject> events, String method) {
+    return events.stream().filter(e -> "before".equals(e.get("type").getAsString())
+      && method.equals(e.get("method").getAsString())).findFirst().get().get("callId").getAsString();
   }
 }

@@ -62,6 +62,10 @@ public interface APIRequestContext {
      */
     public Boolean indexedDB;
     /**
+     * Set to {@code true} to include the origin private file system in the storage state snapshot.
+     */
+    public Boolean opfs;
+    /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
@@ -72,6 +76,13 @@ public interface APIRequestContext {
      */
     public StorageStateOptions setIndexedDB(boolean indexedDB) {
       this.indexedDB = indexedDB;
+      return this;
+    }
+    /**
+     * Set to {@code true} to include the origin private file system in the storage state snapshot.
+     */
+    public StorageStateOptions setOpfs(boolean opfs) {
+      this.opfs = opfs;
       return this;
     }
     /**
@@ -484,7 +495,7 @@ public interface APIRequestContext {
    */
   String storageState(StorageStateOptions options);
   /**
-   *
+   * Tracing recorder for requests made through this API request context.
    *
    * @since v1.60
    */

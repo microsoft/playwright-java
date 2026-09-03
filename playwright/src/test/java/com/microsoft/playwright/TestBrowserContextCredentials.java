@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import static java.util.Arrays.asList;
+
 import com.microsoft.playwright.options.HttpCredentials;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
@@ -136,6 +138,63 @@ public class TestBrowserContextCredentials extends TestBase {
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
+
+
+  @Test
+  void shouldWorkWithASingleCredentialInAnArray() {
+    server.setAuth("/empty.html", "user", "pass");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(asList(new HttpCredentials("user", "pass"))))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response.status());
+    }
+  }
+
+  @Test
+  void shouldWorkWithMultipleCredentialsForDifferentOrigins() {
+    server.setAuth("/empty.html", "user1", "pass1");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("user1", "pass1").setOrigin(server.PREFIX),
+        new HttpCredentials("user2", "pass2").setOrigin(server.CROSS_PROCESS_PREFIX))))) {
+      Page page = context.newPage();
+      Response response1 = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response1.status());
+      // Wrong credentials are picked for the other origin.
+      Response response2 = page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      assertEquals(401, response2.status());
+    }
+  }
+
+  @Test
+  void shouldFallBackToCredentialsWithoutOrigin() {
+    server.setAuth("/empty.html", "user", "pass");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("user2", "pass2").setOrigin(server.CROSS_PROCESS_PREFIX),
+        new HttpCredentials("user", "pass"))))) {
+      Page page = context.newPage();
+      Response response1 = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response1.status());
+      // First matching entry has wrong credentials for this origin.
+      Response response2 = page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      assertEquals(401, response2.status());
+    }
+  }
+
+  @Test
+  void shouldUseTheFirstMatchingCredential() {
+    server.setAuth("/empty.html", "user", "pass");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("wrong", "wrong"),
+        new HttpCredentials("user", "pass").setOrigin(server.PREFIX))))) {
       Page page = context.newPage();
       Response response = page.navigate(server.EMPTY_PAGE);
       assertEquals(401, response.status());

@@ -177,6 +177,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
     }
     addToProtocol(params, options.clientCertificates);
+    addHttpCredentialsToProtocol(params);
     params.remove("acceptDownloads");
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
@@ -300,6 +301,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
     for (BrowserContextImpl context : contexts) {
       context.tracing().setTracesDir(tracesDir);
+      context.request().tracing().setTracesDir(tracesDir);
       browserType.playwright.selectors.contextsForSelectors.add(context);
     }
   }

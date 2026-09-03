@@ -272,4 +272,22 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(page.mainFrame(), detached[0].parentFrame());
   }
 
+
+  @Test
+  void dialogClosedEventShouldWork() {
+    Dialog[] dialog = {null};
+    Dialog[] closedOnContext = {null};
+    Dialog[] closedOnPage = {null};
+    context.onDialogClosed(d -> closedOnContext[0] = d);
+    page.onDialogClosed(d -> closedOnPage[0] = d);
+    context.onDialog(d -> {
+      dialog[0] = d;
+      d.accept("hello");
+    });
+    Object result = page.evaluate("prompt('hey?')");
+    assertEquals("hello", result);
+    context.waitForCondition(() -> closedOnContext[0] != null && closedOnPage[0] != null);
+    assertEquals(dialog[0], closedOnContext[0]);
+    assertEquals(dialog[0], closedOnPage[0]);
+  }
 }

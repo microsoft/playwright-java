@@ -3307,6 +3307,10 @@ public interface Frame {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
+   * <p> When called without {@code selector}, the search starts in this frame or in any of the iframes inside it, so that you
+   * don't need to locate each iframe first. Note that the rest of the locator is resolved inside a single frame, just like
+   * any other locator. If it matches elements inside multiple frames, an error is thrown.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
@@ -3316,7 +3320,42 @@ public interface Frame {
    * locator.click();
    * }</pre>
    *
-   * @param selector A selector to use when resolving DOM element.
+   * <p> Following snippet locates a button, either in the frame or in one of the iframes inside it:
+   * <pre>{@code
+   * Locator locator = frame.frameLocator().getByRole(AriaRole.BUTTON);
+   * locator.click();
+   * }</pre>
+   *
+   * @since v1.17
+   */
+  default FrameLocator frameLocator() {
+    return frameLocator(null);
+  }
+  /**
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
+   * that iframe.
+   *
+   * <p> When called without {@code selector}, the search starts in this frame or in any of the iframes inside it, so that you
+   * don't need to locate each iframe first. Note that the rest of the locator is resolved inside a single frame, just like
+   * any other locator. If it matches elements inside multiple frames, an error is thrown.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
+   * id="my-frame">}:
+   * <pre>{@code
+   * Locator locator = frame.frameLocator("#my-iframe").getByText("Submit");
+   * locator.click();
+   * }</pre>
+   *
+   * <p> Following snippet locates a button, either in the frame or in one of the iframes inside it:
+   * <pre>{@code
+   * Locator locator = frame.frameLocator().getByRole(AriaRole.BUTTON);
+   * locator.click();
+   * }</pre>
+   *
+   * @param selector A selector that matches the frame element. When not specified, locator is matched in this frame or in any of the iframes
+   * inside it.
    * @since v1.17
    */
   FrameLocator frameLocator(String selector);

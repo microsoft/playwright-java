@@ -146,6 +146,17 @@ public interface Page extends AutoCloseable {
   void offDialog(Consumer<Dialog> handler);
 
   /**
+   * Emitted when a JavaScript dialog has been closed, either by {@link com.microsoft.playwright.Dialog#accept
+   * Dialog.accept()}, by {@link com.microsoft.playwright.Dialog#dismiss Dialog.dismiss()}, or manually by the user in the
+   * headed browser.
+   */
+  void onDialogClosed(Consumer<Dialog> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDialogClosed onDialogClosed(handler)}.
+   */
+  void offDialogClosed(Consumer<Dialog> handler);
+
+  /**
    * Emitted when the JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded">{@code
    * DOMContentLoaded}</a> event is dispatched.
    */
@@ -5005,6 +5016,10 @@ public interface Page extends AutoCloseable {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
+   * <p> When called without {@code selector}, the search starts in any frame on the page - the main frame or any of the iframes
+   * - so that you don't need to locate each iframe first. Note that the rest of the locator is resolved inside a single
+   * frame, just like any other locator. If it matches elements inside multiple frames, an error is thrown.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
@@ -5014,7 +5029,41 @@ public interface Page extends AutoCloseable {
    * locator.click();
    * }</pre>
    *
-   * @param selector A selector to use when resolving DOM element.
+   * <p> Following snippet locates a button, either in the main frame or in one of the iframes:
+   * <pre>{@code
+   * Locator locator = page.frameLocator().getByRole(AriaRole.BUTTON);
+   * locator.click();
+   * }</pre>
+   *
+   * @since v1.17
+   */
+  default FrameLocator frameLocator() {
+    return frameLocator(null);
+  }
+  /**
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
+   * that iframe.
+   *
+   * <p> When called without {@code selector}, the search starts in any frame on the page - the main frame or any of the iframes
+   * - so that you don't need to locate each iframe first. Note that the rest of the locator is resolved inside a single
+   * frame, just like any other locator. If it matches elements inside multiple frames, an error is thrown.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
+   * id="my-frame">}:
+   * <pre>{@code
+   * Locator locator = page.frameLocator("#my-iframe").getByText("Submit");
+   * locator.click();
+   * }</pre>
+   *
+   * <p> Following snippet locates a button, either in the main frame or in one of the iframes:
+   * <pre>{@code
+   * Locator locator = page.frameLocator().getByRole(AriaRole.BUTTON);
+   * locator.click();
+   * }</pre>
+   *
+   * @param selector A selector that matches the frame element. When not specified, locator is matched in any frame on the page.
    * @since v1.17
    */
   FrameLocator frameLocator(String selector);
@@ -5604,10 +5653,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the previous page in history.
    *
-   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
-   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
-   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
-   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.** By default, Playwright disables the Back/Forward Cache across
+   * all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because
+   * BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code page.goForward()}
+   * to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */
@@ -5620,10 +5669,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the previous page in history.
    *
-   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
-   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
-   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
-   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.** By default, Playwright disables the Back/Forward Cache across
+   * all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because
+   * BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code page.goForward()}
+   * to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */
@@ -5634,10 +5683,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the next page in history.
    *
-   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
-   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
-   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
-   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.** By default, Playwright disables the Back/Forward Cache across
+   * all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because
+   * BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code page.goForward()}
+   * to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */
@@ -5650,10 +5699,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> Navigate to the next page in history.
    *
-   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.**  By default, Playwright disables the Back/Forward Cache
-   * across all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events.
-   * Because BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code
-   * page.goForward()} to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
+   * <p> <strong>NOTE:</strong> **Testing Back/Forward Cache (BFCache) is not supported.** By default, Playwright disables the Back/Forward Cache across
+   * all browsers. Even if explicitly enabled, Playwright's internal state relies on network-level navigation events. Because
+   * BFCache restores unfreeze the DOM without firing these events, using {@code page.goBack()} or {@code page.goForward()}
+   * to trigger a BFCache restore will result in timeouts and a desynchronized {@code Page} state.
    *
    * @since v1.8
    */

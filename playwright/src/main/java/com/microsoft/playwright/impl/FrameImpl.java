@@ -328,7 +328,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public FrameLocator frameLocator(String selector) {
-    return new FrameLocatorImpl(this, selector);
+    return new FrameLocatorImpl(this, selector == null ? FrameLocatorImpl.ANY_FRAME_SELECTOR : selector);
   }
 
   @Override

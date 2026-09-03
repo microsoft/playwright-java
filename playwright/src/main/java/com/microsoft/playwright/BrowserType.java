@@ -632,8 +632,11 @@ public interface BrowserType {
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
+     *
+     * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
+     * used, and entries with no origin match any request.
      */
-    public HttpCredentials httpCredentials;
+    public Object httpCredentials;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care. Defaults to {@code false}.
@@ -1013,6 +1016,9 @@ public interface BrowserType {
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
+     *
+     * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
+     * used, and entries with no origin match any request.
      */
     public LaunchPersistentContextOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
@@ -1020,8 +1026,22 @@ public interface BrowserType {
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
+     *
+     * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
+     * used, and entries with no origin match any request.
      */
     public LaunchPersistentContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
+      this.httpCredentials = httpCredentials;
+      return this;
+    }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
+     *
+     * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
+     * used, and entries with no origin match any request.
+     */
+    public LaunchPersistentContextOptions setHttpCredentials(List<HttpCredentials> httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }

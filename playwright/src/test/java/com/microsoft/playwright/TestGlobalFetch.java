@@ -659,4 +659,43 @@ public class TestGlobalFetch extends TestBase {
     APIResponse response = request.get(server.EMPTY_PAGE);
     assertEquals(404, response.status());
   }
+
+
+  @Test
+  void shouldSupportMultipleHttpCredentials() {
+    server.setAuth("/empty.html", "user1", "pass1");
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("user1", "pass1").setOrigin(server.PREFIX),
+        new HttpCredentials("user2", "pass2").setOrigin(server.CROSS_PROCESS_PREFIX))));
+    APIResponse response1 = request.get(server.EMPTY_PAGE);
+    assertEquals(200, response1.status());
+    // Wrong credentials are picked for the other origin.
+    APIResponse response2 = request.get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+    assertEquals(401, response2.status());
+    request.dispose();
+  }
+
+  @Test
+  void shouldSupportHTTPCredentialsSendWithMultipleHttpCredentials() throws InterruptedException, ExecutionException {
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("user1", "pass1").setOrigin(server.PREFIX).setSend(HttpCredentialsSend.ALWAYS),
+        new HttpCredentials("user2", "pass2").setOrigin(server.CROSS_PROCESS_PREFIX).setSend(HttpCredentialsSend.UNAUTHORIZED))));
+    {
+      Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+      APIResponse response = request.get(server.EMPTY_PAGE);
+      assertEquals("Basic " + Base64.getEncoder().encodeToString("user1:pass1".getBytes()),
+        serverRequest.get().headers.getFirst("authorization"));
+      assertEquals(200, response.status());
+    }
+    {
+      Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+      APIResponse response = request.get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      // This origin has send: 'unauthorized', so credentials are not sent proactively.
+      assertNull(serverRequest.get().headers.get("authorization"));
+      assertEquals(200, response.status());
+    }
+    request.dispose();
+  }
 }

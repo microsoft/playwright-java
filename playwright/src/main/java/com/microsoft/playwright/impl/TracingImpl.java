@@ -63,11 +63,28 @@ class TracingImpl extends ChannelOwner implements Tracing {
       isTracing = false;
       connection.setIsTracing(false);
     }
-    JsonObject params = new JsonObject();
 
     List<String> capturedAdditionalSources = new ArrayList<>(additionalSources);
     additionalSources.clear();
+    String stacksId = this.stacksId;
+    this.stacksId = null;
 
+    try {
+      saveChunk(path, stacksId, capturedAdditionalSources);
+    } catch (RuntimeException e) {
+      // Release the stack session even on failure, otherwise later traces keep appending to it.
+      if (stacksId != null) {
+        try {
+          connection.localUtils().traceDiscarded(stacksId);
+        } catch (RuntimeException ignored) {
+        }
+      }
+      throw e;
+    }
+  }
+
+  private void saveChunk(Path path, String stacksId, List<String> capturedAdditionalSources) {
+    JsonObject params = new JsonObject();
     // Not interested in artifacts.
     if (path == null) {
       params.addProperty("mode", "discard");
@@ -97,7 +114,16 @@ class TracingImpl extends ChannelOwner implements Tracing {
       return;
     }
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-    artifact.saveAs(path);
+    try {
+      artifact.saveAs(path);
+    } catch (RuntimeException e) {
+      // Delete the artifact best-effort, the save error is the one to surface.
+      try {
+        artifact.delete();
+      } catch (RuntimeException ignored) {
+      }
+      throw e;
+    }
     artifact.delete();
 
     connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources, capturedAdditionalSources);
@@ -159,10 +185,22 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options == null) {
       options = new StartOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     includeSources = options.sources != null && options.sources;
-    if (includeSources) {
-      params.addProperty("sources", true);
+    JsonObject params = new JsonObject();
+    if (options.name != null) {
+      params.addProperty("name", options.name);
+    }
+    if (options.snapshots != null) {
+      params.addProperty("snapshotDom", options.snapshots);
+    }
+    if (options.ariaSnapshots != null) {
+      params.addProperty("snapshotAria", options.ariaSnapshots);
+    }
+    if (options.screenSnapshots != null) {
+      params.addProperty("snapshotScreen", options.screenSnapshots);
+    }
+    if (options.screenshots != null) {
+      params.addProperty("screencast", options.screenshots);
     }
     sendMessage("tracingStart", params, NO_TIMEOUT);
     tracingStartChunk(options.name, options.title);
@@ -170,8 +208,16 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
   @Override
   public void stop(StopOptions options) {
-    stopChunkImpl(options == null ? null : options.path);
+    RuntimeException error = null;
+    try {
+      stopChunkImpl(options == null ? null : options.path);
+    } catch (RuntimeException e) {
+      error = e;
+    }
     sendMessage("tracingStop");
+    if (error != null) {
+      throw error;
+    }
   }
 
   @Override

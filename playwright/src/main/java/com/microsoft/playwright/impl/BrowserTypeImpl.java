@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.addHttpCredentialsToProtocol;
 import static com.microsoft.playwright.impl.Utils.addToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
@@ -177,6 +178,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       }
     }
     addToProtocol(params, options.clientCertificates);
+    addHttpCredentialsToProtocol(params);
     params.remove("acceptDownloads");
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
@@ -189,6 +191,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
     context.initializeHarFromOptions(harOptions);
     context.tracing().setTracesDir(options.tracesDir);
+    context.request().tracing().setTracesDir(options.tracesDir);
     return context;
   }
 
