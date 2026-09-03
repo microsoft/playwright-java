@@ -58,6 +58,11 @@ extends:
            GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
           displayName: "Import gpg key"
         
+        - task: UseNode@1
+          inputs:
+            version: '26.x'
+          displayName: "Install Node.js"
+
         - task: Bash@3
           displayName: "setup .npmrc"
           inputs:
