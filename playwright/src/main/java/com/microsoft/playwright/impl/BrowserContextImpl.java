@@ -61,6 +61,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     Map<EventType, String> result = new HashMap<>();
     result.put(EventType.CONSOLE, "console");
     result.put(EventType.DIALOG, "dialog");
+    result.put(EventType.DIALOGCLOSED, "dialogClosed");
     result.put(EventType.REQUEST, "request");
     result.put(EventType.RESPONSE, "response");
     result.put(EventType.REQUESTFINISHED, "requestFinished");
@@ -74,6 +75,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     CLOSE,
     CONSOLE,
     DIALOG,
+    DIALOGCLOSED,
     DOWNLOAD,
     FRAMEATTACHED,
     FRAMEDETACHED,
@@ -178,6 +180,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offDialog(Consumer<Dialog> handler) {
     listeners.remove(EventType.DIALOG, handler);
+  }
+
+  @Override
+  public void onDialogClosed(Consumer<Dialog> handler) {
+    listeners.add(EventType.DIALOGCLOSED, handler);
+  }
+
+  @Override
+  public void offDialogClosed(Consumer<Dialog> handler) {
+    listeners.remove(EventType.DIALOGCLOSED, handler);
   }
 
   @Override
@@ -363,6 +375,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close(CloseOptions options) {
+    RuntimeException harError = null;
     if (!closingOrClosed) {
       closingOrClosed = true;
       if (options == null) {
@@ -370,11 +383,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
       closeReason = options.reason;
       request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
-      tracing.exportAllHars();
+      try {
+        tracing.exportAllHars();
+      } catch (RuntimeException e) {
+        harError = e;
+      }
       JsonObject params = gson().toJsonTree(options).getAsJsonObject();
       sendMessage("close", params, NO_TIMEOUT);
     }
     runUntil(() -> {}, closePromise);
+    if (harError != null) {
+      throw harError;
+    }
   }
 
   @Override
@@ -626,7 +646,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     try {
       String state = new String(readAllBytes(storageState), UTF_8);
       JsonObject params = new JsonObject();
-      params.addProperty("storageState", state);
+      params.add("storageState", gson().fromJson(state, JsonObject.class));
       sendMessage("setStorageState", params, NO_TIMEOUT);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read storage state from file", e);
@@ -652,6 +672,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public DebuggerImpl debugger() {
     return debugger;
+  }
+
+  void setTracesDir(Path tracesDir) {
+    tracing.setTracesDir(tracesDir);
+    request.tracing().setTracesDir(tracesDir);
   }
 
   @Override
@@ -775,6 +800,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         } else {
           dialog.dismiss();
         }
+      }
+    } else if ("dialogClosed".equals(event)) {
+      DialogImpl dialog = connection.getExistingObject(params.getAsJsonObject("dialog").get("guid").getAsString());
+      listeners.notify(EventType.DIALOGCLOSED, dialog);
+      PageImpl page = dialog.page();
+      if (page != null) {
+        page.listeners.notify(PageImpl.EventType.DIALOGCLOSED, dialog);
       }
     } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());

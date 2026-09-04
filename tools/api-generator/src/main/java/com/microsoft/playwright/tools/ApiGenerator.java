@@ -406,6 +406,29 @@ class TypeRef extends Element {
     return supportedUnionTypes().size();
   }
 
+  // True for Object|Array<Object> unions where both refer to the same custom class.
+  boolean isCustomClassOrListUnion() {
+    if (customType == null || !isTypeUnion()) {
+      return false;
+    }
+    List<JsonObject> types = supportedUnionTypes();
+    if (types.size() != 2) {
+      return false;
+    }
+    boolean hasObject = false;
+    boolean hasList = false;
+    for (JsonObject o : types) {
+      String name = o.get("name").getAsString();
+      if ("Object".equals(name)) {
+        hasObject = true;
+      } else if ("Array".equals(name) && o.has("templates") && o.getAsJsonArray("templates").size() == 1
+        && "Object".equals(o.getAsJsonArray("templates").get(0).getAsJsonObject().get("name").getAsString())) {
+        hasList = true;
+      }
+    }
+    return hasObject && hasList;
+  }
+
   String formatTypeFromUnion(int i) {
     JsonElement overloadedType = supportedUnionTypes().get(i);
     return convertBuiltinType(overloadedType.getAsJsonObject());
@@ -898,32 +921,19 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (type.customType == null && type.isTypeUnion()) {
+    if (type.isTypeUnion() && (type.customType == null || type.isCustomClassOrListUnion())) {
+      // Union of a custom class and its list, e.g. Object|Array<Object> for httpCredentials,
+      // gets the convenience setter with the required fields in addition to the overloads.
+      if (type.customType != null) {
+        writeRequiredFieldsBuilderMethod(output, offset, parentClass);
+      }
       for (int i = 0; i < type.unionSize(); i++) {
         writeGenericBuilderMethod(output, offset, parentClass, type.formatTypeFromUnion(i));
       }
       return;
     }
     if (type.isCustomClass()) {
-      TypeDefinition customType = topLevelTypes().get(type.customType);
-      if (customType instanceof CustomClass) {
-        CustomClass clazz = (CustomClass) customType;
-        List<String> params = new ArrayList<>();
-        List<String> args = new ArrayList<>();
-        for (Field f : clazz.fields) {
-          if (!f.isRequired()) {
-            continue;
-          }
-          params.add(f.type.toJava() + " " + f.name);
-          args.add(f.name);
-        }
-        if (!params.isEmpty()) {
-          writeJavadoc(output, offset, comment());
-          output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + String.join(", ", params) + ") {");
-          output.add(offset + "  return set" + toTitle(name) + "(new " + type.toJava() + "(" + String.join(", ", args) + "));");
-          output.add(offset + "}");
-        }
-      }
+      writeRequiredFieldsBuilderMethod(output, offset, parentClass);
     }
 
     if (isBrowserChannelOption()) {
@@ -932,6 +942,31 @@ class Field extends Element {
     }
 
     writeGenericBuilderMethod(output, offset, parentClass, type.toJava());
+  }
+
+  // Convenience setter taking the required fields of the custom class, e.g. setHttpCredentials(username, password).
+  private void writeRequiredFieldsBuilderMethod(List<String> output, String offset, String parentClass) {
+    TypeDefinition customType = topLevelTypes().get(type.customType);
+    if (!(customType instanceof CustomClass)) {
+      return;
+    }
+    CustomClass clazz = (CustomClass) customType;
+    List<String> params = new ArrayList<>();
+    List<String> args = new ArrayList<>();
+    for (Field f : clazz.fields) {
+      if (!f.isRequired()) {
+        continue;
+      }
+      params.add(f.type.toJava() + " " + f.name);
+      args.add(f.name);
+    }
+    if (params.isEmpty()) {
+      return;
+    }
+    writeJavadoc(output, offset, comment());
+    output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + String.join(", ", params) + ") {");
+    output.add(offset + "  return set" + toTitle(name) + "(new " + type.customType + "(" + String.join(", ", args) + "));");
+    output.add(offset + "}");
   }
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {

@@ -47,7 +47,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public com.microsoft.playwright.Tracing tracing() {
+  public TracingImpl tracing() {
     return tracing;
   }
 
@@ -220,9 +220,14 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public String storageState(StorageStateOptions options) {
-    JsonElement json = sendMessage("storageState");
+    if (options == null) {
+      options = new StorageStateOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.remove("path");
+    JsonElement json = sendMessage("storageState", params, NO_TIMEOUT);
     String storageState = json.toString();
-    if (options != null && options.path != null) {
+    if (options.path != null) {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }
     return storageState;

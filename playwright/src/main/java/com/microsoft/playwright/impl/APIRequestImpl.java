@@ -69,6 +69,7 @@ class APIRequestImpl implements APIRequest {
       params.add("storageState", storageState);
     }
     addToProtocol(params, clientCertificateList);
+    Utils.addHttpCredentialsToProtocol(params);
     JsonObject result = playwright.sendMessage("newRequest", params, NO_TIMEOUT).getAsJsonObject();
     APIRequestContextImpl context = playwright.connection.getExistingObject(result.getAsJsonObject("request").get("guid").getAsString());
     context.timeoutSettings.setDefaultTimeout(timeout);

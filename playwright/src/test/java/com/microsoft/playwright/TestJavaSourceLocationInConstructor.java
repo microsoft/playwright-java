@@ -49,7 +49,7 @@ public class TestJavaSourceLocationInConstructor extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
     Map<String, byte[]> entries = Utils.parseZip(trace);
-    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().startsWith("src/")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     assertEquals(1, sources.size());
 
     String path = getClass().getName().replace('.', File.separatorChar);

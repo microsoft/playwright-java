@@ -115,6 +115,17 @@ public interface BrowserContext extends AutoCloseable {
   void offDialog(Consumer<Dialog> handler);
 
   /**
+   * Emitted when a JavaScript dialog in any page belonging to this context has been closed, either by {@link
+   * com.microsoft.playwright.Dialog#accept Dialog.accept()}, by {@link com.microsoft.playwright.Dialog#dismiss
+   * Dialog.dismiss()}, or manually by the user in the headed browser.
+   */
+  void onDialogClosed(Consumer<Dialog> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDialogClosed onDialogClosed(handler)}.
+   */
+  void offDialogClosed(Consumer<Dialog> handler);
+
+  /**
    * Emitted when attachment download started in any page belonging to this context. User can access basic file operations on
    * downloaded content via the passed {@code Download} instance. See also {@link com.microsoft.playwright.Page#onDownload
    * Page.onDownload()} to receive events about a specific page.
@@ -466,6 +477,14 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Boolean indexedDB;
     /**
+     * Set to {@code true} to include the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system">origin private file
+     * system</a> in the storage state snapshot.
+     *
+     * <p> <strong>NOTE:</strong> OPFS is currently not supported in ephemeral WebKit contexts.
+     */
+    public Boolean opfs;
+    /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
@@ -491,6 +510,17 @@ public interface BrowserContext extends AutoCloseable {
      */
     public StorageStateOptions setIndexedDB(boolean indexedDB) {
       this.indexedDB = indexedDB;
+      return this;
+    }
+    /**
+     * Set to {@code true} to include the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system">origin private file
+     * system</a> in the storage state snapshot.
+     *
+     * <p> <strong>NOTE:</strong> OPFS is currently not supported in ephemeral WebKit contexts.
+     */
+    public StorageStateOptions setOpfs(boolean opfs) {
+      this.opfs = opfs;
       return this;
     }
     /**
@@ -1492,8 +1522,8 @@ public interface BrowserContext extends AutoCloseable {
    */
   void setOffline(boolean offline);
   /**
-   * Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot and
-   * virtual WebAuthn credentials.
+   * Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot,
+   * origin private file system snapshot and virtual WebAuthn credentials.
    *
    * @since v1.8
    */
@@ -1501,17 +1531,17 @@ public interface BrowserContext extends AutoCloseable {
     return storageState(null);
   }
   /**
-   * Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot and
-   * virtual WebAuthn credentials.
+   * Returns storage state for this browser context, contains current cookies, local storage snapshot, IndexedDB snapshot,
+   * origin private file system snapshot and virtual WebAuthn credentials.
    *
    * @since v1.8
    */
   String storageState(StorageStateOptions options);
   /**
-   * Clears the existing cookies, local storage, IndexedDB entries and virtual WebAuthn credentials, and sets the new storage
-   * state. When the storage state contains credentials, the virtual WebAuthn authenticator is installed (equivalent to
-   * {@link com.microsoft.playwright.Credentials#install Credentials.install()}), preventing all real authenticators from
-   * working in this context.
+   * Clears the existing cookies, local storage, IndexedDB entries, origin private file system entries and virtual WebAuthn
+   * credentials, and sets the new storage state. When the storage state contains credentials, the virtual WebAuthn
+   * authenticator is installed (equivalent to {@link com.microsoft.playwright.Credentials#install Credentials.install()}),
+   * preventing all real authenticators from working in this context.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

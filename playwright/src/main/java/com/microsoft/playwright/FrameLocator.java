@@ -41,6 +41,27 @@ import java.util.regex.Pattern;
  * page.locator(".result-frame").first().contentFrame().getByRole(AriaRole.BUTTON).click();
  * }</pre>
  *
+ * <p> <strong>Any frame</strong>
+ *
+ * <p> Calling {@link com.microsoft.playwright.Page#frameLocator Page.frameLocator()} or {@link
+ * com.microsoft.playwright.Frame#frameLocator Frame.frameLocator()} without a selector creates a frame locator that starts
+ * the search in any frame of the subtree - so that you don't need to locate the iframe first.
+ * <pre>{@code
+ * // Finds the button in any frame on the page:
+ * page.frameLocator().getByRole(AriaRole.BUTTON).click();
+ *
+ * // Finds the iframe with id "my-frame" anywhere on the page, and clicks the button inside it:
+ * page.frameLocator().locator("#my-frame").contentFrame().getByRole(AriaRole.BUTTON).click();
+ * }</pre>
+ *
+ * <p> Only the start of the search is affected - the rest of the locator is resolved inside a single frame, just like any
+ * other locator. Following the strictness rules above, an error is thrown when elements are matched in multiple frames.
+ *
+ * <p> Such a frame locator does not point to a particular {@code iframe}, so {@link
+ * com.microsoft.playwright.FrameLocator#owner FrameLocator.owner()}, {@link com.microsoft.playwright.FrameLocator#first
+ * FrameLocator.first()}, {@link com.microsoft.playwright.FrameLocator#last FrameLocator.last()} and {@link
+ * com.microsoft.playwright.FrameLocator#nth FrameLocator.nth()} are not supported on it.
+ *
  * <p> <strong>Converting Locator to FrameLocator</strong>
  *
  * <p> If you have a {@code Locator} object pointing to an {@code iframe} it can be converted to {@code FrameLocator} using

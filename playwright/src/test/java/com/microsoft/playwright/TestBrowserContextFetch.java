@@ -246,7 +246,6 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-
   @Test
   void shouldWorkWithHttpCredentials() throws ExecutionException, InterruptedException {
     server.setAuth("/empty.html", "user", "pass");
@@ -925,5 +924,20 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(200, response.status());
     assertEquals("Hello!", response.text());
     assertEquals(4, requestCount[0]);
+  }
+
+  @Test
+  void shouldSupportMultipleHttpCredentials() {
+    server.setAuth("/empty.html", "user1", "pass1");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(asList(
+        new HttpCredentials("user1", "pass1").setOrigin(server.PREFIX),
+        new HttpCredentials("user2", "pass2").setOrigin(server.CROSS_PROCESS_PREFIX))))) {
+      APIResponse response1 = context.request().get(server.EMPTY_PAGE);
+      assertEquals(200, response1.status());
+      // Wrong credentials are picked for the other origin.
+      APIResponse response2 = context.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      assertEquals(401, response2.status());
+    }
   }
 }

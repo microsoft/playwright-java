@@ -900,7 +900,8 @@ public interface Locator {
      */
     public Object hasText;
     /**
-     * Only matches visible or invisible elements.
+     * Only matches visible or invisible elements. Prefer the {@link com.microsoft.playwright.Locator#visible
+     * Locator.visible()} shortcut when matching only visible elements.
      */
     public Boolean visible;
 
@@ -966,7 +967,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Only matches visible or invisible elements.
+     * Only matches visible or invisible elements. Prefer the {@link com.microsoft.playwright.Locator#visible
+     * Locator.visible()} shortcut when matching only visible elements.
      */
     public FilterOptions setVisible(boolean visible) {
       this.visible = visible;
@@ -5824,6 +5826,29 @@ public interface Locator {
    * @since v1.14
    */
   void uncheck(UncheckOptions options);
+  /**
+   * Returns a locator that matches only <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>
+   * elements, ignoring the invisible ones. This is the recommended way to distinguish elements by visibility, as opposed to
+   * the {@code :visible} CSS pseudo-class.
+   *
+   * <p> Note that visibility is checked every time the locator is used, and not at the moment of the {@link
+   * com.microsoft.playwright.Locator#visible Locator.visible()} call.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Consider a page with two buttons, the first invisible and the second visible.
+   *
+   * <p> This will only find the second button, because it is visible, and then click it.
+   * <pre>{@code
+   * page.locator("button").visible().click();
+   * }</pre>
+   *
+   * <p> To match invisible elements instead, use {@link com.microsoft.playwright.Locator#filter Locator.filter()} with the
+   * {@code visible} option set to {@code false}.
+   *
+   * @since v1.63
+   */
+  Locator visible();
   /**
    * Returns when element specified by locator satisfies the {@code state} option.
    *

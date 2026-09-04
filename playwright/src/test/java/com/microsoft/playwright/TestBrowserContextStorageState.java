@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -25,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
@@ -284,5 +287,79 @@ public class TestBrowserContextStorageState extends TestBase {
     PlaywrightException e = org.junit.jupiter.api.Assertions.assertThrows(
       PlaywrightException.class, () -> context.setStorageState(file));
     assertTrue(e.getMessage().contains("Failed to read storage state from file"), e.getMessage());
+  }
+
+  @Test
+  void shouldRoundTripOPFS(@TempDir Path tempDir) throws IOException {
+    Assumptions.assumeFalse(isWebKit(), "OPFS is unavailable in non-persistent WebKit contexts");
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("async () => {\n" +
+      "  const root = await navigator.storage.getDirectory();\n" +
+      "  const nested = await root.getDirectoryHandle('nested', { create: true });\n" +
+      "  await nested.getDirectoryHandle('empty', { create: true });\n" +
+      "  const binary = await nested.getFileHandle('data.bin', { create: true });\n" +
+      "  const binaryWritable = await binary.createWritable();\n" +
+      "  await binaryWritable.write(new Uint8Array([0, 1, 2, 255]));\n" +
+      "  await binaryWritable.close();\n" +
+      "  const text = await root.getFileHandle('hello.txt', { create: true });\n" +
+      "  const textWritable = await text.createWritable();\n" +
+      "  await textWritable.write('Hello, world!');\n" +
+      "  await textWritable.close();\n" +
+      "}");
+
+    assertJsonEquals("{\"cookies\":[],\"origins\":[]}", JsonParser.parseString(context.storageState()));
+
+    Path path = tempDir.resolve("storage-state.json");
+    String storageState = context.storageState(new BrowserContext.StorageStateOptions().setPath(path).setOpfs(true));
+    String expected = "{\"cookies\":[],\"origins\":[{\n" +
+      "  \"origin\": \"" + server.PREFIX + "\",\n" +
+      "  \"localStorage\": [],\n" +
+      "  \"opfs\": [\n" +
+      "    { \"path\": \"hello.txt\", \"type\": \"file\", \"base64\": \"SGVsbG8sIHdvcmxkIQ==\" },\n" +
+      "    { \"path\": \"nested\", \"type\": \"directory\" },\n" +
+      "    { \"path\": \"nested/data.bin\", \"type\": \"file\", \"base64\": \"AAEC/w==\" },\n" +
+      "    { \"path\": \"nested/empty\", \"type\": \"directory\" }\n" +
+      "  ]\n" +
+      "}]}";
+    assertJsonEquals(expected, JsonParser.parseString(storageState));
+    assertJsonEquals(expected, JsonParser.parseString(new String(Files.readAllBytes(path), StandardCharsets.UTF_8)));
+    assertJsonEquals(expected, JsonParser.parseString(context.request().storageState(new APIRequestContext.StorageStateOptions().setOpfs(true))));
+
+    try (BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().setStorageStatePath(path))) {
+      checkOPFSContext(context2, expected);
+    }
+
+    try (BrowserContext context3 = browser.newContext()) {
+      Page page3 = context3.newPage();
+      page3.navigate(server.EMPTY_PAGE);
+      page3.evaluate("async () => {\n" +
+        "  const root = await navigator.storage.getDirectory();\n" +
+        "  await root.getFileHandle('stale.txt', { create: true });\n" +
+        "}");
+      context3.setStorageState(path);
+      checkOPFSContext(context3, expected);
+    }
+  }
+
+  private void checkOPFSContext(BrowserContext context, String expectedStorageState) {
+    assertJsonEquals(expectedStorageState, JsonParser.parseString(context.storageState(new BrowserContext.StorageStateOptions().setOpfs(true))));
+    Page checkPage = context.newPage();
+    checkPage.navigate(server.EMPTY_PAGE);
+    Object result = checkPage.evaluate("async () => {\n" +
+      "  const root = await navigator.storage.getDirectory();\n" +
+      "  const hello = await (await root.getFileHandle('hello.txt')).getFile();\n" +
+      "  const nested = await root.getDirectoryHandle('nested');\n" +
+      "  const data = await (await nested.getFileHandle('data.bin')).getFile();\n" +
+      "  const empty = await nested.getDirectoryHandle('empty');\n" +
+      "  const emptyEntries = [];\n" +
+      "  for await (const name of empty.keys())\n" +
+      "    emptyEntries.push(name);\n" +
+      "  return {\n" +
+      "    text: await hello.text(),\n" +
+      "    bytes: [...new Uint8Array(await data.arrayBuffer())],\n" +
+      "    empty: emptyEntries,\n" +
+      "  };\n" +
+      "}");
+    assertJsonEquals("{\"text\":\"Hello, world!\",\"bytes\":[0,1,2,255],\"empty\":[]}", result);
   }
 }

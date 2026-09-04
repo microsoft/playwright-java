@@ -177,6 +177,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
     }
     addToProtocol(params, options.clientCertificates);
+    addHttpCredentialsToProtocol(params);
     params.remove("acceptDownloads");
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
@@ -299,7 +300,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     this.tracePath = tracesDir;
 
     for (BrowserContextImpl context : contexts) {
-      context.tracing().setTracesDir(tracesDir);
+      context.setTracesDir(tracesDir);
       browserType.playwright.selectors.contextsForSelectors.add(context);
     }
   }
@@ -310,7 +311,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     // Note: when connecting to a browser, initial contexts arrive before `_browserType` is set,
     // and will be configured later in `ConnectToBrowserType`.
     if (browserType != null) {
-      context.tracing().setTracesDir(tracePath);
+      context.setTracesDir(tracePath);
       browserType.playwright.selectors.contextsForSelectors.add(context);
     }
     listeners.notify(EventType.CONTEXT, context);

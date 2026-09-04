@@ -88,6 +88,7 @@ public class PageImpl extends ChannelOwner implements Page {
     Map<EventType, String> result = new HashMap<>();
     result.put(EventType.CONSOLE, "console");
     result.put(EventType.DIALOG, "dialog");
+    result.put(EventType.DIALOGCLOSED, "dialogClosed");
     result.put(EventType.REQUEST, "request");
     result.put(EventType.RESPONSE, "response");
     result.put(EventType.REQUESTFINISHED, "requestFinished");
@@ -110,6 +111,7 @@ public class PageImpl extends ChannelOwner implements Page {
     CONSOLE,
     CRASH,
     DIALOG,
+    DIALOGCLOSED,
     DOMCONTENTLOADED,
     DOWNLOAD,
     FILECHOOSER,
@@ -301,6 +303,16 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void offDialog(Consumer<Dialog> handler) {
     listeners.remove(EventType.DIALOG, handler);
+  }
+
+  @Override
+  public void onDialogClosed(Consumer<Dialog> handler) {
+    listeners.add(EventType.DIALOGCLOSED, handler);
+  }
+
+  @Override
+  public void offDialogClosed(Consumer<Dialog> handler) {
+    listeners.remove(EventType.DIALOGCLOSED, handler);
   }
 
   @Override

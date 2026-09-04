@@ -18,6 +18,9 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -124,4 +127,41 @@ public class TestPageDialog extends TestBase {
     assertEquals(true, page.evaluate("window._clicked"));
   }
 
+  @Test
+  void shouldFireDialogClosedWhenDialogIsAccepted() {
+    List<Dialog> closed = new ArrayList<>();
+    page.onDialogClosed(closed::add);
+    Dialog[] opened = {null};
+    page.onDialog(dialog -> {
+      opened[0] = dialog;
+      dialog.accept();
+    });
+    page.evaluate("alert('yo')");
+    page.waitForCondition(() -> closed.size() == 1);
+    assertEquals(opened[0], closed.get(0));
+    // Perform some roundtrips to ensure the event does not fire twice.
+    page.evaluate("1");
+    page.evaluate("1");
+    assertEquals(1, closed.size());
+  }
+
+  @Test
+  void shouldFireDialogClosedWhenDialogIsDismissed() {
+    Dialog[] closed = {null};
+    page.onDialogClosed(dialog -> closed[0] = dialog);
+    page.onDialog(Dialog::dismiss);
+    page.evaluate("confirm('boolean?')");
+    page.waitForCondition(() -> closed[0] != null);
+    assertEquals("confirm", closed[0].type());
+    assertEquals("boolean?", closed[0].message());
+  }
+
+  @Test
+  void shouldFireDialogClosedForAutoDismissedDialogs() {
+    Dialog[] closed = {null};
+    page.onDialogClosed(dialog -> closed[0] = dialog);
+    page.evaluate("alert('yo')");
+    page.waitForCondition(() -> closed[0] != null);
+    assertEquals("yo", closed[0].message());
+  }
 }

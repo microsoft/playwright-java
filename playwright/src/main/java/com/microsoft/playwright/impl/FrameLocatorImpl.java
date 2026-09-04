@@ -27,6 +27,9 @@ import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
+  // Created by page.frameLocator() / frame.frameLocator() without a selector: searches in any frame of the subtree.
+  static final String ANY_FRAME_SELECTOR = "internal:control=any-frame";
+
   private final FrameImpl frame;
   private final String frameSelector;
 
@@ -35,14 +38,28 @@ class FrameLocatorImpl implements FrameLocator {
     this.frameSelector = selector;
   }
 
+  private String childSelector(String selector) {
+    if (ANY_FRAME_SELECTOR.equals(frameSelector)) {
+      return frameSelector + " >> " + selector;
+    }
+    return frameSelector + " >> internal:control=enter-frame >> " + selector;
+  }
+
+  private String nthSelector(int nth) {
+    if (ANY_FRAME_SELECTOR.equals(frameSelector)) {
+      throw new PlaywrightException("Selecting the nth frame is not allowed on frameLocator().");
+    }
+    return frameSelector + " >> nth=" + nth;
+  }
+
   @Override
   public FrameLocator first() {
-    return new FrameLocatorImpl(frame, frameSelector + " >> nth=0");
+    return new FrameLocatorImpl(frame, nthSelector(0));
   }
 
   @Override
   public FrameLocatorImpl frameLocator(String selector) {
-    return new FrameLocatorImpl(frame, frameSelector + " >> internal:control=enter-frame >> " + selector);
+    return new FrameLocatorImpl(frame, childSelector(selector));
   }
 
   @Override
@@ -112,12 +129,12 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocator last() {
-    return new FrameLocatorImpl(frame, frameSelector + " >> nth=-1");
+    return new FrameLocatorImpl(frame, nthSelector(-1));
   }
 
   @Override
   public Locator locator(String selector, LocatorOptions options) {
-    return new LocatorImpl(frame, frameSelector + " >> internal:control=enter-frame >> " + selector, convertType(options, Locator.LocatorOptions.class));
+    return new LocatorImpl(frame, childSelector(selector), convertType(options, Locator.LocatorOptions.class));
   }
 
   @Override
@@ -131,7 +148,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocator nth(int index) {
-    return new FrameLocatorImpl(frame, frameSelector + " >> nth=" + index);
+    return new FrameLocatorImpl(frame, nthSelector(index));
   }
 
   @Override

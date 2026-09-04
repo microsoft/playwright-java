@@ -286,6 +286,11 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator visible() {
+    return new LocatorImpl(frame, selector, null, true);
+  }
+
+  @Override
   public void focus(FocusOptions options) {
     if (options == null) {
       options = new FocusOptions();

@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
@@ -63,11 +64,28 @@ class TracingImpl extends ChannelOwner implements Tracing {
       isTracing = false;
       connection.setIsTracing(false);
     }
-    JsonObject params = new JsonObject();
 
     List<String> capturedAdditionalSources = new ArrayList<>(additionalSources);
     additionalSources.clear();
+    String stacksId = this.stacksId;
+    this.stacksId = null;
 
+    try {
+      saveChunk(path, stacksId, capturedAdditionalSources);
+    } catch (RuntimeException e) {
+      // Release the stack session even on failure, otherwise later traces keep appending to it.
+      if (stacksId != null) {
+        try {
+          connection.localUtils().traceDiscarded(stacksId);
+        } catch (RuntimeException ignored) {
+        }
+      }
+      throw e;
+    }
+  }
+
+  private void saveChunk(Path path, String stacksId, List<String> capturedAdditionalSources) {
+    JsonObject params = new JsonObject();
     // Not interested in artifacts.
     if (path == null) {
       params.addProperty("mode", "discard");
@@ -97,7 +115,16 @@ class TracingImpl extends ChannelOwner implements Tracing {
       return;
     }
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-    artifact.saveAs(path);
+    try {
+      artifact.saveAs(path);
+    } catch (RuntimeException e) {
+      // Delete the artifact best-effort, the save error is the one to surface.
+      try {
+        artifact.delete();
+      } catch (RuntimeException ignored) {
+      }
+      throw e;
+    }
     artifact.delete();
 
     connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources, capturedAdditionalSources);
@@ -159,19 +186,32 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options == null) {
       options = new StartOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     includeSources = options.sources != null && options.sources;
-    if (includeSources) {
-      params.addProperty("sources", true);
-    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.remove("sources");
+    params.remove("title");
+    renameProperty(params, "snapshots", "snapshotDom");
+    renameProperty(params, "ariaSnapshots", "snapshotAria");
+    renameProperty(params, "screenSnapshots", "snapshotScreen");
+    renameProperty(params, "screenshots", "screencast");
     sendMessage("tracingStart", params, NO_TIMEOUT);
     tracingStartChunk(options.name, options.title);
   }
 
   @Override
   public void stop(StopOptions options) {
-    stopChunkImpl(options == null ? null : options.path);
-    sendMessage("tracingStop");
+    try {
+      stopChunkImpl(options == null ? null : options.path);
+    } finally {
+      sendMessage("tracingStop");
+    }
+  }
+
+  private static void renameProperty(JsonObject params, String from, String to) {
+    JsonElement value = params.remove(from);
+    if (value != null) {
+      params.add(to, value);
+    }
   }
 
   @Override
