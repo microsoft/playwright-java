@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 
@@ -46,7 +47,7 @@ public interface APIRequestContext {
     /**
      * The reason to be reported to the operations interrupted by the context disposal.
      */
-    public String reason;
+    public @Nullable String reason;
 
     /**
      * The reason to be reported to the operations interrupted by the context disposal.
@@ -60,16 +61,16 @@ public interface APIRequestContext {
     /**
      * Set to {@code true} to include IndexedDB in the storage state snapshot.
      */
-    public Boolean indexedDB;
+    public @Nullable Boolean indexedDB;
     /**
      * Set to {@code true} to include the origin private file system in the storage state snapshot.
      */
-    public Boolean opfs;
+    public @Nullable Boolean opfs;
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
-    public Path path;
+    public @Nullable Path path;
 
     /**
      * Set to {@code true} to include IndexedDB in the storage state snapshot.
@@ -114,7 +115,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse delete(String url, RequestOptions params);
+  APIResponse delete(String url, @Nullable RequestOptions params);
   /**
    * All responses returned by {@link com.microsoft.playwright.APIRequestContext#get APIRequestContext.get()} and similar
    * methods are stored in the memory, so that you can later call {@link com.microsoft.playwright.APIResponse#body
@@ -134,7 +135,7 @@ public interface APIRequestContext {
    *
    * @since v1.16
    */
-  void dispose(DisposeOptions options);
+  void dispose(@Nullable DisposeOptions options);
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
    * context cookies from the response. The method will automatically follow redirects.
@@ -207,7 +208,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse fetch(String urlOrRequest, RequestOptions params);
+  APIResponse fetch(String urlOrRequest, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
    * context cookies from the response. The method will automatically follow redirects.
@@ -280,7 +281,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse fetch(Request urlOrRequest, RequestOptions params);
+  APIResponse fetch(Request urlOrRequest, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET">GET</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
@@ -319,7 +320,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse get(String url, RequestOptions params);
+  APIResponse get(String url, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD">HEAD</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
@@ -340,7 +341,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse head(String url, RequestOptions params);
+  APIResponse head(String url, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH">PATCH</a> request and returns
    * its response. The method will populate request cookies from the context and update context cookies from the response.
@@ -361,7 +362,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse patch(String url, RequestOptions params);
+  APIResponse patch(String url, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
@@ -456,7 +457,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse post(String url, RequestOptions params);
+  APIResponse post(String url, @Nullable RequestOptions params);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT">PUT</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
@@ -477,7 +478,7 @@ public interface APIRequestContext {
    * @param params Optional request parameters.
    * @since v1.16
    */
-  APIResponse put(String url, RequestOptions params);
+  APIResponse put(String url, @Nullable RequestOptions params);
   /**
    * Returns storage state for this request context, contains current cookies and local storage snapshot if it was passed to
    * the constructor.
@@ -493,7 +494,7 @@ public interface APIRequestContext {
    *
    * @since v1.16
    */
-  String storageState(StorageStateOptions options);
+  String storageState(@Nullable StorageStateOptions options);
   /**
    * Tracing recorder for requests made through this API request context.
    *

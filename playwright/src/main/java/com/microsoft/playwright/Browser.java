@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -69,7 +70,7 @@ public interface Browser extends AutoCloseable {
     /**
      * The reason to be reported to the operations interrupted by the browser closure.
      */
-    public String reason;
+    public @Nullable String reason;
 
     /**
      * The reason to be reported to the operations interrupted by the browser closure.
@@ -83,7 +84,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public Boolean acceptDownloads;
+    public @Nullable Boolean acceptDownloads;
     /**
      * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
      * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
@@ -100,11 +101,11 @@ public interface Browser extends AutoCloseable {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public String baseURL;
+    public @Nullable String baseURL;
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public Boolean bypassCSP;
+    public @Nullable Boolean bypassCSP;
     /**
      * TLS Client Authentication allows the server to request a client certificate and verify it.
      *
@@ -122,7 +123,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public List<ClientCertificate> clientCertificates;
+    public @Nullable List<ClientCertificate> clientCertificates;
     /**
      * Emulates <a
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
@@ -130,34 +131,34 @@ public interface Browser extends AutoCloseable {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public Optional<ColorScheme> colorScheme;
+    public @Nullable Optional<ColorScheme> colorScheme;
     /**
      * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<Contrast> contrast;
+    public @Nullable Optional<Contrast> contrast;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public Double deviceScaleFactor;
+    public @Nullable Double deviceScaleFactor;
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public Map<String, String> extraHTTPHeaders;
+    public @Nullable Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public Optional<ForcedColors> forcedColors;
-    public Geolocation geolocation;
+    public @Nullable Optional<ForcedColors> forcedColors;
+    public @Nullable Geolocation geolocation;
     /**
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public Boolean hasTouch;
+    public @Nullable Boolean hasTouch;
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
@@ -165,89 +166,89 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public Object httpCredentials;
+    public @Nullable Object httpCredentials;
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public Boolean ignoreHTTPSErrors;
+    public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public Boolean isMobile;
+    public @Nullable Boolean isMobile;
     /**
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public Boolean javaScriptEnabled;
+    public @Nullable Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
      * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public String locale;
+    public @Nullable String locale;
     /**
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public Boolean offline;
+    public @Nullable Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public List<String> permissions;
+    public @Nullable List<String> permissions;
     /**
      * Network proxy settings to use with this context. Defaults to none.
      */
-    public Proxy proxy;
+    public @Nullable Proxy proxy;
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public HarContentPolicy recordHarContent;
+    public @Nullable HarContentPolicy recordHarContent;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public HarMode recordHarMode;
+    public @Nullable HarMode recordHarMode;
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public Boolean recordHarOmitContent;
+    public @Nullable Boolean recordHarOmitContent;
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public Path recordHarPath;
-    public Object recordHarUrlFilter;
+    public @Nullable Path recordHarPath;
+    public @Nullable Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public Path recordVideoDir;
+    public @Nullable Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public RecordVideoSize recordVideoSize;
+    public @Nullable RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<ReducedMotion> reducedMotion;
+    public @Nullable Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public ScreenSize screenSize;
+    public @Nullable ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
@@ -256,35 +257,35 @@ public interface Browser extends AutoCloseable {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public ServiceWorkerPolicy serviceWorkers;
+    public @Nullable ServiceWorkerPolicy serviceWorkers;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
-    public String storageState;
+    public @Nullable String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public Path storageStatePath;
+    public @Nullable Path storageStatePath;
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public Boolean strictSelectors;
+    public @Nullable Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public String timezoneId;
+    public @Nullable String timezoneId;
     /**
      * Specific user agent to use in this context.
      */
-    public String userAgent;
+    public @Nullable String userAgent;
     /**
      * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
      * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
@@ -293,7 +294,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public Optional<ViewportSize> viewportSize;
+    public @Nullable Optional<ViewportSize> viewportSize;
 
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
@@ -357,7 +358,7 @@ public interface Browser extends AutoCloseable {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public NewContextOptions setColorScheme(ColorScheme colorScheme) {
+    public NewContextOptions setColorScheme(@Nullable ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
@@ -366,7 +367,7 @@ public interface Browser extends AutoCloseable {
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public NewContextOptions setContrast(Contrast contrast) {
+    public NewContextOptions setContrast(@Nullable Contrast contrast) {
       this.contrast = Optional.ofNullable(contrast);
       return this;
     }
@@ -390,7 +391,7 @@ public interface Browser extends AutoCloseable {
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public NewContextOptions setForcedColors(ForcedColors forcedColors) {
+    public NewContextOptions setForcedColors(@Nullable ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
@@ -577,7 +578,7 @@ public interface Browser extends AutoCloseable {
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
+    public NewContextOptions setReducedMotion(@Nullable ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
@@ -670,7 +671,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public NewContextOptions setViewportSize(ViewportSize viewportSize) {
+    public NewContextOptions setViewportSize(@Nullable ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
@@ -679,7 +680,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public Boolean acceptDownloads;
+    public @Nullable Boolean acceptDownloads;
     /**
      * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
      * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
@@ -696,11 +697,11 @@ public interface Browser extends AutoCloseable {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public String baseURL;
+    public @Nullable String baseURL;
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public Boolean bypassCSP;
+    public @Nullable Boolean bypassCSP;
     /**
      * TLS Client Authentication allows the server to request a client certificate and verify it.
      *
@@ -718,7 +719,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public List<ClientCertificate> clientCertificates;
+    public @Nullable List<ClientCertificate> clientCertificates;
     /**
      * Emulates <a
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-colors-scheme</a> media
@@ -726,34 +727,34 @@ public interface Browser extends AutoCloseable {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public Optional<ColorScheme> colorScheme;
+    public @Nullable Optional<ColorScheme> colorScheme;
     /**
      * Emulates {@code "prefers-contrast"} media feature, supported values are {@code "no-preference"}, {@code "more"}. See
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<Contrast> contrast;
+    public @Nullable Optional<Contrast> contrast;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public Double deviceScaleFactor;
+    public @Nullable Double deviceScaleFactor;
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public Map<String, String> extraHTTPHeaders;
+    public @Nullable Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public Optional<ForcedColors> forcedColors;
-    public Geolocation geolocation;
+    public @Nullable Optional<ForcedColors> forcedColors;
+    public @Nullable Geolocation geolocation;
     /**
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public Boolean hasTouch;
+    public @Nullable Boolean hasTouch;
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
@@ -761,89 +762,89 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public Object httpCredentials;
+    public @Nullable Object httpCredentials;
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public Boolean ignoreHTTPSErrors;
+    public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public Boolean isMobile;
+    public @Nullable Boolean isMobile;
     /**
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public Boolean javaScriptEnabled;
+    public @Nullable Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
      * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public String locale;
+    public @Nullable String locale;
     /**
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public Boolean offline;
+    public @Nullable Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public List<String> permissions;
+    public @Nullable List<String> permissions;
     /**
      * Network proxy settings to use with this context. Defaults to none.
      */
-    public Proxy proxy;
+    public @Nullable Proxy proxy;
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public HarContentPolicy recordHarContent;
+    public @Nullable HarContentPolicy recordHarContent;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public HarMode recordHarMode;
+    public @Nullable HarMode recordHarMode;
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public Boolean recordHarOmitContent;
+    public @Nullable Boolean recordHarOmitContent;
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public Path recordHarPath;
-    public Object recordHarUrlFilter;
+    public @Nullable Path recordHarPath;
+    public @Nullable Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public Path recordVideoDir;
+    public @Nullable Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public RecordVideoSize recordVideoSize;
+    public @Nullable RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public Optional<ReducedMotion> reducedMotion;
+    public @Nullable Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public ScreenSize screenSize;
+    public @Nullable ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
@@ -852,35 +853,35 @@ public interface Browser extends AutoCloseable {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public ServiceWorkerPolicy serviceWorkers;
+    public @Nullable ServiceWorkerPolicy serviceWorkers;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
-    public String storageState;
+    public @Nullable String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public Path storageStatePath;
+    public @Nullable Path storageStatePath;
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public Boolean strictSelectors;
+    public @Nullable Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public String timezoneId;
+    public @Nullable String timezoneId;
     /**
      * Specific user agent to use in this context.
      */
-    public String userAgent;
+    public @Nullable String userAgent;
     /**
      * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
      * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
@@ -889,7 +890,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public Optional<ViewportSize> viewportSize;
+    public @Nullable Optional<ViewportSize> viewportSize;
 
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
@@ -953,7 +954,7 @@ public interface Browser extends AutoCloseable {
      * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code
      * "light"}.
      */
-    public NewPageOptions setColorScheme(ColorScheme colorScheme) {
+    public NewPageOptions setColorScheme(@Nullable ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
@@ -962,7 +963,7 @@ public interface Browser extends AutoCloseable {
      * {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public NewPageOptions setContrast(Contrast contrast) {
+    public NewPageOptions setContrast(@Nullable Contrast contrast) {
       this.contrast = Optional.ofNullable(contrast);
       return this;
     }
@@ -986,7 +987,7 @@ public interface Browser extends AutoCloseable {
      * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
      * to system defaults. Defaults to {@code "none"}.
      */
-    public NewPageOptions setForcedColors(ForcedColors forcedColors) {
+    public NewPageOptions setForcedColors(@Nullable ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
@@ -1173,7 +1174,7 @@ public interface Browser extends AutoCloseable {
      * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
      * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
-    public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
+    public NewPageOptions setReducedMotion(@Nullable ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
@@ -1266,7 +1267,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
      */
-    public NewPageOptions setViewportSize(ViewportSize viewportSize) {
+    public NewPageOptions setViewportSize(@Nullable ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
@@ -1275,16 +1276,16 @@ public interface Browser extends AutoCloseable {
     /**
      * Host to bind the web socket server to. When specified, a web socket server is created instead of a named pipe.
      */
-    public String host;
+    public @Nullable String host;
     /**
      * Port to bind the web socket server to. When specified, a web socket server is created instead of a named pipe. Use
      * {@code 0} to let the OS pick an available port.
      */
-    public Integer port;
+    public @Nullable Integer port;
     /**
      * Working directory associated with this browser server.
      */
-    public String workspaceDir;
+    public @Nullable String workspaceDir;
 
     /**
      * Host to bind the web socket server to. When specified, a web socket server is created instead of a named pipe.
@@ -1313,15 +1314,15 @@ public interface Browser extends AutoCloseable {
     /**
      * specify custom categories to use instead of default.
      */
-    public List<String> categories;
+    public @Nullable List<String> categories;
     /**
      * A path to write the trace file to.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * captures screenshots in the trace.
      */
-    public Boolean screenshots;
+    public @Nullable Boolean screenshots;
 
     /**
      * specify custom categories to use instead of default.
@@ -1386,7 +1387,7 @@ public interface Browser extends AutoCloseable {
    *
    * @since v1.8
    */
-  void close(CloseOptions options);
+  void close(@Nullable CloseOptions options);
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
    *
@@ -1466,7 +1467,7 @@ public interface Browser extends AutoCloseable {
    *
    * @since v1.8
    */
-  BrowserContext newContext(NewContextOptions options);
+  BrowserContext newContext(@Nullable NewContextOptions options);
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
@@ -1490,7 +1491,7 @@ public interface Browser extends AutoCloseable {
    *
    * @since v1.8
    */
-  Page newPage(NewPageOptions options);
+  Page newPage(@Nullable NewPageOptions options);
   /**
    * Binds the browser to a named pipe or web socket, making it available for other clients to connect to.
    *
@@ -1506,7 +1507,7 @@ public interface Browser extends AutoCloseable {
    * @param title Title of the browser server, used for identification.
    * @since v1.59
    */
-  BindResult bind(String title, BindOptions options);
+  BindResult bind(String title, @Nullable BindOptions options);
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
    * which is a low-level chromium-specific debugging tool. API to control <a
@@ -1528,7 +1529,7 @@ public interface Browser extends AutoCloseable {
    * @param page Optional, if specified, tracing includes screenshots of the given page.
    * @since v1.11
    */
-  default void startTracing(Page page) {
+  default void startTracing(@Nullable Page page) {
     startTracing(page, null);
   }
   /**
@@ -1575,7 +1576,7 @@ public interface Browser extends AutoCloseable {
    * @param page Optional, if specified, tracing includes screenshots of the given page.
    * @since v1.11
    */
-  void startTracing(Page page, StartTracingOptions options);
+  void startTracing(@Nullable Page page, @Nullable StartTracingOptions options);
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
    * which is a low-level chromium-specific debugging tool. API to control <a

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -65,21 +66,21 @@ public interface Frame {
     /**
      * Raw JavaScript content to be injected into frame.
      */
-    public String content;
+    public @Nullable String content;
     /**
      * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative
      * to the current working directory.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * Script type. Use 'module' in order to load a JavaScript ES6 module. See <a
      * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script">script</a> for more details.
      */
-    public String type;
+    public @Nullable String type;
     /**
      * URL of a script to be added.
      */
-    public String url;
+    public @Nullable String url;
 
     /**
      * Raw JavaScript content to be injected into frame.
@@ -116,16 +117,16 @@ public interface Frame {
     /**
      * Raw CSS content to be injected into frame.
      */
-    public String content;
+    public @Nullable String content;
     /**
      * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
      * current working directory.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * URL of the {@code <link>} tag.
      */
-    public String url;
+    public @Nullable String url;
 
     /**
      * Raw CSS content to be injected into frame.
@@ -155,41 +156,41 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -263,61 +264,61 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public Integer clickCount;
+    public @Nullable Integer clickCount;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Defaults to {@code left}.
@@ -422,57 +423,57 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Defaults to {@code left}.
@@ -571,14 +572,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -604,51 +605,51 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public Position sourcePosition;
+    public @Nullable Position sourcePosition;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
      * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
      */
-    public Integer steps;
+    public @Nullable Integer steps;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public Position targetPosition;
+    public @Nullable Position targetPosition;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -746,7 +747,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -762,23 +763,23 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -819,14 +820,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -852,14 +853,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -885,7 +886,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -901,7 +902,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -917,7 +918,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -934,65 +935,65 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public Boolean checked;
+    public @Nullable Boolean checked;
     /**
      * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
      * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public Object description;
+    public @Nullable Object description;
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public Boolean disabled;
+    public @Nullable Boolean disabled;
     /**
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
     /**
      * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public Boolean expanded;
+    public @Nullable Boolean expanded;
     /**
      * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public Boolean includeHidden;
+    public @Nullable Boolean includeHidden;
     /**
      * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
      * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public Integer level;
+    public @Nullable Integer level;
     /**
      * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
      * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public Object name;
+    public @Nullable Object name;
     /**
      * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public Boolean pressed;
+    public @Nullable Boolean pressed;
     /**
      * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public Boolean selected;
+    public @Nullable Boolean selected;
 
     /**
      * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
@@ -1114,7 +1115,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -1130,7 +1131,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -1146,7 +1147,7 @@ public interface Frame {
      * Referer header value. If provided it will take preference over the referer header value set by {@link
      * com.microsoft.playwright.Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
-    public String referer;
+    public @Nullable String referer;
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
      * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
@@ -1155,7 +1156,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
@@ -1166,7 +1167,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitUntilState waitUntil;
+    public @Nullable WaitUntilState waitUntil;
 
     /**
      * Referer header value. If provided it will take preference over the referer header value set by {@link
@@ -1208,48 +1209,48 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1334,14 +1335,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1367,14 +1368,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1400,14 +1401,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1433,14 +1434,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1466,14 +1467,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1499,14 +1500,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1532,14 +1533,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1565,12 +1566,12 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isHidden Frame.isHidden()} does not wait for the element
      * to become hidden and returns immediately.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1594,12 +1595,12 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isVisible Frame.isVisible()} does not wait for the element
      * to become visible and returns immediately.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1631,7 +1632,7 @@ public interface Frame {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public Locator has;
+    public @Nullable Locator has;
     /**
      * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
      * outer one. For example, {@code article} that does not have {@code div} matches {@code
@@ -1639,18 +1640,18 @@ public interface Frame {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public Locator hasNot;
+    public @Nullable Locator hasNot;
     /**
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public Object hasNotText;
+    public @Nullable Object hasNotText;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public Object hasText;
+    public @Nullable Object hasText;
 
     /**
      * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
@@ -1718,23 +1719,23 @@ public interface Frame {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
@@ -1774,7 +1775,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -1790,23 +1791,23 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1847,41 +1848,41 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1960,7 +1961,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
@@ -1971,7 +1972,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitUntilState waitUntil;
+    public @Nullable WaitUntilState waitUntil;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
@@ -2004,19 +2005,19 @@ public interface Frame {
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * @deprecated This option has no effect.
@@ -2049,48 +2050,48 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -2175,14 +2176,14 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
@@ -2207,23 +2208,23 @@ public interface Frame {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
@@ -2263,41 +2264,41 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -2372,14 +2373,14 @@ public interface Frame {
      * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
      * the option is not specified {@code expression} is executed in {@code requestAnimationFrame} callback.
      */
-    public Double pollingInterval;
+    public @Nullable Double pollingInterval;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
@@ -2409,7 +2410,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
@@ -2433,13 +2434,13 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * A glob pattern, regex pattern, or predicate receiving [URL] to match while waiting for the navigation. Note that if the
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public Object url;
+    public @Nullable Object url;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
@@ -2450,7 +2451,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitUntilState waitUntil;
+    public @Nullable WaitUntilState waitUntil;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
@@ -2518,19 +2519,19 @@ public interface Frame {
      * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
-    public WaitForSelectorState state;
+    public @Nullable WaitForSelectorState state;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Defaults to {@code "visible"}. Can be either:
@@ -2575,7 +2576,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
@@ -2586,7 +2587,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitUntilState waitUntil;
+    public @Nullable WaitUntilState waitUntil;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
@@ -2632,7 +2633,7 @@ public interface Frame {
    *
    * @since v1.8
    */
-  ElementHandle addScriptTag(AddScriptTagOptions options);
+  ElementHandle addScriptTag(@Nullable AddScriptTagOptions options);
   /**
    * Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    *
@@ -2652,7 +2653,7 @@ public interface Frame {
    *
    * @since v1.8
    */
-  ElementHandle addStyleTag(AddStyleTagOptions options);
+  ElementHandle addStyleTag(@Nullable AddStyleTagOptions options);
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -2694,7 +2695,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void check(String selector, CheckOptions options);
+  void check(String selector, @Nullable CheckOptions options);
   /**
    *
    *
@@ -2740,7 +2741,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void click(String selector, ClickOptions options);
+  void click(String selector, @Nullable ClickOptions options);
   /**
    * Gets the full HTML contents of the frame, including the doctype.
    *
@@ -2790,7 +2791,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void dblclick(String selector, DblclickOptions options);
+  void dblclick(String selector, @Nullable DblclickOptions options);
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
@@ -2834,7 +2835,7 @@ public interface Frame {
    * @param eventInit Optional event-specific initialization properties.
    * @since v1.8
    */
-  default void dispatchEvent(String selector, String type, Object eventInit) {
+  default void dispatchEvent(String selector, String type, @Nullable Object eventInit) {
     dispatchEvent(selector, type, eventInit, null);
   }
   /**
@@ -2925,7 +2926,7 @@ public interface Frame {
    * @param eventInit Optional event-specific initialization properties.
    * @since v1.8
    */
-  void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  void dispatchEvent(String selector, String type, @Nullable Object eventInit, @Nullable DispatchEventOptions options);
   /**
    *
    *
@@ -2947,7 +2948,7 @@ public interface Frame {
    * be used.
    * @since v1.13
    */
-  void dragAndDrop(String source, String target, DragAndDropOptions options);
+  void dragAndDrop(String source, String target, @Nullable DragAndDropOptions options);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -2972,7 +2973,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.9
    */
-  default Object evalOnSelector(String selector, String expression, Object arg) {
+  default @Nullable Object evalOnSelector(String selector, String expression, @Nullable Object arg) {
     return evalOnSelector(selector, expression, arg, null);
   }
   /**
@@ -2998,7 +2999,7 @@ public interface Frame {
    * automatically invoked.
    * @since v1.9
    */
-  default Object evalOnSelector(String selector, String expression) {
+  default @Nullable Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
   }
   /**
@@ -3025,7 +3026,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.9
    */
-  Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
+  @Nullable Object evalOnSelector(String selector, String expression, @Nullable Object arg, @Nullable EvalOnSelectorOptions options);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -3047,7 +3048,7 @@ public interface Frame {
    * automatically invoked.
    * @since v1.9
    */
-  default Object evalOnSelectorAll(String selector, String expression) {
+  default @Nullable Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
   }
   /**
@@ -3072,7 +3073,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.9
    */
-  Object evalOnSelectorAll(String selector, String expression, Object arg);
+  @Nullable Object evalOnSelectorAll(String selector, String expression, @Nullable Object arg);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -3110,7 +3111,7 @@ public interface Frame {
    * automatically invoked.
    * @since v1.8
    */
-  default Object evaluate(String expression) {
+  default @Nullable Object evaluate(String expression) {
     return evaluate(expression, null);
   }
   /**
@@ -3151,7 +3152,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  Object evaluate(String expression, Object arg);
+  @Nullable Object evaluate(String expression, @Nullable Object arg);
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
@@ -3228,7 +3229,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  JSHandle evaluateHandle(String expression, Object arg);
+  JSHandle evaluateHandle(String expression, @Nullable Object arg);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, fills it and
@@ -3266,7 +3267,7 @@ public interface Frame {
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
    */
-  void fill(String selector, String value, FillOptions options);
+  void fill(String selector, String value, @Nullable FillOptions options);
   /**
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector},
    * the method waits until a matching element appears in the DOM.
@@ -3284,7 +3285,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void focus(String selector, FocusOptions options);
+  void focus(String selector, @Nullable FocusOptions options);
   /**
    * Returns the {@code frame} or {@code iframe} element handle which corresponds to this frame.
    *
@@ -3358,7 +3359,7 @@ public interface Frame {
    * inside it.
    * @since v1.17
    */
-  FrameLocator frameLocator(String selector);
+  FrameLocator frameLocator(@Nullable String selector);
   /**
    * Returns element attribute value.
    *
@@ -3366,7 +3367,7 @@ public interface Frame {
    * @param name Attribute name to get the value for.
    * @since v1.8
    */
-  default String getAttribute(String selector, String name) {
+  default @Nullable String getAttribute(String selector, String name) {
     return getAttribute(selector, name, null);
   }
   /**
@@ -3376,7 +3377,7 @@ public interface Frame {
    * @param name Attribute name to get the value for.
    * @since v1.8
    */
-  String getAttribute(String selector, String name, GetAttributeOptions options);
+  @Nullable String getAttribute(String selector, String name, @Nullable GetAttributeOptions options);
   /**
    * Allows locating elements by their alt text.
    *
@@ -3406,7 +3407,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByAltText(String text, GetByAltTextOptions options);
+  Locator getByAltText(String text, @Nullable GetByAltTextOptions options);
   /**
    * Allows locating elements by their alt text.
    *
@@ -3436,7 +3437,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByAltText(Pattern text, GetByAltTextOptions options);
+  Locator getByAltText(Pattern text, @Nullable GetByAltTextOptions options);
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
@@ -3470,7 +3471,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByLabel(String text, GetByLabelOptions options);
+  Locator getByLabel(String text, @Nullable GetByLabelOptions options);
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
@@ -3504,7 +3505,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByLabel(Pattern text, GetByLabelOptions options);
+  Locator getByLabel(Pattern text, @Nullable GetByLabelOptions options);
   /**
    * Allows locating input elements by the placeholder text.
    *
@@ -3538,7 +3539,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
+  Locator getByPlaceholder(String text, @Nullable GetByPlaceholderOptions options);
   /**
    * Allows locating input elements by the placeholder text.
    *
@@ -3572,7 +3573,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
+  Locator getByPlaceholder(Pattern text, @Nullable GetByPlaceholderOptions options);
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
@@ -3656,7 +3657,7 @@ public interface Frame {
    * @param role Required aria role.
    * @since v1.27
    */
-  Locator getByRole(AriaRole role, GetByRoleOptions options);
+  Locator getByRole(AriaRole role, @Nullable GetByRoleOptions options);
   /**
    * Locate element by the test id.
    *
@@ -3782,7 +3783,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByText(String text, GetByTextOptions options);
+  Locator getByText(String text, @Nullable GetByTextOptions options);
   /**
    * Allows locating elements that contain given text.
    *
@@ -3864,7 +3865,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByText(Pattern text, GetByTextOptions options);
+  Locator getByText(Pattern text, @Nullable GetByTextOptions options);
   /**
    * Allows locating elements by their title attribute.
    *
@@ -3898,7 +3899,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByTitle(String text, GetByTitleOptions options);
+  Locator getByTitle(String text, @Nullable GetByTitleOptions options);
   /**
    * Allows locating elements by their title attribute.
    *
@@ -3932,7 +3933,7 @@ public interface Frame {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByTitle(Pattern text, GetByTitleOptions options);
+  Locator getByTitle(Pattern text, @Nullable GetByTitleOptions options);
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect.
@@ -3959,7 +3960,7 @@ public interface Frame {
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
    * @since v1.8
    */
-  default Response navigate(String url) {
+  default @Nullable Response navigate(String url) {
     return navigate(url, null);
   }
   /**
@@ -3988,7 +3989,7 @@ public interface Frame {
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
    * @since v1.8
    */
-  Response navigate(String url, NavigateOptions options);
+  @Nullable Response navigate(String url, @Nullable NavigateOptions options);
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -4026,7 +4027,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void hover(String selector, HoverOptions options);
+  void hover(String selector, @Nullable HoverOptions options);
   /**
    * Returns {@code element.innerHTML}.
    *
@@ -4042,7 +4043,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  String innerHTML(String selector, InnerHTMLOptions options);
+  String innerHTML(String selector, @Nullable InnerHTMLOptions options);
   /**
    * Returns {@code element.innerText}.
    *
@@ -4058,7 +4059,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  String innerText(String selector, InnerTextOptions options);
+  String innerText(String selector, @Nullable InnerTextOptions options);
   /**
    * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
@@ -4082,7 +4083,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.13
    */
-  String inputValue(String selector, InputValueOptions options);
+  String inputValue(String selector, @Nullable InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
@@ -4098,7 +4099,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isChecked(String selector, IsCheckedOptions options);
+  boolean isChecked(String selector, @Nullable IsCheckedOptions options);
   /**
    * Returns {@code true} if the frame has been detached, or {@code false} otherwise.
    *
@@ -4122,7 +4123,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isDisabled(String selector, IsDisabledOptions options);
+  boolean isDisabled(String selector, @Nullable IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
@@ -4138,7 +4139,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isEditable(String selector, IsEditableOptions options);
+  boolean isEditable(String selector, @Nullable IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
@@ -4154,7 +4155,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isEnabled(String selector, IsEnabledOptions options);
+  boolean isEnabled(String selector, @Nullable IsEnabledOptions options);
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any
@@ -4174,7 +4175,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isHidden(String selector, IsHiddenOptions options);
+  boolean isHidden(String selector, @Nullable IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code
    * selector} that does not match any elements is considered not visible.
@@ -4192,7 +4193,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  boolean isVisible(String selector, IsVisibleOptions options);
+  boolean isVisible(String selector, @Nullable IsVisibleOptions options);
   /**
    * The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to
    * the element immediately before performing an action, so a series of actions on the same locator can in fact be performed
@@ -4220,7 +4221,7 @@ public interface Frame {
    * @param selector A selector to use when resolving DOM element.
    * @since v1.14
    */
-  Locator locator(String selector, LocatorOptions options);
+  Locator locator(String selector, @Nullable LocatorOptions options);
   /**
    * Returns frame's name attribute as specified in the tag.
    *
@@ -4242,7 +4243,7 @@ public interface Frame {
    *
    * @since v1.8
    */
-  Frame parentFrame();
+  @Nullable Frame parentFrame();
   /**
    * {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
@@ -4300,7 +4301,7 @@ public interface Frame {
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    * @since v1.8
    */
-  void press(String selector, String key, PressOptions options);
+  void press(String selector, String key, @Nullable PressOptions options);
   /**
    * Returns the ElementHandle pointing to the frame element.
    *
@@ -4312,7 +4313,7 @@ public interface Frame {
    * @param selector A selector to query for.
    * @since v1.9
    */
-  default ElementHandle querySelector(String selector) {
+  default @Nullable ElementHandle querySelector(String selector) {
     return querySelector(selector, null);
   }
   /**
@@ -4326,7 +4327,7 @@ public interface Frame {
    * @param selector A selector to query for.
    * @since v1.9
    */
-  ElementHandle querySelector(String selector, QuerySelectorOptions options);
+  @Nullable ElementHandle querySelector(String selector, @Nullable QuerySelectorOptions options);
   /**
    * Returns the ElementHandles pointing to the frame elements.
    *
@@ -4402,7 +4403,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, String values, SelectOptionOptions options);
+  List<String> selectOption(String selector, String values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
@@ -4466,7 +4467,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
+  List<String> selectOption(String selector, ElementHandle values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
@@ -4530,7 +4531,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
+  List<String> selectOption(String selector, String[] values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
@@ -4594,7 +4595,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
+  List<String> selectOption(String selector, SelectOption values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
@@ -4658,7 +4659,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
+  List<String> selectOption(String selector, ElementHandle[] values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
@@ -4722,7 +4723,7 @@ public interface Frame {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options);
+  List<String> selectOption(String selector, SelectOption[] values, @Nullable SelectOptionOptions options);
   /**
    * This method checks or unchecks an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -4766,7 +4767,7 @@ public interface Frame {
    * @param checked Whether to check or uncheck the checkbox.
    * @since v1.15
    */
-  void setChecked(String selector, boolean checked, SetCheckedOptions options);
+  void setChecked(String selector, boolean checked, @Nullable SetCheckedOptions options);
   /**
    * This method internally calls <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Document/write">document.write()</a>, inheriting all its specific
@@ -4786,7 +4787,7 @@ public interface Frame {
    * @param html HTML markup to assign to the page.
    * @since v1.8
    */
-  void setContent(String html, SetContentOptions options);
+  void setContent(String html, @Nullable SetContentOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4816,7 +4817,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void setInputFiles(String selector, Path files, SetInputFilesOptions options);
+  void setInputFiles(String selector, Path files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4846,7 +4847,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
+  void setInputFiles(String selector, Path[] files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4876,7 +4877,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
+  void setInputFiles(String selector, FilePayload files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4906,7 +4907,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
+  void setInputFiles(String selector, FilePayload[] files, @Nullable SetInputFilesOptions options);
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -4948,14 +4949,14 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void tap(String selector, TapOptions options);
+  void tap(String selector, @Nullable TapOptions options);
   /**
    * Returns {@code element.textContent}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  default String textContent(String selector) {
+  default @Nullable String textContent(String selector) {
     return textContent(selector, null);
   }
   /**
@@ -4964,7 +4965,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  String textContent(String selector, TextContentOptions options);
+  @Nullable String textContent(String selector, @Nullable TextContentOptions options);
   /**
    * Returns the page title.
    *
@@ -4992,7 +4993,7 @@ public interface Frame {
    * @param text A text to type into a focused element.
    * @since v1.8
    */
-  void type(String selector, String text, TypeOptions options);
+  void type(String selector, String text, @Nullable TypeOptions options);
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
@@ -5034,7 +5035,7 @@ public interface Frame {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @since v1.8
    */
-  void uncheck(String selector, UncheckOptions options);
+  void uncheck(String selector, @Nullable UncheckOptions options);
   /**
    * Returns frame's url.
    *
@@ -5076,7 +5077,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  default JSHandle waitForFunction(String expression, Object arg) {
+  default JSHandle waitForFunction(String expression, @Nullable Object arg) {
     return waitForFunction(expression, arg, null);
   }
   /**
@@ -5151,7 +5152,7 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
+  JSHandle waitForFunction(String expression, @Nullable Object arg, @Nullable WaitForFunctionOptions options);
   /**
    * Waits for the required load state to be reached.
    *
@@ -5177,7 +5178,7 @@ public interface Frame {
    * </ul>
    * @since v1.8
    */
-  default void waitForLoadState(LoadState state) {
+  default void waitForLoadState(@Nullable LoadState state) {
     waitForLoadState(state, null);
   }
   /**
@@ -5225,14 +5226,14 @@ public interface Frame {
    * </ul>
    * @since v1.8
    */
-  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  void waitForLoadState(@Nullable LoadState state, @Nullable WaitForLoadStateOptions options);
   /**
    * @deprecated This method is inherently racy, please use {@link com.microsoft.playwright.Frame#waitForURL Frame.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
    */
-  default Response waitForNavigation(Runnable callback) {
+  default @Nullable Response waitForNavigation(Runnable callback) {
     return waitForNavigation(null, callback);
   }
   /**
@@ -5241,7 +5242,7 @@ public interface Frame {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
    */
-  Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
+  @Nullable Response waitForNavigation(@Nullable WaitForNavigationOptions options, Runnable callback);
   /**
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code
    * hidden} or {@code detached}.
@@ -5280,7 +5281,7 @@ public interface Frame {
    * @param selector A selector to query for.
    * @since v1.8
    */
-  default ElementHandle waitForSelector(String selector) {
+  default @Nullable ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -5321,7 +5322,7 @@ public interface Frame {
    * @param selector A selector to query for.
    * @since v1.8
    */
-  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
+  @Nullable ElementHandle waitForSelector(String selector, @Nullable WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
    *
@@ -5363,7 +5364,7 @@ public interface Frame {
    * the string.
    * @since v1.11
    */
-  void waitForURL(String url, WaitForURLOptions options);
+  void waitForURL(String url, @Nullable WaitForURLOptions options);
   /**
    * Waits for the frame to navigate to the given URL.
    *
@@ -5395,7 +5396,7 @@ public interface Frame {
    * the string.
    * @since v1.11
    */
-  void waitForURL(Pattern url, WaitForURLOptions options);
+  void waitForURL(Pattern url, @Nullable WaitForURLOptions options);
   /**
    * Waits for the frame to navigate to the given URL.
    *
@@ -5427,6 +5428,6 @@ public interface Frame {
    * the string.
    * @since v1.11
    */
-  void waitForURL(Predicate<String> url, WaitForURLOptions options);
+  void waitForURL(Predicate<String> url, @Nullable WaitForURLOptions options);
 }
 

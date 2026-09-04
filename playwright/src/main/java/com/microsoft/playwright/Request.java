@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -59,7 +60,7 @@ public interface Request {
    *
    * @since v1.8
    */
-  String failure();
+  @Nullable String failure();
   /**
    * Returns the {@code Frame} that initiated this request.
    *
@@ -104,7 +105,7 @@ public interface Request {
    * @param name Name of the header.
    * @since v1.15
    */
-  String headerValue(String name);
+  @Nullable String headerValue(String name);
   /**
    * Whether this request is driving frame's navigation.
    *
@@ -125,13 +126,13 @@ public interface Request {
    *
    * @since v1.8
    */
-  String postData();
+  @Nullable String postData();
   /**
    * Request's post body in a binary form, if any.
    *
    * @since v1.8
    */
-  byte[] postDataBuffer();
+  byte @Nullable [] postDataBuffer();
   /**
    * Request that was redirected by the server to this one, if any.
    *
@@ -155,7 +156,7 @@ public interface Request {
    *
    * @since v1.8
    */
-  Request redirectedFrom();
+  @Nullable Request redirectedFrom();
   /**
    * New request issued by the browser if the server responded with redirect.
    *
@@ -168,7 +169,7 @@ public interface Request {
    *
    * @since v1.8
    */
-  Request redirectedTo();
+  @Nullable Request redirectedTo();
   /**
    * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
    * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code
@@ -182,7 +183,7 @@ public interface Request {
    *
    * @since v1.8
    */
-  Response response();
+  @Nullable Response response();
   /**
    * Returns the {@code Response} object if the response has already been received, {@code null} otherwise.
    *
@@ -192,7 +193,7 @@ public interface Request {
    *
    * @since v1.59
    */
-  Response existingResponse();
+  @Nullable Response existingResponse();
   /**
    * Returns resource size information for given request.
    *

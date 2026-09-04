@@ -16,23 +16,25 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class Margin {
   /**
    * Top margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public String top;
+  public @Nullable String top;
   /**
    * Right margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public String right;
+  public @Nullable String right;
   /**
    * Bottom margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public String bottom;
+  public @Nullable String bottom;
   /**
    * Left margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public String left;
+  public @Nullable String left;
 
   /**
    * Top margin, accepts values labeled with units. Defaults to {@code 0}.

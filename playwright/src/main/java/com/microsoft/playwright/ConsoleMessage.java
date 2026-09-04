@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 /**
@@ -62,7 +63,7 @@ public interface ConsoleMessage {
    *
    * @since v1.34
    */
-  Page page();
+  @Nullable Page page();
   /**
    * The text of the console message.
    *
@@ -90,6 +91,6 @@ public interface ConsoleMessage {
    *
    * @since v1.57
    */
-  Worker worker();
+  @Nullable Worker worker();
 }
 

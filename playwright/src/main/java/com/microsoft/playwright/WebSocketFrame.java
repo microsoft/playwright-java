@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 
 /**
  * The {@code WebSocketFrame} class represents frames sent over {@code WebSocket} connections in the page. Frame payload is
@@ -28,12 +29,12 @@ public interface WebSocketFrame {
    *
    * @since v1.9
    */
-  byte[] binary();
+  byte @Nullable [] binary();
   /**
    * Returns text payload.
    *
    * @since v1.9
    */
-  String text();
+  @Nullable String text();
 }
 

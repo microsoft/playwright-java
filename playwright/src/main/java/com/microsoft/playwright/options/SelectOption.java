@@ -16,19 +16,21 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class SelectOption {
   /**
    * Matches by {@code option.value}. Optional.
    */
-  public String value;
+  public @Nullable String value;
   /**
    * Matches by {@code option.label}. Optional.
    */
-  public String label;
+  public @Nullable String label;
   /**
    * Matches by the index. Optional.
    */
-  public Integer index;
+  public @Nullable Integer index;
 
   /**
    * Matches by {@code option.value}. Optional.

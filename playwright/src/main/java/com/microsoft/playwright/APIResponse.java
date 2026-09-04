@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -61,14 +62,14 @@ public interface APIResponse {
    *
    * @since v1.61
    */
-  SecurityDetails securityDetails();
+  @Nullable SecurityDetails securityDetails();
   /**
    * Returns the IP address and port of the server. Resolves to {@code null} if the server address is not available. For
    * redirected requests, returns the information for the last request in the redirect chain.
    *
    * @since v1.61
    */
-  ServerAddr serverAddr();
+  @Nullable ServerAddr serverAddr();
   /**
    * Contains the status code of the response (e.g., 200 for a success).
    *
