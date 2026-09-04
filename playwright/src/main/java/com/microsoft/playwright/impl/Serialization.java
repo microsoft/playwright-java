@@ -152,7 +152,7 @@ class Serialization {
           result.v = "Infinity";
         } else if (d == Double.NEGATIVE_INFINITY) {
           result.v = "-Infinity";
-        } else if (d == -0) {
+        } else if (Double.doubleToRawLongBits(d) == Double.doubleToRawLongBits(-0.0)) {
           result.v = "-0";
         } else if (Double.isNaN(d)) {
           result.v = "NaN";
