@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
@@ -186,37 +187,30 @@ class TracingImpl extends ChannelOwner implements Tracing {
       options = new StartOptions();
     }
     includeSources = options.sources != null && options.sources;
-    JsonObject params = new JsonObject();
-    if (options.name != null) {
-      params.addProperty("name", options.name);
-    }
-    if (options.snapshots != null) {
-      params.addProperty("snapshotDom", options.snapshots);
-    }
-    if (options.ariaSnapshots != null) {
-      params.addProperty("snapshotAria", options.ariaSnapshots);
-    }
-    if (options.screenSnapshots != null) {
-      params.addProperty("snapshotScreen", options.screenSnapshots);
-    }
-    if (options.screenshots != null) {
-      params.addProperty("screencast", options.screenshots);
-    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.remove("sources");
+    params.remove("title");
+    renameProperty(params, "snapshots", "snapshotDom");
+    renameProperty(params, "ariaSnapshots", "snapshotAria");
+    renameProperty(params, "screenSnapshots", "snapshotScreen");
+    renameProperty(params, "screenshots", "screencast");
     sendMessage("tracingStart", params, NO_TIMEOUT);
     tracingStartChunk(options.name, options.title);
   }
 
   @Override
   public void stop(StopOptions options) {
-    RuntimeException error = null;
     try {
       stopChunkImpl(options == null ? null : options.path);
-    } catch (RuntimeException e) {
-      error = e;
+    } finally {
+      sendMessage("tracingStop");
     }
-    sendMessage("tracingStop");
-    if (error != null) {
-      throw error;
+  }
+
+  private static void renameProperty(JsonObject params, String from, String to) {
+    JsonElement value = params.remove(from);
+    if (value != null) {
+      params.add(to, value);
     }
   }
 

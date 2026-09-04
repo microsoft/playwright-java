@@ -272,7 +272,6 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(page.mainFrame(), detached[0].parentFrame());
   }
 
-
   @Test
   void dialogClosedEventShouldWork() {
     Dialog[] dialog = {null};

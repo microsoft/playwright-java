@@ -186,7 +186,6 @@ public class TestLocatorMisc extends TestBase{
     assertTrue(e.getMessage().contains("Timeout 500ms exceeded"), e.getMessage());
   }
 
-
   @Test
   public void shouldSupportVisible() {
     page.setContent("<div>\n" +

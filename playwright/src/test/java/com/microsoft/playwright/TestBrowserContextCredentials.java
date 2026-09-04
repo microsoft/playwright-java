@@ -16,12 +16,11 @@
 
 package com.microsoft.playwright;
 
-import static java.util.Arrays.asList;
-
 import com.microsoft.playwright.options.HttpCredentials;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -143,7 +142,6 @@ public class TestBrowserContextCredentials extends TestBase {
       assertEquals(401, response.status());
     }
   }
-
 
   @Test
   void shouldWorkWithASingleCredentialInAnArray() {

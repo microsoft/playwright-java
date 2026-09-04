@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -376,6 +375,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close(CloseOptions options) {
+    RuntimeException harError = null;
     if (!closingOrClosed) {
       closingOrClosed = true;
       if (options == null) {
@@ -383,7 +383,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
       closeReason = options.reason;
       request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
-      RuntimeException harError = null;
       try {
         tracing.exportAllHars();
       } catch (RuntimeException e) {
@@ -391,13 +390,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
       JsonObject params = gson().toJsonTree(options).getAsJsonObject();
       sendMessage("close", params, NO_TIMEOUT);
-      runUntil(() -> {}, closePromise);
-      if (harError != null) {
-        throw harError;
-      }
-      return;
     }
     runUntil(() -> {}, closePromise);
+    if (harError != null) {
+      throw harError;
+    }
   }
 
   @Override
@@ -649,7 +646,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     try {
       String state = new String(readAllBytes(storageState), UTF_8);
       JsonObject params = new JsonObject();
-      params.add("storageState", new Gson().fromJson(state, JsonObject.class));
+      params.add("storageState", gson().fromJson(state, JsonObject.class));
       sendMessage("setStorageState", params, NO_TIMEOUT);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read storage state from file", e);
@@ -675,6 +672,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public DebuggerImpl debugger() {
     return debugger;
+  }
+
+  void setTracesDir(Path tracesDir) {
+    tracing.setTracesDir(tracesDir);
+    request.tracing().setTracesDir(tracesDir);
   }
 
   @Override

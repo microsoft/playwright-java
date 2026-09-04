@@ -16,13 +16,10 @@
 
 package com.microsoft.playwright;
 
-import java.nio.file.Files;
-
-import org.junit.jupiter.api.Assumptions;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -30,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
@@ -290,7 +288,6 @@ public class TestBrowserContextStorageState extends TestBase {
       PlaywrightException.class, () -> context.setStorageState(file));
     assertTrue(e.getMessage().contains("Failed to read storage state from file"), e.getMessage());
   }
-
 
   @Test
   void shouldRoundTripOPFS(@TempDir Path tempDir) throws IOException {

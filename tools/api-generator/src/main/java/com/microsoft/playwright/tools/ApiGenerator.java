@@ -921,15 +921,12 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (type.customType == null && type.isTypeUnion()) {
-      for (int i = 0; i < type.unionSize(); i++) {
-        writeGenericBuilderMethod(output, offset, parentClass, type.formatTypeFromUnion(i));
+    if (type.isTypeUnion() && (type.customType == null || type.isCustomClassOrListUnion())) {
+      // Union of a custom class and its list, e.g. Object|Array<Object> for httpCredentials,
+      // gets the convenience setter with the required fields in addition to the overloads.
+      if (type.customType != null) {
+        writeRequiredFieldsBuilderMethod(output, offset, parentClass);
       }
-      return;
-    }
-    if (type.isCustomClassOrListUnion()) {
-      // Union of a custom class and its list, e.g. Object|Array<Object> for httpCredentials.
-      writeRequiredFieldsBuilderMethod(output, offset, parentClass);
       for (int i = 0; i < type.unionSize(); i++) {
         writeGenericBuilderMethod(output, offset, parentClass, type.formatTypeFromUnion(i));
       }

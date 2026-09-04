@@ -16,11 +16,10 @@
 
 package com.microsoft.playwright;
 
-import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -127,7 +126,6 @@ public class TestPageDialog extends TestBase {
     page.click("div");
     assertEquals(true, page.evaluate("window._clicked"));
   }
-
 
   @Test
   void shouldFireDialogClosedWhenDialogIsAccepted() {

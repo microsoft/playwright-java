@@ -377,21 +377,18 @@ public class Utils {
 
   // Mirrors toHttpCredentialsProtocol() in the JS client: the protocol always takes a list.
   static void addHttpCredentialsToProtocol(JsonObject params) {
-    JsonElement credentials = params.get("httpCredentials");
-    if (credentials == null || credentials.isJsonNull()) {
-      params.remove("httpCredentials");
+    JsonElement credentials = params.remove("httpCredentials");
+    if (credentials == null) {
       return;
     }
-    if (credentials.isJsonObject()) {
-      JsonArray list = new JsonArray();
-      list.add(credentials);
-      params.add("httpCredentials", list);
-    } else if (credentials.isJsonArray()) {
-      if (credentials.getAsJsonArray().size() == 0) {
-        params.remove("httpCredentials");
-      }
+    JsonArray list = new JsonArray();
+    if (credentials.isJsonArray()) {
+      list.addAll(credentials.getAsJsonArray());
     } else {
-      throw new PlaywrightException("httpCredentials must be an HttpCredentials object or a list of HttpCredentials");
+      list.add(credentials);
+    }
+    if (list.size() > 0) {
+      params.add("httpCredentials", list);
     }
   }
 

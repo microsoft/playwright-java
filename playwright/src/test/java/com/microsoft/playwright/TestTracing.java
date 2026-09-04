@@ -16,22 +16,8 @@
 
 package com.microsoft.playwright;
 
-import static java.util.Arrays.asList;
-
-import java.util.stream.Collectors;
-
-import java.util.Map;
-
-import java.util.List;
-
-import java.util.ArrayList;
-
-import java.nio.charset.StandardCharsets;
-
 import com.google.gson.JsonObject;
-
-import com.google.gson.Gson;
-
+import com.google.gson.JsonParser;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
@@ -42,11 +28,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTracing extends TestBase {
@@ -408,7 +401,6 @@ public class TestTracing extends TestBase {
     assertTrue(content.contains("/one-style.html"), content);
   }
 
-
   @Test
   void shouldRecoverTracingAfterAFailedStop(@TempDir Path tempDir) throws Exception {
     // https://github.com/microsoft/playwright/issues/42423
@@ -435,29 +427,19 @@ public class TestTracing extends TestBase {
   @Test
   void shouldCollectActionScreenshots(@TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setScreenSnapshots(true));
-    page.navigate(server.PREFIX + "/input/button.html");
-    page.click("button");
-    Path trace = tempDir.resolve("trace.zip");
-    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
-
-    Map<String, byte[]> resources = Utils.parseZip(trace);
-    List<JsonObject> events = traceEvents(resources);
-    String clickCallId = findCallId(events, "click");
-    List<JsonObject> screenshots = events.stream().filter(e -> "screenshot".equals(e.get("type").getAsString())
-      && clickCallId.equals(e.get("callId").getAsString())).collect(Collectors.toList());
-    assertEquals(asList("before", "action", "after"),
-      screenshots.stream().map(e -> e.get("phase").getAsString()).collect(Collectors.toList()));
-    for (JsonObject screenshot : screenshots) {
-      String file = screenshot.get("file").getAsString();
-      assertEquals("screenshots/" + clickCallId + "-" + screenshot.get("phase").getAsString() + ".png", file);
-      assertTrue(resources.containsKey(file), file);
-      assertTrue(resources.get(file).length > 0, file);
-    }
+    checkClickArtifacts(tempDir, "screenshot", "screenshots/", ".png",
+      content -> assertTrue(content.length > 0));
   }
 
   @Test
   void shouldCollectAriaSnapshots(@TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setAriaSnapshots(true));
+    checkClickArtifacts(tempDir, "aria-snapshot", "aria/", ".json",
+      content -> assertTrue(new String(content, StandardCharsets.UTF_8).contains("Click target")));
+  }
+
+  // Clicks a button while tracing and checks that before/action/after artifacts of the given type were recorded.
+  private void checkClickArtifacts(Path tempDir, String eventType, String dir, String extension, Consumer<byte[]> checkContent) throws Exception {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     Path trace = tempDir.resolve("trace.zip");
@@ -466,16 +448,15 @@ public class TestTracing extends TestBase {
     Map<String, byte[]> resources = Utils.parseZip(trace);
     List<JsonObject> events = traceEvents(resources);
     String clickCallId = findCallId(events, "click");
-    List<JsonObject> snapshots = events.stream().filter(e -> "aria-snapshot".equals(e.get("type").getAsString())
+    List<JsonObject> artifacts = events.stream().filter(e -> eventType.equals(e.get("type").getAsString())
       && clickCallId.equals(e.get("callId").getAsString())).collect(Collectors.toList());
     assertEquals(asList("before", "action", "after"),
-      snapshots.stream().map(e -> e.get("phase").getAsString()).collect(Collectors.toList()));
-    for (JsonObject snapshot : snapshots) {
-      String file = snapshot.get("file").getAsString();
-      assertEquals("aria/" + clickCallId + "-" + snapshot.get("phase").getAsString() + ".json", file);
+      artifacts.stream().map(e -> e.get("phase").getAsString()).collect(Collectors.toList()));
+    for (JsonObject artifact : artifacts) {
+      String file = artifact.get("file").getAsString();
+      assertEquals(dir + clickCallId + "-" + artifact.get("phase").getAsString() + extension, file);
       assertTrue(resources.containsKey(file), file);
-      String content = new String(resources.get(file), StandardCharsets.UTF_8);
-      assertTrue(content.contains("Click target"), content);
+      checkContent.accept(resources.get(file));
     }
   }
 
@@ -487,7 +468,7 @@ public class TestTracing extends TestBase {
       }
       for (String line : new String(entry.getValue(), StandardCharsets.UTF_8).split("\n")) {
         if (!line.trim().isEmpty()) {
-          events.add(new Gson().fromJson(line, JsonObject.class));
+          events.add(JsonParser.parseString(line).getAsJsonObject());
         }
       }
     }

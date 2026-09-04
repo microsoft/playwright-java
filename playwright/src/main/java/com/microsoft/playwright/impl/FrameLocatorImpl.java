@@ -45,7 +45,7 @@ class FrameLocatorImpl implements FrameLocator {
     return frameSelector + " >> internal:control=enter-frame >> " + selector;
   }
 
-  private String nthSelector(String nth) {
+  private String nthSelector(int nth) {
     if (ANY_FRAME_SELECTOR.equals(frameSelector)) {
       throw new PlaywrightException("Selecting the nth frame is not allowed on frameLocator().");
     }
@@ -54,7 +54,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocator first() {
-    return new FrameLocatorImpl(frame, nthSelector("0"));
+    return new FrameLocatorImpl(frame, nthSelector(0));
   }
 
   @Override
@@ -129,7 +129,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocator last() {
-    return new FrameLocatorImpl(frame, nthSelector("-1"));
+    return new FrameLocatorImpl(frame, nthSelector(-1));
   }
 
   @Override
@@ -148,7 +148,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocator nth(int index) {
-    return new FrameLocatorImpl(frame, nthSelector(String.valueOf(index)));
+    return new FrameLocatorImpl(frame, nthSelector(index));
   }
 
   @Override

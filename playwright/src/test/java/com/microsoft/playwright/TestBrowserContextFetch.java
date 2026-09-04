@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.HttpCredentials;
-
 import com.google.gson.Gson;
 import com.microsoft.playwright.options.*;
 import org.junit.jupiter.api.Disabled;
@@ -247,7 +245,6 @@ public class TestBrowserContextFetch extends TestBase {
       assertEquals("/target.html", request.get().url);
     }
   }
-
 
   @Test
   void shouldWorkWithHttpCredentials() throws ExecutionException, InterruptedException {
@@ -928,7 +925,6 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("Hello!", response.text());
     assertEquals(4, requestCount[0]);
   }
-
 
   @Test
   void shouldSupportMultipleHttpCredentials() {

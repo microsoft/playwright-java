@@ -193,7 +193,6 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
-
   @Test
   void shouldPropagateExtraHttpHeadersWithRedirects() throws ExecutionException, InterruptedException {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
@@ -659,7 +658,6 @@ public class TestGlobalFetch extends TestBase {
     APIResponse response = request.get(server.EMPTY_PAGE);
     assertEquals(404, response.status());
   }
-
 
   @Test
   void shouldSupportMultipleHttpCredentials() {
