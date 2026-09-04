@@ -17,38 +17,19 @@
 package com.microsoft.playwright.nullability;
 
 import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.WebSocketFrame;
 import com.microsoft.playwright.options.Cookie;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class JSpecifyApiConsumer {
-  static void useApi(Page page, JSHandle handle, Frame frame, WebSocketFrame webSocketFrame) {
-    ElementHandle element = handle.asElement();
-    if (element != null) {
-      element.dispose();
-    }
-
-    Frame parent = frame.parentFrame();
-    if (parent != null) {
-      parent.name();
-    }
-
-    byte[] binary = webSocketFrame.binary();
-    if (binary != null) {
-      binary.clone();
-    }
-
+  // Only unguarded dereferences and null arguments/assignments are checked by NullAway,
+  // so this file exercises non-null returns and nullable inputs.
+  static void useApi(Page page, Frame frame) {
     frame.name().length();
 
-    Object result = page.evaluate("() => null", null);
-    if (result != null) {
-      result.toString();
-    }
+    page.evaluate("() => null", null);
     page.addScriptTag(null);
 
     Browser.NewContextOptions options = new Browser.NewContextOptions();

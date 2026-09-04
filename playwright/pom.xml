@@ -123,6 +123,7 @@
                 </goals>
                 <configuration>
                   <fork>true</fork>
+                  <!-- Separate output so that the default testCompile does not mark this file as up to date. -->
                   <outputDirectory>${project.build.directory}/nullaway-test-classes</outputDirectory>
                   <testIncludes>
                     <testInclude>com/microsoft/playwright/nullability/JSpecifyApiConsumer.java</testInclude>

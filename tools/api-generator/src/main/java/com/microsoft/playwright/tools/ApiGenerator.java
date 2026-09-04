@@ -370,12 +370,17 @@ class TypeRef extends Element {
   }
 
   String toJavaWithNullability() {
-    String javaType = toJava();
-    return isNullableInJava() ? nullable(javaType) : javaType;
+    return withNullability(toJava(), false);
+  }
+
+  // Adds @Nullable to the given Java rendering of this type when the type itself admits null
+  // or when it is used in an optional slot (parameter or field).
+  String withNullability(String javaType, boolean optional) {
+    return optional || isNullableInJava() ? nullable(javaType) : javaType;
   }
 
   // Serializable is mapped to Object and JSON null is a valid value for it.
-  boolean isNullableInJava() {
+  private boolean isNullableInJava() {
     return isNullable() || "Serializable".equals(stripNullable().get("name").getAsString());
   }
 
@@ -392,10 +397,6 @@ class TypeRef extends Element {
     BOXED_TYPES.put("int", "Integer");
     BOXED_TYPES.put("double", "Double");
     BOXED_TYPES.put("boolean", "Boolean");
-  }
-
-  static boolean isPrimitive(String javaType) {
-    return "void".equals(javaType) || BOXED_TYPES.containsKey(javaType);
   }
 
   static String boxed(String javaType) {
@@ -908,16 +909,11 @@ class Param extends Element {
   }
 
   String toJavaOverload(int overoadIndex) {
-    return withNullability(type.formatTypeFromUnion(overoadIndex)) + " " + jsonName;
+    return type.withNullability(type.formatTypeFromUnion(overoadIndex), isOptional()) + " " + jsonName;
   }
 
   String toJava() {
-    return withNullability(type.toJava()) + " " + jsonName;
-  }
-
-  private String withNullability(String javaType) {
-    boolean nullable = type.isNullableInJava() || (isOptional() && !TypeRef.isPrimitive(javaType));
-    return nullable ? TypeRef.nullable(javaType) : javaType;
+    return type.withNullability(type.toJava(), isOptional()) + " " + jsonName;
   }
 }
 
@@ -942,15 +938,12 @@ class Field extends Element {
     if (type.isNullable()) {
       typeStr = "Optional<" + typeStr + ">";
     }
-    // Convert optional fields to boxed types.
-    if (!isRequired()) {
-      typeStr = TypeRef.boxed(typeStr);
-    }
     if (isBrowserChannelOption()) {
       typeStr = "Object";
     }
+    // Optional fields are boxed so that they can hold null.
     if (!isRequired()) {
-      typeStr = TypeRef.nullable(typeStr);
+      typeStr = TypeRef.nullable(TypeRef.boxed(typeStr));
     }
     output.add(offset + "public " + typeStr + " " + name + ";");
   }
@@ -1006,10 +999,8 @@ class Field extends Element {
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
     writeJavadoc(output, offset, comment());
-    if (type.isNullable()) {
-      paramType = TypeRef.nullable(paramType);
-    }
-    output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + paramType + " " + name + ") {");
+    String param = type.withNullability(paramType, false);
+    output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + param + " " + name + ") {");
     String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
     output.add(offset + "  this." + name + " = " + rvalue + ";");
     output.add(offset + "  return this;");
@@ -1280,10 +1271,7 @@ class CustomInterface extends TypeDefinition {
       }
       first = false;
       writeJavadoc(output, bodyOffset, f.comment());
-      String returnType = f.type.toJava();
-      if (!f.isRequired() || f.type.isNullable()) {
-        returnType = TypeRef.nullable(returnType);
-      }
+      String returnType = f.type.withNullability(f.type.toJava(), !f.isRequired());
       output.add(bodyOffset + returnType + " " + f.name + "();");
     }
     output.add(offset + "}");
@@ -1343,32 +1331,29 @@ public class ApiGenerator {
 
   private void writeTopLevelTypes(Map<String, TypeDefinition> topLevelTypes, File dir, File optionsDir, String packageName) throws IOException {
     for (TypeDefinition e : topLevelTypes.values()) {
-      List<String> lines = new ArrayList<>();
-      lines.add(Interface.header);
-      File targetDir;
+      List<String> body = new ArrayList<>();
+      e.writeTo(body, "");
       if (e instanceof CustomInterface) {
-        lines.add("package " + packageName + ";");
-        targetDir = dir;
+        writeFile(new File(dir, e.name() + ".java"), packageName, body);
       } else {
-        lines.add("package " + packageName + ".options;");
-        targetDir = optionsDir;
+        writeFile(new File(optionsDir, e.name() + ".java"), packageName + ".options", body);
       }
-      lines.add("");
-      e.writeTo(lines, "");
-      writeFile(lines, new File(targetDir, e.name() + ".java"));
     }
   }
 
-  // Lines are expected to start with the license header, package declaration and an empty line.
-  private static void writeFile(List<String> lines, File file) throws IOException {
-    if (lines.stream().anyMatch(line -> line.contains("@Nullable"))) {
-      int index = 3;
-      lines.add(index++, "import org.jspecify.annotations.Nullable;");
-      String next = lines.get(index);
-      if (!next.isEmpty() && !next.startsWith("import ")) {
-        lines.add(index, "");
+  private static void writeFile(File file, String packageName, List<String> body) throws IOException {
+    List<String> lines = new ArrayList<>();
+    lines.add(Interface.header);
+    lines.add("package " + packageName + ";");
+    lines.add("");
+    if (body.stream().anyMatch(line -> line.contains("@Nullable"))) {
+      lines.add("import org.jspecify.annotations.Nullable;");
+      String first = body.get(0);
+      if (!first.isEmpty() && !first.startsWith("import ")) {
+        lines.add("");
       }
     }
+    lines.addAll(body);
     try (FileWriter writer = new FileWriter(file)) {
       writer.write(String.join("\n", lines));
     }
@@ -1402,12 +1387,9 @@ public class ApiGenerator {
         topLevelTypes.put(name, iface);
         continue;
       }
-      List<String> lines = new ArrayList<>();
-      lines.add(Interface.header);
-      lines.add("package " + packageName + ";");
-      lines.add("");
-      iface.writeTo(lines, "");
-      writeFile(lines, new File(dir, name + ".java"));
+      List<String> body = new ArrayList<>();
+      iface.writeTo(body, "");
+      writeFile(new File(dir, name + ".java"), packageName, body);
     }
 
   }
