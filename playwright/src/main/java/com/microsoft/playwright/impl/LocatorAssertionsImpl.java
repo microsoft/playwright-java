@@ -191,6 +191,18 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
+  public void hasAttribute(String name, HasAttributeOptions options) {
+    if (options == null) {
+      options = new HasAttributeOptions();
+    }
+    FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
+    commonOptions.expressionArg = name;
+    String message = "Locator expected to have attribute '" + name + "'";
+    List<ExpectedTextValue> expectedText = null;
+    expectImpl("to.have.attribute", expectedText, null, message, commonOptions, "Assert \"hasAttribute\"");
+  }
+
+  @Override
   public void hasClass(String text, HasClassOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = text;
