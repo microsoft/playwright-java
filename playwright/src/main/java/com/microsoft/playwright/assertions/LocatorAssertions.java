@@ -1566,6 +1566,36 @@ public interface LocatorAssertions {
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
+   * Ensures the {@code Locator} points to an element with given attribute. When only the attribute name is provided, the
+   * method asserts attribute presence.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("input")).hasAttribute("disabled");
+   * assertThat(page.locator("input")).not().hasAttribute("open");
+   * }</pre>
+   *
+   * @param name Attribute name.
+   * @since v1.62
+   */
+  default void hasAttribute(String name) {
+    hasAttribute(name, (HasAttributeOptions) null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with given attribute. When only the attribute name is provided, the
+   * method asserts attribute presence.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * assertThat(page.locator("input")).hasAttribute("disabled");
+   * assertThat(page.locator("input")).not().hasAttribute("open");
+   * }</pre>
+   *
+   * @param name Attribute name.
+   * @since v1.62
+   */
+  void hasAttribute(String name, HasAttributeOptions options);
+  /**
    * Ensures the {@code Locator} points to an element with given CSS classes. When a string is provided, it must fully match
    * the element's {@code class} attribute. To match individual classes use {@link
    * com.microsoft.playwright.assertions.LocatorAssertions#containsClass LocatorAssertions.containsClass()}.
