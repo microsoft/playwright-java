@@ -45,7 +45,7 @@ public class TestBrowserTypeConnect extends TestBase {
   private Process browserServer;
   private String wsEndpoint;
 
-  private static class BrowserServer {
+  static class BrowserServer {
     Process process;
     String wsEndpoint;
 
@@ -61,7 +61,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
   }
 
-  private static BrowserServer launchBrowserServer(BrowserType browserType) {
+  static BrowserServer launchBrowserServer(BrowserType browserType) {
     try {
       Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
       Path dir = driver.driverDir();
