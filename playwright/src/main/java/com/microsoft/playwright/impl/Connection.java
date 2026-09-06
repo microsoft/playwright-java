@@ -190,7 +190,8 @@ public class Connection {
       callData.add("stack", stack);
       JsonObject stackParams = new JsonObject();
       stackParams.add("callData", callData);
-      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, null, false, true);
+      // LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
+      localUtils.connection.internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, null, false, true);
     }
     return result;
   }

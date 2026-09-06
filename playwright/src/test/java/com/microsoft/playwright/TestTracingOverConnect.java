@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.microsoft.playwright;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.microsoft.playwright.TestBrowserTypeConnect.launchBrowserServer;
+import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.Utils.parseZip;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestTracingOverConnect extends TestBase {
+  private static final String SRC_DIRS = System.getenv("PLAYWRIGHT_JAVA_SRC") == null ? "src/test/java" : System.getenv("PLAYWRIGHT_JAVA_SRC");
+
+  private TestBrowserTypeConnect.BrowserServer browserServer;
+
+  @Override
+  Playwright.CreateOptions playwrightOptions() {
+    // Set the source root here rather than relying on the environment so that the test runs in the
+    // regular test job too, not only in the one that passes PLAYWRIGHT_JAVA_SRC.
+    return new Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_JAVA_SRC", SRC_DIRS));
+  }
+
+  @Override
+  @BeforeAll
+  void launchBrowser() {
+    initBrowserType();
+    browserServer = launchBrowserServer(browserType);
+    browser = browserType.connect(browserServer.wsEndpoint);
+  }
+
+  @Override
+  @AfterAll
+  void closeBrowser() {
+    super.closeBrowser();
+    if (browserServer != null) {
+      browserServer.process.destroyForcibly();
+      browserServer = null;
+    }
+  }
+
+  @Test
+  void shouldRecordSourcesForBrowserFromConnect(@TempDir Path tmpDir) throws IOException {
+    context.tracing().start(new Tracing.StartOptions().setSources(true));
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<button>Click</button>");
+    page.click("'Click'");
+    Path trace = tmpDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    Map<String, byte[]> entries = parseZip(trace);
+    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    assertEquals(1, sources.size());
+
+    String path = getClass().getName().replace('.', File.separatorChar);
+    String[] srcRoots = SRC_DIRS.split(File.pathSeparator);
+    // Resolve in the last specified source dir.
+    Path sourceFile = Paths.get(srcRoots[srcRoots.length - 1], path + ".java");
+    byte[] thisFile = Files.readAllBytes(sourceFile);
+    assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
+  }
+}
