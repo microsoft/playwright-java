@@ -70,6 +70,12 @@ class ScreencastImpl implements Screencast {
       if (options.quality != null) {
         params.addProperty("quality", options.quality);
       }
+      if (options.size != null) {
+        JsonObject size = new JsonObject();
+        size.addProperty("width", options.size.width);
+        size.addProperty("height", options.size.height);
+        params.add("size", size);
+      }
       params.addProperty("sendFrames", options.onFrame != null);
       params.addProperty("record", options.path != null);
       savePath = options.path;
