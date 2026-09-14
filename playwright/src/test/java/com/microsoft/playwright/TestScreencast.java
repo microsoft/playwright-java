@@ -20,6 +20,9 @@ import com.microsoft.playwright.options.AnnotatePosition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,6 +119,29 @@ public class TestScreencast extends TestBase {
         assertNotNull(frame.data());
         assertEquals((byte) 0xFF, frame.data()[0]);
         assertEquals((byte) 0xD8, frame.data()[1]);
+      }
+    } finally {
+      context.close();
+    }
+  }
+
+  @Test
+  void screencastStartShouldScaleFramesToFitSize() throws Exception {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1000, 400));
+    Page page = context.newPage();
+    try {
+      List<ScreencastFrame> frames = new ArrayList<>();
+      page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add).setSize(500, 400));
+      page.navigate(server.EMPTY_PAGE);
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(500);
+      page.screencast().stop();
+      assertFalse(frames.isEmpty(), "expected at least one frame");
+      for (ScreencastFrame frame : frames) {
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(frame.data()));
+        // Frame should be scaled down to fit the maximum size.
+        assertEquals(500, image.getWidth());
+        assertEquals(200, image.getHeight());
       }
     } finally {
       context.close();

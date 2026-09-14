@@ -67,6 +67,9 @@ class ScreencastImpl implements Screencast {
       if (options.onFrame != null) {
         onFrame = options.onFrame;
       }
+      if (options.size != null) {
+        params.add("size", gson().toJsonTree(options.size));
+      }
       if (options.quality != null) {
         params.addProperty("quality", options.quality);
       }
