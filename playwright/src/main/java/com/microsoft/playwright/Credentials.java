@@ -78,7 +78,7 @@ import java.util.*;
  *
  * <p> <strong>Usage: save credentials in the storage state, restore later</strong>
  *
- * <p> See <a href="https://playwright.dev/java/docs/auth">authentication guide</a> for examples of using saving and resotring
+ * <p> See <a href="https://playwright.dev/java/docs/auth">authentication guide</a> for examples of using saving and restoring
  * the storage state.
  *
  * <p> <strong>Defaults</strong>
