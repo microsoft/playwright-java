@@ -162,6 +162,9 @@
             <failOnError>false</failOnError>
             <!-- passing 8 causes an assertion in javadoc tool, see https://github.com/microsoft/playwright-java/issues/1533 -->
             <source>11</source>
+            <!-- Automatic-Module-Name in the jar manifest makes the plugin run javadoc in module mode
+                 with a broken patch-module path, which produces an empty javadoc jar. -->
+            <legacyMode>true</legacyMode>
           </configuration>
         </plugin>
         <plugin>
