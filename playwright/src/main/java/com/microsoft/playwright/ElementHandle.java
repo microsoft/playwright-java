@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -63,36 +64,36 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -158,61 +159,61 @@ public interface ElementHandle extends JSHandle {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public Integer clickCount;
+    public @Nullable Integer clickCount;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public Integer steps;
+    public @Nullable Integer steps;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Defaults to {@code left}.
@@ -317,57 +318,57 @@ public interface ElementHandle extends JSHandle {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public Integer steps;
+    public @Nullable Integer steps;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Defaults to {@code left}.
@@ -466,18 +467,18 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -510,42 +511,42 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -620,7 +621,7 @@ public interface ElementHandle extends JSHandle {
     /**
      * @deprecated This option is ignored. The value is returned immediately.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * @deprecated This option is ignored. The value is returned immediately.
@@ -634,18 +635,18 @@ public interface ElementHandle extends JSHandle {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
@@ -683,42 +684,42 @@ public interface ElementHandle extends JSHandle {
      *
      * <p> Defaults to {@code "allow"} that leaves animations untouched.
      */
-    public ScreenshotAnimations animations;
+    public @Nullable ScreenshotAnimations animations;
     /**
      * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not
      * be changed.  Defaults to {@code "hide"}.
      */
-    public ScreenshotCaret caret;
+    public @Nullable ScreenshotCaret caret;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
      * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box. The mask is also applied to
      * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
      * visible elements</a> to disable that.
      */
-    public List<Locator> mask;
+    public @Nullable List<Locator> mask;
     /**
      * Specify the color of the overlay box for masked elements, in <a
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS color format</a>. Default color is pink {@code
      * #FF00FF}.
      */
-    public String maskColor;
+    public @Nullable String maskColor;
     /**
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
      * images. Defaults to {@code false}.
      */
-    public Boolean omitBackground;
+    public @Nullable Boolean omitBackground;
     /**
      * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a
      * relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be
      * saved to the disk.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * The quality of the image, between 0-100. Not applicable to {@code png} images. For {@code jpeg} the default is {@code
      * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
      * compression.
      */
-    public Integer quality;
+    public @Nullable Integer quality;
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices,
      * this will keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so
@@ -726,24 +727,24 @@ public interface ElementHandle extends JSHandle {
      *
      * <p> Defaults to {@code "device"}.
      */
-    public ScreenshotScale scale;
+    public @Nullable ScreenshotScale scale;
     /**
      * Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements
      * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
      * and applies to the inner frames.
      */
-    public String style;
+    public @Nullable String style;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * Specify screenshot type, defaults to {@code png}.
      */
-    public ScreenshotType type;
+    public @Nullable ScreenshotType type;
 
     /**
      * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different
@@ -857,7 +858,7 @@ public interface ElementHandle extends JSHandle {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
@@ -875,18 +876,18 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -919,14 +920,14 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -952,36 +953,36 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1047,14 +1048,14 @@ public interface ElementHandle extends JSHandle {
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * @deprecated This option has no effect.
@@ -1079,42 +1080,42 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public List<KeyboardModifier> modifiers;
+    public @Nullable List<KeyboardModifier> modifiers;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1189,18 +1190,18 @@ public interface ElementHandle extends JSHandle {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
@@ -1232,36 +1233,36 @@ public interface ElementHandle extends JSHandle {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public Boolean force;
+    public @Nullable Boolean force;
     /**
      * @deprecated This option has no effect.
      */
-    public Boolean noWaitAfter;
+    public @Nullable Boolean noWaitAfter;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public Position position;
+    public @Nullable Position position;
     /**
      * Controls whether Playwright scrolls the element into view before performing the action. Defaults to {@code "auto"},
      * which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to {@code
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ScrollMode scroll;
+    public @Nullable ScrollMode scroll;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public Boolean trial;
+    public @Nullable Boolean trial;
 
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
@@ -1330,7 +1331,7 @@ public interface ElementHandle extends JSHandle {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
@@ -1355,19 +1356,19 @@ public interface ElementHandle extends JSHandle {
      * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
-    public WaitForSelectorState state;
+    public @Nullable WaitForSelectorState state;
     /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public Boolean strict;
+    public @Nullable Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Defaults to {@code "visible"}. Can be either:
@@ -1425,7 +1426,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  BoundingBox boundingBox();
+  @Nullable BoundingBox boundingBox();
   /**
    * This method checks the element by performing the following steps:
    * <ol>
@@ -1467,7 +1468,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void check(CheckOptions options);
+  void check(@Nullable CheckOptions options);
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
@@ -1507,13 +1508,13 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void click(ClickOptions options);
+  void click(@Nullable ClickOptions options);
   /**
    * Returns the content frame for element handles referencing iframe nodes, or {@code null} otherwise
    *
    * @since v1.8
    */
-  Frame contentFrame();
+  @Nullable Frame contentFrame();
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
@@ -1555,7 +1556,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void dblclick(DblclickOptions options);
+  void dblclick(@Nullable DblclickOptions options);
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
@@ -1642,7 +1643,7 @@ public interface ElementHandle extends JSHandle {
    * @param eventInit Optional event-specific initialization properties.
    * @since v1.8
    */
-  void dispatchEvent(String type, Object eventInit);
+  void dispatchEvent(String type, @Nullable Object eventInit);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -1666,7 +1667,7 @@ public interface ElementHandle extends JSHandle {
    * automatically invoked.
    * @since v1.9
    */
-  default Object evalOnSelector(String selector, String expression) {
+  default @Nullable Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
   }
   /**
@@ -1693,7 +1694,7 @@ public interface ElementHandle extends JSHandle {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.9
    */
-  Object evalOnSelector(String selector, String expression, Object arg);
+  @Nullable Object evalOnSelector(String selector, String expression, @Nullable Object arg);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -1716,7 +1717,7 @@ public interface ElementHandle extends JSHandle {
    * automatically invoked.
    * @since v1.9
    */
-  default Object evalOnSelectorAll(String selector, String expression) {
+  default @Nullable Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
   }
   /**
@@ -1742,7 +1743,7 @@ public interface ElementHandle extends JSHandle {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.9
    */
-  Object evalOnSelectorAll(String selector, String expression, Object arg);
+  @Nullable Object evalOnSelectorAll(String selector, String expression, @Nullable Object arg);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
@@ -1778,7 +1779,7 @@ public interface ElementHandle extends JSHandle {
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
    */
-  void fill(String value, FillOptions options);
+  void fill(String value, @Nullable FillOptions options);
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
    *
@@ -1791,7 +1792,7 @@ public interface ElementHandle extends JSHandle {
    * @param name Attribute name to get the value for.
    * @since v1.8
    */
-  String getAttribute(String name);
+  @Nullable String getAttribute(String name);
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
@@ -1829,7 +1830,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void hover(HoverOptions options);
+  void hover(@Nullable HoverOptions options);
   /**
    * Returns the {@code element.innerHTML}.
    *
@@ -1863,7 +1864,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.13
    */
-  String inputValue(InputValueOptions options);
+  String inputValue(@Nullable InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
@@ -1907,7 +1908,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  Frame ownerFrame();
+  @Nullable Frame ownerFrame();
   /**
    * Focuses the element, and then uses {@link com.microsoft.playwright.Keyboard#down Keyboard.down()} and {@link
    * com.microsoft.playwright.Keyboard#up Keyboard.up()}.
@@ -1967,7 +1968,7 @@ public interface ElementHandle extends JSHandle {
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    * @since v1.8
    */
-  void press(String key, PressOptions options);
+  void press(String key, @Nullable PressOptions options);
   /**
    * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. If no elements match
    * the selector, returns {@code null}.
@@ -1975,7 +1976,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for.
    * @since v1.9
    */
-  ElementHandle querySelector(String selector);
+  @Nullable ElementHandle querySelector(String selector);
   /**
    * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. If no elements
    * match the selector, returns empty array.
@@ -2011,7 +2012,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  byte[] screenshot(ScreenshotOptions options);
+  byte[] screenshot(@Nullable ScreenshotOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
@@ -2041,7 +2042,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
+  void scrollIntoViewIfNeeded(@Nullable ScrollIntoViewIfNeededOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2101,7 +2102,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String values, SelectOptionOptions options);
+  List<String> selectOption(String values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2161,7 +2162,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(ElementHandle values, SelectOptionOptions options);
+  List<String> selectOption(ElementHandle values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2221,7 +2222,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(String[] values, SelectOptionOptions options);
+  List<String> selectOption(String[] values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2281,7 +2282,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(SelectOption values, SelectOptionOptions options);
+  List<String> selectOption(SelectOption values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2341,7 +2342,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
+  List<String> selectOption(ElementHandle[] values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -2401,7 +2402,7 @@ public interface ElementHandle extends JSHandle {
    * and labels. Option is considered matching if all specified properties match.
    * @since v1.8
    */
-  List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
+  List<String> selectOption(SelectOption[] values, @Nullable SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
@@ -2425,7 +2426,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void selectText(SelectTextOptions options);
+  void selectText(@Nullable SelectTextOptions options);
   /**
    * This method checks or unchecks an element by performing the following steps:
    * <ol>
@@ -2465,7 +2466,7 @@ public interface ElementHandle extends JSHandle {
    * @param checked Whether to check or uncheck the checkbox.
    * @since v1.15
    */
-  void setChecked(boolean checked, SetCheckedOptions options);
+  void setChecked(boolean checked, @Nullable SetCheckedOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
@@ -2495,7 +2496,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void setInputFiles(Path files, SetInputFilesOptions options);
+  void setInputFiles(Path files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
@@ -2525,7 +2526,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void setInputFiles(Path[] files, SetInputFilesOptions options);
+  void setInputFiles(Path[] files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
@@ -2555,7 +2556,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void setInputFiles(FilePayload files, SetInputFilesOptions options);
+  void setInputFiles(FilePayload files, @Nullable SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
@@ -2585,7 +2586,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
+  void setInputFiles(FilePayload[] files, @Nullable SetInputFilesOptions options);
   /**
    * This method taps the element by performing the following steps:
    * <ol>
@@ -2627,13 +2628,13 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void tap(TapOptions options);
+  void tap(@Nullable TapOptions options);
   /**
    * Returns the {@code node.textContent}.
    *
    * @since v1.8
    */
-  String textContent();
+  @Nullable String textContent();
   /**
    * @deprecated In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
    * press keys one by one if there is special keyboard handling on the page - in this case use {@link
@@ -2653,7 +2654,7 @@ public interface ElementHandle extends JSHandle {
    * @param text A text to type into a focused element.
    * @since v1.8
    */
-  void type(String text, TypeOptions options);
+  void type(String text, @Nullable TypeOptions options);
   /**
    * This method checks the element by performing the following steps:
    * <ol>
@@ -2695,7 +2696,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @since v1.8
    */
-  void uncheck(UncheckOptions options);
+  void uncheck(@Nullable UncheckOptions options);
   /**
    * Returns when the element satisfies the {@code state}.
    *
@@ -2753,7 +2754,7 @@ public interface ElementHandle extends JSHandle {
    * @param state A state to wait for, see below for more details.
    * @since v1.8
    */
-  void waitForElementState(ElementState state, WaitForElementStateOptions options);
+  void waitForElementState(ElementState state, @Nullable WaitForElementStateOptions options);
   /**
    * Returns element specified by selector when it satisfies {@code state} option. Returns {@code null} if waiting for {@code
    * hidden} or {@code detached}.
@@ -2778,7 +2779,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for.
    * @since v1.8
    */
-  default ElementHandle waitForSelector(String selector) {
+  default @Nullable ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -2805,6 +2806,6 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for.
    * @since v1.8
    */
-  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
+  @Nullable ElementHandle waitForSelector(String selector, @Nullable WaitForSelectorOptions options);
 }
 

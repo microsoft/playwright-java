@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 
 /**
@@ -56,7 +57,7 @@ public interface Keyboard {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
 
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
@@ -70,7 +71,7 @@ public interface Keyboard {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
 
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
@@ -222,7 +223,7 @@ public interface Keyboard {
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    * @since v1.8
    */
-  void press(String key, PressOptions options);
+  void press(String key, @Nullable PressOptions options);
   /**
    * <strong>NOTE:</strong> In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
    * press keys one by one if there is special keyboard handling on the page - in this case use {@link
@@ -276,7 +277,7 @@ public interface Keyboard {
    * @param text A text to type into a focused element.
    * @since v1.8
    */
-  void type(String text, TypeOptions options);
+  void type(String text, @Nullable TypeOptions options);
   /**
    * Dispatches a {@code keyup} event.
    *

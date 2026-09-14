@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -61,7 +62,7 @@ public interface Worker {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
@@ -77,13 +78,13 @@ public interface Worker {
     /**
      * Receives the {@code ConsoleMessage} object and resolves to true when the waiting should resolve.
      */
-    public Predicate<ConsoleMessage> predicate;
+    public @Nullable Predicate<ConsoleMessage> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Receives the {@code ConsoleMessage} object and resolves to true when the waiting should resolve.
@@ -118,7 +119,7 @@ public interface Worker {
    * automatically invoked.
    * @since v1.8
    */
-  default Object evaluate(String expression) {
+  default @Nullable Object evaluate(String expression) {
     return evaluate(expression, null);
   }
   /**
@@ -138,7 +139,7 @@ public interface Worker {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  Object evaluate(String expression, Object arg);
+  @Nullable Object evaluate(String expression, @Nullable Object arg);
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
@@ -175,7 +176,7 @@ public interface Worker {
    * @param arg Optional argument to pass to {@code expression}.
    * @since v1.8
    */
-  JSHandle evaluateHandle(String expression, Object arg);
+  JSHandle evaluateHandle(String expression, @Nullable Object arg);
   /**
    *
    *
@@ -197,7 +198,7 @@ public interface Worker {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.10
    */
-  Worker waitForClose(WaitForCloseOptions options, Runnable callback);
+  Worker waitForClose(@Nullable WaitForCloseOptions options, Runnable callback);
   /**
    * Performs action and waits for a console message.
    *
@@ -213,6 +214,6 @@ public interface Worker {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.57
    */
-  ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
+  ConsoleMessage waitForConsoleMessage(@Nullable WaitForConsoleMessageOptions options, Runnable callback);
 }
 

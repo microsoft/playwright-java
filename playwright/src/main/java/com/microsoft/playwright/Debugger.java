@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -39,7 +40,7 @@ public interface Debugger {
    *
    * @since v1.59
    */
-  DebuggerPausedDetails pausedDetails();
+  @Nullable DebuggerPausedDetails pausedDetails();
   /**
    * Configures the debugger to pause before the next action is executed.
    *

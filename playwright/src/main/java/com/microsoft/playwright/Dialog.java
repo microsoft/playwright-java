@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@code Dialog} objects are dispatched by page via the {@link com.microsoft.playwright.Page#onDialog Page.onDialog()}
@@ -63,7 +64,7 @@ public interface Dialog {
    * @param promptText A text to enter in prompt. Does not cause any effects if the dialog's {@code type} is not prompt. Optional.
    * @since v1.8
    */
-  void accept(String promptText);
+  void accept(@Nullable String promptText);
   /**
    * If dialog is prompt, returns default prompt value. Otherwise, returns empty string.
    *
@@ -87,7 +88,7 @@ public interface Dialog {
    *
    * @since v1.34
    */
-  Page page();
+  @Nullable Page page();
   /**
    * Returns dialog's type, can be one of {@code alert}, {@code beforeunload}, {@code confirm} or {@code prompt}.
    *

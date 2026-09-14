@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -278,15 +279,15 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Only removes cookies with the given domain.
      */
-    public Object domain;
+    public @Nullable Object domain;
     /**
      * Only removes cookies with the given name.
      */
-    public Object name;
+    public @Nullable Object name;
     /**
      * Only removes cookies with the given path.
      */
-    public Object path;
+    public @Nullable Object path;
 
     /**
      * Only removes cookies with the given domain.
@@ -335,7 +336,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * The reason to be reported to the operations interrupted by the context closure.
      */
-    public String reason;
+    public @Nullable String reason;
 
     /**
      * The reason to be reported to the operations interrupted by the context closure.
@@ -349,7 +350,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * The [origin] to grant permissions to, e.g. "https://example.com".
      */
-    public String origin;
+    public @Nullable String origin;
 
     /**
      * The [origin] to grant permissions to, e.g. "https://example.com".
@@ -363,7 +364,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * How often a route should be used. By default it will be used every time.
      */
-    public Integer times;
+    public @Nullable Integer times;
 
     /**
      * How often a route should be used. By default it will be used every time.
@@ -382,28 +383,28 @@ public interface BrowserContext extends AutoCloseable {
      *
      * <p> Defaults to abort.
      */
-    public HarNotFound notFound;
+    public @Nullable HarNotFound notFound;
     /**
      * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
      * written to disk when {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} is called.
      */
-    public Boolean update;
+    public @Nullable Boolean update;
     /**
      * Optional setting to control resource content management. If {@code attach} is specified, resources are persisted as
      * separate files or entries in the ZIP archive. If {@code embed} is specified, content is stored inline the HAR file.
      */
-    public RouteFromHarUpdateContentPolicy updateContent;
+    public @Nullable RouteFromHarUpdateContentPolicy updateContent;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * minimal}.
      */
-    public HarMode updateMode;
+    public @Nullable HarMode updateMode;
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
-    public Object url;
+    public @Nullable Object url;
 
     /**
      * <ul>
@@ -469,13 +470,13 @@ public interface BrowserContext extends AutoCloseable {
      * com.microsoft.playwright.Credentials#install Credentials.install()}), and prevent all real authenticators from working
      * in this context.
      */
-    public Boolean credentials;
+    public @Nullable Boolean credentials;
     /**
      * Set to {@code true} to include <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB</a> in
      * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
      * Authentication, enable this.
      */
-    public Boolean indexedDB;
+    public @Nullable Boolean indexedDB;
     /**
      * Set to {@code true} to include the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system">origin private file
@@ -483,12 +484,12 @@ public interface BrowserContext extends AutoCloseable {
      *
      * <p> <strong>NOTE:</strong> OPFS is currently not supported in ephemeral WebKit contexts.
      */
-    public Boolean opfs;
+    public @Nullable Boolean opfs;
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
-    public Path path;
+    public @Nullable Path path;
 
     /**
      * Set to {@code true} to include the context's virtual WebAuthn {@link com.microsoft.playwright.BrowserContext#credentials
@@ -539,7 +540,7 @@ public interface BrowserContext extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
@@ -556,13 +557,13 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
      */
-    public Predicate<ConsoleMessage> predicate;
+    public @Nullable Predicate<ConsoleMessage> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
@@ -585,13 +586,13 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
      */
-    public Predicate<Page> predicate;
+    public @Nullable Predicate<Page> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
@@ -707,7 +708,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  Browser browser();
+  @Nullable Browser browser();
   /**
    * Removes cookies from context. Accepts optional filter.
    *
@@ -743,7 +744,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  void clearCookies(ClearCookiesOptions options);
+  void clearCookies(@Nullable ClearCookiesOptions options);
   /**
    * Clears all permission overrides for the browser context.
    *
@@ -775,7 +776,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  void close(CloseOptions options);
+  void close(@Nullable CloseOptions options);
   /**
    * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
    * are returned.
@@ -792,7 +793,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param urls Optional list of URLs.
    * @since v1.8
    */
-  List<Cookie> cookies(String urls);
+  List<Cookie> cookies(@Nullable String urls);
   /**
    * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
    * are returned.
@@ -800,7 +801,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param urls Optional list of URLs.
    * @since v1.8
    */
-  List<Cookie> cookies(List<String> urls);
+  List<Cookie> cookies(@Nullable List<String> urls);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
    * When called, the function executes {@code callback} and returns a <a
@@ -972,7 +973,7 @@ public interface BrowserContext extends AutoCloseable {
    * </ul>
    * @since v1.8
    */
-  void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
+  void grantPermissions(List<String> permissions, @Nullable GrantPermissionsOptions options);
   /**
    * Indicates that the browser context is in the process of closing or has already been closed.
    *
@@ -1126,7 +1127,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(String url, Consumer<Route> handler, @Nullable RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
@@ -1236,7 +1237,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Pattern url, Consumer<Route> handler, @Nullable RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
@@ -1346,7 +1347,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    * @since v1.8
    */
-  AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
+  AutoCloseable route(Predicate<String> url, Consumer<Route> handler, @Nullable RouteOptions options);
   /**
    * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
    * href="https://playwright.dev/java/docs/mock#replaying-from-har">Replaying from HAR</a>.
@@ -1374,7 +1375,7 @@ public interface BrowserContext extends AutoCloseable {
    * path} is a relative path, then it is resolved relative to the current working directory.
    * @since v1.23
    */
-  void routeFromHAR(Path har, RouteFromHAROptions options);
+  void routeFromHAR(Path har, @Nullable RouteFromHAROptions options);
   /**
    * This method allows to modify websocket connections that are made by any page in the browser context.
    *
@@ -1513,7 +1514,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  void setGeolocation(Geolocation geolocation);
+  void setGeolocation(@Nullable Geolocation geolocation);
   /**
    *
    *
@@ -1536,7 +1537,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  String storageState(StorageStateOptions options);
+  String storageState(@Nullable StorageStateOptions options);
   /**
    * Clears the existing cookies, local storage, IndexedDB entries, origin private file system entries and virtual WebAuthn
    * credentials, and sets the new storage state. When the storage state contains credentials, the virtual WebAuthn
@@ -1589,7 +1590,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.route()}.
    * @since v1.8
    */
-  void unroute(String url, Consumer<Route> handler);
+  void unroute(String url, @Nullable Consumer<Route> handler);
   /**
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
@@ -1611,7 +1612,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.route()}.
    * @since v1.8
    */
-  void unroute(Pattern url, Consumer<Route> handler);
+  void unroute(Pattern url, @Nullable Consumer<Route> handler);
   /**
    * Removes a route created with {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()}. When {@code
    * handler} is not specified, removes all routes for the {@code url}.
@@ -1633,7 +1634,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.route()}.
    * @since v1.8
    */
-  void unroute(Predicate<String> url, Consumer<Route> handler);
+  void unroute(Predicate<String> url, @Nullable Consumer<Route> handler);
   /**
    * The method will block until the condition returns true. All Playwright events will be dispatched while the method is
    * waiting for the condition.
@@ -1681,7 +1682,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param condition Condition to wait for.
    * @since v1.32
    */
-  void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options);
+  void waitForCondition(BooleanSupplier condition, @Nullable WaitForConditionOptions options);
   /**
    * Performs action and waits for a {@code ConsoleMessage} to be logged by in the pages in the context. If predicate is
    * provided, it passes {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code
@@ -1703,7 +1704,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.34
    */
-  ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
+  ConsoleMessage waitForConsoleMessage(@Nullable WaitForConsoleMessageOptions options, Runnable callback);
   /**
    * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes
    * {@code Page} value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value.
@@ -1723,6 +1724,6 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.9
    */
-  Page waitForPage(WaitForPageOptions options, Runnable callback);
+  Page waitForPage(@Nullable WaitForPageOptions options, Runnable callback);
 }
 

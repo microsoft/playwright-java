@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.*;
 
@@ -40,7 +41,7 @@ public interface Response {
    *
    * @since v1.8
    */
-  String finished();
+  @Nullable String finished();
   /**
    * Returns the {@code Frame} that initiated this response.
    *
@@ -78,7 +79,7 @@ public interface Response {
    * @param name Name of the header.
    * @since v1.15
    */
-  String headerValue(String name);
+  @Nullable String headerValue(String name);
   /**
    * Returns all values of the headers matching the name, for example {@code set-cookie}. The name is case-insensitive.
    *
@@ -109,13 +110,13 @@ public interface Response {
    *
    * @since v1.13
    */
-  SecurityDetails securityDetails();
+  @Nullable SecurityDetails securityDetails();
   /**
    * Returns the IP address and port of the server.
    *
    * @since v1.13
    */
-  ServerAddr serverAddr();
+  @Nullable ServerAddr serverAddr();
   /**
    * Contains the status code of the response (e.g., 200 for a success).
    *

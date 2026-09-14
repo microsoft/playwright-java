@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 
 /**
@@ -43,15 +44,15 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public Integer clickCount;
+    public @Nullable Integer clickCount;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
 
     /**
      * Defaults to {@code left}.
@@ -79,11 +80,11 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public Double delay;
+    public @Nullable Double delay;
 
     /**
      * Defaults to {@code left}.
@@ -104,11 +105,11 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public Integer clickCount;
+    public @Nullable Integer clickCount;
 
     /**
      * Defaults to {@code left}.
@@ -131,7 +132,7 @@ public interface Mouse {
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public Integer steps;
+    public @Nullable Integer steps;
 
     /**
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between Playwright's current
@@ -147,11 +148,11 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public MouseButton button;
+    public @Nullable MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public Integer clickCount;
+    public @Nullable Integer clickCount;
 
     /**
      * Defaults to {@code left}.
@@ -187,7 +188,7 @@ public interface Mouse {
    * @param y Y coordinate relative to the main frame's viewport in CSS pixels.
    * @since v1.8
    */
-  void click(double x, double y, ClickOptions options);
+  void click(double x, double y, @Nullable ClickOptions options);
   /**
    * Shortcut for {@link com.microsoft.playwright.Mouse#move Mouse.move()}, {@link com.microsoft.playwright.Mouse#down
    * Mouse.down()}, {@link com.microsoft.playwright.Mouse#up Mouse.up()}, {@link com.microsoft.playwright.Mouse#down
@@ -209,7 +210,7 @@ public interface Mouse {
    * @param y Y coordinate relative to the main frame's viewport in CSS pixels.
    * @since v1.8
    */
-  void dblclick(double x, double y, DblclickOptions options);
+  void dblclick(double x, double y, @Nullable DblclickOptions options);
   /**
    * Dispatches a {@code mousedown} event.
    *
@@ -223,7 +224,7 @@ public interface Mouse {
    *
    * @since v1.8
    */
-  void down(DownOptions options);
+  void down(@Nullable DownOptions options);
   /**
    * Dispatches a {@code mousemove} event.
    *
@@ -241,7 +242,7 @@ public interface Mouse {
    * @param y Y coordinate relative to the main frame's viewport in CSS pixels.
    * @since v1.8
    */
-  void move(double x, double y, MoveOptions options);
+  void move(double x, double y, @Nullable MoveOptions options);
   /**
    * Dispatches a {@code mouseup} event.
    *
@@ -255,7 +256,7 @@ public interface Mouse {
    *
    * @since v1.8
    */
-  void up(UpOptions options);
+  void up(@Nullable UpOptions options);
   /**
    * Dispatches a {@code wheel} event. This method is usually used to manually scroll the page. See <a
    * href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.

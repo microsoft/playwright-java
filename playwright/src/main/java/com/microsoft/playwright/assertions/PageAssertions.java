@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.assertions;
 
+import org.jspecify.annotations.Nullable;
 import java.util.regex.Pattern;
 
 /**
@@ -41,7 +42,7 @@ public interface PageAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -55,7 +56,7 @@ public interface PageAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
@@ -70,11 +71,11 @@ public interface PageAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression parameter if specified. A provided predicate ignores this flag.
      */
-    public Boolean ignoreCase;
+    public @Nullable Boolean ignoreCase;
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -138,7 +139,7 @@ public interface PageAssertions {
    *
    * @since v1.60
    */
-  void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options);
+  void matchesAriaSnapshot(String expected, @Nullable MatchesAriaSnapshotOptions options);
   /**
    * Ensures the page has the given title.
    *
@@ -164,7 +165,7 @@ public interface PageAssertions {
    * @param titleOrRegExp Expected title or RegExp.
    * @since v1.20
    */
-  void hasTitle(String titleOrRegExp, HasTitleOptions options);
+  void hasTitle(String titleOrRegExp, @Nullable HasTitleOptions options);
   /**
    * Ensures the page has the given title.
    *
@@ -190,7 +191,7 @@ public interface PageAssertions {
    * @param titleOrRegExp Expected title or RegExp.
    * @since v1.20
    */
-  void hasTitle(Pattern titleOrRegExp, HasTitleOptions options);
+  void hasTitle(Pattern titleOrRegExp, @Nullable HasTitleOptions options);
   /**
    * Ensures the page is navigated to the given URL.
    *
@@ -216,7 +217,7 @@ public interface PageAssertions {
    * @param urlOrRegExp Expected URL string or RegExp.
    * @since v1.20
    */
-  void hasURL(String urlOrRegExp, HasURLOptions options);
+  void hasURL(String urlOrRegExp, @Nullable HasURLOptions options);
   /**
    * Ensures the page is navigated to the given URL.
    *
@@ -242,6 +243,6 @@ public interface PageAssertions {
    * @param urlOrRegExp Expected URL string or RegExp.
    * @since v1.20
    */
-  void hasURL(Pattern urlOrRegExp, HasURLOptions options);
+  void hasURL(Pattern urlOrRegExp, @Nullable HasURLOptions options);
 }
 

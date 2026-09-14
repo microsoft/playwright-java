@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -29,22 +30,22 @@ public interface Screencast {
     /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
-    public Consumer<ScreencastFrame> onFrame;
+    public @Nullable Consumer<ScreencastFrame> onFrame;
     /**
      * Path where the video should be saved when the screencast is stopped. When provided, video recording is started.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * The quality of the image, between 0-100.
      */
-    public Integer quality;
+    public @Nullable Integer quality;
     /**
      * Specifies the dimensions of screencast frames. The actual frame is scaled to preserve the page's aspect ratio and may be
      * smaller than these bounds. If a screencast is already active (e.g. started by tracing or video recording), the existing
      * configuration takes precedence and the frame size may exceed these bounds or this option may be ignored. If not
      * specified the size will be equal to page viewport scaled down to fit into 800×800.
      */
-    public Size size;
+    public @Nullable Size size;
 
     /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
@@ -92,7 +93,7 @@ public interface Screencast {
      * Duration in milliseconds after which the overlay is automatically removed. Overlay stays until dismissed if not
      * provided.
      */
-    public Double duration;
+    public @Nullable Double duration;
 
     /**
      * Duration in milliseconds after which the overlay is automatically removed. Overlay stays until dismissed if not
@@ -107,11 +108,11 @@ public interface Screencast {
     /**
      * Optional description text displayed below the title.
      */
-    public String description;
+    public @Nullable String description;
     /**
      * Duration in milliseconds after which the overlay is automatically removed. Defaults to {@code 2000}.
      */
-    public Double duration;
+    public @Nullable Double duration;
 
     /**
      * Optional description text displayed below the title.
@@ -133,19 +134,19 @@ public interface Screencast {
      * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
      * the previous action point to the next one. {@code "none"} disables the cursor decoration.
      */
-    public ScreencastCursor cursor;
+    public @Nullable ScreencastCursor cursor;
     /**
      * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
      */
-    public Double duration;
+    public @Nullable Double duration;
     /**
      * Font size of the action title in pixels. Defaults to {@code 24}.
      */
-    public Integer fontSize;
+    public @Nullable Integer fontSize;
     /**
      * Position of the action title overlay. Defaults to {@code "top-right"}.
      */
-    public AnnotatePosition position;
+    public @Nullable AnnotatePosition position;
 
     /**
      * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
@@ -196,7 +197,7 @@ public interface Screencast {
    *
    * @since v1.59
    */
-  AutoCloseable start(StartOptions options);
+  AutoCloseable start(@Nullable StartOptions options);
   /**
    * Stops the screencast and video recording if active. If a video was being recorded, saves it to the path specified in
    * {@link com.microsoft.playwright.Screencast#start Screencast.start()}.
@@ -221,7 +222,7 @@ public interface Screencast {
    * @param html HTML content for the overlay.
    * @since v1.59
    */
-  AutoCloseable showOverlay(String html, ShowOverlayOptions options);
+  AutoCloseable showOverlay(String html, @Nullable ShowOverlayOptions options);
   /**
    * Shows a chapter overlay with a title and optional description, centered on the page with a blurred backdrop. Useful for
    * narrating video recordings. The overlay is removed after the specified duration, or 2000ms.
@@ -239,7 +240,7 @@ public interface Screencast {
    * @param title Title text displayed prominently in the overlay.
    * @since v1.59
    */
-  void showChapter(String title, ShowChapterOptions options);
+  void showChapter(String title, @Nullable ShowChapterOptions options);
   /**
    * Enables visual annotations on interacted elements. Returns a disposable that stops showing actions when disposed.
    *
@@ -253,7 +254,7 @@ public interface Screencast {
    *
    * @since v1.59
    */
-  AutoCloseable showActions(ShowActionsOptions options);
+  AutoCloseable showActions(@Nullable ShowActionsOptions options);
   /**
    * Shows overlays.
    *

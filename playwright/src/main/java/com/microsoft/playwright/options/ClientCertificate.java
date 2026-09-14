@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
 import java.nio.file.Path;
 
 public class ClientCertificate {
@@ -27,31 +28,31 @@ public class ClientCertificate {
   /**
    * Path to the file with the certificate in PEM format.
    */
-  public Path certPath;
+  public @Nullable Path certPath;
   /**
    * Direct value of the certificate in PEM format.
    */
-  public byte[] cert;
+  public byte @Nullable [] cert;
   /**
    * Path to the file with the private key in PEM format.
    */
-  public Path keyPath;
+  public @Nullable Path keyPath;
   /**
    * Direct value of the private key in PEM format.
    */
-  public byte[] key;
+  public byte @Nullable [] key;
   /**
    * Path to the PFX or PKCS12 encoded private key and certificate chain.
    */
-  public Path pfxPath;
+  public @Nullable Path pfxPath;
   /**
    * Direct value of the PFX or PKCS12 encoded private key and certificate chain.
    */
-  public byte[] pfx;
+  public byte @Nullable [] pfx;
   /**
    * Passphrase for the private key (PEM or PFX).
    */
-  public String passphrase;
+  public @Nullable String passphrase;
 
   public ClientCertificate(String origin) {
     this.origin = origin;

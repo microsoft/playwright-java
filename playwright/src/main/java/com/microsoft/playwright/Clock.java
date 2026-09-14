@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.Date;
 
 /**
@@ -30,7 +31,7 @@ public interface Clock {
     /**
      * Time to initialize with, current system time by default.
      */
-    public Object time;
+    public @Nullable Object time;
 
     /**
      * Time to initialize with, current system time by default.
@@ -129,7 +130,7 @@ public interface Clock {
    *
    * @since v1.45
    */
-  void install(InstallOptions options);
+  void install(@Nullable InstallOptions options);
   /**
    * Advance the clock, firing all the time-related callbacks.
    *

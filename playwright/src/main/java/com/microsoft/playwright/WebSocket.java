@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -67,13 +68,13 @@ public interface WebSocket {
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
      */
-    public Predicate<WebSocketFrame> predicate;
+    public @Nullable Predicate<WebSocketFrame> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
@@ -96,13 +97,13 @@ public interface WebSocket {
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
      */
-    public Predicate<WebSocketFrame> predicate;
+    public @Nullable Predicate<WebSocketFrame> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
 
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
@@ -152,7 +153,7 @@ public interface WebSocket {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.10
    */
-  WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable callback);
+  WebSocketFrame waitForFrameReceived(@Nullable WaitForFrameReceivedOptions options, Runnable callback);
   /**
    * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into
    * the {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an
@@ -172,6 +173,6 @@ public interface WebSocket {
    * @param callback Callback that performs the action triggering the event.
    * @since v1.10
    */
-  WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable callback);
+  WebSocketFrame waitForFrameSent(@Nullable WaitForFrameSentOptions options, Runnable callback);
 }
 

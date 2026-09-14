@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class Geolocation {
   /**
    * Latitude between -90 and 90.
@@ -28,7 +30,7 @@ public class Geolocation {
   /**
    * Non-negative accuracy value. Defaults to {@code 0}.
    */
-  public Double accuracy;
+  public @Nullable Double accuracy;
 
   public Geolocation(double latitude, double longitude) {
     this.latitude = latitude;

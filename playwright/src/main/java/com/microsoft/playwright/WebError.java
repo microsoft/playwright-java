@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 
 /**
@@ -37,7 +38,7 @@ public interface WebError {
    *
    * @since v1.38
    */
-  Page page();
+  @Nullable Page page();
   /**
    * Unhandled error that was thrown.
    *

@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
+
 public class Proxy {
   /**
    * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
@@ -25,15 +27,15 @@ public class Proxy {
   /**
    * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
    */
-  public String bypass;
+  public @Nullable String bypass;
   /**
    * Optional username to use if HTTP proxy requires authentication.
    */
-  public String username;
+  public @Nullable String username;
   /**
    * Optional password to use if HTTP proxy requires authentication.
    */
-  public String password;
+  public @Nullable String password;
 
   public Proxy(String server) {
     this.server = server;

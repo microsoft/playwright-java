@@ -16,11 +16,12 @@
 
 package com.microsoft.playwright.options;
 
+import org.jspecify.annotations.Nullable;
 import java.util.Map;
 
 public class DropPayload {
-  public Object files;
-  public Map<String, String> data;
+  public @Nullable Object files;
+  public @Nullable Map<String, String> data;
 
   public DropPayload setFiles(Object files) {
     this.files = files;

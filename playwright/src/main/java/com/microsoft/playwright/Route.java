@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -31,19 +32,19 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public String method;
+    public @Nullable String method;
     /**
      * If set changes the post data of request.
      */
-    public Object postData;
+    public @Nullable Object postData;
     /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
-    public String url;
+    public @Nullable String url;
 
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
@@ -85,20 +86,20 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public String method;
+    public @Nullable String method;
     /**
      * If set changes the post data of request.
      */
-    public Object postData;
+    public @Nullable Object postData;
     /**
      * If set changes the request URL. New URL must have same protocol as original one. Changing the URL won't affect the route
      * matching, all the routes are matched using the original request URL.
      */
-    public String url;
+    public @Nullable String url;
 
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
@@ -141,34 +142,34 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
      * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
      */
-    public Integer maxRedirects;
+    public @Nullable Integer maxRedirects;
     /**
      * Maximum number of times network errors should be retried. Currently only {@code ECONNRESET} error is retried. Does not
      * retry based on HTTP response codes. An error will be thrown if the limit is exceeded. Defaults to {@code 0} - no
      * retries.
      */
-    public Integer maxRetries;
+    public @Nullable Integer maxRetries;
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public String method;
+    public @Nullable String method;
     /**
      * If set changes the post data of request.
      */
-    public Object postData;
+    public @Nullable Object postData;
     /**
      * Request timeout in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
-    public String url;
+    public @Nullable String url;
 
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
@@ -234,33 +235,33 @@ public interface Route {
     /**
      * Optional response body as text.
      */
-    public String body;
+    public @Nullable String body;
     /**
      * Optional response body as raw bytes.
      */
-    public byte[] bodyBytes;
+    public byte @Nullable [] bodyBytes;
     /**
      * If set, equals to setting {@code Content-Type} response header.
      */
-    public String contentType;
+    public @Nullable String contentType;
     /**
      * Response headers. Header values will be converted to a string.
      */
-    public Map<String, String> headers;
+    public @Nullable Map<String, String> headers;
     /**
      * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path,
      * then it is resolved relative to the current working directory.
      */
-    public Path path;
+    public @Nullable Path path;
     /**
      * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be
      * overridden using fulfill options.
      */
-    public APIResponse response;
+    public @Nullable APIResponse response;
     /**
      * Response status code, defaults to {@code 200}.
      */
-    public Integer status;
+    public @Nullable Integer status;
 
     /**
      * Optional response body as text.
@@ -346,7 +347,7 @@ public interface Route {
    * </ul>
    * @since v1.8
    */
-  void abort(String errorCode);
+  void abort(@Nullable String errorCode);
   /**
    * Sends route's request to the network with optional overrides.
    *
@@ -410,7 +411,7 @@ public interface Route {
    *
    * @since v1.8
    */
-  void resume(ResumeOptions options);
+  void resume(@Nullable ResumeOptions options);
   /**
    * Continues route's request with optional overrides. The method is similar to {@link com.microsoft.playwright.Route#resume
    * Route.resume()} with the difference that other matching handlers will be invoked before sending the request.
@@ -550,7 +551,7 @@ public interface Route {
    *
    * @since v1.23
    */
-  void fallback(FallbackOptions options);
+  void fallback(@Nullable FallbackOptions options);
   /**
    * Performs the request and fetches result without fulfilling it, so that the response could be modified and then
    * fulfilled.
@@ -604,7 +605,7 @@ public interface Route {
    *
    * @since v1.29
    */
-  APIResponse fetch(FetchOptions options);
+  APIResponse fetch(@Nullable FetchOptions options);
   /**
    * Fulfills route's request with given response.
    *
@@ -654,7 +655,7 @@ public interface Route {
    *
    * @since v1.8
    */
-  void fulfill(FulfillOptions options);
+  void fulfill(@Nullable FulfillOptions options);
   /**
    * A request to be routed.
    *

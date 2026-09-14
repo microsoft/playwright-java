@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -109,11 +110,11 @@ public interface WebSocketRoute {
     /**
      * Optional <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code">close code</a>.
      */
-    public Integer code;
+    public @Nullable Integer code;
     /**
      * Optional <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#reason">close reason</a>.
      */
-    public String reason;
+    public @Nullable String reason;
 
     /**
      * Optional <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code">close code</a>.
@@ -143,7 +144,7 @@ public interface WebSocketRoute {
    *
    * @since v1.48
    */
-  void close(CloseOptions options);
+  void close(@Nullable CloseOptions options);
   /**
    * By default, routed WebSocket does not connect to the server, so you can mock entire WebSocket communication. This method
    * connects to the actual WebSocket server, and returns the server-side {@code WebSocketRoute} instance, giving the ability

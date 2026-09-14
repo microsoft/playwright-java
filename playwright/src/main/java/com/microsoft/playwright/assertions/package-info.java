@@ -14,24 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.options;
+@NullMarked
+package com.microsoft.playwright.assertions;
 
-import org.jspecify.annotations.Nullable;
-
-public class Location {
-  public String file;
-  public @Nullable Integer line;
-  public @Nullable Integer column;
-
-  public Location(String file) {
-    this.file = file;
-  }
-  public Location setLine(int line) {
-    this.line = line;
-    return this;
-  }
-  public Location setColumn(int column) {
-    this.column = column;
-    return this;
-  }
-}
+import org.jspecify.annotations.NullMarked;

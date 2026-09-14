@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.util.regex.Pattern;
 
@@ -78,7 +79,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -94,7 +95,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -110,7 +111,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -127,65 +128,65 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public Boolean checked;
+    public @Nullable Boolean checked;
     /**
      * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>. By
      * default, matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public Object description;
+    public @Nullable Object description;
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public Boolean disabled;
+    public @Nullable Boolean disabled;
     /**
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
     /**
      * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public Boolean expanded;
+    public @Nullable Boolean expanded;
     /**
      * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public Boolean includeHidden;
+    public @Nullable Boolean includeHidden;
     /**
      * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
      * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public Integer level;
+    public @Nullable Integer level;
     /**
      * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
      * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public Object name;
+    public @Nullable Object name;
     /**
      * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public Boolean pressed;
+    public @Nullable Boolean pressed;
     /**
      * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public Boolean selected;
+    public @Nullable Boolean selected;
 
     /**
      * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
@@ -307,7 +308,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -323,7 +324,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public Boolean exact;
+    public @Nullable Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
@@ -347,7 +348,7 @@ public interface FrameLocator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public Locator has;
+    public @Nullable Locator has;
     /**
      * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
      * outer one. For example, {@code article} that does not have {@code div} matches {@code
@@ -355,18 +356,18 @@ public interface FrameLocator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public Locator hasNot;
+    public @Nullable Locator hasNot;
     /**
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public Object hasNotText;
+    public @Nullable Object hasNotText;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public Object hasText;
+    public @Nullable Object hasText;
 
     /**
      * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
@@ -474,7 +475,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByAltText(String text, GetByAltTextOptions options);
+  Locator getByAltText(String text, @Nullable GetByAltTextOptions options);
   /**
    * Allows locating elements by their alt text.
    *
@@ -504,7 +505,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByAltText(Pattern text, GetByAltTextOptions options);
+  Locator getByAltText(Pattern text, @Nullable GetByAltTextOptions options);
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
@@ -538,7 +539,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByLabel(String text, GetByLabelOptions options);
+  Locator getByLabel(String text, @Nullable GetByLabelOptions options);
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
@@ -572,7 +573,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByLabel(Pattern text, GetByLabelOptions options);
+  Locator getByLabel(Pattern text, @Nullable GetByLabelOptions options);
   /**
    * Allows locating input elements by the placeholder text.
    *
@@ -606,7 +607,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
+  Locator getByPlaceholder(String text, @Nullable GetByPlaceholderOptions options);
   /**
    * Allows locating input elements by the placeholder text.
    *
@@ -640,7 +641,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
+  Locator getByPlaceholder(Pattern text, @Nullable GetByPlaceholderOptions options);
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
@@ -724,7 +725,7 @@ public interface FrameLocator {
    * @param role Required aria role.
    * @since v1.27
    */
-  Locator getByRole(AriaRole role, GetByRoleOptions options);
+  Locator getByRole(AriaRole role, @Nullable GetByRoleOptions options);
   /**
    * Locate element by the test id.
    *
@@ -850,7 +851,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByText(String text, GetByTextOptions options);
+  Locator getByText(String text, @Nullable GetByTextOptions options);
   /**
    * Allows locating elements that contain given text.
    *
@@ -932,7 +933,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByText(Pattern text, GetByTextOptions options);
+  Locator getByText(Pattern text, @Nullable GetByTextOptions options);
   /**
    * Allows locating elements by their title attribute.
    *
@@ -966,7 +967,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByTitle(String text, GetByTitleOptions options);
+  Locator getByTitle(String text, @Nullable GetByTitleOptions options);
   /**
    * Allows locating elements by their title attribute.
    *
@@ -1000,7 +1001,7 @@ public interface FrameLocator {
    * @param text Text to locate the element for.
    * @since v1.27
    */
-  Locator getByTitle(Pattern text, GetByTitleOptions options);
+  Locator getByTitle(Pattern text, @Nullable GetByTitleOptions options);
   /**
    * @deprecated Use {@link com.microsoft.playwright.Locator#last Locator.last()} followed by {@link
    * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()} instead.
@@ -1029,7 +1030,7 @@ public interface FrameLocator {
    * @param selectorOrLocator A selector or locator to use when resolving DOM element.
    * @since v1.17
    */
-  Locator locator(String selectorOrLocator, LocatorOptions options);
+  Locator locator(String selectorOrLocator, @Nullable LocatorOptions options);
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
    * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
@@ -1051,7 +1052,7 @@ public interface FrameLocator {
    * @param selectorOrLocator A selector or locator to use when resolving DOM element.
    * @since v1.17
    */
-  Locator locator(Locator selectorOrLocator, LocatorOptions options);
+  Locator locator(Locator selectorOrLocator, @Nullable LocatorOptions options);
   /**
    * @deprecated Use {@link com.microsoft.playwright.Locator#nth Locator.nth()} followed by {@link
    * com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()} instead.

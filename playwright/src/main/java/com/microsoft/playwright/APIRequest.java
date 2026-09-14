@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -40,7 +41,7 @@ public interface APIRequest {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public String baseURL;
+    public @Nullable String baseURL;
     /**
      * TLS Client Authentication allows the server to request a client certificate and verify it.
      *
@@ -58,15 +59,15 @@ public interface APIRequest {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public List<ClientCertificate> clientCertificates;
+    public @Nullable List<ClientCertificate> clientCertificates;
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public Map<String, String> extraHTTPHeaders;
+    public @Nullable Map<String, String> extraHTTPHeaders;
     /**
      * Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
      */
-    public Boolean failOnStatusCode;
+    public @Nullable Boolean failOnStatusCode;
     /**
      * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
      * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
@@ -74,21 +75,21 @@ public interface APIRequest {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public Object httpCredentials;
+    public @Nullable Object httpCredentials;
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public Boolean ignoreHTTPSErrors;
+    public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
      * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects. This can be overwritten for each request
      * individually.
      */
-    public Integer maxRedirects;
+    public @Nullable Integer maxRedirects;
     /**
      * Network proxy settings.
      */
-    public Proxy proxy;
+    public @Nullable Proxy proxy;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()} or {@link
@@ -97,22 +98,22 @@ public interface APIRequest {
      * BrowserContext.storageState()} or {@link com.microsoft.playwright.APIRequestContext#storageState
      * APIRequestContext.storageState()} methods.
      */
-    public String storageState;
+    public @Nullable String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public Path storageStatePath;
+    public @Nullable Path storageStatePath;
     /**
      * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable
      * timeout.
      */
-    public Double timeout;
+    public @Nullable Double timeout;
     /**
      * Specific user agent to use in this context.
      */
-    public String userAgent;
+    public @Nullable String userAgent;
 
     /**
      * Methods like {@link com.microsoft.playwright.APIRequestContext#get APIRequestContext.get()} take the base URL into
@@ -277,6 +278,6 @@ public interface APIRequest {
    *
    * @since v1.16
    */
-  APIRequestContext newContext(NewContextOptions options);
+  APIRequestContext newContext(@Nullable NewContextOptions options);
 }
 

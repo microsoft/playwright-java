@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.jspecify.annotations.Nullable;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -65,7 +66,7 @@ public interface Download {
    *
    * @since v1.8
    */
-  String failure();
+  @Nullable String failure();
   /**
    * Get the page that the download belongs to.
    *
