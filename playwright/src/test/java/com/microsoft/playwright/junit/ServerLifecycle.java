@@ -20,8 +20,8 @@ import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.extension.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.microsoft.playwright.Utils.nextFreePort;
 
@@ -31,7 +31,8 @@ public class ServerLifecycle implements BeforeAllCallback, AfterAllCallback, Par
   public static Map<Class<?>, Server> serverMap;
 
   static {
-    serverMap = new HashMap<>();
+    // Test classes run concurrently.
+    serverMap = new ConcurrentHashMap<>();
   }
 
   @Override
@@ -41,7 +42,8 @@ public class ServerLifecycle implements BeforeAllCallback, AfterAllCallback, Par
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    Server server = serverMap.get(extensionContext.getRequiredTestClass());
+    // Remove the stopped server so that a rerun of the class (e.g. surefire's rerunFailingTestsCount) starts a new one.
+    Server server = serverMap.remove(extensionContext.getRequiredTestClass());
     if (server != null) {
       server.stop();
     }
