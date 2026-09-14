@@ -29,6 +29,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration combine.self="append">
+          <!-- Without an explicit sourcepath, subpackages combined with the Automatic-Module-Name manifest entry
+               makes the plugin pass "patch-module com.microsoft.playwright=null" and the javadoc jar ends up empty. -->
+          <sourcepath>${project.build.sourceDirectory}</sourcepath>
           <subpackages>com.microsoft.playwright</subpackages>
           <excludePackageNames>com.microsoft.playwright.impl</excludePackageNames>
         </configuration>
