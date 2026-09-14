@@ -53,6 +53,13 @@ public class TestPageEvaluate extends TestBase {
   }
 
   @Test
+  void shouldTransferPositive0() {
+    assertEquals(true, page.evaluate("a => Object.is(a, 0)", 0.0));
+    Object result = page.evaluate("a => a", 0.0);
+    assertEquals(Double.POSITIVE_INFINITY, 1 / ((Number) result).doubleValue());
+  }
+
+  @Test
   void shouldTransferInfinity() {
     Object result = page.evaluate("a => a", Double.POSITIVE_INFINITY);
     assertTrue(Double.POSITIVE_INFINITY == (Double) result);
