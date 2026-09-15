@@ -1,15 +1,19 @@
-FROM ubuntu:resolute
+ARG ACR_CACHE_PREFIX
+FROM ${ACR_CACHE_PREFIX}ubuntu:resolute
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=America/Los_Angeles
 ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-resolute"
+ARG UBUNTU_MIRROR_PREFIX
 
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
 # === INSTALL JDK and Maven ===
 
-RUN apt-get update && \
+RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
+      -exec sed -i "s|http://archive.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}archive.ubuntu.com|g; s|http://ports.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}ports.ubuntu.com|g" {} + && \
+    apt-get update && \
     apt-get install -y --no-install-recommends openjdk-25-jdk \
     # Install utilities required for downloading browsers
     wget \
@@ -47,7 +51,10 @@ RUN mkdir /ms-playwright && \
 
 COPY . /tmp/pw-java
 
-RUN cd /tmp/pw-java && \
+# The optional Maven settings secret routes dependency resolution through a mirror
+# (see .azure-pipelines/publish-docker.yml).
+RUN --mount=type=secret,id=mavensettings,target=/root/.m2/settings.xml,required=false \
+    cd /tmp/pw-java && \
     mvn install -D skipTests --no-transfer-progress && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install-driver" -f playwright/pom.xml --no-transfer-progress && \

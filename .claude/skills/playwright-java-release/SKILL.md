@@ -73,4 +73,4 @@ gh pr create --repo microsoft/playwright-java --head <user>:mark-v-1.X.0 --base 
 
 ## 4. Publish
 
-The user publishes the draft release manually once the `mark-v-1.X.0` PR is merged. After publishing, CI pushes the artifacts to Maven Central and runs the Docker workflow automatically: https://github.com/microsoft/playwright-java/actions.
+The user publishes the draft release manually once the `mark-v-1.X.0` PR is merged. After publishing, the `v1.X.0` tag triggers the Azure DevOps pipelines that push the artifacts to Maven Central (`.azure-pipelines/publish.yml`) and the Docker images to ACR (`.azure-pipelines/publish-docker.yml`).
