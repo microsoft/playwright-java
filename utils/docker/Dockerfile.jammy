@@ -52,9 +52,8 @@ RUN mkdir /ms-playwright && \
 COPY . /tmp/pw-java
 
 # The optional Maven settings secret routes dependency resolution through a mirror
-# (see .azure-pipelines/publish-docker.yml). Secrets are not persisted in the image.
-RUN --mount=type=secret,id=mavensettings,required=false \
-    if [ -f /run/secrets/mavensettings ]; then export MAVEN_ARGS="--settings /run/secrets/mavensettings"; fi && \
+# (see .azure-pipelines/publish-docker.yml).
+RUN --mount=type=secret,id=mavensettings,target=/root/.m2/settings.xml,required=false \
     cd /tmp/pw-java && \
     mvn install -D skipTests --no-transfer-progress && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \

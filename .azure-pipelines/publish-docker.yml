@@ -108,7 +108,7 @@ extends:
             targetType: "inline"
             # The authenticated settings.xml is passed to `docker build` as a secret so
             # that Maven inside the image also resolves from DevDiv_PublicPackages.
-            script: "MAVEN_SETTINGS_SECRET=\"$HOME/.m2/settings.xml\" ./utils/docker/publish_docker.sh stable"
+            script: MAVEN_SETTINGS_SECRET="$HOME/.m2/settings.xml" ./utils/docker/publish_docker.sh stable
           env:
             ACR_CACHE_PREFIX: "playwright.azurecr.io/cached/"
             UBUNTU_MIRROR_PREFIX: "azure."
