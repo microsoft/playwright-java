@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Maven settings used only by the Azure Pipelines release build (publish.yml).
+  Maven settings used only by the Azure Pipelines release builds (publish.yml and
+  publish-docker.yml).
 
   Routes all remote artifact and plugin resolution through the DevDiv_PublicPackages
   Azure Artifacts feed instead of Maven Central, as required by SFI-ES4.2.4.
