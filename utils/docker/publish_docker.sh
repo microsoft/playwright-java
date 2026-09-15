@@ -8,39 +8,45 @@ cd "$(dirname "$0")"
 
 MCR_IMAGE_NAME="playwright/java"
 
+RELEASE_CHANNEL="$1"
+if [[ "${RELEASE_CHANNEL}" != "stable" && "${RELEASE_CHANNEL}" != "canary" ]]; then
+  echo "ERROR: unknown release channel - '${RELEASE_CHANNEL}'"
+  echo "Must be either 'stable' or 'canary'"
+  exit 1
+fi
+
 POM_FILE=../../pom.xml
 if [[ ! -f ${POM_FILE} ]]; then
   echo "ERROR: pom.xml not found at ${POM_FILE}"
   exit 1;
 fi
 PW_VERSION=$(mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' -f ${POM_FILE} --non-recursive -q 2>/dev/null)
-
-RELEASE_CHANNEL="$1"
-if [[ "${RELEASE_CHANNEL}" == "stable" ]]; then
-  if [[ ! "${PW_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo "ERROR: cannot publish stable docker with Playwright version '${PW_VERSION}'"
-    exit 1
-  fi
-else
-  echo "ERROR: unknown release channel - ${RELEASE_CHANNEL}"
-  echo "Must be either 'stable' or 'canary'"
+if [[ "${RELEASE_CHANNEL}" == "stable" && ! "${PW_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "ERROR: cannot publish stable docker with Playwright version '${PW_VERSION}'"
   exit 1
+fi
+VERSION_TAG="v${PW_VERSION}"
+if [[ "${RELEASE_CHANNEL}" == "canary" ]]; then
+  VERSION_TAG="v${PW_VERSION}-canary-$(date -u +'%Y%m%d%H%M%S')"
+  echo "== CANARY build: publishing to ${VERSION_TAG}-* tags =="
 fi
 
 # Ubuntu 22.04
 JAMMY_TAGS=(
-  "v${PW_VERSION}-jammy"
+  "${VERSION_TAG}-jammy"
 )
 
 # Ubuntu 24.04
 NOBLE_TAGS=(
-  "v${PW_VERSION}"
-  "v${PW_VERSION}-noble"
+  "${VERSION_TAG}-noble"
 )
+if [[ "${RELEASE_CHANNEL}" == "stable" ]]; then
+  NOBLE_TAGS+=("${VERSION_TAG}")
+fi
 
 # Ubuntu 26.04
 RESOLUTE_TAGS=(
-  "v${PW_VERSION}-resolute"
+  "${VERSION_TAG}-resolute"
 )
 
 tags_for_flavor() {

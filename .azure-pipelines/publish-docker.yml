@@ -1,6 +1,5 @@
 # Trigger: any `v*` release tag (e.g. v1.40.0).
-# Can also be queued manually from the ADO UI, e.g. on a release-1.X branch
-# whose Maven version has already been marked as 1.X.0.
+# Can also be queued manually from the ADO UI.
 trigger:
   tags:
     include:
@@ -9,6 +8,15 @@ trigger:
       - v*-*
 
 pr: none
+
+parameters:
+- name: releaseChannel
+  displayName: "IMPORTANT: set this to 'canary' when triggering manually"
+  type: string
+  default: stable
+  values:
+  - stable
+  - canary
 
 resources:
   repositories:
@@ -108,7 +116,7 @@ extends:
             targetType: "inline"
             # The authenticated settings.xml is passed to `docker build` as a secret so
             # that Maven inside the image also resolves from DevDiv_PublicPackages.
-            script: MAVEN_SETTINGS_SECRET="$HOME/.m2/settings.xml" ./utils/docker/publish_docker.sh stable
+            script: MAVEN_SETTINGS_SECRET="$HOME/.m2/settings.xml" ./utils/docker/publish_docker.sh ${{ parameters.releaseChannel }}
           env:
             ACR_CACHE_PREFIX: "playwright.azurecr.io/cached/"
             UBUNTU_MIRROR_PREFIX: "azure."
