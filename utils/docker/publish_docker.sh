@@ -20,7 +20,12 @@ if [[ ! -f ${POM_FILE} ]]; then
   echo "ERROR: pom.xml not found at ${POM_FILE}"
   exit 1;
 fi
-PW_VERSION=$(mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' -f ${POM_FILE} --non-recursive -q 2>/dev/null)
+if ! PW_VERSION=$(mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' -f ${POM_FILE} --non-recursive -q); then
+  # With -q Maven prints its errors to stdout, which was captured above.
+  echo "ERROR: failed to read the project version from ${POM_FILE}:"
+  echo "${PW_VERSION}"
+  exit 1
+fi
 if [[ "${RELEASE_CHANNEL}" == "stable" && ! "${PW_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "ERROR: cannot publish stable docker with Playwright version '${PW_VERSION}'"
   exit 1

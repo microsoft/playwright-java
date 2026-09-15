@@ -206,6 +206,14 @@
             </archive>
           </configuration>
         </plugin>
+        <!-- Declared so that the `exec:` prefix resolves from the POM. The Azure Artifacts
+        mirror used by the release pipelines does not serve org/codehaus/mojo/maven-metadata.xml,
+        which Maven would otherwise need to look up the prefix. -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.6.4</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
