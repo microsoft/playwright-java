@@ -1,0 +1,3 @@
+# The repository root is the Docker build context (see utils/docker/build.sh).
+# Keep registry credentials written by the release pipeline out of the images.
+.npmrc

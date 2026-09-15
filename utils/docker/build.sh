@@ -38,4 +38,17 @@ PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 # it up via `COPY . /tmp/pw-java`.
 ../../scripts/download_driver.sh
 
-docker build --platform "${PLATFORM}" --build-arg "PW_TARGET_ARCH=${PW_TARGET_ARCH}" -t "$3" -f "Dockerfile.$2" ../../
+SECRET_ARGS=()
+if [[ -n "${MAVEN_SETTINGS_SECRET:-}" ]]; then
+  SECRET_ARGS+=(--secret "id=mavensettings,src=${MAVEN_SETTINGS_SECRET}")
+fi
+
+# Keep each arch image a plain single-platform manifest without the unknown/unknown platform entry.
+export BUILDX_NO_DEFAULT_ATTESTATIONS=1
+
+docker build --platform "${PLATFORM}" \
+  --build-arg "PW_TARGET_ARCH=${PW_TARGET_ARCH}" \
+  --build-arg ACR_CACHE_PREFIX="${ACR_CACHE_PREFIX}" \
+  --build-arg UBUNTU_MIRROR_PREFIX="${UBUNTU_MIRROR_PREFIX}" \
+  "${SECRET_ARGS[@]}" \
+  -t "$3" -f "Dockerfile.$2" ../../
