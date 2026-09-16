@@ -55,6 +55,9 @@ public class PlaywrightExtension implements ParameterResolver {
       return playwright;
     }
 
+    boolean owns(Playwright playwright) {
+      return playwrightList.contains(playwright);
+    }
 
     // This is a workaround for JUnit's lack of an "AfterTestRun" hook
     // This will be called once after all tests have completed.
@@ -85,13 +88,14 @@ public class PlaywrightExtension implements ParameterResolver {
    * @return The Playwright that belongs to the current test.
    */
   public static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
+    PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     Playwright playwright = threadLocalPlaywright.get();
-    if (playwright != null) {
+    // A previous launcher run on this thread (e.g. a surefire rerun) has already closed its Playwright.
+    if (playwright != null && registry.owns(playwright)) {
       return playwright;
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
-    PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     playwright = registry.createPlaywright(options.playwrightCreateOptions);
     threadLocalPlaywright.set(playwright);
 
