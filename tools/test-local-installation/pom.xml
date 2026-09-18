@@ -11,6 +11,7 @@
     <compiler.version>1.8</compiler.version>
     <gson.version>2.11.0</gson.version>
     <junit.version>5.11.0</junit.version>
+    <junit.platform.version>1.11.0</junit.platform.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <websocket.version>1.5.7</websocket.version>
   </properties>
@@ -42,6 +43,12 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.platform.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
