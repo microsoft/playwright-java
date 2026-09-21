@@ -17,17 +17,18 @@
 
 package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.APIRequestContext;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // Not picked up by surefire; TestFixturesRerun runs it through the launcher.
 @UsePlaywright
 public class RerunFixture {
+  // Resolving the parameter already makes a driver round-trip (request().newContext()),
+  // which is what fails when the Playwright left on the thread has been closed.
   @Test
-  void usesPage(Page page) {
-    page.setContent("<title>rerun</title>");
-    assertEquals("rerun", page.title());
+  void usesAPIRequestContext(APIRequestContext request) {
+    assertNotNull(request);
   }
 }

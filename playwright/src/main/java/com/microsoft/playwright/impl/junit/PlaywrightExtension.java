@@ -36,7 +36,10 @@ public class PlaywrightExtension implements ParameterResolver {
   // There should be at most one instance of PlaywrightRegistry per test run, it keeps
   // track of all created Playwright instances and calls `close()` on each of them after
   // the tests finished.
-  static class PlaywrightRegistry implements AutoCloseable {
+  // CloseableResource is kept alongside AutoCloseable because JUnit < 5.13 only closes
+  // store values that implement it; newer versions close it once through AutoCloseable.
+  @SuppressWarnings("deprecation")
+  static class PlaywrightRegistry implements AutoCloseable, ExtensionContext.Store.CloseableResource {
     private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
     static synchronized PlaywrightRegistry getOrCreateFor(ExtensionContext extensionContext) {
@@ -90,7 +93,8 @@ public class PlaywrightExtension implements ParameterResolver {
   public static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
     PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     Playwright playwright = threadLocalPlaywright.get();
-    // A previous launcher run on this thread (e.g. a surefire rerun) has already closed its Playwright.
+    // Reuse only while the current run's registry still owns it: a previous launcher run on this
+    // thread (e.g. a surefire rerun) has already closed the Playwright it left in the thread local.
     if (playwright != null && registry.owns(playwright)) {
       return playwright;
     }
