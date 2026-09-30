@@ -292,42 +292,42 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Only removes cookies with the given domain.
      */
-    public ClearCookiesOptions setDomain(String domain) {
+    public ClearCookiesOptions setDomain(@Nullable String domain) {
       this.domain = domain;
       return this;
     }
     /**
      * Only removes cookies with the given domain.
      */
-    public ClearCookiesOptions setDomain(Pattern domain) {
+    public ClearCookiesOptions setDomain(@Nullable Pattern domain) {
       this.domain = domain;
       return this;
     }
     /**
      * Only removes cookies with the given name.
      */
-    public ClearCookiesOptions setName(String name) {
+    public ClearCookiesOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
     /**
      * Only removes cookies with the given name.
      */
-    public ClearCookiesOptions setName(Pattern name) {
+    public ClearCookiesOptions setName(@Nullable Pattern name) {
       this.name = name;
       return this;
     }
     /**
      * Only removes cookies with the given path.
      */
-    public ClearCookiesOptions setPath(String path) {
+    public ClearCookiesOptions setPath(@Nullable String path) {
       this.path = path;
       return this;
     }
     /**
      * Only removes cookies with the given path.
      */
-    public ClearCookiesOptions setPath(Pattern path) {
+    public ClearCookiesOptions setPath(@Nullable Pattern path) {
       this.path = path;
       return this;
     }
@@ -341,7 +341,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * The reason to be reported to the operations interrupted by the context closure.
      */
-    public CloseOptions setReason(String reason) {
+    public CloseOptions setReason(@Nullable String reason) {
       this.reason = reason;
       return this;
     }
@@ -355,7 +355,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * The [origin] to grant permissions to, e.g. "https://example.com".
      */
-    public GrantPermissionsOptions setOrigin(String origin) {
+    public GrantPermissionsOptions setOrigin(@Nullable String origin) {
       this.origin = origin;
       return this;
     }
@@ -369,7 +369,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * How often a route should be used. By default it will be used every time.
      */
-    public RouteOptions setTimes(int times) {
+    public RouteOptions setTimes(@Nullable Integer times) {
       this.times = times;
       return this;
     }
@@ -414,7 +414,7 @@ public interface BrowserContext extends AutoCloseable {
      *
      * <p> Defaults to abort.
      */
-    public RouteFromHAROptions setNotFound(HarNotFound notFound) {
+    public RouteFromHAROptions setNotFound(@Nullable HarNotFound notFound) {
       this.notFound = notFound;
       return this;
     }
@@ -422,7 +422,7 @@ public interface BrowserContext extends AutoCloseable {
      * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
      * written to disk when {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} is called.
      */
-    public RouteFromHAROptions setUpdate(boolean update) {
+    public RouteFromHAROptions setUpdate(@Nullable Boolean update) {
       this.update = update;
       return this;
     }
@@ -430,7 +430,7 @@ public interface BrowserContext extends AutoCloseable {
      * Optional setting to control resource content management. If {@code attach} is specified, resources are persisted as
      * separate files or entries in the ZIP archive. If {@code embed} is specified, content is stored inline the HAR file.
      */
-    public RouteFromHAROptions setUpdateContent(RouteFromHarUpdateContentPolicy updateContent) {
+    public RouteFromHAROptions setUpdateContent(@Nullable RouteFromHarUpdateContentPolicy updateContent) {
       this.updateContent = updateContent;
       return this;
     }
@@ -439,7 +439,7 @@ public interface BrowserContext extends AutoCloseable {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * minimal}.
      */
-    public RouteFromHAROptions setUpdateMode(HarMode updateMode) {
+    public RouteFromHAROptions setUpdateMode(@Nullable HarMode updateMode) {
       this.updateMode = updateMode;
       return this;
     }
@@ -447,7 +447,7 @@ public interface BrowserContext extends AutoCloseable {
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
-    public RouteFromHAROptions setUrl(String url) {
+    public RouteFromHAROptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -455,7 +455,7 @@ public interface BrowserContext extends AutoCloseable {
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
-    public RouteFromHAROptions setUrl(Pattern url) {
+    public RouteFromHAROptions setUrl(@Nullable Pattern url) {
       this.url = url;
       return this;
     }
@@ -500,7 +500,7 @@ public interface BrowserContext extends AutoCloseable {
      * com.microsoft.playwright.Credentials#install Credentials.install()}), and prevent all real authenticators from working
      * in this context.
      */
-    public StorageStateOptions setCredentials(boolean credentials) {
+    public StorageStateOptions setCredentials(@Nullable Boolean credentials) {
       this.credentials = credentials;
       return this;
     }
@@ -509,7 +509,7 @@ public interface BrowserContext extends AutoCloseable {
      * the storage state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase
      * Authentication, enable this.
      */
-    public StorageStateOptions setIndexedDB(boolean indexedDB) {
+    public StorageStateOptions setIndexedDB(@Nullable Boolean indexedDB) {
       this.indexedDB = indexedDB;
       return this;
     }
@@ -520,7 +520,7 @@ public interface BrowserContext extends AutoCloseable {
      *
      * <p> <strong>NOTE:</strong> OPFS is currently not supported in ephemeral WebKit contexts.
      */
-    public StorageStateOptions setOpfs(boolean opfs) {
+    public StorageStateOptions setOpfs(@Nullable Boolean opfs) {
       this.opfs = opfs;
       return this;
     }
@@ -528,7 +528,7 @@ public interface BrowserContext extends AutoCloseable {
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
-    public StorageStateOptions setPath(Path path) {
+    public StorageStateOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -548,7 +548,7 @@ public interface BrowserContext extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForConditionOptions setTimeout(double timeout) {
+    public WaitForConditionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -568,7 +568,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
+    public WaitForConsoleMessageOptions setPredicate(@Nullable Predicate<ConsoleMessage> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -577,7 +577,7 @@ public interface BrowserContext extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForConsoleMessageOptions setTimeout(double timeout) {
+    public WaitForConsoleMessageOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -597,7 +597,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForPageOptions setPredicate(Predicate<Page> predicate) {
+    public WaitForPageOptions setPredicate(@Nullable Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -606,7 +606,7 @@ public interface BrowserContext extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForPageOptions setTimeout(double timeout) {
+    public WaitForPageOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

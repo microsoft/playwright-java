@@ -75,7 +75,7 @@ public interface Browser extends AutoCloseable {
     /**
      * The reason to be reported to the operations interrupted by the browser closure.
      */
-    public CloseOptions setReason(String reason) {
+    public CloseOptions setReason(@Nullable String reason) {
       this.reason = reason;
       return this;
     }
@@ -299,7 +299,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public NewContextOptions setAcceptDownloads(boolean acceptDownloads) {
+    public NewContextOptions setAcceptDownloads(@Nullable Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
@@ -319,14 +319,14 @@ public interface Browser extends AutoCloseable {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public NewContextOptions setBaseURL(String baseURL) {
+    public NewContextOptions setBaseURL(@Nullable String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public NewContextOptions setBypassCSP(boolean bypassCSP) {
+    public NewContextOptions setBypassCSP(@Nullable Boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
@@ -347,7 +347,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public NewContextOptions setClientCertificates(List<ClientCertificate> clientCertificates) {
+    public NewContextOptions setClientCertificates(@Nullable List<ClientCertificate> clientCertificates) {
       this.clientCertificates = clientCertificates;
       return this;
     }
@@ -375,14 +375,14 @@ public interface Browser extends AutoCloseable {
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public NewContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
+    public NewContextOptions setDeviceScaleFactor(@Nullable Double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public NewContextOptions setExtraHTTPHeaders(@Nullable Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
@@ -398,7 +398,7 @@ public interface Browser extends AutoCloseable {
     public NewContextOptions setGeolocation(double latitude, double longitude) {
       return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public NewContextOptions setGeolocation(Geolocation geolocation) {
+    public NewContextOptions setGeolocation(@Nullable Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
@@ -406,7 +406,7 @@ public interface Browser extends AutoCloseable {
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public NewContextOptions setHasTouch(boolean hasTouch) {
+    public NewContextOptions setHasTouch(@Nullable Boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
@@ -427,7 +427,7 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
+    public NewContextOptions setHttpCredentials(@Nullable HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
@@ -438,14 +438,14 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewContextOptions setHttpCredentials(List<HttpCredentials> httpCredentials) {
+    public NewContextOptions setHttpCredentials(@Nullable List<HttpCredentials> httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public NewContextOptions setIgnoreHTTPSErrors(@Nullable Boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
@@ -454,7 +454,7 @@ public interface Browser extends AutoCloseable {
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public NewContextOptions setIsMobile(boolean isMobile) {
+    public NewContextOptions setIsMobile(@Nullable Boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
@@ -462,7 +462,7 @@ public interface Browser extends AutoCloseable {
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public NewContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
+    public NewContextOptions setJavaScriptEnabled(@Nullable Boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -472,7 +472,7 @@ public interface Browser extends AutoCloseable {
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public NewContextOptions setLocale(String locale) {
+    public NewContextOptions setLocale(@Nullable String locale) {
       this.locale = locale;
       return this;
     }
@@ -480,7 +480,7 @@ public interface Browser extends AutoCloseable {
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public NewContextOptions setOffline(boolean offline) {
+    public NewContextOptions setOffline(@Nullable Boolean offline) {
       this.offline = offline;
       return this;
     }
@@ -489,7 +489,7 @@ public interface Browser extends AutoCloseable {
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public NewContextOptions setPermissions(List<String> permissions) {
+    public NewContextOptions setPermissions(@Nullable List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
@@ -502,7 +502,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context. Defaults to none.
      */
-    public NewContextOptions setProxy(Proxy proxy) {
+    public NewContextOptions setProxy(@Nullable Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
@@ -511,7 +511,7 @@ public interface Browser extends AutoCloseable {
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public NewContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {
+    public NewContextOptions setRecordHarContent(@Nullable HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
@@ -520,14 +520,14 @@ public interface Browser extends AutoCloseable {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public NewContextOptions setRecordHarMode(HarMode recordHarMode) {
+    public NewContextOptions setRecordHarMode(@Nullable HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
       return this;
     }
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public NewContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
+    public NewContextOptions setRecordHarOmitContent(@Nullable Boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
@@ -536,15 +536,15 @@ public interface Browser extends AutoCloseable {
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public NewContextOptions setRecordHarPath(Path recordHarPath) {
+    public NewContextOptions setRecordHarPath(@Nullable Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public NewContextOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+    public NewContextOptions setRecordHarUrlFilter(@Nullable String recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
-    public NewContextOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+    public NewContextOptions setRecordHarUrlFilter(@Nullable Pattern recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
@@ -552,7 +552,7 @@ public interface Browser extends AutoCloseable {
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
+    public NewContextOptions setRecordVideoDir(@Nullable Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
@@ -569,7 +569,7 @@ public interface Browser extends AutoCloseable {
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public NewContextOptions setRecordVideoSize(@Nullable RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
@@ -593,7 +593,7 @@ public interface Browser extends AutoCloseable {
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public NewContextOptions setScreenSize(ScreenSize screenSize) {
+    public NewContextOptions setScreenSize(@Nullable ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
@@ -605,7 +605,7 @@ public interface Browser extends AutoCloseable {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public NewContextOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+    public NewContextOptions setServiceWorkers(@Nullable ServiceWorkerPolicy serviceWorkers) {
       this.serviceWorkers = serviceWorkers;
       return this;
     }
@@ -613,7 +613,7 @@ public interface Browser extends AutoCloseable {
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
-    public NewContextOptions setStorageState(String storageState) {
+    public NewContextOptions setStorageState(@Nullable String storageState) {
       this.storageState = storageState;
       return this;
     }
@@ -622,7 +622,7 @@ public interface Browser extends AutoCloseable {
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public NewContextOptions setStorageStatePath(Path storageStatePath) {
+    public NewContextOptions setStorageStatePath(@Nullable Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
@@ -632,7 +632,7 @@ public interface Browser extends AutoCloseable {
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public NewContextOptions setStrictSelectors(boolean strictSelectors) {
+    public NewContextOptions setStrictSelectors(@Nullable Boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
@@ -641,14 +641,14 @@ public interface Browser extends AutoCloseable {
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public NewContextOptions setTimezoneId(String timezoneId) {
+    public NewContextOptions setTimezoneId(@Nullable String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
     /**
      * Specific user agent to use in this context.
      */
-    public NewContextOptions setUserAgent(String userAgent) {
+    public NewContextOptions setUserAgent(@Nullable String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
@@ -895,7 +895,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public NewPageOptions setAcceptDownloads(boolean acceptDownloads) {
+    public NewPageOptions setAcceptDownloads(@Nullable Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
@@ -915,14 +915,14 @@ public interface Browser extends AutoCloseable {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public NewPageOptions setBaseURL(String baseURL) {
+    public NewPageOptions setBaseURL(@Nullable String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public NewPageOptions setBypassCSP(boolean bypassCSP) {
+    public NewPageOptions setBypassCSP(@Nullable Boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
@@ -943,7 +943,7 @@ public interface Browser extends AutoCloseable {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public NewPageOptions setClientCertificates(List<ClientCertificate> clientCertificates) {
+    public NewPageOptions setClientCertificates(@Nullable List<ClientCertificate> clientCertificates) {
       this.clientCertificates = clientCertificates;
       return this;
     }
@@ -971,14 +971,14 @@ public interface Browser extends AutoCloseable {
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public NewPageOptions setDeviceScaleFactor(double deviceScaleFactor) {
+    public NewPageOptions setDeviceScaleFactor(@Nullable Double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public NewPageOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public NewPageOptions setExtraHTTPHeaders(@Nullable Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
@@ -994,7 +994,7 @@ public interface Browser extends AutoCloseable {
     public NewPageOptions setGeolocation(double latitude, double longitude) {
       return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public NewPageOptions setGeolocation(Geolocation geolocation) {
+    public NewPageOptions setGeolocation(@Nullable Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
@@ -1002,7 +1002,7 @@ public interface Browser extends AutoCloseable {
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public NewPageOptions setHasTouch(boolean hasTouch) {
+    public NewPageOptions setHasTouch(@Nullable Boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
@@ -1023,7 +1023,7 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewPageOptions setHttpCredentials(HttpCredentials httpCredentials) {
+    public NewPageOptions setHttpCredentials(@Nullable HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
@@ -1034,14 +1034,14 @@ public interface Browser extends AutoCloseable {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewPageOptions setHttpCredentials(List<HttpCredentials> httpCredentials) {
+    public NewPageOptions setHttpCredentials(@Nullable List<HttpCredentials> httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public NewPageOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public NewPageOptions setIgnoreHTTPSErrors(@Nullable Boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
@@ -1050,7 +1050,7 @@ public interface Browser extends AutoCloseable {
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public NewPageOptions setIsMobile(boolean isMobile) {
+    public NewPageOptions setIsMobile(@Nullable Boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
@@ -1058,7 +1058,7 @@ public interface Browser extends AutoCloseable {
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public NewPageOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
+    public NewPageOptions setJavaScriptEnabled(@Nullable Boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -1068,7 +1068,7 @@ public interface Browser extends AutoCloseable {
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public NewPageOptions setLocale(String locale) {
+    public NewPageOptions setLocale(@Nullable String locale) {
       this.locale = locale;
       return this;
     }
@@ -1076,7 +1076,7 @@ public interface Browser extends AutoCloseable {
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public NewPageOptions setOffline(boolean offline) {
+    public NewPageOptions setOffline(@Nullable Boolean offline) {
       this.offline = offline;
       return this;
     }
@@ -1085,7 +1085,7 @@ public interface Browser extends AutoCloseable {
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public NewPageOptions setPermissions(List<String> permissions) {
+    public NewPageOptions setPermissions(@Nullable List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
@@ -1098,7 +1098,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context. Defaults to none.
      */
-    public NewPageOptions setProxy(Proxy proxy) {
+    public NewPageOptions setProxy(@Nullable Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
@@ -1107,7 +1107,7 @@ public interface Browser extends AutoCloseable {
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public NewPageOptions setRecordHarContent(HarContentPolicy recordHarContent) {
+    public NewPageOptions setRecordHarContent(@Nullable HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
@@ -1116,14 +1116,14 @@ public interface Browser extends AutoCloseable {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public NewPageOptions setRecordHarMode(HarMode recordHarMode) {
+    public NewPageOptions setRecordHarMode(@Nullable HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
       return this;
     }
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public NewPageOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
+    public NewPageOptions setRecordHarOmitContent(@Nullable Boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
@@ -1132,15 +1132,15 @@ public interface Browser extends AutoCloseable {
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public NewPageOptions setRecordHarPath(Path recordHarPath) {
+    public NewPageOptions setRecordHarPath(@Nullable Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public NewPageOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+    public NewPageOptions setRecordHarUrlFilter(@Nullable String recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
-    public NewPageOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+    public NewPageOptions setRecordHarUrlFilter(@Nullable Pattern recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
@@ -1148,7 +1148,7 @@ public interface Browser extends AutoCloseable {
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
+    public NewPageOptions setRecordVideoDir(@Nullable Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
@@ -1165,7 +1165,7 @@ public interface Browser extends AutoCloseable {
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public NewPageOptions setRecordVideoSize(@Nullable RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
@@ -1189,7 +1189,7 @@ public interface Browser extends AutoCloseable {
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public NewPageOptions setScreenSize(ScreenSize screenSize) {
+    public NewPageOptions setScreenSize(@Nullable ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
@@ -1201,7 +1201,7 @@ public interface Browser extends AutoCloseable {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public NewPageOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+    public NewPageOptions setServiceWorkers(@Nullable ServiceWorkerPolicy serviceWorkers) {
       this.serviceWorkers = serviceWorkers;
       return this;
     }
@@ -1209,7 +1209,7 @@ public interface Browser extends AutoCloseable {
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
-    public NewPageOptions setStorageState(String storageState) {
+    public NewPageOptions setStorageState(@Nullable String storageState) {
       this.storageState = storageState;
       return this;
     }
@@ -1218,7 +1218,7 @@ public interface Browser extends AutoCloseable {
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public NewPageOptions setStorageStatePath(Path storageStatePath) {
+    public NewPageOptions setStorageStatePath(@Nullable Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
@@ -1228,7 +1228,7 @@ public interface Browser extends AutoCloseable {
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public NewPageOptions setStrictSelectors(boolean strictSelectors) {
+    public NewPageOptions setStrictSelectors(@Nullable Boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
@@ -1237,14 +1237,14 @@ public interface Browser extends AutoCloseable {
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public NewPageOptions setTimezoneId(String timezoneId) {
+    public NewPageOptions setTimezoneId(@Nullable String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
     /**
      * Specific user agent to use in this context.
      */
-    public NewPageOptions setUserAgent(String userAgent) {
+    public NewPageOptions setUserAgent(@Nullable String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
@@ -1290,7 +1290,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Host to bind the web socket server to. When specified, a web socket server is created instead of a named pipe.
      */
-    public BindOptions setHost(String host) {
+    public BindOptions setHost(@Nullable String host) {
       this.host = host;
       return this;
     }
@@ -1298,14 +1298,14 @@ public interface Browser extends AutoCloseable {
      * Port to bind the web socket server to. When specified, a web socket server is created instead of a named pipe. Use
      * {@code 0} to let the OS pick an available port.
      */
-    public BindOptions setPort(int port) {
+    public BindOptions setPort(@Nullable Integer port) {
       this.port = port;
       return this;
     }
     /**
      * Working directory associated with this browser server.
      */
-    public BindOptions setWorkspaceDir(String workspaceDir) {
+    public BindOptions setWorkspaceDir(@Nullable String workspaceDir) {
       this.workspaceDir = workspaceDir;
       return this;
     }
@@ -1327,21 +1327,21 @@ public interface Browser extends AutoCloseable {
     /**
      * specify custom categories to use instead of default.
      */
-    public StartTracingOptions setCategories(List<String> categories) {
+    public StartTracingOptions setCategories(@Nullable List<String> categories) {
       this.categories = categories;
       return this;
     }
     /**
      * A path to write the trace file to.
      */
-    public StartTracingOptions setPath(Path path) {
+    public StartTracingOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
     /**
      * captures screenshots in the trace.
      */
-    public StartTracingOptions setScreenshots(boolean screenshots) {
+    public StartTracingOptions setScreenshots(@Nullable Boolean screenshots) {
       this.screenshots = screenshots;
       return this;
     }

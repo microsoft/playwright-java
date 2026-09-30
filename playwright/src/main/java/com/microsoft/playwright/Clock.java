@@ -36,21 +36,21 @@ public interface Clock {
     /**
      * Time to initialize with, current system time by default.
      */
-    public InstallOptions setTime(long time) {
+    public InstallOptions setTime(@Nullable Long time) {
       this.time = time;
       return this;
     }
     /**
      * Time to initialize with, current system time by default.
      */
-    public InstallOptions setTime(String time) {
+    public InstallOptions setTime(@Nullable String time) {
       this.time = time;
       return this;
     }
     /**
      * Time to initialize with, current system time by default.
      */
-    public InstallOptions setTime(Date time) {
+    public InstallOptions setTime(@Nullable Date time) {
       this.time = time;
       return this;
     }

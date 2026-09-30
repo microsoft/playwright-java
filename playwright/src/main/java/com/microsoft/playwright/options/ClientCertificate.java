@@ -60,49 +60,49 @@ public class ClientCertificate {
   /**
    * Path to the file with the certificate in PEM format.
    */
-  public ClientCertificate setCertPath(Path certPath) {
+  public ClientCertificate setCertPath(@Nullable Path certPath) {
     this.certPath = certPath;
     return this;
   }
   /**
    * Direct value of the certificate in PEM format.
    */
-  public ClientCertificate setCert(byte[] cert) {
+  public ClientCertificate setCert(byte @Nullable [] cert) {
     this.cert = cert;
     return this;
   }
   /**
    * Path to the file with the private key in PEM format.
    */
-  public ClientCertificate setKeyPath(Path keyPath) {
+  public ClientCertificate setKeyPath(@Nullable Path keyPath) {
     this.keyPath = keyPath;
     return this;
   }
   /**
    * Direct value of the private key in PEM format.
    */
-  public ClientCertificate setKey(byte[] key) {
+  public ClientCertificate setKey(byte @Nullable [] key) {
     this.key = key;
     return this;
   }
   /**
    * Path to the PFX or PKCS12 encoded private key and certificate chain.
    */
-  public ClientCertificate setPfxPath(Path pfxPath) {
+  public ClientCertificate setPfxPath(@Nullable Path pfxPath) {
     this.pfxPath = pfxPath;
     return this;
   }
   /**
    * Direct value of the PFX or PKCS12 encoded private key and certificate chain.
    */
-  public ClientCertificate setPfx(byte[] pfx) {
+  public ClientCertificate setPfx(byte @Nullable [] pfx) {
     this.pfx = pfx;
     return this;
   }
   /**
    * Passphrase for the private key (PEM or PFX).
    */
-  public ClientCertificate setPassphrase(String passphrase) {
+  public ClientCertificate setPassphrase(@Nullable String passphrase) {
     this.passphrase = passphrase;
     return this;
   }

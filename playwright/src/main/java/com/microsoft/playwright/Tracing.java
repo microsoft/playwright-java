@@ -89,7 +89,7 @@ public interface Tracing {
     /**
      * Whether to capture aria snapshot of the page on every action.
      */
-    public StartOptions setAriaSnapshots(boolean ariaSnapshots) {
+    public StartOptions setAriaSnapshots(@Nullable Boolean ariaSnapshots) {
       this.ariaSnapshots = ariaSnapshots;
       return this;
     }
@@ -98,7 +98,7 @@ public interface Tracing {
      * caching changes and archiving them into a zip file at the end. This is useful for live trace viewing during test
      * execution.
      */
-    public StartOptions setLive(boolean live) {
+    public StartOptions setLive(@Nullable Boolean live) {
       this.live = live;
       return this;
     }
@@ -108,28 +108,28 @@ public interface Tracing {
      * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
      * Tracing.stop()} instead.
      */
-    public StartOptions setName(String name) {
+    public StartOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
     /**
      * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
      */
-    public StartOptions setScreenshots(boolean screenshots) {
+    public StartOptions setScreenshots(@Nullable Boolean screenshots) {
       this.screenshots = screenshots;
       return this;
     }
     /**
      * Whether to capture a screenshot of the page on every action.
      */
-    public StartOptions setScreenSnapshots(boolean screenSnapshots) {
+    public StartOptions setScreenSnapshots(@Nullable Boolean screenSnapshots) {
       this.screenSnapshots = screenSnapshots;
       return this;
     }
     /**
      * Whether to capture DOM snapshot and record network activity on every action.
      */
-    public StartOptions setSnapshots(boolean snapshots) {
+    public StartOptions setSnapshots(@Nullable Boolean snapshots) {
       this.snapshots = snapshots;
       return this;
     }
@@ -138,14 +138,14 @@ public interface Tracing {
      * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows and by
      * ':' on other platforms).
      */
-    public StartOptions setSources(boolean sources) {
+    public StartOptions setSources(@Nullable Boolean sources) {
       this.sources = sources;
       return this;
     }
     /**
      * Trace name to be shown in the Trace Viewer.
      */
-    public StartOptions setTitle(String title) {
+    public StartOptions setTitle(@Nullable String title) {
       this.title = title;
       return this;
     }
@@ -169,14 +169,14 @@ public interface Tracing {
      * the final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
      * Tracing.stopChunk()} instead.
      */
-    public StartChunkOptions setName(String name) {
+    public StartChunkOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
     /**
      * Trace name to be shown in the Trace Viewer.
      */
-    public StartChunkOptions setTitle(String title) {
+    public StartChunkOptions setTitle(@Nullable String title) {
       this.title = title;
       return this;
     }
@@ -206,7 +206,7 @@ public interface Tracing {
      * is specified, content is stored inline the HAR file as per HAR specification. Defaults to {@code attach} for {@code
      * .zip} output files and to {@code embed} for all other file extensions.
      */
-    public StartHarOptions setContent(HarContentPolicy content) {
+    public StartHarOptions setContent(@Nullable HarContentPolicy content) {
       this.content = content;
       return this;
     }
@@ -215,21 +215,21 @@ public interface Tracing {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public StartHarOptions setMode(HarMode mode) {
+    public StartHarOptions setMode(@Nullable HarMode mode) {
       this.mode = mode;
       return this;
     }
     /**
      * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
      */
-    public StartHarOptions setUrlFilter(String urlFilter) {
+    public StartHarOptions setUrlFilter(@Nullable String urlFilter) {
       this.urlFilter = urlFilter;
       return this;
     }
     /**
      * A glob or regex pattern to filter requests that are stored in the HAR. Defaults to none.
      */
-    public StartHarOptions setUrlFilter(Pattern urlFilter) {
+    public StartHarOptions setUrlFilter(@Nullable Pattern urlFilter) {
       this.urlFilter = urlFilter;
       return this;
     }
@@ -252,7 +252,7 @@ public interface Tracing {
      * Specifies a custom location for the group to be shown in the trace viewer. Defaults to the location of the {@link
      * com.microsoft.playwright.Tracing#group Tracing.group()} call.
      */
-    public GroupOptions setLocation(Location location) {
+    public GroupOptions setLocation(@Nullable Location location) {
       this.location = location;
       return this;
     }
@@ -266,7 +266,7 @@ public interface Tracing {
     /**
      * Export trace into the file with the given path.
      */
-    public StopOptions setPath(Path path) {
+    public StopOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -282,7 +282,7 @@ public interface Tracing {
      * Export trace collected since the last {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} call into
      * the file with the given path.
      */
-    public StopChunkOptions setPath(Path path) {
+    public StopChunkOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }

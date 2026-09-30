@@ -40,7 +40,7 @@ public class HttpCredentials {
   /**
    * Restrain sending http credentials on specific origin (scheme://host:port).
    */
-  public HttpCredentials setOrigin(String origin) {
+  public HttpCredentials setOrigin(@Nullable String origin) {
     this.origin = origin;
     return this;
   }
@@ -50,7 +50,7 @@ public class HttpCredentials {
    * sent with the each API request. {@code 'unauthorized} - the credentials are only sent when 401 (Unauthorized) response
    * with {@code WWW-Authenticate} header is received. Defaults to {@code "unauthorized"}.
    */
-  public HttpCredentials setSend(HttpCredentialsSend send) {
+  public HttpCredentials setSend(@Nullable HttpCredentialsSend send) {
     this.send = send;
     return this;
   }

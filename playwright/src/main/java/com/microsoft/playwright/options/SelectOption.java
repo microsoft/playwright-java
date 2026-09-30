@@ -35,21 +35,21 @@ public class SelectOption {
   /**
    * Matches by {@code option.value}. Optional.
    */
-  public SelectOption setValue(String value) {
+  public SelectOption setValue(@Nullable String value) {
     this.value = value;
     return this;
   }
   /**
    * Matches by {@code option.label}. Optional.
    */
-  public SelectOption setLabel(String label) {
+  public SelectOption setLabel(@Nullable String label) {
     this.label = label;
     return this;
   }
   /**
    * Matches by the index. Optional.
    */
-  public SelectOption setIndex(int index) {
+  public SelectOption setIndex(@Nullable Integer index) {
     this.index = index;
     return this;
   }

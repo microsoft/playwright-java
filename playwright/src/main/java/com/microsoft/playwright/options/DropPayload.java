@@ -23,11 +23,11 @@ public class DropPayload {
   public @Nullable Object files;
   public @Nullable Map<String, String> data;
 
-  public DropPayload setFiles(Object files) {
+  public DropPayload setFiles(@Nullable Object files) {
     this.files = files;
     return this;
   }
-  public DropPayload setData(Map<String, String> data) {
+  public DropPayload setData(@Nullable Map<String, String> data) {
     this.data = data;
     return this;
   }

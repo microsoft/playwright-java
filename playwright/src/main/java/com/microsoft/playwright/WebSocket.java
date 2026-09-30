@@ -79,7 +79,7 @@ public interface WebSocket {
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForFrameReceivedOptions setPredicate(Predicate<WebSocketFrame> predicate) {
+    public WaitForFrameReceivedOptions setPredicate(@Nullable Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -88,7 +88,7 @@ public interface WebSocket {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForFrameReceivedOptions setTimeout(double timeout) {
+    public WaitForFrameReceivedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -108,7 +108,7 @@ public interface WebSocket {
     /**
      * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForFrameSentOptions setPredicate(Predicate<WebSocketFrame> predicate) {
+    public WaitForFrameSentOptions setPredicate(@Nullable Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -117,7 +117,7 @@ public interface WebSocket {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForFrameSentOptions setTimeout(double timeout) {
+    public WaitForFrameSentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

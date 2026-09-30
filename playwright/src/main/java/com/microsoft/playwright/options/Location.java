@@ -26,11 +26,11 @@ public class Location {
   public Location(String file) {
     this.file = file;
   }
-  public Location setLine(int line) {
+  public Location setLine(@Nullable Integer line) {
     this.line = line;
     return this;
   }
-  public Location setColumn(int column) {
+  public Location setColumn(@Nullable Integer column) {
     this.column = column;
     return this;
   }

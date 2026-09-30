@@ -39,7 +39,7 @@ public class Geolocation {
   /**
    * Non-negative accuracy value. Defaults to {@code 0}.
    */
-  public Geolocation setAccuracy(double accuracy) {
+  public Geolocation setAccuracy(@Nullable Double accuracy) {
     this.accuracy = accuracy;
     return this;
   }

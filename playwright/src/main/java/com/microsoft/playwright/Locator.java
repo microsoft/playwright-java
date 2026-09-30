@@ -61,14 +61,14 @@ public interface Locator {
      * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
      * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
      */
-    public AriaSnapshotOptions setBoxes(boolean boxes) {
+    public AriaSnapshotOptions setBoxes(@Nullable Boolean boxes) {
       this.boxes = boxes;
       return this;
     }
     /**
      * When specified, limits the depth of the snapshot.
      */
-    public AriaSnapshotOptions setDepth(int depth) {
+    public AriaSnapshotOptions setDepth(@Nullable Integer depth) {
       this.depth = depth;
       return this;
     }
@@ -76,7 +76,7 @@ public interface Locator {
      * When set to {@code "ai"}, returns a snapshot optimized for AI consumption. Defaults to {@code "default"}. See details
      * for more information.
      */
-    public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
+    public AriaSnapshotOptions setMode(@Nullable AriaSnapshotMode mode) {
       this.mode = mode;
       return this;
     }
@@ -86,7 +86,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public AriaSnapshotOptions setTimeout(double timeout) {
+    public AriaSnapshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -106,7 +106,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public BlurOptions setTimeout(double timeout) {
+    public BlurOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -126,7 +126,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public BoundingBoxOptions setTimeout(double timeout) {
+    public BoundingBoxOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -171,14 +171,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public CheckOptions setForce(boolean force) {
+    public CheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -193,7 +193,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public CheckOptions setPosition(Position position) {
+    public CheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -203,7 +203,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public CheckOptions setScroll(ScrollMode scroll) {
+    public CheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -213,7 +213,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public CheckOptions setTimeout(double timeout) {
+    public CheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -222,7 +222,7 @@ public interface Locator {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public CheckOptions setTrial(boolean trial) {
+    public CheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -249,14 +249,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public ClearOptions setForce(boolean force) {
+    public ClearOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public ClearOptions setNoWaitAfter(boolean noWaitAfter) {
+    public ClearOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -266,7 +266,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ClearOptions setTimeout(double timeout) {
+    public ClearOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -335,21 +335,21 @@ public interface Locator {
     /**
      * Defaults to {@code left}.
      */
-    public ClickOptions setButton(MouseButton button) {
+    public ClickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public ClickOptions setClickCount(int clickCount) {
+    public ClickOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public ClickOptions setDelay(double delay) {
+    public ClickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -357,7 +357,7 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public ClickOptions setForce(boolean force) {
+    public ClickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -366,14 +366,14 @@ public interface Locator {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -388,7 +388,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public ClickOptions setPosition(Position position) {
+    public ClickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -398,7 +398,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ClickOptions setScroll(ScrollMode scroll) {
+    public ClickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -407,7 +407,7 @@ public interface Locator {
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public ClickOptions setSteps(int steps) {
+    public ClickOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -417,7 +417,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ClickOptions setTimeout(double timeout) {
+    public ClickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -427,7 +427,7 @@ public interface Locator {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public ClickOptions setTrial(boolean trial) {
+    public ClickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -492,14 +492,14 @@ public interface Locator {
     /**
      * Defaults to {@code left}.
      */
-    public DblclickOptions setButton(MouseButton button) {
+    public DblclickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public DblclickOptions setDelay(double delay) {
+    public DblclickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -507,7 +507,7 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DblclickOptions setForce(boolean force) {
+    public DblclickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -516,14 +516,14 @@ public interface Locator {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -538,7 +538,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public DblclickOptions setPosition(Position position) {
+    public DblclickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -548,7 +548,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DblclickOptions setScroll(ScrollMode scroll) {
+    public DblclickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -557,7 +557,7 @@ public interface Locator {
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public DblclickOptions setSteps(int steps) {
+    public DblclickOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -567,7 +567,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DblclickOptions setTimeout(double timeout) {
+    public DblclickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -577,7 +577,7 @@ public interface Locator {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public DblclickOptions setTrial(boolean trial) {
+    public DblclickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -597,7 +597,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DispatchEventOptions setTimeout(double timeout) {
+    public DispatchEventOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -652,14 +652,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DragToOptions setForce(boolean force) {
+    public DragToOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DragToOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DragToOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -669,7 +669,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DragToOptions setScroll(ScrollMode scroll) {
+    public DragToOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -684,7 +684,7 @@ public interface Locator {
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragToOptions setSourcePosition(Position sourcePosition) {
+    public DragToOptions setSourcePosition(@Nullable Position sourcePosition) {
       this.sourcePosition = sourcePosition;
       return this;
     }
@@ -692,7 +692,7 @@ public interface Locator {
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
      * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
      */
-    public DragToOptions setSteps(int steps) {
+    public DragToOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -707,7 +707,7 @@ public interface Locator {
      * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragToOptions setTargetPosition(Position targetPosition) {
+    public DragToOptions setTargetPosition(@Nullable Position targetPosition) {
       this.targetPosition = targetPosition;
       return this;
     }
@@ -717,7 +717,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DragToOptions setTimeout(double timeout) {
+    public DragToOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -726,7 +726,7 @@ public interface Locator {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public DragToOptions setTrial(boolean trial) {
+    public DragToOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -756,7 +756,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public DropOptions setPosition(Position position) {
+    public DropOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -766,7 +766,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DropOptions setTimeout(double timeout) {
+    public DropOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -786,7 +786,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ElementHandleOptions setTimeout(double timeout) {
+    public ElementHandleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -802,7 +802,7 @@ public interface Locator {
      * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
      * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
-    public EvaluateOptions setTimeout(double timeout) {
+    public EvaluateOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -818,7 +818,7 @@ public interface Locator {
      * Maximum time in milliseconds to wait for the locator before evaluating. Note that after locator is resolved, evaluation
      * itself is not limited by the timeout. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
-    public EvaluateHandleOptions setTimeout(double timeout) {
+    public EvaluateHandleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -845,14 +845,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public FillOptions setForce(boolean force) {
+    public FillOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -862,7 +862,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FillOptions setTimeout(double timeout) {
+    public FillOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -918,7 +918,7 @@ public interface Locator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public FilterOptions setHas(Locator has) {
+    public FilterOptions setHas(@Nullable Locator has) {
       this.has = has;
       return this;
     }
@@ -929,7 +929,7 @@ public interface Locator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public FilterOptions setHasNot(Locator hasNot) {
+    public FilterOptions setHasNot(@Nullable Locator hasNot) {
       this.hasNot = hasNot;
       return this;
     }
@@ -937,7 +937,7 @@ public interface Locator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public FilterOptions setHasNotText(String hasNotText) {
+    public FilterOptions setHasNotText(@Nullable String hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -945,7 +945,7 @@ public interface Locator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public FilterOptions setHasNotText(Pattern hasNotText) {
+    public FilterOptions setHasNotText(@Nullable Pattern hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -954,7 +954,7 @@ public interface Locator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public FilterOptions setHasText(String hasText) {
+    public FilterOptions setHasText(@Nullable String hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -963,7 +963,7 @@ public interface Locator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public FilterOptions setHasText(Pattern hasText) {
+    public FilterOptions setHasText(@Nullable Pattern hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -971,7 +971,7 @@ public interface Locator {
      * Only matches visible or invisible elements. Prefer the {@link com.microsoft.playwright.Locator#visible
      * Locator.visible()} shortcut when matching only visible elements.
      */
-    public FilterOptions setVisible(boolean visible) {
+    public FilterOptions setVisible(@Nullable Boolean visible) {
       this.visible = visible;
       return this;
     }
@@ -991,7 +991,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FocusOptions setTimeout(double timeout) {
+    public FocusOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1011,7 +1011,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public GetAttributeOptions setTimeout(double timeout) {
+    public GetAttributeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1027,7 +1027,7 @@ public interface Locator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByAltTextOptions setExact(boolean exact) {
+    public GetByAltTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1043,7 +1043,7 @@ public interface Locator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByLabelOptions setExact(boolean exact) {
+    public GetByLabelOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1059,7 +1059,7 @@ public interface Locator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByPlaceholderOptions setExact(boolean exact) {
+    public GetByPlaceholderOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1135,7 +1135,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public GetByRoleOptions setChecked(boolean checked) {
+    public GetByRoleOptions setChecked(@Nullable Boolean checked) {
       this.checked = checked;
       return this;
     }
@@ -1145,7 +1145,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(String description) {
+    public GetByRoleOptions setDescription(@Nullable String description) {
       this.description = description;
       return this;
     }
@@ -1155,7 +1155,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(Pattern description) {
+    public GetByRoleOptions setDescription(@Nullable Pattern description) {
       this.description = description;
       return this;
     }
@@ -1165,7 +1165,7 @@ public interface Locator {
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public GetByRoleOptions setDisabled(boolean disabled) {
+    public GetByRoleOptions setDisabled(@Nullable Boolean disabled) {
       this.disabled = disabled;
       return this;
     }
@@ -1173,7 +1173,7 @@ public interface Locator {
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public GetByRoleOptions setExact(boolean exact) {
+    public GetByRoleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1182,7 +1182,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public GetByRoleOptions setExpanded(boolean expanded) {
+    public GetByRoleOptions setExpanded(@Nullable Boolean expanded) {
       this.expanded = expanded;
       return this;
     }
@@ -1192,7 +1192,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+    public GetByRoleOptions setIncludeHidden(@Nullable Boolean includeHidden) {
       this.includeHidden = includeHidden;
       return this;
     }
@@ -1202,7 +1202,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public GetByRoleOptions setLevel(int level) {
+    public GetByRoleOptions setLevel(@Nullable Integer level) {
       this.level = level;
       return this;
     }
@@ -1212,7 +1212,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(String name) {
+    public GetByRoleOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
@@ -1222,7 +1222,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(Pattern name) {
+    public GetByRoleOptions setName(@Nullable Pattern name) {
       this.name = name;
       return this;
     }
@@ -1231,7 +1231,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public GetByRoleOptions setPressed(boolean pressed) {
+    public GetByRoleOptions setPressed(@Nullable Boolean pressed) {
       this.pressed = pressed;
       return this;
     }
@@ -1240,7 +1240,7 @@ public interface Locator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public GetByRoleOptions setSelected(boolean selected) {
+    public GetByRoleOptions setSelected(@Nullable Boolean selected) {
       this.selected = selected;
       return this;
     }
@@ -1256,7 +1256,7 @@ public interface Locator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTextOptions setExact(boolean exact) {
+    public GetByTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1272,7 +1272,7 @@ public interface Locator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTitleOptions setExact(boolean exact) {
+    public GetByTitleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1286,7 +1286,7 @@ public interface Locator {
     /**
      * Additional inline CSS applied to the highlight overlay, e.g. {@code "outline: 2px dashed red"}.
      */
-    public HighlightOptions setStyle(String style) {
+    public HighlightOptions setStyle(@Nullable String style) {
       this.style = style;
       return this;
     }
@@ -1338,7 +1338,7 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public HoverOptions setForce(boolean force) {
+    public HoverOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -1347,14 +1347,14 @@ public interface Locator {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
+    public HoverOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1369,7 +1369,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public HoverOptions setPosition(Position position) {
+    public HoverOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -1379,7 +1379,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public HoverOptions setScroll(ScrollMode scroll) {
+    public HoverOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -1389,7 +1389,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public HoverOptions setTimeout(double timeout) {
+    public HoverOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1399,7 +1399,7 @@ public interface Locator {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public HoverOptions setTrial(boolean trial) {
+    public HoverOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -1419,7 +1419,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerHTMLOptions setTimeout(double timeout) {
+    public InnerHTMLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1439,7 +1439,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerTextOptions setTimeout(double timeout) {
+    public InnerTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1459,7 +1459,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InputValueOptions setTimeout(double timeout) {
+    public InputValueOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1479,7 +1479,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsCheckedOptions setTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1499,7 +1499,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsDisabledOptions setTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1519,7 +1519,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEditableOptions setTimeout(double timeout) {
+    public IsEditableOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1539,7 +1539,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEnabledOptions setTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1555,7 +1555,7 @@ public interface Locator {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isHidden Locator.isHidden()} does not wait for the
      * element to become hidden and returns immediately.
      */
-    public IsHiddenOptions setTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1571,7 +1571,7 @@ public interface Locator {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isVisible Locator.isVisible()} does not wait for the
      * element to become visible and returns immediately.
      */
-    public IsVisibleOptions setTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1622,7 +1622,7 @@ public interface Locator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHas(Locator has) {
+    public LocatorOptions setHas(@Nullable Locator has) {
       this.has = has;
       return this;
     }
@@ -1633,7 +1633,7 @@ public interface Locator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHasNot(Locator hasNot) {
+    public LocatorOptions setHasNot(@Nullable Locator hasNot) {
       this.hasNot = hasNot;
       return this;
     }
@@ -1641,7 +1641,7 @@ public interface Locator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(String hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable String hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -1649,7 +1649,7 @@ public interface Locator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(Pattern hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable Pattern hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -1658,7 +1658,7 @@ public interface Locator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(String hasText) {
+    public LocatorOptions setHasText(@Nullable String hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -1667,7 +1667,7 @@ public interface Locator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(Pattern hasText) {
+    public LocatorOptions setHasText(@Nullable Pattern hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -1692,14 +1692,14 @@ public interface Locator {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public PressOptions setDelay(double delay) {
+    public PressOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1709,7 +1709,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public PressOptions setTimeout(double timeout) {
+    public PressOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1734,14 +1734,14 @@ public interface Locator {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public PressSequentiallyOptions setDelay(double delay) {
+    public PressSequentiallyOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public PressSequentiallyOptions setNoWaitAfter(boolean noWaitAfter) {
+    public PressSequentiallyOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1751,7 +1751,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public PressSequentiallyOptions setTimeout(double timeout) {
+    public PressSequentiallyOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1839,7 +1839,7 @@ public interface Locator {
      *
      * <p> Defaults to {@code "allow"} that leaves animations untouched.
      */
-    public ScreenshotOptions setAnimations(ScreenshotAnimations animations) {
+    public ScreenshotOptions setAnimations(@Nullable ScreenshotAnimations animations) {
       this.animations = animations;
       return this;
     }
@@ -1847,7 +1847,7 @@ public interface Locator {
      * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not
      * be changed.  Defaults to {@code "hide"}.
      */
-    public ScreenshotOptions setCaret(ScreenshotCaret caret) {
+    public ScreenshotOptions setCaret(@Nullable ScreenshotCaret caret) {
       this.caret = caret;
       return this;
     }
@@ -1857,7 +1857,7 @@ public interface Locator {
      * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
      * visible elements</a> to disable that.
      */
-    public ScreenshotOptions setMask(List<Locator> mask) {
+    public ScreenshotOptions setMask(@Nullable List<Locator> mask) {
       this.mask = mask;
       return this;
     }
@@ -1866,7 +1866,7 @@ public interface Locator {
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS color format</a>. Default color is pink {@code
      * #FF00FF}.
      */
-    public ScreenshotOptions setMaskColor(String maskColor) {
+    public ScreenshotOptions setMaskColor(@Nullable String maskColor) {
       this.maskColor = maskColor;
       return this;
     }
@@ -1874,7 +1874,7 @@ public interface Locator {
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
      * images. Defaults to {@code false}.
      */
-    public ScreenshotOptions setOmitBackground(boolean omitBackground) {
+    public ScreenshotOptions setOmitBackground(@Nullable Boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
@@ -1883,7 +1883,7 @@ public interface Locator {
      * relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be
      * saved to the disk.
      */
-    public ScreenshotOptions setPath(Path path) {
+    public ScreenshotOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -1892,7 +1892,7 @@ public interface Locator {
      * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
      * compression.
      */
-    public ScreenshotOptions setQuality(int quality) {
+    public ScreenshotOptions setQuality(@Nullable Integer quality) {
       this.quality = quality;
       return this;
     }
@@ -1903,7 +1903,7 @@ public interface Locator {
      *
      * <p> Defaults to {@code "device"}.
      */
-    public ScreenshotOptions setScale(ScreenshotScale scale) {
+    public ScreenshotOptions setScale(@Nullable ScreenshotScale scale) {
       this.scale = scale;
       return this;
     }
@@ -1912,7 +1912,7 @@ public interface Locator {
      * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
      * and applies to the inner frames.
      */
-    public ScreenshotOptions setStyle(String style) {
+    public ScreenshotOptions setStyle(@Nullable String style) {
       this.style = style;
       return this;
     }
@@ -1922,14 +1922,14 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ScreenshotOptions setTimeout(double timeout) {
+    public ScreenshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * Specify screenshot type, defaults to {@code png}.
      */
-    public ScreenshotOptions setType(ScreenshotType type) {
+    public ScreenshotOptions setType(@Nullable ScreenshotType type) {
       this.type = type;
       return this;
     }
@@ -1949,7 +1949,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
+    public ScrollIntoViewIfNeededOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1976,14 +1976,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SelectOptionOptions setForce(boolean force) {
+    public SelectOptionOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1993,7 +1993,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SelectOptionOptions setTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2016,7 +2016,7 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SelectTextOptions setForce(boolean force) {
+    public SelectTextOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -2026,7 +2026,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SelectTextOptions setTimeout(double timeout) {
+    public SelectTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2071,14 +2071,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SetCheckedOptions setForce(boolean force) {
+    public SetCheckedOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetCheckedOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2093,7 +2093,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public SetCheckedOptions setPosition(Position position) {
+    public SetCheckedOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2103,7 +2103,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public SetCheckedOptions setScroll(ScrollMode scroll) {
+    public SetCheckedOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2113,7 +2113,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetCheckedOptions setTimeout(double timeout) {
+    public SetCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2122,7 +2122,7 @@ public interface Locator {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public SetCheckedOptions setTrial(boolean trial) {
+    public SetCheckedOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -2143,7 +2143,7 @@ public interface Locator {
     /**
      * @deprecated This option has no effect.
      */
-    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2153,7 +2153,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetInputFilesOptions setTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2205,7 +2205,7 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public TapOptions setForce(boolean force) {
+    public TapOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -2214,14 +2214,14 @@ public interface Locator {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2236,7 +2236,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public TapOptions setPosition(Position position) {
+    public TapOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2246,7 +2246,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public TapOptions setScroll(ScrollMode scroll) {
+    public TapOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2256,7 +2256,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TapOptions setTimeout(double timeout) {
+    public TapOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2266,7 +2266,7 @@ public interface Locator {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public TapOptions setTrial(boolean trial) {
+    public TapOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -2286,7 +2286,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TextContentOptions setTimeout(double timeout) {
+    public TextContentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2311,14 +2311,14 @@ public interface Locator {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public TypeOptions setDelay(double delay) {
+    public TypeOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2328,7 +2328,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TypeOptions setTimeout(double timeout) {
+    public TypeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2373,14 +2373,14 @@ public interface Locator {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public UncheckOptions setForce(boolean force) {
+    public UncheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2395,7 +2395,7 @@ public interface Locator {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public UncheckOptions setPosition(Position position) {
+    public UncheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2405,7 +2405,7 @@ public interface Locator {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public UncheckOptions setScroll(ScrollMode scroll) {
+    public UncheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2415,7 +2415,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public UncheckOptions setTimeout(double timeout) {
+    public UncheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2424,7 +2424,7 @@ public interface Locator {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public UncheckOptions setTrial(boolean trial) {
+    public UncheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -2461,7 +2461,7 @@ public interface Locator {
      * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
-    public WaitForOptions setState(WaitForSelectorState state) {
+    public WaitForOptions setState(@Nullable WaitForSelectorState state) {
       this.state = state;
       return this;
     }
@@ -2471,7 +2471,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForOptions setTimeout(double timeout) {
+    public WaitForOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2491,7 +2491,7 @@ public interface Locator {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForFunctionOptions setTimeout(double timeout) {
+    public WaitForFunctionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

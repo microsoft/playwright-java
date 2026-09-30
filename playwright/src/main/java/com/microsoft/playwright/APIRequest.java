@@ -128,7 +128,7 @@ public interface APIRequest {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public NewContextOptions setBaseURL(String baseURL) {
+    public NewContextOptions setBaseURL(@Nullable String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
@@ -149,21 +149,21 @@ public interface APIRequest {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public NewContextOptions setClientCertificates(List<ClientCertificate> clientCertificates) {
+    public NewContextOptions setClientCertificates(@Nullable List<ClientCertificate> clientCertificates) {
       this.clientCertificates = clientCertificates;
       return this;
     }
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public NewContextOptions setExtraHTTPHeaders(@Nullable Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
     /**
      * Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
      */
-    public NewContextOptions setFailOnStatusCode(boolean failOnStatusCode) {
+    public NewContextOptions setFailOnStatusCode(@Nullable Boolean failOnStatusCode) {
       this.failOnStatusCode = failOnStatusCode;
       return this;
     }
@@ -184,7 +184,7 @@ public interface APIRequest {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
+    public NewContextOptions setHttpCredentials(@Nullable HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
@@ -195,14 +195,14 @@ public interface APIRequest {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public NewContextOptions setHttpCredentials(List<HttpCredentials> httpCredentials) {
+    public NewContextOptions setHttpCredentials(@Nullable List<HttpCredentials> httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public NewContextOptions setIgnoreHTTPSErrors(@Nullable Boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
@@ -211,7 +211,7 @@ public interface APIRequest {
      * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects. This can be overwritten for each request
      * individually.
      */
-    public NewContextOptions setMaxRedirects(int maxRedirects) {
+    public NewContextOptions setMaxRedirects(@Nullable Integer maxRedirects) {
       this.maxRedirects = maxRedirects;
       return this;
     }
@@ -224,7 +224,7 @@ public interface APIRequest {
     /**
      * Network proxy settings.
      */
-    public NewContextOptions setProxy(Proxy proxy) {
+    public NewContextOptions setProxy(@Nullable Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
@@ -236,7 +236,7 @@ public interface APIRequest {
      * BrowserContext.storageState()} or {@link com.microsoft.playwright.APIRequestContext#storageState
      * APIRequestContext.storageState()} methods.
      */
-    public NewContextOptions setStorageState(String storageState) {
+    public NewContextOptions setStorageState(@Nullable String storageState) {
       this.storageState = storageState;
       return this;
     }
@@ -245,7 +245,7 @@ public interface APIRequest {
      * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
      * file with saved storage state.
      */
-    public NewContextOptions setStorageStatePath(Path storageStatePath) {
+    public NewContextOptions setStorageStatePath(@Nullable Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
@@ -253,14 +253,14 @@ public interface APIRequest {
      * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable
      * timeout.
      */
-    public NewContextOptions setTimeout(double timeout) {
+    public NewContextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * Specific user agent to use in this context.
      */
-    public NewContextOptions setUserAgent(String userAgent) {
+    public NewContextOptions setUserAgent(@Nullable String userAgent) {
       this.userAgent = userAgent;
       return this;
     }

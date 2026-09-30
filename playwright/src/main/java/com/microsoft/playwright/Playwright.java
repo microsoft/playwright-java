@@ -52,7 +52,7 @@ public interface Playwright extends AutoCloseable {
      * Additional environment variables that will be passed to the driver process. By default driver process inherits
      * environment variables of the Playwright process.
      */
-    public CreateOptions setEnv(Map<String, String> env) {
+    public CreateOptions setEnv(@Nullable Map<String, String> env) {
       this.env = env;
       return this;
     }

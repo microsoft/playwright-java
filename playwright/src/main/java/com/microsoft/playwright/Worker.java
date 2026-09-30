@@ -69,7 +69,7 @@ public interface Worker {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForCloseOptions setTimeout(double timeout) {
+    public WaitForCloseOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -89,7 +89,7 @@ public interface Worker {
     /**
      * Receives the {@code ConsoleMessage} object and resolves to true when the waiting should resolve.
      */
-    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
+    public WaitForConsoleMessageOptions setPredicate(@Nullable Predicate<ConsoleMessage> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -98,7 +98,7 @@ public interface Worker {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForConsoleMessageOptions setTimeout(double timeout) {
+    public WaitForConsoleMessageOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

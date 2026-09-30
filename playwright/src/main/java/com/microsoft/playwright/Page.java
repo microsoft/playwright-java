@@ -366,7 +366,7 @@ public interface Page extends AutoCloseable {
     /**
      * Raw JavaScript content to be injected into frame.
      */
-    public AddScriptTagOptions setContent(String content) {
+    public AddScriptTagOptions setContent(@Nullable String content) {
       this.content = content;
       return this;
     }
@@ -374,7 +374,7 @@ public interface Page extends AutoCloseable {
      * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative
      * to the current working directory.
      */
-    public AddScriptTagOptions setPath(Path path) {
+    public AddScriptTagOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -382,14 +382,14 @@ public interface Page extends AutoCloseable {
      * Script type. Use 'module' in order to load a JavaScript ES6 module. See <a
      * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script">script</a> for more details.
      */
-    public AddScriptTagOptions setType(String type) {
+    public AddScriptTagOptions setType(@Nullable String type) {
       this.type = type;
       return this;
     }
     /**
      * URL of a script to be added.
      */
-    public AddScriptTagOptions setUrl(String url) {
+    public AddScriptTagOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -412,7 +412,7 @@ public interface Page extends AutoCloseable {
     /**
      * Raw CSS content to be injected into frame.
      */
-    public AddStyleTagOptions setContent(String content) {
+    public AddStyleTagOptions setContent(@Nullable String content) {
       this.content = content;
       return this;
     }
@@ -420,14 +420,14 @@ public interface Page extends AutoCloseable {
      * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
      * current working directory.
      */
-    public AddStyleTagOptions setPath(Path path) {
+    public AddStyleTagOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
     /**
      * URL of the {@code <link>} tag.
      */
-    public AddStyleTagOptions setUrl(String url) {
+    public AddStyleTagOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -477,14 +477,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public CheckOptions setForce(boolean force) {
+    public CheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -499,7 +499,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public CheckOptions setPosition(Position position) {
+    public CheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -509,7 +509,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public CheckOptions setScroll(ScrollMode scroll) {
+    public CheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -517,7 +517,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public CheckOptions setStrict(boolean strict) {
+    public CheckOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -527,7 +527,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public CheckOptions setTimeout(double timeout) {
+    public CheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -536,7 +536,7 @@ public interface Page extends AutoCloseable {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public CheckOptions setTrial(boolean trial) {
+    public CheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -604,21 +604,21 @@ public interface Page extends AutoCloseable {
     /**
      * Defaults to {@code left}.
      */
-    public ClickOptions setButton(MouseButton button) {
+    public ClickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public ClickOptions setClickCount(int clickCount) {
+    public ClickOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public ClickOptions setDelay(double delay) {
+    public ClickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -626,7 +626,7 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public ClickOptions setForce(boolean force) {
+    public ClickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -635,14 +635,14 @@ public interface Page extends AutoCloseable {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -657,7 +657,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public ClickOptions setPosition(Position position) {
+    public ClickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -667,7 +667,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ClickOptions setScroll(ScrollMode scroll) {
+    public ClickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -675,7 +675,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public ClickOptions setStrict(boolean strict) {
+    public ClickOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -685,7 +685,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ClickOptions setTimeout(double timeout) {
+    public ClickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -695,7 +695,7 @@ public interface Page extends AutoCloseable {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public ClickOptions setTrial(boolean trial) {
+    public ClickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -714,7 +714,7 @@ public interface Page extends AutoCloseable {
     /**
      * The reason to be reported to the operations interrupted by the page closure.
      */
-    public CloseOptions setReason(String reason) {
+    public CloseOptions setReason(@Nullable String reason) {
       this.reason = reason;
       return this;
     }
@@ -722,7 +722,7 @@ public interface Page extends AutoCloseable {
      * Defaults to {@code false}. Whether to run the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload">before unload</a> page handlers.
      */
-    public CloseOptions setRunBeforeUnload(boolean runBeforeUnload) {
+    public CloseOptions setRunBeforeUnload(@Nullable Boolean runBeforeUnload) {
       this.runBeforeUnload = runBeforeUnload;
       return this;
     }
@@ -786,14 +786,14 @@ public interface Page extends AutoCloseable {
     /**
      * Defaults to {@code left}.
      */
-    public DblclickOptions setButton(MouseButton button) {
+    public DblclickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public DblclickOptions setDelay(double delay) {
+    public DblclickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -801,7 +801,7 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DblclickOptions setForce(boolean force) {
+    public DblclickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -810,14 +810,14 @@ public interface Page extends AutoCloseable {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -832,7 +832,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public DblclickOptions setPosition(Position position) {
+    public DblclickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -842,7 +842,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DblclickOptions setScroll(ScrollMode scroll) {
+    public DblclickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -850,7 +850,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DblclickOptions setStrict(boolean strict) {
+    public DblclickOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -860,7 +860,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DblclickOptions setTimeout(double timeout) {
+    public DblclickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -870,7 +870,7 @@ public interface Page extends AutoCloseable {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public DblclickOptions setTrial(boolean trial) {
+    public DblclickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -893,7 +893,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DispatchEventOptions setStrict(boolean strict) {
+    public DispatchEventOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -903,7 +903,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DispatchEventOptions setTimeout(double timeout) {
+    public DispatchEventOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -963,14 +963,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DragAndDropOptions setForce(boolean force) {
+    public DragAndDropOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DragAndDropOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -980,7 +980,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DragAndDropOptions setScroll(ScrollMode scroll) {
+    public DragAndDropOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -995,7 +995,7 @@ public interface Page extends AutoCloseable {
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragAndDropOptions setSourcePosition(Position sourcePosition) {
+    public DragAndDropOptions setSourcePosition(@Nullable Position sourcePosition) {
       this.sourcePosition = sourcePosition;
       return this;
     }
@@ -1003,7 +1003,7 @@ public interface Page extends AutoCloseable {
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
      * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
      */
-    public DragAndDropOptions setSteps(int steps) {
+    public DragAndDropOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -1011,7 +1011,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DragAndDropOptions setStrict(boolean strict) {
+    public DragAndDropOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1026,7 +1026,7 @@ public interface Page extends AutoCloseable {
      * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragAndDropOptions setTargetPosition(Position targetPosition) {
+    public DragAndDropOptions setTargetPosition(@Nullable Position targetPosition) {
       this.targetPosition = targetPosition;
       return this;
     }
@@ -1036,7 +1036,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DragAndDropOptions setTimeout(double timeout) {
+    public DragAndDropOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1045,7 +1045,7 @@ public interface Page extends AutoCloseable {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public DragAndDropOptions setTrial(boolean trial) {
+    public DragAndDropOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -1133,7 +1133,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public EvalOnSelectorOptions setStrict(boolean strict) {
+    public EvalOnSelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1165,14 +1165,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public FillOptions setForce(boolean force) {
+    public FillOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1180,7 +1180,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public FillOptions setStrict(boolean strict) {
+    public FillOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1190,7 +1190,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FillOptions setTimeout(double timeout) {
+    public FillOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1213,7 +1213,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public FocusOptions setStrict(boolean strict) {
+    public FocusOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1223,7 +1223,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FocusOptions setTimeout(double timeout) {
+    public FocusOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1246,7 +1246,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public GetAttributeOptions setStrict(boolean strict) {
+    public GetAttributeOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1256,7 +1256,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public GetAttributeOptions setTimeout(double timeout) {
+    public GetAttributeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1272,7 +1272,7 @@ public interface Page extends AutoCloseable {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByAltTextOptions setExact(boolean exact) {
+    public GetByAltTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1288,7 +1288,7 @@ public interface Page extends AutoCloseable {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByLabelOptions setExact(boolean exact) {
+    public GetByLabelOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1304,7 +1304,7 @@ public interface Page extends AutoCloseable {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByPlaceholderOptions setExact(boolean exact) {
+    public GetByPlaceholderOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1380,7 +1380,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public GetByRoleOptions setChecked(boolean checked) {
+    public GetByRoleOptions setChecked(@Nullable Boolean checked) {
       this.checked = checked;
       return this;
     }
@@ -1390,7 +1390,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(String description) {
+    public GetByRoleOptions setDescription(@Nullable String description) {
       this.description = description;
       return this;
     }
@@ -1400,7 +1400,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(Pattern description) {
+    public GetByRoleOptions setDescription(@Nullable Pattern description) {
       this.description = description;
       return this;
     }
@@ -1410,7 +1410,7 @@ public interface Page extends AutoCloseable {
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public GetByRoleOptions setDisabled(boolean disabled) {
+    public GetByRoleOptions setDisabled(@Nullable Boolean disabled) {
       this.disabled = disabled;
       return this;
     }
@@ -1418,7 +1418,7 @@ public interface Page extends AutoCloseable {
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public GetByRoleOptions setExact(boolean exact) {
+    public GetByRoleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1427,7 +1427,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public GetByRoleOptions setExpanded(boolean expanded) {
+    public GetByRoleOptions setExpanded(@Nullable Boolean expanded) {
       this.expanded = expanded;
       return this;
     }
@@ -1437,7 +1437,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+    public GetByRoleOptions setIncludeHidden(@Nullable Boolean includeHidden) {
       this.includeHidden = includeHidden;
       return this;
     }
@@ -1447,7 +1447,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public GetByRoleOptions setLevel(int level) {
+    public GetByRoleOptions setLevel(@Nullable Integer level) {
       this.level = level;
       return this;
     }
@@ -1457,7 +1457,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(String name) {
+    public GetByRoleOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
@@ -1467,7 +1467,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(Pattern name) {
+    public GetByRoleOptions setName(@Nullable Pattern name) {
       this.name = name;
       return this;
     }
@@ -1476,7 +1476,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public GetByRoleOptions setPressed(boolean pressed) {
+    public GetByRoleOptions setPressed(@Nullable Boolean pressed) {
       this.pressed = pressed;
       return this;
     }
@@ -1485,7 +1485,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public GetByRoleOptions setSelected(boolean selected) {
+    public GetByRoleOptions setSelected(@Nullable Boolean selected) {
       this.selected = selected;
       return this;
     }
@@ -1501,7 +1501,7 @@ public interface Page extends AutoCloseable {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTextOptions setExact(boolean exact) {
+    public GetByTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1517,7 +1517,7 @@ public interface Page extends AutoCloseable {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTitleOptions setExact(boolean exact) {
+    public GetByTitleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1552,7 +1552,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public GoBackOptions setTimeout(double timeout) {
+    public GoBackOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1566,7 +1566,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public GoBackOptions setWaitUntil(WaitUntilState waitUntil) {
+    public GoBackOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1601,7 +1601,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public GoForwardOptions setTimeout(double timeout) {
+    public GoForwardOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1615,7 +1615,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public GoForwardOptions setWaitUntil(WaitUntilState waitUntil) {
+    public GoForwardOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1651,7 +1651,7 @@ public interface Page extends AutoCloseable {
      * Referer header value. If provided it will take preference over the referer header value set by {@link
      * com.microsoft.playwright.Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
-    public NavigateOptions setReferer(String referer) {
+    public NavigateOptions setReferer(@Nullable String referer) {
       this.referer = referer;
       return this;
     }
@@ -1663,7 +1663,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public NavigateOptions setTimeout(double timeout) {
+    public NavigateOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1677,7 +1677,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
+    public NavigateOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1734,7 +1734,7 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public HoverOptions setForce(boolean force) {
+    public HoverOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -1743,14 +1743,14 @@ public interface Page extends AutoCloseable {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
+    public HoverOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1765,7 +1765,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public HoverOptions setPosition(Position position) {
+    public HoverOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -1775,7 +1775,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public HoverOptions setScroll(ScrollMode scroll) {
+    public HoverOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -1783,7 +1783,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public HoverOptions setStrict(boolean strict) {
+    public HoverOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1793,7 +1793,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public HoverOptions setTimeout(double timeout) {
+    public HoverOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1803,7 +1803,7 @@ public interface Page extends AutoCloseable {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public HoverOptions setTrial(boolean trial) {
+    public HoverOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -1826,7 +1826,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InnerHTMLOptions setStrict(boolean strict) {
+    public InnerHTMLOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1836,7 +1836,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerHTMLOptions setTimeout(double timeout) {
+    public InnerHTMLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1859,7 +1859,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InnerTextOptions setStrict(boolean strict) {
+    public InnerTextOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1869,7 +1869,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerTextOptions setTimeout(double timeout) {
+    public InnerTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1892,7 +1892,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InputValueOptions setStrict(boolean strict) {
+    public InputValueOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1902,7 +1902,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InputValueOptions setTimeout(double timeout) {
+    public InputValueOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1925,7 +1925,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsCheckedOptions setStrict(boolean strict) {
+    public IsCheckedOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1935,7 +1935,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsCheckedOptions setTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1958,7 +1958,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsDisabledOptions setStrict(boolean strict) {
+    public IsDisabledOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1968,7 +1968,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsDisabledOptions setTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1991,7 +1991,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsEditableOptions setStrict(boolean strict) {
+    public IsEditableOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2001,7 +2001,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEditableOptions setTimeout(double timeout) {
+    public IsEditableOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2024,7 +2024,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsEnabledOptions setStrict(boolean strict) {
+    public IsEnabledOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2034,7 +2034,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEnabledOptions setTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2055,7 +2055,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsHiddenOptions setStrict(boolean strict) {
+    public IsHiddenOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2063,7 +2063,7 @@ public interface Page extends AutoCloseable {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Page#isHidden Page.isHidden()} does not wait for the element to
      * become hidden and returns immediately.
      */
-    public IsHiddenOptions setTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2084,7 +2084,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsVisibleOptions setStrict(boolean strict) {
+    public IsVisibleOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2092,7 +2092,7 @@ public interface Page extends AutoCloseable {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Page#isVisible Page.isVisible()} does not wait for the element
      * to become visible and returns immediately.
      */
-    public IsVisibleOptions setTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2106,7 +2106,7 @@ public interface Page extends AutoCloseable {
     /**
      * Controls which messages are returned:
      */
-    public ConsoleMessagesOptions setFilter(ConsoleMessagesFilter filter) {
+    public ConsoleMessagesOptions setFilter(@Nullable ConsoleMessagesFilter filter) {
       this.filter = filter;
       return this;
     }
@@ -2157,7 +2157,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHas(Locator has) {
+    public LocatorOptions setHas(@Nullable Locator has) {
       this.has = has;
       return this;
     }
@@ -2168,7 +2168,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHasNot(Locator hasNot) {
+    public LocatorOptions setHasNot(@Nullable Locator hasNot) {
       this.hasNot = hasNot;
       return this;
     }
@@ -2176,7 +2176,7 @@ public interface Page extends AutoCloseable {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(String hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable String hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -2184,7 +2184,7 @@ public interface Page extends AutoCloseable {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(Pattern hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable Pattern hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -2193,7 +2193,7 @@ public interface Page extends AutoCloseable {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(String hasText) {
+    public LocatorOptions setHasText(@Nullable String hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -2202,7 +2202,7 @@ public interface Page extends AutoCloseable {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(Pattern hasText) {
+    public LocatorOptions setHasText(@Nullable Pattern hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -2282,21 +2282,21 @@ public interface Page extends AutoCloseable {
     /**
      * Display header and footer. Defaults to {@code false}.
      */
-    public PdfOptions setDisplayHeaderFooter(boolean displayHeaderFooter) {
+    public PdfOptions setDisplayHeaderFooter(@Nullable Boolean displayHeaderFooter) {
       this.displayHeaderFooter = displayHeaderFooter;
       return this;
     }
     /**
      * HTML template for the print footer. Should use the same format as the {@code headerTemplate}.
      */
-    public PdfOptions setFooterTemplate(String footerTemplate) {
+    public PdfOptions setFooterTemplate(@Nullable String footerTemplate) {
       this.footerTemplate = footerTemplate;
       return this;
     }
     /**
      * Paper format. If set, takes priority over {@code width} or {@code height} options. Defaults to 'Letter'.
      */
-    public PdfOptions setFormat(String format) {
+    public PdfOptions setFormat(@Nullable String format) {
       this.format = format;
       return this;
     }
@@ -2311,42 +2311,42 @@ public interface Page extends AutoCloseable {
      * <li> {@code "totalPages"} total pages in the document</li>
      * </ul>
      */
-    public PdfOptions setHeaderTemplate(String headerTemplate) {
+    public PdfOptions setHeaderTemplate(@Nullable String headerTemplate) {
       this.headerTemplate = headerTemplate;
       return this;
     }
     /**
      * Paper height, accepts values labeled with units.
      */
-    public PdfOptions setHeight(String height) {
+    public PdfOptions setHeight(@Nullable String height) {
       this.height = height;
       return this;
     }
     /**
      * Paper orientation. Defaults to {@code false}.
      */
-    public PdfOptions setLandscape(boolean landscape) {
+    public PdfOptions setLandscape(@Nullable Boolean landscape) {
       this.landscape = landscape;
       return this;
     }
     /**
      * Paper margins, defaults to none.
      */
-    public PdfOptions setMargin(Margin margin) {
+    public PdfOptions setMargin(@Nullable Margin margin) {
       this.margin = margin;
       return this;
     }
     /**
      * Whether or not to embed the document outline into the PDF. Defaults to {@code false}.
      */
-    public PdfOptions setOutline(boolean outline) {
+    public PdfOptions setOutline(@Nullable Boolean outline) {
       this.outline = outline;
       return this;
     }
     /**
      * Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
      */
-    public PdfOptions setPageRanges(String pageRanges) {
+    public PdfOptions setPageRanges(@Nullable String pageRanges) {
       this.pageRanges = pageRanges;
       return this;
     }
@@ -2354,7 +2354,7 @@ public interface Page extends AutoCloseable {
      * The file path to save the PDF to. If {@code path} is a relative path, then it is resolved relative to the current
      * working directory. If no path is provided, the PDF won't be saved to the disk.
      */
-    public PdfOptions setPath(Path path) {
+    public PdfOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -2362,35 +2362,35 @@ public interface Page extends AutoCloseable {
      * Give any CSS {@code @page} size declared in the page priority over what is declared in {@code width} and {@code height}
      * or {@code format} options. Defaults to {@code false}, which will scale the content to fit the paper size.
      */
-    public PdfOptions setPreferCSSPageSize(boolean preferCSSPageSize) {
+    public PdfOptions setPreferCSSPageSize(@Nullable Boolean preferCSSPageSize) {
       this.preferCSSPageSize = preferCSSPageSize;
       return this;
     }
     /**
      * Print background graphics. Defaults to {@code false}.
      */
-    public PdfOptions setPrintBackground(boolean printBackground) {
+    public PdfOptions setPrintBackground(@Nullable Boolean printBackground) {
       this.printBackground = printBackground;
       return this;
     }
     /**
      * Scale of the webpage rendering. Defaults to {@code 1}. Scale amount must be between 0.1 and 2.
      */
-    public PdfOptions setScale(double scale) {
+    public PdfOptions setScale(@Nullable Double scale) {
       this.scale = scale;
       return this;
     }
     /**
      * Whether or not to generate tagged (accessible) PDF. Defaults to {@code false}.
      */
-    public PdfOptions setTagged(boolean tagged) {
+    public PdfOptions setTagged(@Nullable Boolean tagged) {
       this.tagged = tagged;
       return this;
     }
     /**
      * Paper width, accepts values labeled with units.
      */
-    public PdfOptions setWidth(String width) {
+    public PdfOptions setWidth(@Nullable String width) {
       this.width = width;
       return this;
     }
@@ -2420,14 +2420,14 @@ public interface Page extends AutoCloseable {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public PressOptions setDelay(double delay) {
+    public PressOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2435,7 +2435,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public PressOptions setStrict(boolean strict) {
+    public PressOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2445,7 +2445,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public PressOptions setTimeout(double timeout) {
+    public PressOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2461,7 +2461,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public QuerySelectorOptions setStrict(boolean strict) {
+    public QuerySelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2483,14 +2483,14 @@ public interface Page extends AutoCloseable {
      * will continue with the action/assertion that triggered the handler. This option allows to opt-out of this behavior, so
      * that overlay can stay visible after the handler has run.
      */
-    public AddLocatorHandlerOptions setNoWaitAfter(boolean noWaitAfter) {
+    public AddLocatorHandlerOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
      * Specifies the maximum number of times this handler should be called. Unlimited by default.
      */
-    public AddLocatorHandlerOptions setTimes(int times) {
+    public AddLocatorHandlerOptions setTimes(@Nullable Integer times) {
       this.times = times;
       return this;
     }
@@ -2525,7 +2525,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ReloadOptions setTimeout(double timeout) {
+    public ReloadOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2539,7 +2539,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public ReloadOptions setWaitUntil(WaitUntilState waitUntil) {
+    public ReloadOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -2553,7 +2553,7 @@ public interface Page extends AutoCloseable {
     /**
      * How often a route should be used. By default it will be used every time.
      */
-    public RouteOptions setTimes(int times) {
+    public RouteOptions setTimes(@Nullable Integer times) {
       this.times = times;
       return this;
     }
@@ -2598,7 +2598,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Defaults to abort.
      */
-    public RouteFromHAROptions setNotFound(HarNotFound notFound) {
+    public RouteFromHAROptions setNotFound(@Nullable HarNotFound notFound) {
       this.notFound = notFound;
       return this;
     }
@@ -2606,7 +2606,7 @@ public interface Page extends AutoCloseable {
      * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
      * written to disk when {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} is called.
      */
-    public RouteFromHAROptions setUpdate(boolean update) {
+    public RouteFromHAROptions setUpdate(@Nullable Boolean update) {
       this.update = update;
       return this;
     }
@@ -2614,7 +2614,7 @@ public interface Page extends AutoCloseable {
      * Optional setting to control resource content management. If {@code attach} is specified, resources are persisted as
      * separate files or entries in the ZIP archive. If {@code embed} is specified, content is stored inline the HAR file.
      */
-    public RouteFromHAROptions setUpdateContent(RouteFromHarUpdateContentPolicy updateContent) {
+    public RouteFromHAROptions setUpdateContent(@Nullable RouteFromHarUpdateContentPolicy updateContent) {
       this.updateContent = updateContent;
       return this;
     }
@@ -2623,7 +2623,7 @@ public interface Page extends AutoCloseable {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * minimal}.
      */
-    public RouteFromHAROptions setUpdateMode(HarMode updateMode) {
+    public RouteFromHAROptions setUpdateMode(@Nullable HarMode updateMode) {
       this.updateMode = updateMode;
       return this;
     }
@@ -2631,7 +2631,7 @@ public interface Page extends AutoCloseable {
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
-    public RouteFromHAROptions setUrl(String url) {
+    public RouteFromHAROptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -2639,7 +2639,7 @@ public interface Page extends AutoCloseable {
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
-    public RouteFromHAROptions setUrl(Pattern url) {
+    public RouteFromHAROptions setUrl(@Nullable Pattern url) {
       this.url = url;
       return this;
     }
@@ -2736,7 +2736,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Defaults to {@code "allow"} that leaves animations untouched.
      */
-    public ScreenshotOptions setAnimations(ScreenshotAnimations animations) {
+    public ScreenshotOptions setAnimations(@Nullable ScreenshotAnimations animations) {
       this.animations = animations;
       return this;
     }
@@ -2744,7 +2744,7 @@ public interface Page extends AutoCloseable {
      * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not
      * be changed.  Defaults to {@code "hide"}.
      */
-    public ScreenshotOptions setCaret(ScreenshotCaret caret) {
+    public ScreenshotOptions setCaret(@Nullable ScreenshotCaret caret) {
       this.caret = caret;
       return this;
     }
@@ -2757,7 +2757,7 @@ public interface Page extends AutoCloseable {
     /**
      * An object which specifies clipping of the resulting image.
      */
-    public ScreenshotOptions setClip(Clip clip) {
+    public ScreenshotOptions setClip(@Nullable Clip clip) {
       this.clip = clip;
       return this;
     }
@@ -2765,7 +2765,7 @@ public interface Page extends AutoCloseable {
      * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to {@code
      * false}.
      */
-    public ScreenshotOptions setFullPage(boolean fullPage) {
+    public ScreenshotOptions setFullPage(@Nullable Boolean fullPage) {
       this.fullPage = fullPage;
       return this;
     }
@@ -2775,7 +2775,7 @@ public interface Page extends AutoCloseable {
      * invisible elements, see <a href="https://playwright.dev/java/docs/locators#matching-only-visible-elements">Matching only
      * visible elements</a> to disable that.
      */
-    public ScreenshotOptions setMask(List<Locator> mask) {
+    public ScreenshotOptions setMask(@Nullable List<Locator> mask) {
       this.mask = mask;
       return this;
     }
@@ -2784,7 +2784,7 @@ public interface Page extends AutoCloseable {
      * href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS color format</a>. Default color is pink {@code
      * #FF00FF}.
      */
-    public ScreenshotOptions setMaskColor(String maskColor) {
+    public ScreenshotOptions setMaskColor(@Nullable String maskColor) {
       this.maskColor = maskColor;
       return this;
     }
@@ -2792,7 +2792,7 @@ public interface Page extends AutoCloseable {
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
      * images. Defaults to {@code false}.
      */
-    public ScreenshotOptions setOmitBackground(boolean omitBackground) {
+    public ScreenshotOptions setOmitBackground(@Nullable Boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
@@ -2801,7 +2801,7 @@ public interface Page extends AutoCloseable {
      * relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be
      * saved to the disk.
      */
-    public ScreenshotOptions setPath(Path path) {
+    public ScreenshotOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -2810,7 +2810,7 @@ public interface Page extends AutoCloseable {
      * 80}. For {@code webp}, a quality of {@code 100} (the default) produces a lossless image, while lower values use lossy
      * compression.
      */
-    public ScreenshotOptions setQuality(int quality) {
+    public ScreenshotOptions setQuality(@Nullable Integer quality) {
       this.quality = quality;
       return this;
     }
@@ -2821,7 +2821,7 @@ public interface Page extends AutoCloseable {
      *
      * <p> Defaults to {@code "device"}.
      */
-    public ScreenshotOptions setScale(ScreenshotScale scale) {
+    public ScreenshotOptions setScale(@Nullable ScreenshotScale scale) {
       this.scale = scale;
       return this;
     }
@@ -2830,7 +2830,7 @@ public interface Page extends AutoCloseable {
      * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
      * and applies to the inner frames.
      */
-    public ScreenshotOptions setStyle(String style) {
+    public ScreenshotOptions setStyle(@Nullable String style) {
       this.style = style;
       return this;
     }
@@ -2840,14 +2840,14 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ScreenshotOptions setTimeout(double timeout) {
+    public ScreenshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * Specify screenshot type, defaults to {@code png}.
      */
-    public ScreenshotOptions setType(ScreenshotType type) {
+    public ScreenshotOptions setType(@Nullable ScreenshotType type) {
       this.type = type;
       return this;
     }
@@ -2879,14 +2879,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SelectOptionOptions setForce(boolean force) {
+    public SelectOptionOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2894,7 +2894,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SelectOptionOptions setStrict(boolean strict) {
+    public SelectOptionOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2904,7 +2904,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SelectOptionOptions setTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2954,14 +2954,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SetCheckedOptions setForce(boolean force) {
+    public SetCheckedOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetCheckedOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2976,7 +2976,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public SetCheckedOptions setPosition(Position position) {
+    public SetCheckedOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2986,7 +2986,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public SetCheckedOptions setScroll(ScrollMode scroll) {
+    public SetCheckedOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2994,7 +2994,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SetCheckedOptions setStrict(boolean strict) {
+    public SetCheckedOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3004,7 +3004,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetCheckedOptions setTimeout(double timeout) {
+    public SetCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3013,7 +3013,7 @@ public interface Page extends AutoCloseable {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public SetCheckedOptions setTrial(boolean trial) {
+    public SetCheckedOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -3048,7 +3048,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetContentOptions setTimeout(double timeout) {
+    public SetContentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3062,7 +3062,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
+    public SetContentOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -3088,7 +3088,7 @@ public interface Page extends AutoCloseable {
     /**
      * @deprecated This option has no effect.
      */
-    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -3096,7 +3096,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SetInputFilesOptions setStrict(boolean strict) {
+    public SetInputFilesOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3106,7 +3106,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetInputFilesOptions setTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3142,14 +3142,14 @@ public interface Page extends AutoCloseable {
      * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">{@code
      * Element.getBoundingClientRect()}</a>. Defaults to {@code false}.
      */
-    public AriaSnapshotOptions setBoxes(boolean boxes) {
+    public AriaSnapshotOptions setBoxes(@Nullable Boolean boxes) {
       this.boxes = boxes;
       return this;
     }
     /**
      * When specified, limits the depth of the snapshot.
      */
-    public AriaSnapshotOptions setDepth(int depth) {
+    public AriaSnapshotOptions setDepth(@Nullable Integer depth) {
       this.depth = depth;
       return this;
     }
@@ -3157,7 +3157,7 @@ public interface Page extends AutoCloseable {
      * When set to {@code "ai"}, returns a snapshot optimized for AI consumption: including element references like {@code
      * [ref=e2]} and snapshots of {@code <iframe>}s. Defaults to {@code "default"}.
      */
-    public AriaSnapshotOptions setMode(AriaSnapshotMode mode) {
+    public AriaSnapshotOptions setMode(@Nullable AriaSnapshotMode mode) {
       this.mode = mode;
       return this;
     }
@@ -3167,7 +3167,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public AriaSnapshotOptions setTimeout(double timeout) {
+    public AriaSnapshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3224,7 +3224,7 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public TapOptions setForce(boolean force) {
+    public TapOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -3233,14 +3233,14 @@ public interface Page extends AutoCloseable {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -3255,7 +3255,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public TapOptions setPosition(Position position) {
+    public TapOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -3265,7 +3265,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public TapOptions setScroll(ScrollMode scroll) {
+    public TapOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -3273,7 +3273,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TapOptions setStrict(boolean strict) {
+    public TapOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3283,7 +3283,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TapOptions setTimeout(double timeout) {
+    public TapOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3293,7 +3293,7 @@ public interface Page extends AutoCloseable {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public TapOptions setTrial(boolean trial) {
+    public TapOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -3316,7 +3316,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TextContentOptions setStrict(boolean strict) {
+    public TextContentOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3326,7 +3326,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TextContentOptions setTimeout(double timeout) {
+    public TextContentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3356,14 +3356,14 @@ public interface Page extends AutoCloseable {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public TypeOptions setDelay(double delay) {
+    public TypeOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -3371,7 +3371,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TypeOptions setStrict(boolean strict) {
+    public TypeOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3381,7 +3381,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TypeOptions setTimeout(double timeout) {
+    public TypeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3431,14 +3431,14 @@ public interface Page extends AutoCloseable {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public UncheckOptions setForce(boolean force) {
+    public UncheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -3453,7 +3453,7 @@ public interface Page extends AutoCloseable {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public UncheckOptions setPosition(Position position) {
+    public UncheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -3463,7 +3463,7 @@ public interface Page extends AutoCloseable {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public UncheckOptions setScroll(ScrollMode scroll) {
+    public UncheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -3471,7 +3471,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public UncheckOptions setStrict(boolean strict) {
+    public UncheckOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3481,7 +3481,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public UncheckOptions setTimeout(double timeout) {
+    public UncheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3490,7 +3490,7 @@ public interface Page extends AutoCloseable {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public UncheckOptions setTrial(boolean trial) {
+    public UncheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -3508,7 +3508,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForCloseOptions setTimeout(double timeout) {
+    public WaitForCloseOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3528,7 +3528,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
+    public WaitForConsoleMessageOptions setPredicate(@Nullable Predicate<ConsoleMessage> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3537,7 +3537,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForConsoleMessageOptions setTimeout(double timeout) {
+    public WaitForConsoleMessageOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3557,7 +3557,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code Download} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForDownloadOptions setPredicate(Predicate<Download> predicate) {
+    public WaitForDownloadOptions setPredicate(@Nullable Predicate<Download> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3566,7 +3566,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForDownloadOptions setTimeout(double timeout) {
+    public WaitForDownloadOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3586,7 +3586,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code FileChooser} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForFileChooserOptions setPredicate(Predicate<FileChooser> predicate) {
+    public WaitForFileChooserOptions setPredicate(@Nullable Predicate<FileChooser> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3595,7 +3595,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForFileChooserOptions setTimeout(double timeout) {
+    public WaitForFileChooserOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3618,7 +3618,7 @@ public interface Page extends AutoCloseable {
      * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
      * the option is not specified {@code expression} is executed in {@code requestAnimationFrame} callback.
      */
-    public WaitForFunctionOptions setPollingInterval(double pollingInterval) {
+    public WaitForFunctionOptions setPollingInterval(@Nullable Double pollingInterval) {
       this.pollingInterval = pollingInterval;
       return this;
     }
@@ -3628,7 +3628,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForFunctionOptions setTimeout(double timeout) {
+    public WaitForFunctionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3652,7 +3652,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForLoadStateOptions setTimeout(double timeout) {
+    public WaitForLoadStateOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3693,7 +3693,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForNavigationOptions setTimeout(double timeout) {
+    public WaitForNavigationOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3702,7 +3702,7 @@ public interface Page extends AutoCloseable {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(String url) {
+    public WaitForNavigationOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -3711,7 +3711,7 @@ public interface Page extends AutoCloseable {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(Pattern url) {
+    public WaitForNavigationOptions setUrl(@Nullable Pattern url) {
       this.url = url;
       return this;
     }
@@ -3720,7 +3720,7 @@ public interface Page extends AutoCloseable {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(Predicate<String> url) {
+    public WaitForNavigationOptions setUrl(@Nullable Predicate<String> url) {
       this.url = url;
       return this;
     }
@@ -3734,7 +3734,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
+    public WaitForNavigationOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -3754,7 +3754,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForPopupOptions setPredicate(Predicate<Page> predicate) {
+    public WaitForPopupOptions setPredicate(@Nullable Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3763,7 +3763,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForPopupOptions setTimeout(double timeout) {
+    public WaitForPopupOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3779,7 +3779,7 @@ public interface Page extends AutoCloseable {
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can
      * be changed by using the {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()} method.
      */
-    public WaitForRequestOptions setTimeout(double timeout) {
+    public WaitForRequestOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3799,7 +3799,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code Request} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForRequestFinishedOptions setPredicate(Predicate<Request> predicate) {
+    public WaitForRequestFinishedOptions setPredicate(@Nullable Predicate<Request> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3808,7 +3808,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForRequestFinishedOptions setTimeout(double timeout) {
+    public WaitForRequestFinishedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3828,7 +3828,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForResponseOptions setTimeout(double timeout) {
+    public WaitForResponseOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3870,7 +3870,7 @@ public interface Page extends AutoCloseable {
      * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
-    public WaitForSelectorOptions setState(WaitForSelectorState state) {
+    public WaitForSelectorOptions setState(@Nullable WaitForSelectorState state) {
       this.state = state;
       return this;
     }
@@ -3878,7 +3878,7 @@ public interface Page extends AutoCloseable {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public WaitForSelectorOptions setStrict(boolean strict) {
+    public WaitForSelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -3888,7 +3888,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForSelectorOptions setTimeout(double timeout) {
+    public WaitForSelectorOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3908,7 +3908,7 @@ public interface Page extends AutoCloseable {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForConditionOptions setTimeout(double timeout) {
+    public WaitForConditionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3943,7 +3943,7 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForURLOptions setTimeout(double timeout) {
+    public WaitForURLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -3957,7 +3957,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {
+    public WaitForURLOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -3977,7 +3977,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code WebSocket} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForWebSocketOptions setPredicate(Predicate<WebSocket> predicate) {
+    public WaitForWebSocketOptions setPredicate(@Nullable Predicate<WebSocket> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -3986,7 +3986,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForWebSocketOptions setTimeout(double timeout) {
+    public WaitForWebSocketOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -4006,7 +4006,7 @@ public interface Page extends AutoCloseable {
     /**
      * Receives the {@code Worker} object and resolves to truthy value when the waiting should resolve.
      */
-    public WaitForWorkerOptions setPredicate(Predicate<Worker> predicate) {
+    public WaitForWorkerOptions setPredicate(@Nullable Predicate<Worker> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -4015,7 +4015,7 @@ public interface Page extends AutoCloseable {
      * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
      * BrowserContext.setDefaultTimeout()}.
      */
-    public WaitForWorkerOptions setTimeout(double timeout) {
+    public WaitForWorkerOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

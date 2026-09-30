@@ -37,7 +37,7 @@ public interface Selectors {
      * not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
      * not guaranteed when this engine is used together with other registered engines.
      */
-    public RegisterOptions setContentScript(boolean contentScript) {
+    public RegisterOptions setContentScript(@Nullable Boolean contentScript) {
       this.contentScript = contentScript;
       return this;
     }

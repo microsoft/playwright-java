@@ -49,35 +49,35 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public ResumeOptions setHeaders(Map<String, String> headers) {
+    public ResumeOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public ResumeOptions setMethod(String method) {
+    public ResumeOptions setMethod(@Nullable String method) {
       this.method = method;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public ResumeOptions setPostData(String postData) {
+    public ResumeOptions setPostData(@Nullable String postData) {
       this.postData = postData;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public ResumeOptions setPostData(byte[] postData) {
+    public ResumeOptions setPostData(byte @Nullable [] postData) {
       this.postData = postData;
       return this;
     }
     /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
-    public ResumeOptions setUrl(String url) {
+    public ResumeOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -104,28 +104,28 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public FallbackOptions setHeaders(Map<String, String> headers) {
+    public FallbackOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public FallbackOptions setMethod(String method) {
+    public FallbackOptions setMethod(@Nullable String method) {
       this.method = method;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public FallbackOptions setPostData(String postData) {
+    public FallbackOptions setPostData(@Nullable String postData) {
       this.postData = postData;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public FallbackOptions setPostData(byte[] postData) {
+    public FallbackOptions setPostData(byte @Nullable [] postData) {
       this.postData = postData;
       return this;
     }
@@ -133,7 +133,7 @@ public interface Route {
      * If set changes the request URL. New URL must have same protocol as original one. Changing the URL won't affect the route
      * matching, all the routes are matched using the original request URL.
      */
-    public FallbackOptions setUrl(String url) {
+    public FallbackOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -174,7 +174,7 @@ public interface Route {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public FetchOptions setHeaders(Map<String, String> headers) {
+    public FetchOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
@@ -182,7 +182,7 @@ public interface Route {
      * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
      * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
      */
-    public FetchOptions setMaxRedirects(int maxRedirects) {
+    public FetchOptions setMaxRedirects(@Nullable Integer maxRedirects) {
       this.maxRedirects = maxRedirects;
       return this;
     }
@@ -191,42 +191,42 @@ public interface Route {
      * retry based on HTTP response codes. An error will be thrown if the limit is exceeded. Defaults to {@code 0} - no
      * retries.
      */
-    public FetchOptions setMaxRetries(int maxRetries) {
+    public FetchOptions setMaxRetries(@Nullable Integer maxRetries) {
       this.maxRetries = maxRetries;
       return this;
     }
     /**
      * If set changes the request method (e.g. GET or POST).
      */
-    public FetchOptions setMethod(String method) {
+    public FetchOptions setMethod(@Nullable String method) {
       this.method = method;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public FetchOptions setPostData(String postData) {
+    public FetchOptions setPostData(@Nullable String postData) {
       this.postData = postData;
       return this;
     }
     /**
      * If set changes the post data of request.
      */
-    public FetchOptions setPostData(byte[] postData) {
+    public FetchOptions setPostData(byte @Nullable [] postData) {
       this.postData = postData;
       return this;
     }
     /**
      * Request timeout in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
-    public FetchOptions setTimeout(double timeout) {
+    public FetchOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
-    public FetchOptions setUrl(String url) {
+    public FetchOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -266,28 +266,28 @@ public interface Route {
     /**
      * Optional response body as text.
      */
-    public FulfillOptions setBody(String body) {
+    public FulfillOptions setBody(@Nullable String body) {
       this.body = body;
       return this;
     }
     /**
      * Optional response body as raw bytes.
      */
-    public FulfillOptions setBodyBytes(byte[] bodyBytes) {
+    public FulfillOptions setBodyBytes(byte @Nullable [] bodyBytes) {
       this.bodyBytes = bodyBytes;
       return this;
     }
     /**
      * If set, equals to setting {@code Content-Type} response header.
      */
-    public FulfillOptions setContentType(String contentType) {
+    public FulfillOptions setContentType(@Nullable String contentType) {
       this.contentType = contentType;
       return this;
     }
     /**
      * Response headers. Header values will be converted to a string.
      */
-    public FulfillOptions setHeaders(Map<String, String> headers) {
+    public FulfillOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
@@ -295,7 +295,7 @@ public interface Route {
      * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path,
      * then it is resolved relative to the current working directory.
      */
-    public FulfillOptions setPath(Path path) {
+    public FulfillOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -303,14 +303,14 @@ public interface Route {
      * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be
      * overridden using fulfill options.
      */
-    public FulfillOptions setResponse(APIResponse response) {
+    public FulfillOptions setResponse(@Nullable APIResponse response) {
       this.response = response;
       return this;
     }
     /**
      * Response status code, defaults to {@code 200}.
      */
-    public FulfillOptions setStatus(int status) {
+    public FulfillOptions setStatus(@Nullable Integer status) {
       this.status = status;
       return this;
     }

@@ -64,7 +64,7 @@ public class Cookie {
   /**
    * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public Cookie setUrl(String url) {
+  public Cookie setUrl(@Nullable String url) {
     this.url = url;
     return this;
   }
@@ -72,42 +72,42 @@ public class Cookie {
    * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either {@code
    * url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public Cookie setDomain(String domain) {
+  public Cookie setDomain(@Nullable String domain) {
     this.domain = domain;
     return this;
   }
   /**
    * Either {@code url} or both {@code domain} and {@code path} are required. Optional.
    */
-  public Cookie setPath(String path) {
+  public Cookie setPath(@Nullable String path) {
     this.path = path;
     return this;
   }
   /**
    * Unix time in seconds. Optional.
    */
-  public Cookie setExpires(double expires) {
+  public Cookie setExpires(@Nullable Double expires) {
     this.expires = expires;
     return this;
   }
   /**
    * Optional.
    */
-  public Cookie setHttpOnly(boolean httpOnly) {
+  public Cookie setHttpOnly(@Nullable Boolean httpOnly) {
     this.httpOnly = httpOnly;
     return this;
   }
   /**
    * Optional.
    */
-  public Cookie setSecure(boolean secure) {
+  public Cookie setSecure(@Nullable Boolean secure) {
     this.secure = secure;
     return this;
   }
   /**
    * Optional.
    */
-  public Cookie setSameSite(SameSiteAttribute sameSite) {
+  public Cookie setSameSite(@Nullable SameSiteAttribute sameSite) {
     this.sameSite = sameSite;
     return this;
   }
@@ -116,7 +116,7 @@ public class Cookie {
    * href="https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies">CHIPS</a>), the
    * partition key. Optional.
    */
-  public Cookie setPartitionKey(String partitionKey) {
+  public Cookie setPartitionKey(@Nullable String partitionKey) {
     this.partitionKey = partitionKey;
     return this;
   }

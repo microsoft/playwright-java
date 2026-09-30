@@ -119,14 +119,14 @@ public interface WebSocketRoute {
     /**
      * Optional <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#code">close code</a>.
      */
-    public CloseOptions setCode(int code) {
+    public CloseOptions setCode(@Nullable Integer code) {
       this.code = code;
       return this;
     }
     /**
      * Optional <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/close#reason">close reason</a>.
      */
-    public CloseOptions setReason(String reason) {
+    public CloseOptions setReason(@Nullable String reason) {
       this.reason = reason;
       return this;
     }

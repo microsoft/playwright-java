@@ -395,6 +395,7 @@ class TypeRef extends Element {
   private static final Map<String, String> BOXED_TYPES = new HashMap<>();
   static {
     BOXED_TYPES.put("int", "Integer");
+    BOXED_TYPES.put("long", "Long");
     BOXED_TYPES.put("double", "Double");
     BOXED_TYPES.put("boolean", "Boolean");
   }
@@ -999,7 +1000,10 @@ class Field extends Element {
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
     writeJavadoc(output, offset, comment());
-    String param = type.withNullability(paramType, false);
+    // Optional fields are nullable in the public API, so their setters must
+    // accept null as well. Box primitive types before applying @Nullable.
+    String setterType = (!isRequired() || type.isNullable()) ? TypeRef.boxed(paramType) : paramType;
+    String param = type.withNullability(setterType, !isRequired());
     output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + param + " " + name + ") {");
     String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
     output.add(offset + "  this." + name + " = " + rvalue + ";");

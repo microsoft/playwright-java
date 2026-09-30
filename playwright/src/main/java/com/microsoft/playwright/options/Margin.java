@@ -39,28 +39,28 @@ public class Margin {
   /**
    * Top margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public Margin setTop(String top) {
+  public Margin setTop(@Nullable String top) {
     this.top = top;
     return this;
   }
   /**
    * Right margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public Margin setRight(String right) {
+  public Margin setRight(@Nullable String right) {
     this.right = right;
     return this;
   }
   /**
    * Bottom margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public Margin setBottom(String bottom) {
+  public Margin setBottom(@Nullable String bottom) {
     this.bottom = bottom;
     return this;
   }
   /**
    * Left margin, accepts values labeled with units. Defaults to {@code 0}.
    */
-  public Margin setLeft(String left) {
+  public Margin setLeft(@Nullable String left) {
     this.left = left;
     return this;
   }

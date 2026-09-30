@@ -85,7 +85,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByAltTextOptions setExact(boolean exact) {
+    public GetByAltTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -101,7 +101,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByLabelOptions setExact(boolean exact) {
+    public GetByLabelOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -117,7 +117,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByPlaceholderOptions setExact(boolean exact) {
+    public GetByPlaceholderOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -193,7 +193,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public GetByRoleOptions setChecked(boolean checked) {
+    public GetByRoleOptions setChecked(@Nullable Boolean checked) {
       this.checked = checked;
       return this;
     }
@@ -203,7 +203,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(String description) {
+    public GetByRoleOptions setDescription(@Nullable String description) {
       this.description = description;
       return this;
     }
@@ -213,7 +213,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(Pattern description) {
+    public GetByRoleOptions setDescription(@Nullable Pattern description) {
       this.description = description;
       return this;
     }
@@ -223,7 +223,7 @@ public interface FrameLocator {
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public GetByRoleOptions setDisabled(boolean disabled) {
+    public GetByRoleOptions setDisabled(@Nullable Boolean disabled) {
       this.disabled = disabled;
       return this;
     }
@@ -231,7 +231,7 @@ public interface FrameLocator {
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public GetByRoleOptions setExact(boolean exact) {
+    public GetByRoleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -240,7 +240,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public GetByRoleOptions setExpanded(boolean expanded) {
+    public GetByRoleOptions setExpanded(@Nullable Boolean expanded) {
       this.expanded = expanded;
       return this;
     }
@@ -250,7 +250,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+    public GetByRoleOptions setIncludeHidden(@Nullable Boolean includeHidden) {
       this.includeHidden = includeHidden;
       return this;
     }
@@ -260,7 +260,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public GetByRoleOptions setLevel(int level) {
+    public GetByRoleOptions setLevel(@Nullable Integer level) {
       this.level = level;
       return this;
     }
@@ -270,7 +270,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(String name) {
+    public GetByRoleOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
@@ -280,7 +280,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(Pattern name) {
+    public GetByRoleOptions setName(@Nullable Pattern name) {
       this.name = name;
       return this;
     }
@@ -289,7 +289,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public GetByRoleOptions setPressed(boolean pressed) {
+    public GetByRoleOptions setPressed(@Nullable Boolean pressed) {
       this.pressed = pressed;
       return this;
     }
@@ -298,7 +298,7 @@ public interface FrameLocator {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public GetByRoleOptions setSelected(boolean selected) {
+    public GetByRoleOptions setSelected(@Nullable Boolean selected) {
       this.selected = selected;
       return this;
     }
@@ -314,7 +314,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTextOptions setExact(boolean exact) {
+    public GetByTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -330,7 +330,7 @@ public interface FrameLocator {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTitleOptions setExact(boolean exact) {
+    public GetByTitleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -381,7 +381,7 @@ public interface FrameLocator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHas(Locator has) {
+    public LocatorOptions setHas(@Nullable Locator has) {
       this.has = has;
       return this;
     }
@@ -392,7 +392,7 @@ public interface FrameLocator {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHasNot(Locator hasNot) {
+    public LocatorOptions setHasNot(@Nullable Locator hasNot) {
       this.hasNot = hasNot;
       return this;
     }
@@ -400,7 +400,7 @@ public interface FrameLocator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(String hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable String hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -408,7 +408,7 @@ public interface FrameLocator {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(Pattern hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable Pattern hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -417,7 +417,7 @@ public interface FrameLocator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(String hasText) {
+    public LocatorOptions setHasText(@Nullable String hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -426,7 +426,7 @@ public interface FrameLocator {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(Pattern hasText) {
+    public LocatorOptions setHasText(@Nullable Pattern hasText) {
       this.hasText = hasText;
       return this;
     }

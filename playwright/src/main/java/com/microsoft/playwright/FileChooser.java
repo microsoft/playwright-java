@@ -45,7 +45,7 @@ public interface FileChooser {
     /**
      * @deprecated This option has no effect.
      */
-    public SetFilesOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetFilesOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -55,7 +55,7 @@ public interface FileChooser {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetFilesOptions setTimeout(double timeout) {
+    public SetFilesOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

@@ -48,14 +48,14 @@ public interface LocatorAssertions {
      */
     public @Nullable Double timeout;
 
-    public IsAttachedOptions setAttached(boolean attached) {
+    public IsAttachedOptions setAttached(@Nullable Boolean attached) {
       this.attached = attached;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsAttachedOptions setTimeout(double timeout) {
+    public IsAttachedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -80,7 +80,7 @@ public interface LocatorAssertions {
      * Provides state to assert for. Asserts for input to be checked by default. This option can't be used when {@code
      * indeterminate} is set to true.
      */
-    public IsCheckedOptions setChecked(boolean checked) {
+    public IsCheckedOptions setChecked(@Nullable Boolean checked) {
       this.checked = checked;
       return this;
     }
@@ -88,14 +88,14 @@ public interface LocatorAssertions {
      * Asserts that the element is in the indeterminate (mixed) state. Only supported for checkboxes and radio buttons. This
      * option can't be true when {@code checked} is provided.
      */
-    public IsCheckedOptions setIndeterminate(boolean indeterminate) {
+    public IsCheckedOptions setIndeterminate(@Nullable Boolean indeterminate) {
       this.indeterminate = indeterminate;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsCheckedOptions setTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -109,7 +109,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsDisabledOptions setTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -121,14 +121,14 @@ public interface LocatorAssertions {
      */
     public @Nullable Double timeout;
 
-    public IsEditableOptions setEditable(boolean editable) {
+    public IsEditableOptions setEditable(@Nullable Boolean editable) {
       this.editable = editable;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsEditableOptions setTimeout(double timeout) {
+    public IsEditableOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -142,7 +142,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsEmptyOptions setTimeout(double timeout) {
+    public IsEmptyOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -154,14 +154,14 @@ public interface LocatorAssertions {
      */
     public @Nullable Double timeout;
 
-    public IsEnabledOptions setEnabled(boolean enabled) {
+    public IsEnabledOptions setEnabled(@Nullable Boolean enabled) {
       this.enabled = enabled;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsEnabledOptions setTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -175,7 +175,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsFocusedOptions setTimeout(double timeout) {
+    public IsFocusedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -189,7 +189,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsHiddenOptions setTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -209,14 +209,14 @@ public interface LocatorAssertions {
      * The minimal ratio of the element to intersect viewport. If equals to {@code 0}, then element should intersect viewport
      * at any positive ratio. Defaults to {@code 0}.
      */
-    public IsInViewportOptions setRatio(double ratio) {
+    public IsInViewportOptions setRatio(@Nullable Double ratio) {
       this.ratio = ratio;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsInViewportOptions setTimeout(double timeout) {
+    public IsInViewportOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -231,11 +231,11 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public IsVisibleOptions setTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public IsVisibleOptions setVisible(boolean visible) {
+    public IsVisibleOptions setVisible(@Nullable Boolean visible) {
       this.visible = visible;
       return this;
     }
@@ -249,7 +249,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public ContainsClassOptions setTimeout(double timeout) {
+    public ContainsClassOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -273,21 +273,21 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public ContainsTextOptions setIgnoreCase(boolean ignoreCase) {
+    public ContainsTextOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public ContainsTextOptions setTimeout(double timeout) {
+    public ContainsTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * Whether to use {@code element.innerText} instead of {@code element.textContent} when retrieving DOM node text.
      */
-    public ContainsTextOptions setUseInnerText(boolean useInnerText) {
+    public ContainsTextOptions setUseInnerText(@Nullable Boolean useInnerText) {
       this.useInnerText = useInnerText;
       return this;
     }
@@ -307,14 +307,14 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public HasAccessibleDescriptionOptions setIgnoreCase(boolean ignoreCase) {
+    public HasAccessibleDescriptionOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasAccessibleDescriptionOptions setTimeout(double timeout) {
+    public HasAccessibleDescriptionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -334,14 +334,14 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public HasAccessibleErrorMessageOptions setIgnoreCase(boolean ignoreCase) {
+    public HasAccessibleErrorMessageOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasAccessibleErrorMessageOptions setTimeout(double timeout) {
+    public HasAccessibleErrorMessageOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -361,14 +361,14 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public HasAccessibleNameOptions setIgnoreCase(boolean ignoreCase) {
+    public HasAccessibleNameOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasAccessibleNameOptions setTimeout(double timeout) {
+    public HasAccessibleNameOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -388,14 +388,14 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public HasAttributeOptions setIgnoreCase(boolean ignoreCase) {
+    public HasAttributeOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasAttributeOptions setTimeout(double timeout) {
+    public HasAttributeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -409,7 +409,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasClassOptions setTimeout(double timeout) {
+    public HasClassOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -423,7 +423,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasCountOptions setTimeout(double timeout) {
+    public HasCountOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -441,14 +441,14 @@ public interface LocatorAssertions {
     /**
      * Pseudo-element to read computed styles from.
      */
-    public HasCSSOptions setPseudo(PseudoElement pseudo) {
+    public HasCSSOptions setPseudo(@Nullable PseudoElement pseudo) {
       this.pseudo = pseudo;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasCSSOptions setTimeout(double timeout) {
+    public HasCSSOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -462,7 +462,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasIdOptions setTimeout(double timeout) {
+    public HasIdOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -476,7 +476,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasJSPropertyOptions setTimeout(double timeout) {
+    public HasJSPropertyOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -490,7 +490,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasRoleOptions setTimeout(double timeout) {
+    public HasRoleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -514,21 +514,21 @@ public interface LocatorAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression flag if specified.
      */
-    public HasTextOptions setIgnoreCase(boolean ignoreCase) {
+    public HasTextOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasTextOptions setTimeout(double timeout) {
+    public HasTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * Whether to use {@code element.innerText} instead of {@code element.textContent} when retrieving DOM node text.
      */
-    public HasTextOptions setUseInnerText(boolean useInnerText) {
+    public HasTextOptions setUseInnerText(@Nullable Boolean useInnerText) {
       this.useInnerText = useInnerText;
       return this;
     }
@@ -542,7 +542,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasValueOptions setTimeout(double timeout) {
+    public HasValueOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -556,7 +556,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasValuesOptions setTimeout(double timeout) {
+    public HasValuesOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -570,7 +570,7 @@ public interface LocatorAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public MatchesAriaSnapshotOptions setTimeout(double timeout) {
+    public MatchesAriaSnapshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

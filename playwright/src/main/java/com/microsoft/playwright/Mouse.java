@@ -57,21 +57,21 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public ClickOptions setButton(MouseButton button) {
+    public ClickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public ClickOptions setClickCount(int clickCount) {
+    public ClickOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public ClickOptions setDelay(double delay) {
+    public ClickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -89,14 +89,14 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public DblclickOptions setButton(MouseButton button) {
+    public DblclickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public DblclickOptions setDelay(double delay) {
+    public DblclickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -114,14 +114,14 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public DownOptions setButton(MouseButton button) {
+    public DownOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public DownOptions setClickCount(int clickCount) {
+    public DownOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }
@@ -139,7 +139,7 @@ public interface Mouse {
      * cursor position and the provided destination. When set to 1, emits a single {@code mousemove} event at the destination
      * location.
      */
-    public MoveOptions setSteps(int steps) {
+    public MoveOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -157,14 +157,14 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public UpOptions setButton(MouseButton button) {
+    public UpOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public UpOptions setClickCount(int clickCount) {
+    public UpOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }

@@ -85,7 +85,7 @@ public interface Frame {
     /**
      * Raw JavaScript content to be injected into frame.
      */
-    public AddScriptTagOptions setContent(String content) {
+    public AddScriptTagOptions setContent(@Nullable String content) {
       this.content = content;
       return this;
     }
@@ -93,7 +93,7 @@ public interface Frame {
      * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative
      * to the current working directory.
      */
-    public AddScriptTagOptions setPath(Path path) {
+    public AddScriptTagOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
@@ -101,14 +101,14 @@ public interface Frame {
      * Script type. Use 'module' in order to load a JavaScript ES6 module. See <a
      * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script">script</a> for more details.
      */
-    public AddScriptTagOptions setType(String type) {
+    public AddScriptTagOptions setType(@Nullable String type) {
       this.type = type;
       return this;
     }
     /**
      * URL of a script to be added.
      */
-    public AddScriptTagOptions setUrl(String url) {
+    public AddScriptTagOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -131,7 +131,7 @@ public interface Frame {
     /**
      * Raw CSS content to be injected into frame.
      */
-    public AddStyleTagOptions setContent(String content) {
+    public AddStyleTagOptions setContent(@Nullable String content) {
       this.content = content;
       return this;
     }
@@ -139,14 +139,14 @@ public interface Frame {
      * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
      * current working directory.
      */
-    public AddStyleTagOptions setPath(Path path) {
+    public AddStyleTagOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
     /**
      * URL of the {@code <link>} tag.
      */
-    public AddStyleTagOptions setUrl(String url) {
+    public AddStyleTagOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -196,14 +196,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public CheckOptions setForce(boolean force) {
+    public CheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -218,7 +218,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public CheckOptions setPosition(Position position) {
+    public CheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -228,7 +228,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public CheckOptions setScroll(ScrollMode scroll) {
+    public CheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -236,7 +236,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public CheckOptions setStrict(boolean strict) {
+    public CheckOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -246,7 +246,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public CheckOptions setTimeout(double timeout) {
+    public CheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -255,7 +255,7 @@ public interface Frame {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public CheckOptions setTrial(boolean trial) {
+    public CheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -323,21 +323,21 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public ClickOptions setButton(MouseButton button) {
+    public ClickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * defaults to 1. See [UIEvent.detail].
      */
-    public ClickOptions setClickCount(int clickCount) {
+    public ClickOptions setClickCount(@Nullable Integer clickCount) {
       this.clickCount = clickCount;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public ClickOptions setDelay(double delay) {
+    public ClickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -345,7 +345,7 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public ClickOptions setForce(boolean force) {
+    public ClickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -354,14 +354,14 @@ public interface Frame {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -376,7 +376,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public ClickOptions setPosition(Position position) {
+    public ClickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -386,7 +386,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public ClickOptions setScroll(ScrollMode scroll) {
+    public ClickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -394,7 +394,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public ClickOptions setStrict(boolean strict) {
+    public ClickOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -404,7 +404,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public ClickOptions setTimeout(double timeout) {
+    public ClickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -414,7 +414,7 @@ public interface Frame {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public ClickOptions setTrial(boolean trial) {
+    public ClickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -478,14 +478,14 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public DblclickOptions setButton(MouseButton button) {
+    public DblclickOptions setButton(@Nullable MouseButton button) {
       this.button = button;
       return this;
     }
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
-    public DblclickOptions setDelay(double delay) {
+    public DblclickOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
@@ -493,7 +493,7 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DblclickOptions setForce(boolean force) {
+    public DblclickOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -502,14 +502,14 @@ public interface Frame {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -524,7 +524,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public DblclickOptions setPosition(Position position) {
+    public DblclickOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -534,7 +534,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DblclickOptions setScroll(ScrollMode scroll) {
+    public DblclickOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -542,7 +542,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DblclickOptions setStrict(boolean strict) {
+    public DblclickOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -552,7 +552,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DblclickOptions setTimeout(double timeout) {
+    public DblclickOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -562,7 +562,7 @@ public interface Frame {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public DblclickOptions setTrial(boolean trial) {
+    public DblclickOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -585,7 +585,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DispatchEventOptions setStrict(boolean strict) {
+    public DispatchEventOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -595,7 +595,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DispatchEventOptions setTimeout(double timeout) {
+    public DispatchEventOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -655,14 +655,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public DragAndDropOptions setForce(boolean force) {
+    public DragAndDropOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
+    public DragAndDropOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -672,7 +672,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public DragAndDropOptions setScroll(ScrollMode scroll) {
+    public DragAndDropOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -687,7 +687,7 @@ public interface Frame {
      * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragAndDropOptions setSourcePosition(Position sourcePosition) {
+    public DragAndDropOptions setSourcePosition(@Nullable Position sourcePosition) {
       this.sourcePosition = sourcePosition;
       return this;
     }
@@ -695,7 +695,7 @@ public interface Frame {
      * Defaults to 1. Sends {@code n} interpolated {@code mousemove} events to represent travel between the {@code mousedown}
      * and {@code mouseup} of the drag. When set to 1, emits a single {@code mousemove} event at the destination location.
      */
-    public DragAndDropOptions setSteps(int steps) {
+    public DragAndDropOptions setSteps(@Nullable Integer steps) {
       this.steps = steps;
       return this;
     }
@@ -703,7 +703,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public DragAndDropOptions setStrict(boolean strict) {
+    public DragAndDropOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -718,7 +718,7 @@ public interface Frame {
      * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
      * specified, some visible point of the element is used.
      */
-    public DragAndDropOptions setTargetPosition(Position targetPosition) {
+    public DragAndDropOptions setTargetPosition(@Nullable Position targetPosition) {
       this.targetPosition = targetPosition;
       return this;
     }
@@ -728,7 +728,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public DragAndDropOptions setTimeout(double timeout) {
+    public DragAndDropOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -737,7 +737,7 @@ public interface Frame {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public DragAndDropOptions setTrial(boolean trial) {
+    public DragAndDropOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -753,7 +753,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public EvalOnSelectorOptions setStrict(boolean strict) {
+    public EvalOnSelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -785,14 +785,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public FillOptions setForce(boolean force) {
+    public FillOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -800,7 +800,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public FillOptions setStrict(boolean strict) {
+    public FillOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -810,7 +810,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FillOptions setTimeout(double timeout) {
+    public FillOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -833,7 +833,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public FocusOptions setStrict(boolean strict) {
+    public FocusOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -843,7 +843,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public FocusOptions setTimeout(double timeout) {
+    public FocusOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -866,7 +866,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public GetAttributeOptions setStrict(boolean strict) {
+    public GetAttributeOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -876,7 +876,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public GetAttributeOptions setTimeout(double timeout) {
+    public GetAttributeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -892,7 +892,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByAltTextOptions setExact(boolean exact) {
+    public GetByAltTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -908,7 +908,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByLabelOptions setExact(boolean exact) {
+    public GetByLabelOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -924,7 +924,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByPlaceholderOptions setExact(boolean exact) {
+    public GetByPlaceholderOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1000,7 +1000,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
-    public GetByRoleOptions setChecked(boolean checked) {
+    public GetByRoleOptions setChecked(@Nullable Boolean checked) {
       this.checked = checked;
       return this;
     }
@@ -1010,7 +1010,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(String description) {
+    public GetByRoleOptions setDescription(@Nullable String description) {
       this.description = description;
       return this;
     }
@@ -1020,7 +1020,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
      */
-    public GetByRoleOptions setDescription(Pattern description) {
+    public GetByRoleOptions setDescription(@Nullable Pattern description) {
       this.description = description;
       return this;
     }
@@ -1030,7 +1030,7 @@ public interface Frame {
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
-    public GetByRoleOptions setDisabled(boolean disabled) {
+    public GetByRoleOptions setDisabled(@Nullable Boolean disabled) {
       this.disabled = disabled;
       return this;
     }
@@ -1038,7 +1038,7 @@ public interface Frame {
      * Whether {@code name} and {@code description} are matched exactly: case-sensitive and whole-string. Defaults to false.
      * Ignored when the value is a regular expression. Note that exact match still trims whitespace.
      */
-    public GetByRoleOptions setExact(boolean exact) {
+    public GetByRoleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1047,7 +1047,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
-    public GetByRoleOptions setExpanded(boolean expanded) {
+    public GetByRoleOptions setExpanded(@Nullable Boolean expanded) {
       this.expanded = expanded;
       return this;
     }
@@ -1057,7 +1057,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
      */
-    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+    public GetByRoleOptions setIncludeHidden(@Nullable Boolean includeHidden) {
       this.includeHidden = includeHidden;
       return this;
     }
@@ -1067,7 +1067,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
-    public GetByRoleOptions setLevel(int level) {
+    public GetByRoleOptions setLevel(@Nullable Integer level) {
       this.level = level;
       return this;
     }
@@ -1077,7 +1077,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(String name) {
+    public GetByRoleOptions setName(@Nullable String name) {
       this.name = name;
       return this;
     }
@@ -1087,7 +1087,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
-    public GetByRoleOptions setName(Pattern name) {
+    public GetByRoleOptions setName(@Nullable Pattern name) {
       this.name = name;
       return this;
     }
@@ -1096,7 +1096,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
-    public GetByRoleOptions setPressed(boolean pressed) {
+    public GetByRoleOptions setPressed(@Nullable Boolean pressed) {
       this.pressed = pressed;
       return this;
     }
@@ -1105,7 +1105,7 @@ public interface Frame {
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
-    public GetByRoleOptions setSelected(boolean selected) {
+    public GetByRoleOptions setSelected(@Nullable Boolean selected) {
       this.selected = selected;
       return this;
     }
@@ -1121,7 +1121,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTextOptions setExact(boolean exact) {
+    public GetByTextOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1137,7 +1137,7 @@ public interface Frame {
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
      * expression. Note that exact match still trims whitespace.
      */
-    public GetByTitleOptions setExact(boolean exact) {
+    public GetByTitleOptions setExact(@Nullable Boolean exact) {
       this.exact = exact;
       return this;
     }
@@ -1173,7 +1173,7 @@ public interface Frame {
      * Referer header value. If provided it will take preference over the referer header value set by {@link
      * com.microsoft.playwright.Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
-    public NavigateOptions setReferer(String referer) {
+    public NavigateOptions setReferer(@Nullable String referer) {
       this.referer = referer;
       return this;
     }
@@ -1185,7 +1185,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public NavigateOptions setTimeout(double timeout) {
+    public NavigateOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1199,7 +1199,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
+    public NavigateOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1256,7 +1256,7 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public HoverOptions setForce(boolean force) {
+    public HoverOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -1265,14 +1265,14 @@ public interface Frame {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
+    public HoverOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1287,7 +1287,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public HoverOptions setPosition(Position position) {
+    public HoverOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -1297,7 +1297,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public HoverOptions setScroll(ScrollMode scroll) {
+    public HoverOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -1305,7 +1305,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public HoverOptions setStrict(boolean strict) {
+    public HoverOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1315,7 +1315,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public HoverOptions setTimeout(double timeout) {
+    public HoverOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1325,7 +1325,7 @@ public interface Frame {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public HoverOptions setTrial(boolean trial) {
+    public HoverOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -1348,7 +1348,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InnerHTMLOptions setStrict(boolean strict) {
+    public InnerHTMLOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1358,7 +1358,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerHTMLOptions setTimeout(double timeout) {
+    public InnerHTMLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1381,7 +1381,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InnerTextOptions setStrict(boolean strict) {
+    public InnerTextOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1391,7 +1391,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InnerTextOptions setTimeout(double timeout) {
+    public InnerTextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1414,7 +1414,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public InputValueOptions setStrict(boolean strict) {
+    public InputValueOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1424,7 +1424,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public InputValueOptions setTimeout(double timeout) {
+    public InputValueOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1447,7 +1447,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsCheckedOptions setStrict(boolean strict) {
+    public IsCheckedOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1457,7 +1457,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsCheckedOptions setTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1480,7 +1480,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsDisabledOptions setStrict(boolean strict) {
+    public IsDisabledOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1490,7 +1490,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsDisabledOptions setTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1513,7 +1513,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsEditableOptions setStrict(boolean strict) {
+    public IsEditableOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1523,7 +1523,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEditableOptions setTimeout(double timeout) {
+    public IsEditableOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1546,7 +1546,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsEnabledOptions setStrict(boolean strict) {
+    public IsEnabledOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1556,7 +1556,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public IsEnabledOptions setTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1577,7 +1577,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsHiddenOptions setStrict(boolean strict) {
+    public IsHiddenOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1585,7 +1585,7 @@ public interface Frame {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isHidden Frame.isHidden()} does not wait for the element
      * to become hidden and returns immediately.
      */
-    public IsHiddenOptions setTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1606,7 +1606,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public IsVisibleOptions setStrict(boolean strict) {
+    public IsVisibleOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1614,7 +1614,7 @@ public interface Frame {
      * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isVisible Frame.isVisible()} does not wait for the element
      * to become visible and returns immediately.
      */
-    public IsVisibleOptions setTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1665,7 +1665,7 @@ public interface Frame {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHas(Locator has) {
+    public LocatorOptions setHas(@Nullable Locator has) {
       this.has = has;
       return this;
     }
@@ -1676,7 +1676,7 @@ public interface Frame {
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
-    public LocatorOptions setHasNot(Locator hasNot) {
+    public LocatorOptions setHasNot(@Nullable Locator hasNot) {
       this.hasNot = hasNot;
       return this;
     }
@@ -1684,7 +1684,7 @@ public interface Frame {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(String hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable String hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -1692,7 +1692,7 @@ public interface Frame {
      * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
      * passed a [string], matching is case-insensitive and searches for a substring.
      */
-    public LocatorOptions setHasNotText(Pattern hasNotText) {
+    public LocatorOptions setHasNotText(@Nullable Pattern hasNotText) {
       this.hasNotText = hasNotText;
       return this;
     }
@@ -1701,7 +1701,7 @@ public interface Frame {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(String hasText) {
+    public LocatorOptions setHasText(@Nullable String hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -1710,7 +1710,7 @@ public interface Frame {
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
      */
-    public LocatorOptions setHasText(Pattern hasText) {
+    public LocatorOptions setHasText(@Nullable Pattern hasText) {
       this.hasText = hasText;
       return this;
     }
@@ -1740,14 +1740,14 @@ public interface Frame {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
      */
-    public PressOptions setDelay(double delay) {
+    public PressOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option will default to {@code true} in the future.
      */
-    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1755,7 +1755,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public PressOptions setStrict(boolean strict) {
+    public PressOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1765,7 +1765,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public PressOptions setTimeout(double timeout) {
+    public PressOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1781,7 +1781,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public QuerySelectorOptions setStrict(boolean strict) {
+    public QuerySelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1813,14 +1813,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SelectOptionOptions setForce(boolean force) {
+    public SelectOptionOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1828,7 +1828,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SelectOptionOptions setStrict(boolean strict) {
+    public SelectOptionOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1838,7 +1838,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SelectOptionOptions setTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1888,14 +1888,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public SetCheckedOptions setForce(boolean force) {
+    public SetCheckedOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetCheckedOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1910,7 +1910,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public SetCheckedOptions setPosition(Position position) {
+    public SetCheckedOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -1920,7 +1920,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public SetCheckedOptions setScroll(ScrollMode scroll) {
+    public SetCheckedOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -1928,7 +1928,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SetCheckedOptions setStrict(boolean strict) {
+    public SetCheckedOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -1938,7 +1938,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetCheckedOptions setTimeout(double timeout) {
+    public SetCheckedOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1947,7 +1947,7 @@ public interface Frame {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public SetCheckedOptions setTrial(boolean trial) {
+    public SetCheckedOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -1982,7 +1982,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetContentOptions setTimeout(double timeout) {
+    public SetContentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1996,7 +1996,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
+    public SetContentOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -2022,7 +2022,7 @@ public interface Frame {
     /**
      * @deprecated This option has no effect.
      */
-    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2030,7 +2030,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public SetInputFilesOptions setStrict(boolean strict) {
+    public SetInputFilesOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2040,7 +2040,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public SetInputFilesOptions setTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2097,7 +2097,7 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public TapOptions setForce(boolean force) {
+    public TapOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
@@ -2106,14 +2106,14 @@ public interface Frame {
      * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
      * and Linux and to "Meta" on macOS.
      */
-    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(@Nullable List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2128,7 +2128,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public TapOptions setPosition(Position position) {
+    public TapOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2138,7 +2138,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public TapOptions setScroll(ScrollMode scroll) {
+    public TapOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2146,7 +2146,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TapOptions setStrict(boolean strict) {
+    public TapOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2156,7 +2156,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TapOptions setTimeout(double timeout) {
+    public TapOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2166,7 +2166,7 @@ public interface Frame {
      * performing it. Note that keyboard {@code modifiers} will be pressed regardless of {@code trial} to allow testing
      * elements which are only visible when those keys are pressed.
      */
-    public TapOptions setTrial(boolean trial) {
+    public TapOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -2189,7 +2189,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TextContentOptions setStrict(boolean strict) {
+    public TextContentOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2199,7 +2199,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TextContentOptions setTimeout(double timeout) {
+    public TextContentOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2229,14 +2229,14 @@ public interface Frame {
     /**
      * Time to wait between key presses in milliseconds. Defaults to 0.
      */
-    public TypeOptions setDelay(double delay) {
+    public TypeOptions setDelay(@Nullable Double delay) {
       this.delay = delay;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2244,7 +2244,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public TypeOptions setStrict(boolean strict) {
+    public TypeOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2254,7 +2254,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public TypeOptions setTimeout(double timeout) {
+    public TypeOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2304,14 +2304,14 @@ public interface Frame {
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
-    public UncheckOptions setForce(boolean force) {
+    public UncheckOptions setForce(@Nullable Boolean force) {
       this.force = force;
       return this;
     }
     /**
      * @deprecated This option has no effect.
      */
-    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(@Nullable Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -2326,7 +2326,7 @@ public interface Frame {
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
-    public UncheckOptions setPosition(Position position) {
+    public UncheckOptions setPosition(@Nullable Position position) {
       this.position = position;
       return this;
     }
@@ -2336,7 +2336,7 @@ public interface Frame {
      * "none"}, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This
      * is useful to assert that an element is reachable by the user without additional scrolling.
      */
-    public UncheckOptions setScroll(ScrollMode scroll) {
+    public UncheckOptions setScroll(@Nullable ScrollMode scroll) {
       this.scroll = scroll;
       return this;
     }
@@ -2344,7 +2344,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public UncheckOptions setStrict(boolean strict) {
+    public UncheckOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2354,7 +2354,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public UncheckOptions setTimeout(double timeout) {
+    public UncheckOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2363,7 +2363,7 @@ public interface Frame {
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
-    public UncheckOptions setTrial(boolean trial) {
+    public UncheckOptions setTrial(@Nullable Boolean trial) {
       this.trial = trial;
       return this;
     }
@@ -2386,7 +2386,7 @@ public interface Frame {
      * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
      * the option is not specified {@code expression} is executed in {@code requestAnimationFrame} callback.
      */
-    public WaitForFunctionOptions setPollingInterval(double pollingInterval) {
+    public WaitForFunctionOptions setPollingInterval(@Nullable Double pollingInterval) {
       this.pollingInterval = pollingInterval;
       return this;
     }
@@ -2396,7 +2396,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForFunctionOptions setTimeout(double timeout) {
+    public WaitForFunctionOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2420,7 +2420,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForLoadStateOptions setTimeout(double timeout) {
+    public WaitForLoadStateOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2461,7 +2461,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForNavigationOptions setTimeout(double timeout) {
+    public WaitForNavigationOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2470,7 +2470,7 @@ public interface Frame {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(String url) {
+    public WaitForNavigationOptions setUrl(@Nullable String url) {
       this.url = url;
       return this;
     }
@@ -2479,7 +2479,7 @@ public interface Frame {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(Pattern url) {
+    public WaitForNavigationOptions setUrl(@Nullable Pattern url) {
       this.url = url;
       return this;
     }
@@ -2488,7 +2488,7 @@ public interface Frame {
      * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
      * the string.
      */
-    public WaitForNavigationOptions setUrl(Predicate<String> url) {
+    public WaitForNavigationOptions setUrl(@Nullable Predicate<String> url) {
       this.url = url;
       return this;
     }
@@ -2502,7 +2502,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
+    public WaitForNavigationOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -2544,7 +2544,7 @@ public interface Frame {
      * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
-    public WaitForSelectorOptions setState(WaitForSelectorState state) {
+    public WaitForSelectorOptions setState(@Nullable WaitForSelectorState state) {
       this.state = state;
       return this;
     }
@@ -2552,7 +2552,7 @@ public interface Frame {
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
-    public WaitForSelectorOptions setStrict(boolean strict) {
+    public WaitForSelectorOptions setStrict(@Nullable Boolean strict) {
       this.strict = strict;
       return this;
     }
@@ -2562,7 +2562,7 @@ public interface Frame {
      * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForSelectorOptions setTimeout(double timeout) {
+    public WaitForSelectorOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2597,7 +2597,7 @@ public interface Frame {
      * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
      * methods.
      */
-    public WaitForURLOptions setTimeout(double timeout) {
+    public WaitForURLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2611,7 +2611,7 @@ public interface Frame {
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
-    public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {
+    public WaitForURLOptions setWaitUntil(@Nullable WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }

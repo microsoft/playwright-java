@@ -47,7 +47,7 @@ public interface PageAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public MatchesAriaSnapshotOptions setTimeout(double timeout) {
+    public MatchesAriaSnapshotOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -61,7 +61,7 @@ public interface PageAssertions {
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasTitleOptions setTimeout(double timeout) {
+    public HasTitleOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -81,14 +81,14 @@ public interface PageAssertions {
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
      * expression parameter if specified. A provided predicate ignores this flag.
      */
-    public HasURLOptions setIgnoreCase(boolean ignoreCase) {
+    public HasURLOptions setIgnoreCase(@Nullable Boolean ignoreCase) {
       this.ignoreCase = ignoreCase;
       return this;
     }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
-    public HasURLOptions setTimeout(double timeout) {
+    public HasURLOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }

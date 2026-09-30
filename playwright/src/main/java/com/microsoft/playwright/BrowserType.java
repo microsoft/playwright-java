@@ -97,14 +97,14 @@ public interface BrowserType {
      * <li> {@code "*.test.internal-domain,*.staging.internal-domain,<loopback>"} to expose test/staging deployments and localhost.</li>
      * </ol>
      */
-    public ConnectOptions setExposeNetwork(String exposeNetwork) {
+    public ConnectOptions setExposeNetwork(@Nullable String exposeNetwork) {
       this.exposeNetwork = exposeNetwork;
       return this;
     }
     /**
      * Additional HTTP headers to be sent with web socket connect request. Optional.
      */
-    public ConnectOptions setHeaders(Map<String, String> headers) {
+    public ConnectOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
@@ -112,14 +112,14 @@ public interface BrowserType {
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
-    public ConnectOptions setSlowMo(double slowMo) {
+    public ConnectOptions setSlowMo(@Nullable Double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
     /**
      * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 0} (no timeout).
      */
-    public ConnectOptions setTimeout(double timeout) {
+    public ConnectOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -161,14 +161,14 @@ public interface BrowserType {
     /**
      * If specified, browser artifacts (such as traces and downloads) are saved into this directory.
      */
-    public ConnectOverCDPOptions setArtifactsDir(Path artifactsDir) {
+    public ConnectOverCDPOptions setArtifactsDir(@Nullable Path artifactsDir) {
       this.artifactsDir = artifactsDir;
       return this;
     }
     /**
      * Additional HTTP headers to be sent with connect request. Optional.
      */
-    public ConnectOverCDPOptions setHeaders(Map<String, String> headers) {
+    public ConnectOverCDPOptions setHeaders(@Nullable Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
@@ -176,7 +176,7 @@ public interface BrowserType {
      * Tells Playwright that it runs on the same host as the CDP server. It will enable certain optimizations that rely upon
      * the file system being the same between Playwright and the Browser.
      */
-    public ConnectOverCDPOptions setIsLocal(boolean isLocal) {
+    public ConnectOverCDPOptions setIsLocal(@Nullable Boolean isLocal) {
       this.isLocal = isLocal;
       return this;
     }
@@ -188,7 +188,7 @@ public interface BrowserType {
      * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
      * to {@code false}.
      */
-    public ConnectOverCDPOptions setNoDefaults(boolean noDefaults) {
+    public ConnectOverCDPOptions setNoDefaults(@Nullable Boolean noDefaults) {
       this.noDefaults = noDefaults;
       return this;
     }
@@ -196,7 +196,7 @@ public interface BrowserType {
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
-    public ConnectOverCDPOptions setSlowMo(double slowMo) {
+    public ConnectOverCDPOptions setSlowMo(@Nullable Double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
@@ -204,7 +204,7 @@ public interface BrowserType {
      * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public ConnectOverCDPOptions setTimeout(double timeout) {
+    public ConnectOverCDPOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -314,7 +314,7 @@ public interface BrowserType {
      * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
-    public LaunchOptions setArgs(List<String> args) {
+    public LaunchOptions setArgs(@Nullable List<String> args) {
       this.args = args;
       return this;
     }
@@ -323,7 +323,7 @@ public interface BrowserType {
      * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
      * closes.
      */
-    public LaunchOptions setArtifactsDir(Path artifactsDir) {
+    public LaunchOptions setArtifactsDir(@Nullable Path artifactsDir) {
       this.artifactsDir = artifactsDir;
       return this;
     }
@@ -338,7 +338,7 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public LaunchOptions setChannel(BrowserChannel channel) {
+    public LaunchOptions setChannel(@Nullable BrowserChannel channel) {
       this.channel = channel;
       return this;
     }
@@ -352,14 +352,14 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public LaunchOptions setChannel(String channel) {
+    public LaunchOptions setChannel(@Nullable String channel) {
       this.channel = channel;
       return this;
     }
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
-    public LaunchOptions setChromiumSandbox(boolean chromiumSandbox) {
+    public LaunchOptions setChromiumSandbox(@Nullable Boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
@@ -368,14 +368,14 @@ public interface BrowserType {
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
      */
-    public LaunchOptions setDownloadsPath(Path downloadsPath) {
+    public LaunchOptions setDownloadsPath(@Nullable Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public LaunchOptions setEnv(Map<String, String> env) {
+    public LaunchOptions setEnv(@Nullable Map<String, String> env) {
       this.env = env;
       return this;
     }
@@ -384,7 +384,7 @@ public interface BrowserType {
      * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
-    public LaunchOptions setExecutablePath(Path executablePath) {
+    public LaunchOptions setExecutablePath(@Nullable Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
@@ -395,28 +395,28 @@ public interface BrowserType {
      * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
      * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
-    public LaunchOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
+    public LaunchOptions setFirefoxUserPrefs(@Nullable Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
      */
-    public LaunchOptions setHandleSIGHUP(boolean handleSIGHUP) {
+    public LaunchOptions setHandleSIGHUP(@Nullable Boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
-    public LaunchOptions setHandleSIGINT(boolean handleSIGINT) {
+    public LaunchOptions setHandleSIGINT(@Nullable Boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
     /**
      * Close the browser process on SIGTERM. Defaults to {@code true}.
      */
-    public LaunchOptions setHandleSIGTERM(boolean handleSIGTERM) {
+    public LaunchOptions setHandleSIGTERM(@Nullable Boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
@@ -425,7 +425,7 @@ public interface BrowserType {
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
-    public LaunchOptions setHeadless(boolean headless) {
+    public LaunchOptions setHeadless(@Nullable Boolean headless) {
       this.headless = headless;
       return this;
     }
@@ -433,7 +433,7 @@ public interface BrowserType {
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care. Defaults to {@code false}.
      */
-    public LaunchOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+    public LaunchOptions setIgnoreAllDefaultArgs(@Nullable Boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
@@ -441,7 +441,7 @@ public interface BrowserType {
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care.
      */
-    public LaunchOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+    public LaunchOptions setIgnoreDefaultArgs(@Nullable List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
@@ -454,14 +454,14 @@ public interface BrowserType {
     /**
      * Network proxy settings.
      */
-    public LaunchOptions setProxy(Proxy proxy) {
+    public LaunchOptions setProxy(@Nullable Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
-    public LaunchOptions setSlowMo(double slowMo) {
+    public LaunchOptions setSlowMo(@Nullable Double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
@@ -469,14 +469,14 @@ public interface BrowserType {
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public LaunchOptions setTimeout(double timeout) {
+    public LaunchOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
     /**
      * If specified, traces are saved into this directory.
      */
-    public LaunchOptions setTracesDir(Path tracesDir) {
+    public LaunchOptions setTracesDir(@Nullable Path tracesDir) {
       this.tracesDir = tracesDir;
       return this;
     }
@@ -782,7 +782,7 @@ public interface BrowserType {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
-    public LaunchPersistentContextOptions setAcceptDownloads(boolean acceptDownloads) {
+    public LaunchPersistentContextOptions setAcceptDownloads(@Nullable Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
@@ -792,7 +792,7 @@ public interface BrowserType {
      * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
-    public LaunchPersistentContextOptions setArgs(List<String> args) {
+    public LaunchPersistentContextOptions setArgs(@Nullable List<String> args) {
       this.args = args;
       return this;
     }
@@ -801,7 +801,7 @@ public interface BrowserType {
      * cleaned up when the browser closes. If not specified, a temporary directory is used and cleaned up when the browser
      * closes.
      */
-    public LaunchPersistentContextOptions setArtifactsDir(Path artifactsDir) {
+    public LaunchPersistentContextOptions setArtifactsDir(@Nullable Path artifactsDir) {
       this.artifactsDir = artifactsDir;
       return this;
     }
@@ -821,14 +821,14 @@ public interface BrowserType {
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
-    public LaunchPersistentContextOptions setBaseURL(String baseURL) {
+    public LaunchPersistentContextOptions setBaseURL(@Nullable String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
     /**
      * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
-    public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
+    public LaunchPersistentContextOptions setBypassCSP(@Nullable Boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
@@ -843,7 +843,7 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public LaunchPersistentContextOptions setChannel(BrowserChannel channel) {
+    public LaunchPersistentContextOptions setChannel(@Nullable BrowserChannel channel) {
       this.channel = channel;
       return this;
     }
@@ -857,14 +857,14 @@ public interface BrowserType {
      * use branded <a href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and
      * Microsoft Edge</a>.
      */
-    public LaunchPersistentContextOptions setChannel(String channel) {
+    public LaunchPersistentContextOptions setChannel(@Nullable String channel) {
       this.channel = channel;
       return this;
     }
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
-    public LaunchPersistentContextOptions setChromiumSandbox(boolean chromiumSandbox) {
+    public LaunchPersistentContextOptions setChromiumSandbox(@Nullable Boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
@@ -885,7 +885,7 @@ public interface BrowserType {
      * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
      * replacing {@code localhost} with {@code local.playwright}.
      */
-    public LaunchPersistentContextOptions setClientCertificates(List<ClientCertificate> clientCertificates) {
+    public LaunchPersistentContextOptions setClientCertificates(@Nullable List<ClientCertificate> clientCertificates) {
       this.clientCertificates = clientCertificates;
       return this;
     }
@@ -913,7 +913,7 @@ public interface BrowserType {
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
-    public LaunchPersistentContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
+    public LaunchPersistentContextOptions setDeviceScaleFactor(@Nullable Double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
@@ -922,14 +922,14 @@ public interface BrowserType {
      * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
      * is closed.
      */
-    public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
+    public LaunchPersistentContextOptions setDownloadsPath(@Nullable Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public LaunchPersistentContextOptions setEnv(Map<String, String> env) {
+    public LaunchPersistentContextOptions setEnv(@Nullable Map<String, String> env) {
       this.env = env;
       return this;
     }
@@ -938,14 +938,14 @@ public interface BrowserType {
      * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
-    public LaunchPersistentContextOptions setExecutablePath(Path executablePath) {
+    public LaunchPersistentContextOptions setExecutablePath(@Nullable Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
     /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
-    public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public LaunchPersistentContextOptions setExtraHTTPHeaders(@Nullable Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
@@ -956,7 +956,7 @@ public interface BrowserType {
      * <p> You can also provide a path to a custom <a href="https://mozilla.github.io/policy-templates/">{@code policies.json}
      * file</a> via {@code PLAYWRIGHT_FIREFOX_POLICIES_JSON} environment variable.
      */
-    public LaunchPersistentContextOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
+    public LaunchPersistentContextOptions setFirefoxUserPrefs(@Nullable Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
@@ -972,28 +972,28 @@ public interface BrowserType {
     public LaunchPersistentContextOptions setGeolocation(double latitude, double longitude) {
       return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public LaunchPersistentContextOptions setGeolocation(Geolocation geolocation) {
+    public LaunchPersistentContextOptions setGeolocation(@Nullable Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
      */
-    public LaunchPersistentContextOptions setHandleSIGHUP(boolean handleSIGHUP) {
+    public LaunchPersistentContextOptions setHandleSIGHUP(@Nullable Boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
-    public LaunchPersistentContextOptions setHandleSIGINT(boolean handleSIGINT) {
+    public LaunchPersistentContextOptions setHandleSIGINT(@Nullable Boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
     /**
      * Close the browser process on SIGTERM. Defaults to {@code true}.
      */
-    public LaunchPersistentContextOptions setHandleSIGTERM(boolean handleSIGTERM) {
+    public LaunchPersistentContextOptions setHandleSIGTERM(@Nullable Boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
@@ -1001,7 +1001,7 @@ public interface BrowserType {
      * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
-    public LaunchPersistentContextOptions setHasTouch(boolean hasTouch) {
+    public LaunchPersistentContextOptions setHasTouch(@Nullable Boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
@@ -1010,7 +1010,7 @@ public interface BrowserType {
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://hacks.mozilla.org/2017/12/using-headless-mode-in-firefox/">Firefox</a>. Defaults to {@code true}.
      */
-    public LaunchPersistentContextOptions setHeadless(boolean headless) {
+    public LaunchPersistentContextOptions setHeadless(@Nullable Boolean headless) {
       this.headless = headless;
       return this;
     }
@@ -1031,7 +1031,7 @@ public interface BrowserType {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public LaunchPersistentContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
+    public LaunchPersistentContextOptions setHttpCredentials(@Nullable HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
@@ -1042,7 +1042,7 @@ public interface BrowserType {
      * <p> Pass an array to use different credentials for different origins. The first entry that matches the request origin is
      * used, and entries with no origin match any request.
      */
-    public LaunchPersistentContextOptions setHttpCredentials(List<HttpCredentials> httpCredentials) {
+    public LaunchPersistentContextOptions setHttpCredentials(@Nullable List<HttpCredentials> httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
@@ -1050,7 +1050,7 @@ public interface BrowserType {
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care. Defaults to {@code false}.
      */
-    public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+    public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(@Nullable Boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
@@ -1058,14 +1058,14 @@ public interface BrowserType {
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
      * Dangerous option; use with care.
      */
-    public LaunchPersistentContextOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+    public LaunchPersistentContextOptions setIgnoreDefaultArgs(@Nullable List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
     /**
      * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
-    public LaunchPersistentContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public LaunchPersistentContextOptions setIgnoreHTTPSErrors(@Nullable Boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
@@ -1074,7 +1074,7 @@ public interface BrowserType {
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
      * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
-    public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
+    public LaunchPersistentContextOptions setIsMobile(@Nullable Boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
@@ -1082,7 +1082,7 @@ public interface BrowserType {
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
-    public LaunchPersistentContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
+    public LaunchPersistentContextOptions setJavaScriptEnabled(@Nullable Boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -1092,7 +1092,7 @@ public interface BrowserType {
      * locale. Learn more about emulation in our <a
      * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
-    public LaunchPersistentContextOptions setLocale(String locale) {
+    public LaunchPersistentContextOptions setLocale(@Nullable String locale) {
       this.locale = locale;
       return this;
     }
@@ -1100,7 +1100,7 @@ public interface BrowserType {
      * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
      * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
-    public LaunchPersistentContextOptions setOffline(boolean offline) {
+    public LaunchPersistentContextOptions setOffline(@Nullable Boolean offline) {
       this.offline = offline;
       return this;
     }
@@ -1109,7 +1109,7 @@ public interface BrowserType {
      * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
      * to none.
      */
-    public LaunchPersistentContextOptions setPermissions(List<String> permissions) {
+    public LaunchPersistentContextOptions setPermissions(@Nullable List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
@@ -1122,7 +1122,7 @@ public interface BrowserType {
     /**
      * Network proxy settings.
      */
-    public LaunchPersistentContextOptions setProxy(Proxy proxy) {
+    public LaunchPersistentContextOptions setProxy(@Nullable Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
@@ -1131,7 +1131,7 @@ public interface BrowserType {
      * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
      * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
-    public LaunchPersistentContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {
+    public LaunchPersistentContextOptions setRecordHarContent(@Nullable HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
@@ -1140,14 +1140,14 @@ public interface BrowserType {
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * full}.
      */
-    public LaunchPersistentContextOptions setRecordHarMode(HarMode recordHarMode) {
+    public LaunchPersistentContextOptions setRecordHarMode(@Nullable HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
       return this;
     }
     /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public LaunchPersistentContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
+    public LaunchPersistentContextOptions setRecordHarOmitContent(@Nullable Boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
@@ -1156,15 +1156,15 @@ public interface BrowserType {
      * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
      * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
-    public LaunchPersistentContextOptions setRecordHarPath(Path recordHarPath) {
+    public LaunchPersistentContextOptions setRecordHarPath(@Nullable Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public LaunchPersistentContextOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+    public LaunchPersistentContextOptions setRecordHarUrlFilter(@Nullable String recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
-    public LaunchPersistentContextOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+    public LaunchPersistentContextOptions setRecordHarUrlFilter(@Nullable Pattern recordHarUrlFilter) {
       this.recordHarUrlFilter = recordHarUrlFilter;
       return this;
     }
@@ -1172,7 +1172,7 @@ public interface BrowserType {
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
-    public LaunchPersistentContextOptions setRecordVideoDir(Path recordVideoDir) {
+    public LaunchPersistentContextOptions setRecordVideoDir(@Nullable Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
@@ -1189,7 +1189,7 @@ public interface BrowserType {
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
      */
-    public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public LaunchPersistentContextOptions setRecordVideoSize(@Nullable RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
@@ -1213,7 +1213,7 @@ public interface BrowserType {
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
      * viewport} is set.
      */
-    public LaunchPersistentContextOptions setScreenSize(ScreenSize screenSize) {
+    public LaunchPersistentContextOptions setScreenSize(@Nullable ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
@@ -1225,14 +1225,14 @@ public interface BrowserType {
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
-    public LaunchPersistentContextOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+    public LaunchPersistentContextOptions setServiceWorkers(@Nullable ServiceWorkerPolicy serviceWorkers) {
       this.serviceWorkers = serviceWorkers;
       return this;
     }
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
-    public LaunchPersistentContextOptions setSlowMo(double slowMo) {
+    public LaunchPersistentContextOptions setSlowMo(@Nullable Double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
@@ -1242,7 +1242,7 @@ public interface BrowserType {
      * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
      * the strict mode.
      */
-    public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
+    public LaunchPersistentContextOptions setStrictSelectors(@Nullable Boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
@@ -1250,7 +1250,7 @@ public interface BrowserType {
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
      * {@code 0} to disable timeout.
      */
-    public LaunchPersistentContextOptions setTimeout(double timeout) {
+    public LaunchPersistentContextOptions setTimeout(@Nullable Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1259,21 +1259,21 @@ public interface BrowserType {
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
-    public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
+    public LaunchPersistentContextOptions setTimezoneId(@Nullable String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
     /**
      * If specified, traces are saved into this directory.
      */
-    public LaunchPersistentContextOptions setTracesDir(Path tracesDir) {
+    public LaunchPersistentContextOptions setTracesDir(@Nullable Path tracesDir) {
       this.tracesDir = tracesDir;
       return this;
     }
     /**
      * Specific user agent to use in this context.
      */
-    public LaunchPersistentContextOptions setUserAgent(String userAgent) {
+    public LaunchPersistentContextOptions setUserAgent(@Nullable String userAgent) {
       this.userAgent = userAgent;
       return this;
     }

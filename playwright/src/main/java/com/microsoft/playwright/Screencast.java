@@ -50,21 +50,21 @@ public interface Screencast {
     /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
-    public StartOptions setOnFrame(Consumer<ScreencastFrame> onFrame) {
+    public StartOptions setOnFrame(@Nullable Consumer<ScreencastFrame> onFrame) {
       this.onFrame = onFrame;
       return this;
     }
     /**
      * Path where the video should be saved when the screencast is stopped. When provided, video recording is started.
      */
-    public StartOptions setPath(Path path) {
+    public StartOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }
     /**
      * The quality of the image, between 0-100.
      */
-    public StartOptions setQuality(int quality) {
+    public StartOptions setQuality(@Nullable Integer quality) {
       this.quality = quality;
       return this;
     }
@@ -83,7 +83,7 @@ public interface Screencast {
      * configuration takes precedence and the frame size may exceed these bounds or this option may be ignored. If not
      * specified the size will be equal to page viewport scaled down to fit into 800×800.
      */
-    public StartOptions setSize(Size size) {
+    public StartOptions setSize(@Nullable Size size) {
       this.size = size;
       return this;
     }
@@ -99,7 +99,7 @@ public interface Screencast {
      * Duration in milliseconds after which the overlay is automatically removed. Overlay stays until dismissed if not
      * provided.
      */
-    public ShowOverlayOptions setDuration(double duration) {
+    public ShowOverlayOptions setDuration(@Nullable Double duration) {
       this.duration = duration;
       return this;
     }
@@ -117,14 +117,14 @@ public interface Screencast {
     /**
      * Optional description text displayed below the title.
      */
-    public ShowChapterOptions setDescription(String description) {
+    public ShowChapterOptions setDescription(@Nullable String description) {
       this.description = description;
       return this;
     }
     /**
      * Duration in milliseconds after which the overlay is automatically removed. Defaults to {@code 2000}.
      */
-    public ShowChapterOptions setDuration(double duration) {
+    public ShowChapterOptions setDuration(@Nullable Double duration) {
       this.duration = duration;
       return this;
     }
@@ -152,28 +152,28 @@ public interface Screencast {
      * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
      * the previous action point to the next one. {@code "none"} disables the cursor decoration.
      */
-    public ShowActionsOptions setCursor(ScreencastCursor cursor) {
+    public ShowActionsOptions setCursor(@Nullable ScreencastCursor cursor) {
       this.cursor = cursor;
       return this;
     }
     /**
      * How long each annotation is displayed in milliseconds. Defaults to {@code 500}.
      */
-    public ShowActionsOptions setDuration(double duration) {
+    public ShowActionsOptions setDuration(@Nullable Double duration) {
       this.duration = duration;
       return this;
     }
     /**
      * Font size of the action title in pixels. Defaults to {@code 24}.
      */
-    public ShowActionsOptions setFontSize(int fontSize) {
+    public ShowActionsOptions setFontSize(@Nullable Integer fontSize) {
       this.fontSize = fontSize;
       return this;
     }
     /**
      * Position of the action title overlay. Defaults to {@code "top-right"}.
      */
-    public ShowActionsOptions setPosition(AnnotatePosition position) {
+    public ShowActionsOptions setPosition(@Nullable AnnotatePosition position) {
       this.position = position;
       return this;
     }

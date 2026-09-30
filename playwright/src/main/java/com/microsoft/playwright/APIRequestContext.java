@@ -52,7 +52,7 @@ public interface APIRequestContext {
     /**
      * The reason to be reported to the operations interrupted by the context disposal.
      */
-    public DisposeOptions setReason(String reason) {
+    public DisposeOptions setReason(@Nullable String reason) {
       this.reason = reason;
       return this;
     }
@@ -75,14 +75,14 @@ public interface APIRequestContext {
     /**
      * Set to {@code true} to include IndexedDB in the storage state snapshot.
      */
-    public StorageStateOptions setIndexedDB(boolean indexedDB) {
+    public StorageStateOptions setIndexedDB(@Nullable Boolean indexedDB) {
       this.indexedDB = indexedDB;
       return this;
     }
     /**
      * Set to {@code true} to include the origin private file system in the storage state snapshot.
      */
-    public StorageStateOptions setOpfs(boolean opfs) {
+    public StorageStateOptions setOpfs(@Nullable Boolean opfs) {
       this.opfs = opfs;
       return this;
     }
@@ -90,7 +90,7 @@ public interface APIRequestContext {
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
      * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
-    public StorageStateOptions setPath(Path path) {
+    public StorageStateOptions setPath(@Nullable Path path) {
       this.path = path;
       return this;
     }

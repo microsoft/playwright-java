@@ -105,28 +105,28 @@ public interface Credentials {
     /**
      * Base64url-encoded credential id. Auto-generated if omitted.
      */
-    public CreateOptions setId(String id) {
+    public CreateOptions setId(@Nullable String id) {
       this.id = id;
       return this;
     }
     /**
      * Base64url-encoded PKCS#8 (DER) private key. Auto-generated if omitted.
      */
-    public CreateOptions setPrivateKey(String privateKey) {
+    public CreateOptions setPrivateKey(@Nullable String privateKey) {
       this.privateKey = privateKey;
       return this;
     }
     /**
      * Base64url-encoded SPKI (DER) public key. Auto-generated if omitted.
      */
-    public CreateOptions setPublicKey(String publicKey) {
+    public CreateOptions setPublicKey(@Nullable String publicKey) {
       this.publicKey = publicKey;
       return this;
     }
     /**
      * Base64url-encoded user handle. Auto-generated if omitted.
      */
-    public CreateOptions setUserHandle(String userHandle) {
+    public CreateOptions setUserHandle(@Nullable String userHandle) {
       this.userHandle = userHandle;
       return this;
     }
@@ -144,14 +144,14 @@ public interface Credentials {
     /**
      * Only return the credential with this base64url-encoded id.
      */
-    public GetOptions setId(String id) {
+    public GetOptions setId(@Nullable String id) {
       this.id = id;
       return this;
     }
     /**
      * Only return credentials for this relying party id.
      */
-    public GetOptions setRpId(String rpId) {
+    public GetOptions setRpId(@Nullable String rpId) {
       this.rpId = rpId;
       return this;
     }
