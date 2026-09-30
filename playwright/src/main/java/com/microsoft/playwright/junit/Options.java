@@ -38,6 +38,8 @@ public class Options {
   // Custom attribute to be used in page.getByTestId(). data-testid is used by default.
   public String testIdAttribute;
   public Boolean ignoreHTTPSErrors;
+  // Default timeout applied to each injected BrowserContext.
+  public Double defaultTimeout;
   public BrowserType.LaunchOptions launchOptions;
   public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
@@ -129,6 +131,17 @@ public class Options {
 
   public Options setIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
     this.ignoreHTTPSErrors = ignoreHTTPSErrors;
+    return this;
+  }
+
+  /**
+   * Sets the default timeout for each BrowserContext created by the JUnit extension.
+   *
+   * @param defaultTimeout timeout in milliseconds
+   * @return this options instance
+   */
+  public Options setDefaultTimeout(Double defaultTimeout) {
+    this.defaultTimeout = defaultTimeout;
     return this;
   }
 }
