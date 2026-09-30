@@ -17,6 +17,8 @@
 package com.microsoft.playwright.options;
 
 public enum AnnotatePosition {
+  /** Hide the action title overlay while keeping the cursor visible. */
+  HIDDEN,
   TOP_LEFT,
   TOP,
   TOP_RIGHT,

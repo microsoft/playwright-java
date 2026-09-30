@@ -228,4 +228,13 @@ public class TestScreencast {
       disposable.close();
     }
   }
+
+  @Test
+  void screencastShowActionsCanHideTheActionTitle(Page page, Server server) throws Exception {
+    page.navigate(server.EMPTY_PAGE);
+    AutoCloseable disposable = page.screencast().showActions(
+        new Screencast.ShowActionsOptions().setPosition(AnnotatePosition.HIDDEN));
+    assertNotNull(disposable);
+    disposable.close();
+  }
 }
