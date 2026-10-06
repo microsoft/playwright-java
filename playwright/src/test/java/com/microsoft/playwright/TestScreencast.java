@@ -20,7 +20,7 @@ import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.AnnotatePosition;
 import com.microsoft.playwright.options.ScreencastCursor;
-import com.microsoft.playwright.options.Style;
+import com.microsoft.playwright.options.ScreencastActionStyle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -267,7 +267,7 @@ public class TestScreencast {
     List<ScreencastFrame> frames = new ArrayList<>();
     page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
     // The decorations are only shown while the action is in progress, so look for them in the screencast frames.
-    page.screencast().showActions(new Screencast.ShowActionsOptions().setDuration(1000).setStyle(new Style()
+    page.screencast().showActions(new Screencast.ShowActionsOptions().setDuration(1000).setStyle(new ScreencastActionStyle()
       .setPoint("width: 100px; height: 100px; background: rgb(255, 0, 0); animation: none")));
     page.click("button");
     page.screencast().stop();

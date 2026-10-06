@@ -18,7 +18,7 @@ package com.microsoft.playwright.options;
 
 import org.jspecify.annotations.Nullable;
 
-public class Style {
+public class ScreencastActionStyle {
   /**
    * CSS declarations for the marker at the action point. The marker is positioned at the action point, has zero size and is
    * centered on the point, so its size and look come from this style. Not shown when omitted.
@@ -39,7 +39,7 @@ public class Style {
    * CSS declarations for the marker at the action point. The marker is positioned at the action point, has zero size and is
    * centered on the point, so its size and look come from this style. Not shown when omitted.
    */
-  public Style setPoint(String point) {
+  public ScreencastActionStyle setPoint(String point) {
     this.point = point;
     return this;
   }
@@ -47,7 +47,7 @@ public class Style {
    * CSS declarations for the box that covers the target element. The box is positioned and sized to the element bounds. Not
    * shown when omitted.
    */
-  public Style setHighlight(String highlight) {
+  public ScreencastActionStyle setHighlight(String highlight) {
     this.highlight = highlight;
     return this;
   }
@@ -55,7 +55,7 @@ public class Style {
    * CSS declarations for the action title, for example {@code "font-size: 32px; background: #333"}. The title is placed
    * according to {@code position}.
    */
-  public Style setTitle(String title) {
+  public ScreencastActionStyle setTitle(String title) {
     this.title = title;
     return this;
   }

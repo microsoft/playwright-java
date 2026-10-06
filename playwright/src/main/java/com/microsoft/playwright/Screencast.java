@@ -171,7 +171,7 @@ public interface Screencast {
      *
      * <p> <strong>Usage</strong>
      */
-    public @Nullable Style style;
+    public @Nullable ScreencastActionStyle style;
 
     /**
      * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
@@ -207,7 +207,7 @@ public interface Screencast {
      *
      * <p> <strong>Usage</strong>
      */
-    public ShowActionsOptions setStyle(Style style) {
+    public ShowActionsOptions setStyle(ScreencastActionStyle style) {
       this.style = style;
       return this;
     }
