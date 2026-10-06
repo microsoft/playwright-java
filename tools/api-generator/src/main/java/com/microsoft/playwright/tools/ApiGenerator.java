@@ -1077,7 +1077,7 @@ class Interface extends TypeDefinition {
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute", "Credentials", "WebStorage").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "APIRequestContext", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute", "Credentials", "WebStorage").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {
@@ -1093,7 +1093,7 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }
-    if (asList("Page", "Frame", "FrameLocator", "Locator", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions", "Tracing").contains(jsonName)) {
+    if (asList("Page", "Frame", "FrameLocator", "Locator", "APIRequestContext", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions", "Tracing").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
     }
     if ("CDPSession".equals(jsonName)) {

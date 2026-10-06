@@ -18,10 +18,12 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.APIRequest.NewContextOptions;
+import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.HttpCredentials;
 import com.microsoft.playwright.options.HttpCredentialsSend;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.RequestOptions;
+import com.microsoft.playwright.options.SameSiteAttribute;
 import com.microsoft.playwright.options.ServerAddr;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -163,6 +167,96 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(contentType.isPresent());
     assertEquals("application/json", contentType.get().value);
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
+
+  private static List<String> cookieNames(List<Cookie> cookies) {
+    return cookies.stream().map(c -> c.name).collect(Collectors.toList());
+  }
+
+  private static List<String> sortedCookieValues(APIRequestContext request) {
+    return request.cookies().stream().map(c -> c.value).sorted().collect(Collectors.toList());
+  }
+
+  @Test
+  void addCookiesShouldAddCookiesToTheCookieJar() throws ExecutionException, InterruptedException {
+    APIRequestContext request = playwright.request().newContext();
+    request.addCookies(asList(
+      new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
+      new Cookie("c", "d").setDomain("localhost").setPath("/input").setHttpOnly(true).setSameSite(SameSiteAttribute.STRICT),
+      new Cookie("e", "f").setDomain("other.com").setPath("/")));
+    Future<Server.Request> serverRequest = server.futureRequest("/input/button.html");
+    request.get(server.PREFIX + "/input/button.html");
+    assertEquals(asList("a=b; c=d"), serverRequest.get().headers.get("cookie"));
+    List<Cookie> cookies = request.cookies();
+    assertEquals(asList("a", "c", "e"), cookieNames(cookies));
+    Cookie cookie = cookies.get(1);
+    assertEquals("d", cookie.value);
+    assertEquals("localhost", cookie.domain);
+    assertEquals("/input", cookie.path);
+    assertEquals(-1.0, cookie.expires);
+    assertEquals(true, cookie.httpOnly);
+    assertEquals(false, cookie.secure);
+    assertEquals(SameSiteAttribute.STRICT, cookie.sameSite);
+    request.dispose();
+  }
+
+  @Test
+  void addCookiesShouldValidateCookies() {
+    APIRequestContext request = playwright.request().newContext();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.addCookies(asList(new Cookie("a", "b"))));
+    assertTrue(e.getMessage().contains("Cookie should have a url or a domain/path pair"), e.getMessage());
+    request.dispose();
+  }
+
+  @Test
+  void cookiesShouldReturnCookiesFilteredByUrls() {
+    APIRequestContext request = playwright.request().newContext();
+    request.addCookies(asList(
+      new Cookie("a", "b").setDomain("localhost").setPath("/"),
+      new Cookie("c", "d").setDomain("localhost").setPath("/input"),
+      new Cookie("e", "f").setDomain("one.com").setPath("/"),
+      new Cookie("g", "h").setDomain("two.com").setPath("/").setSecure(true)));
+    assertEquals(asList("a", "c", "e", "g"), cookieNames(request.cookies()));
+    assertEquals(asList("a"), cookieNames(request.cookies(server.EMPTY_PAGE)));
+    assertEquals(asList("a", "c"), cookieNames(request.cookies(server.PREFIX + "/input/button.html")));
+    assertEquals(asList("e"), cookieNames(request.cookies(asList("http://sub.one.com/", "http://two.com/"))));
+    assertEquals(asList("e", "g"), cookieNames(request.cookies(asList("http://sub.one.com/", "https://two.com/"))));
+    assertEquals(asList(), request.cookies("http://other.com/"));
+    request.dispose();
+  }
+
+  @Test
+  void clearCookiesShouldRemoveAllCookies() throws ExecutionException, InterruptedException {
+    APIRequestContext request = playwright.request().newContext();
+    request.addCookies(asList(
+      new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
+      new Cookie("c", "d").setDomain("one.com").setPath("/")));
+    request.clearCookies();
+    assertEquals(asList(), request.cookies());
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    request.get(server.EMPTY_PAGE);
+    assertNull(serverRequest.get().headers.get("cookie"));
+    request.dispose();
+  }
+
+  @Test
+  void clearCookiesShouldFilterByNameDomainAndPath() {
+    APIRequestContext request = playwright.request().newContext();
+    request.addCookies(asList(
+      new Cookie("session", "1").setDomain("one.com").setPath("/"),
+      new Cookie("session", "2").setDomain("two.com").setPath("/"),
+      new Cookie("session", "3").setDomain("two.com").setPath("/api"),
+      new Cookie("other", "4").setDomain("one.com").setPath("/")));
+
+    request.clearCookies(new APIRequestContext.ClearCookiesOptions().setName("session").setDomain("two.com").setPath("/api"));
+    assertEquals(asList("1", "2", "4"), sortedCookieValues(request));
+
+    request.clearCookies(new APIRequestContext.ClearCookiesOptions().setDomain(Pattern.compile("one\\.com$")));
+    assertEquals(asList("2"), sortedCookieValues(request));
+
+    request.clearCookies(new APIRequestContext.ClearCookiesOptions().setName(Pattern.compile("^sess")));
+    assertEquals(asList(), sortedCookieValues(request));
+    request.dispose();
   }
 
   @Test

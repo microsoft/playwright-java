@@ -464,7 +464,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Set to {@code true} to include the context's virtual WebAuthn {@link com.microsoft.playwright.BrowserContext#credentials
      * BrowserContext.credentials()} (passkeys) in the storage state snapshot. The captured credentials carry their private
-     * keys, so they can be re-seeded into a later context via the {@code storageState} option or {@link
+     * keys and signature counters, so they can be re-seeded into a later context via the {@code storageState} option or {@link
      * com.microsoft.playwright.BrowserContext#setStorageState BrowserContext.setStorageState()}. Note that restoring the
      * storage state that contains credentials will automatically install the virtual WebAuthn authenticator (see {@link
      * com.microsoft.playwright.Credentials#install Credentials.install()}), and prevent all real authenticators from working
@@ -494,7 +494,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Set to {@code true} to include the context's virtual WebAuthn {@link com.microsoft.playwright.BrowserContext#credentials
      * BrowserContext.credentials()} (passkeys) in the storage state snapshot. The captured credentials carry their private
-     * keys, so they can be re-seeded into a later context via the {@code storageState} option or {@link
+     * keys and signature counters, so they can be re-seeded into a later context via the {@code storageState} option or {@link
      * com.microsoft.playwright.BrowserContext#setStorageState BrowserContext.setStorageState()}. Note that restoring the
      * storage state that contains credentials will automatically install the virtual WebAuthn authenticator (see {@link
      * com.microsoft.playwright.Credentials#install Credentials.install()}), and prevent all real authenticators from working
@@ -1519,6 +1519,11 @@ public interface BrowserContext extends AutoCloseable {
    *
    *
    * @param offline Whether to emulate network being offline for the browser context.
+   *
+   * <p> <strong>NOTE:</strong> Offline emulation only affects requests that go through the browser's regular network stack, such as page navigations,
+   * {@code fetch()}, {@code XMLHttpRequest} and WebSockets. It does not affect WebRTC traffic: established {@code
+   * RTCPeerConnection}s keep sending and receiving media over UDP. To test WebRTC connection loss, interrupt the connection
+   * outside the browser, for example by stopping the TURN server or using an OS-level firewall.
    * @since v1.8
    */
   void setOffline(boolean offline);

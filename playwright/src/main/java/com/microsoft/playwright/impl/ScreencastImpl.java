@@ -73,6 +73,9 @@ class ScreencastImpl implements Screencast {
       if (options.quality != null) {
         params.addProperty("quality", options.quality);
       }
+      if (options.fps != null) {
+        params.addProperty("fps", options.fps);
+      }
       params.addProperty("sendFrames", options.onFrame != null);
       params.addProperty("record", options.path != null);
       savePath = options.path;
@@ -143,6 +146,12 @@ class ScreencastImpl implements Screencast {
       }
       if (options.position != null) {
         params.add("position", gson().toJsonTree(options.position));
+      }
+      if (options.cursor != null) {
+        params.add("cursor", gson().toJsonTree(options.cursor));
+      }
+      if (options.style != null) {
+        params.add("style", gson().toJsonTree(options.style));
       }
     }
     page.sendMessage("screencastShowActions", params, NO_TIMEOUT);

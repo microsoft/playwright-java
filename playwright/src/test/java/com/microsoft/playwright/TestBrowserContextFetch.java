@@ -35,6 +35,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -203,6 +204,51 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("username=John Doe"), req.get().headers.get("cookie"));
     assertEquals(server.PREFIX + "/simple.json", response.url());
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
+
+  private static List<String> sortedCookiePairs(String cookieHeader) {
+    return Arrays.stream(cookieHeader.split(";")).map(String::trim).sorted().collect(Collectors.toList());
+  }
+
+  @Test
+  void pageRequestAddCookiesShouldAddCookiesToTheBrowserContext() throws ExecutionException, InterruptedException {
+    page.request().addCookies(asList(
+      new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
+      new Cookie("c", "d").setDomain("localhost").setPath("/").setExpires(System.currentTimeMillis() / 1000 + 3600)));
+    assertEquals(asList("a=b", "c=d"), context.cookies().stream()
+      .map(c -> c.name + "=" + c.value).sorted().collect(Collectors.toList()));
+    Future<Server.Request> req = server.futureRequest("/empty.html");
+    context.request().get(server.EMPTY_PAGE);
+    assertEquals(asList("a=b", "c=d"), sortedCookiePairs(req.get().headers.get("cookie").get(0)));
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList("a=b", "c=d"), sortedCookiePairs((String) page.evaluate("document.cookie")));
+  }
+
+  @Test
+  void pageRequestCookiesShouldReturnBrowserContextCookies() {
+    context.addCookies(asList(
+      new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
+      new Cookie("c", "d").setDomain("example.com").setPath("/")));
+    assertEquals(asList("a", "c"), page.request().cookies().stream()
+      .map(c -> c.name).sorted().collect(Collectors.toList()));
+    assertEquals(asList("a"), page.request().cookies(server.EMPTY_PAGE).stream()
+      .map(c -> c.name).collect(Collectors.toList()));
+    assertEquals(new Gson().toJson(context.cookies(server.EMPTY_PAGE)),
+      new Gson().toJson(page.request().cookies(server.EMPTY_PAGE)));
+  }
+
+  @Test
+  void pageRequestClearCookiesShouldClearBrowserContextCookies() throws ExecutionException, InterruptedException {
+    context.addCookies(asList(
+      new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
+      new Cookie("c", "d").setUrl(server.EMPTY_PAGE)));
+    page.request().clearCookies(new APIRequestContext.ClearCookiesOptions().setName("a"));
+    assertEquals(asList("c"), context.cookies().stream().map(c -> c.name).collect(Collectors.toList()));
+    page.request().clearCookies();
+    assertEquals(0, context.cookies().size());
+    Future<Server.Request> req = server.futureRequest("/empty.html");
+    page.request().get(server.EMPTY_PAGE);
+    assertNull(req.get().headers.get("cookie"));
   }
 
   @Test

@@ -727,6 +727,26 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class ContentOptions {
+    /**
+     * When true, contents of open shadow roots are included as <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM#declaratively_with_html">declarative
+     * shadow DOM</a>, i.e. {@code <template shadowrootmode="open">} elements nested inside their host elements. Closed shadow
+     * roots are never included. Defaults to {@code false}.
+     */
+    public @Nullable Boolean includeShadow;
+
+    /**
+     * When true, contents of open shadow roots are included as <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM#declaratively_with_html">declarative
+     * shadow DOM</a>, i.e. {@code <template shadowrootmode="open">} elements nested inside their host elements. Closed shadow
+     * roots are never included. Defaults to {@code false}.
+     */
+    public ContentOptions setIncludeShadow(boolean includeShadow) {
+      this.includeShadow = includeShadow;
+      return this;
+    }
+  }
   class DblclickOptions {
     /**
      * Defaults to {@code left}.
@@ -4242,7 +4262,15 @@ public interface Page extends AutoCloseable {
    *
    * @since v1.8
    */
-  String content();
+  default String content() {
+    return content(null);
+  }
+  /**
+   * Gets the full HTML contents of the page, including the doctype.
+   *
+   * @since v1.8
+   */
+  String content(@Nullable ContentOptions options);
   /**
    * Get the browser context that the page belongs to.
    *
@@ -5288,6 +5316,24 @@ public interface Page extends AutoCloseable {
    * @since v1.27
    */
   Locator getByPlaceholder(Pattern text, @Nullable GetByPlaceholderOptions options);
+  /**
+   * Locate element by its aria ref. Refs like {@code [ref=e2]} are reported by {@link
+   * com.microsoft.playwright.Page#ariaSnapshot Page.ariaSnapshot()} when called with the {@code "ai"} mode, and resolve
+   * against the latest snapshot taken in the element's frame.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> Consider the following aria snapshot.
+   *
+   * <p> You can locate the button by its ref:
+   * <pre>{@code
+   * page.getByRef("e2").click();
+   * }</pre>
+   *
+   * @param ref Aria ref of the element, for example {@code e2} or {@code f1e3}.
+   * @since v1.64
+   */
+  Locator getByRef(String ref);
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a

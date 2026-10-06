@@ -89,6 +89,7 @@ public interface Clock {
    * Install fake implementations for the following time-related functions:
    * <ul>
    * <li> {@code Date}</li>
+   * <li> {@code Temporal.Now}</li>
    * <li> {@code setTimeout}</li>
    * <li> {@code clearTimeout}</li>
    * <li> {@code setInterval}</li>
@@ -113,6 +114,7 @@ public interface Clock {
    * Install fake implementations for the following time-related functions:
    * <ul>
    * <li> {@code Date}</li>
+   * <li> {@code Temporal.Now}</li>
    * <li> {@code setTimeout}</li>
    * <li> {@code clearTimeout}</li>
    * <li> {@code setInterval}</li>

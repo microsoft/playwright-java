@@ -121,6 +121,60 @@ public class TestBrowserContextWebAuthn extends TestBase {
     assertEquals("NotAllowedError", error);
   }
 
+  // Runs an assertion ceremony with a discoverable credential, returns the signature counter from the authenticator data.
+  private static int assertAndGetSignCount(Page page, String rpId) {
+    return (int) page.evaluate(
+      "async ({ rpId }) => {\n" +
+      "  const challenge = crypto.getRandomValues(new Uint8Array(32));\n" +
+      "  const cred = await navigator.credentials.get({\n" +
+      "    publicKey: { challenge, rpId, userVerification: 'preferred' },\n" +
+      "  });\n" +
+      "  return new DataView(cred.response.authenticatorData).getUint32(33);\n" +
+      "}", mapOf("rpId", rpId));
+  }
+
+  @Test
+  void shouldSeedAndReportSignCount() {
+    VirtualCredential fresh = context.credentials().create("fresh.example.com");
+    assertEquals(0, fresh.signCount);
+
+    VirtualCredential seeded = context.credentials().create("localhost", new Credentials.CreateOptions().setSignCount(41));
+    assertEquals(41, seeded.signCount);
+    context.credentials().install();
+    page.navigate(server.EMPTY_PAGE);
+
+    // Each assertion increments the counter and reports the new value to the page.
+    assertEquals(42, assertAndGetSignCount(page, "localhost"));
+    assertEquals(43, assertAndGetSignCount(page, "localhost"));
+    List<VirtualCredential> credentials = context.credentials().get(new Credentials.GetOptions().setId(seeded.id));
+    assertEquals(1, credentials.size());
+    VirtualCredential captured = credentials.get(0);
+    assertEquals(43, captured.signCount);
+    assertEquals(0, context.credentials().get(new Credentials.GetOptions().setId(fresh.id)).get(0).signCount);
+
+    // A captured credential continues from the same counter in another context.
+    try (BrowserContext context2 = browser.newContext()) {
+      context2.credentials().create(captured.rpId, new Credentials.CreateOptions()
+        .setId(captured.id)
+        .setUserHandle(captured.userHandle)
+        .setPrivateKey(captured.privateKey)
+        .setPublicKey(captured.publicKey)
+        .setSignCount(captured.signCount));
+      context2.credentials().install();
+      Page page2 = context2.newPage();
+      page2.navigate(server.EMPTY_PAGE);
+      assertEquals(44, assertAndGetSignCount(page2, "localhost"));
+    }
+  }
+
+  @Test
+  void shouldRejectInvalidSignCount() {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> context.credentials().create("example.com", new Credentials.CreateOptions().setSignCount(-1)));
+    assertTrue(e.getMessage().contains("signCount must be between 0 and 4294967295, got -1"), e.getMessage());
+    assertEquals(0, context.credentials().get().size());
+  }
+
   @Test
   void shouldCapturePageCreatedCredentialAndReuseItInAnotherContext() {
     // Setup context: the app registers a passkey via navigator.credentials.create().

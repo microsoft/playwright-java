@@ -258,4 +258,23 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("button").and(page.getByRole(AriaRole.BUTTON))).hasText(new String[]{"three", "five"});
   }
 
+  @Test
+  void shouldSupportLocatorWithin() {
+    page.setContent("\n" +
+      "    <table>\n" +
+      "      <tr><td>a1</td><td>a2</td><td>a3</td></tr>\n" +
+      "      <tr><td>b1</td><td>b2</td><td>b3</td></tr>\n" +
+      "      <tr><td>c1</td><td>c2</td><td>c3</td></tr>\n" +
+      "    </table>\n" +
+      "    <span>outside</span>\n" +
+      "  ");
+
+    assertThat(page.getByRole(AriaRole.CELL).within(page.getByRole(AriaRole.ROW))).hasText(new String[]{"a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"});
+    assertThat(page.getByRole(AriaRole.CELL).nth(1).within(page.getByRole(AriaRole.ROW))).hasText(new String[]{"a2", "b2", "c2"});
+    assertThat(page.getByRole(AriaRole.CELL).last().within(page.getByRole(AriaRole.ROW))).hasText(new String[]{"a3", "b3", "c3"});
+    assertThat(page.getByRole(AriaRole.CELL).nth(1).within(page.getByRole(AriaRole.ROW).nth(2))).hasText(new String[]{"c2"});
+    assertThat(page.locator("span").within(page.getByRole(AriaRole.ROW))).hasCount(0);
+    assertThat(page.getByRole(AriaRole.CELL).nth(1).within(page.getByRole(AriaRole.ROW)).nth(1)).hasText("b2");
+  }
+
 }

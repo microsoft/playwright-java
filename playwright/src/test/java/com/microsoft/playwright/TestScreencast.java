@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.AnnotatePosition;
+import com.microsoft.playwright.options.ScreencastCursor;
+import com.microsoft.playwright.options.Style;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -156,6 +158,25 @@ public class TestScreencast {
   }
 
   @Test
+  void screencastStartShouldRecordVideoWithTheRequestedFps(Page page, Server server, @TempDir Path tmpDir) throws IOException {
+    Path videoPath = tmpDir.resolve("video.webm");
+    page.screencast().start(new Screencast.StartOptions().setPath(videoPath).setFps(60));
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("() => document.body.style.backgroundColor = 'red'");
+    page.waitForTimeout(500);
+    page.screencast().stop();
+    assertTrue(Files.exists(videoPath), "video file should exist: " + videoPath);
+    assertTrue(Files.size(videoPath) > 0);
+  }
+
+  @Test
+  void screencastStartShouldThrowOnInvalidFps(Page page, @TempDir Path tmpDir) {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.screencast().start(
+      new Screencast.StartOptions().setPath(tmpDir.resolve("video.webm")).setFps(-1)));
+    assertTrue(e.getMessage().contains("\"fps\" must be a positive number, got -1"), e.getMessage());
+  }
+
+  @Test
   void screencastStartShouldThrowIfAlreadyStarted(Page page) {
     page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
     PlaywrightException e = assertThrows(PlaywrightException.class,
@@ -227,5 +248,43 @@ public class TestScreencast {
       assertNotNull(disposable);
       disposable.close();
     }
+  }
+
+  @Test
+  void screencastShowActionsShouldAcceptEveryCursor(Page page, Server server) throws Exception {
+    page.navigate(server.EMPTY_PAGE);
+    for (ScreencastCursor cursor : ScreencastCursor.values()) {
+      AutoCloseable disposable = page.screencast().showActions(
+        new Screencast.ShowActionsOptions().setCursor(cursor));
+      assertNotNull(disposable);
+      disposable.close();
+    }
+  }
+
+  @Test
+  void screencastShowActionsShouldRenderStyle(Page page, Server server) throws IOException {
+    page.navigate(server.PREFIX + "/input/button.html");
+    List<ScreencastFrame> frames = new ArrayList<>();
+    page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
+    // The decorations are only shown while the action is in progress, so look for them in the screencast frames.
+    page.screencast().showActions(new Screencast.ShowActionsOptions().setDuration(1000).setStyle(new Style()
+      .setPoint("width: 100px; height: 100px; background: rgb(255, 0, 0); animation: none")));
+    page.click("button");
+    page.screencast().stop();
+    int maxRedPixels = 0;
+    for (ScreencastFrame frame : frames) {
+      BufferedImage image = ImageIO.read(new ByteArrayInputStream(frame.data()));
+      int redPixels = 0;
+      for (int y = 0; y < image.getHeight(); y++) {
+        for (int x = 0; x < image.getWidth(); x++) {
+          int rgb = image.getRGB(x, y);
+          if (((rgb >> 16) & 0xFF) > 200 && ((rgb >> 8) & 0xFF) < 60 && (rgb & 0xFF) < 60) {
+            redPixels++;
+          }
+        }
+      }
+      maxRedPixels = Math.max(maxRedPixels, redPixels);
+    }
+    assertTrue(maxRedPixels > 1000, "expected the styled action point in one of " + frames.size() + " frames, max red pixels: " + maxRedPixels);
   }
 }

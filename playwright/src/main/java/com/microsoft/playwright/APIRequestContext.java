@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import org.jspecify.annotations.Nullable;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * This API is used for the Web API testing. You can use it to trigger API endpoints, configure micro-services, prepare
@@ -43,6 +45,63 @@ import java.nio.file.Path;
  * its own isolated cookie storage.
  */
 public interface APIRequestContext {
+  class ClearCookiesOptions {
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public @Nullable Object domain;
+    /**
+     * Only removes cookies with the given name.
+     */
+    public @Nullable Object name;
+    /**
+     * Only removes cookies with the given path.
+     */
+    public @Nullable Object path;
+
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public ClearCookiesOptions setDomain(String domain) {
+      this.domain = domain;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public ClearCookiesOptions setDomain(Pattern domain) {
+      this.domain = domain;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given name.
+     */
+    public ClearCookiesOptions setName(String name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given name.
+     */
+    public ClearCookiesOptions setName(Pattern name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given path.
+     */
+    public ClearCookiesOptions setPath(String path) {
+      this.path = path;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given path.
+     */
+    public ClearCookiesOptions setPath(Pattern path) {
+      this.path = path;
+      return this;
+    }
+  }
   class DisposeOptions {
     /**
      * The reason to be reported to the operations interrupted by the context disposal.
@@ -95,6 +154,95 @@ public interface APIRequestContext {
       return this;
     }
   }
+  /**
+   * Adds cookies into this request context. They will be sent with matching subsequent requests. For {@link
+   * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#addCookies BrowserContext.addCookies()} on the corresponding browser context.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * request.addCookies(Arrays.asList(cookieObject1, cookieObject2));
+   * }</pre>
+   *
+   * @since v1.64
+   */
+  void addCookies(List<Cookie> cookies);
+  /**
+   * Removes cookies from this request context. Accepts optional filter. For {@link
+   * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#clearCookies BrowserContext.clearCookies()} on the corresponding browser
+   * context.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * request.clearCookies();
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setName("session-id"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setDomain("my-origin.com"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setPath("/api/v1"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions()
+   *                          .setName("session-id")
+   *                          .setDomain("my-origin.com"));
+   * }</pre>
+   *
+   * @since v1.64
+   */
+  default void clearCookies() {
+    clearCookies(null);
+  }
+  /**
+   * Removes cookies from this request context. Accepts optional filter. For {@link
+   * com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#clearCookies BrowserContext.clearCookies()} on the corresponding browser
+   * context.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * request.clearCookies();
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setName("session-id"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setDomain("my-origin.com"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions().setPath("/api/v1"));
+   * request.clearCookies(new APIRequestContext.ClearCookiesOptions()
+   *                          .setName("session-id")
+   *                          .setDomain("my-origin.com"));
+   * }</pre>
+   *
+   * @since v1.64
+   */
+  void clearCookies(@Nullable ClearCookiesOptions options);
+  /**
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned. For {@link com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()} on the corresponding browser context.
+   *
+   * @since v1.64
+   */
+  default List<Cookie> cookies() {
+    return cookies((String) null);
+  }
+  /**
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned. For {@link com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()} on the corresponding browser context.
+   *
+   * @param urls Optional list of URLs.
+   * @since v1.64
+   */
+  List<Cookie> cookies(@Nullable String urls);
+  /**
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned. For {@link com.microsoft.playwright.BrowserContext#request BrowserContext.request()} and {@link
+   * com.microsoft.playwright.Page#request Page.request()}, this is equivalent to calling {@link
+   * com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()} on the corresponding browser context.
+   *
+   * @param urls Optional list of URLs.
+   * @since v1.64
+   */
+  List<Cookie> cookies(@Nullable List<String> urls);
   /**
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE">DELETE</a> request and returns
    * its response. The method will populate request cookies from the context and update context cookies from the response.
