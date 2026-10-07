@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.lang.System.currentTimeMillis;
@@ -63,7 +62,7 @@ public class Connection {
   private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
   final boolean isRemote;
-  private static final AtomicInteger lastIdOrdinal = new AtomicInteger();
+  private int lastId = 0;
   // Use a unique prefix for each client to avoid id clashes in a trace.
   private final String callIdPrefix = createCallIdPrefix();
   private final StackTraceCollector stackTraceCollector;
@@ -159,7 +158,7 @@ public class Connection {
   }
 
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
-    String id = callIdPrefix + "@" + lastIdOrdinal.incrementAndGet();
+    String id = callIdPrefix + "@" + (++lastId);
     WaitableResult<JsonElement> result = new WaitableResult<>();
     if (expectsReply) {
       callbacks.put(id, result);
