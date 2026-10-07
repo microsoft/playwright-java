@@ -5960,5 +5960,23 @@ public interface Locator {
    * @since v1.62
    */
   void waitForFunction(String expression, @Nullable Object arg, @Nullable WaitForFunctionOptions options);
+  /**
+   * Returns a locator that matches this locator's elements inside each element matched by {@code locator}.
+   *
+   * <p> Note that relative locators, such as {@link com.microsoft.playwright.Locator#nth Locator.nth()} or {@link
+   * com.microsoft.playwright.Locator#first Locator.first()}, are resolved separately inside each matched parent. In the
+   * example below, {@code page.getByRole('cell').nth(2)} picks the third cell of every row, not the third cell in the whole
+   * table.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator thirdColumn = page.getByRole(AriaRole.CELL).nth(2).within(page.getByRole(AriaRole.ROW));
+   * assertThat(thirdColumn).hasText(new String[] {"Apple", "Banana", "Cherry"});
+   * }</pre>
+   *
+   * @param locator Locator matching the parent elements to search within.
+   * @since v1.64
+   */
+  Locator within(Locator locator);
 }
 

@@ -173,7 +173,8 @@ public interface Request {
   /**
    * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
    * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code
-   * texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code other}.
+   * texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code beacon}, {@code
+   * ping}, {@code cspreport}, {@code other}.
    *
    * @since v1.8
    */

@@ -17,7 +17,7 @@ List the upstream commits that touched a client-relevant path since the last rel
 - `packages/playwright-core/src/client/` — the JS client implementation that the Java client mirrors.
 - `packages/isomorphic/` — selector engines, locator generation/parsing, and aria-snapshot logic shared between client and server. Changes here can affect client-side helpers like `getByRoleSelector`.
 - `packages/playwright/src/matchers/matchers.ts` — assertion-method definitions. Changes here usually correspond to new options on `LocatorAssertions` / `PageAssertions`.
-- `packages/protocol/src/protocol.yml` — the wire protocol schema. Method/event additions, parameter renames, and result-shape changes affect what the Java `*Impl` classes need to send/receive.
+- `packages/protocol/spec/` — the wire protocol schema (one `*.yml` file per area). Method/event additions, parameter renames, and result-shape changes affect what the Java `*Impl` classes need to send/receive.
 
 ```bash
 cd ~/playwright
@@ -27,7 +27,7 @@ git log "$PREV_TAG"..HEAD --oneline -- \
   'packages/playwright-core/src/client/' \
   'packages/isomorphic/' \
   'packages/playwright/src/matchers/matchers.ts' \
-  'packages/protocol/src/protocol.yml'
+  'packages/protocol/spec/'
 ```
 
 Walk that list top-to-bottom (oldest-first is easier — newest is at top, so reverse). For each commit:
@@ -79,6 +79,8 @@ Key translation rules:
 
 **Channel object references in params** — when a JS call passes a channel object as a param (e.g. `{ frame: frame._channel }`), in Java pass the guid: `params.addProperty("frame", ((FrameImpl) frame).guid)`.
 
+**Module-level state** — JS sometimes keeps state at module level (e.g. the call id counter in `createCallIdGenerator()`). Don't translate it into a `static` field with atomics; keep it per `Connection` (or per object) as a plain field. Each connection is used from one thread, so the port should not change the threading model.
+
 ## Fixing generator and compilation errors
 
 After running `./scripts/roll_driver.sh`, the build often fails because the generated Java interfaces reference new types or methods that the generator doesn't know how to handle yet, and the `*Impl` classes don't implement new interface methods.
@@ -93,6 +95,11 @@ The generator has hardcoded lists that control which imports are added to each g
 Type mapping: when JS-only types (like `Disposable`) are used as return types in Java-compatible methods, add a mapping in `convertBuiltinType`. For example, `Disposable` → `AutoCloseable`.
 
 Event handler generation: events with `void` type generate invalid `Consumer<void>`. Handle this case in `Event.writeListenerMethods` by emitting `Runnable` instead.
+
+Type names: give every new object type an explicit alias upstream. When a roll brings in a new object type (an option or return value written as `<[Object]>` in `docs/src/api/`), it should usually have its own `* alias: <Name>` line. Without one, each language's generator makes up a name, and the Java one can be vague (e.g. `Style`) or differ between Java and .NET.
+- Prefer a plain `alias:` so every language gets the same name. Use `alias-java:` / `alias-csharp:` only when a language really needs a different name.
+- Add the aliases in a small upstream docs PR (e.g. microsoft/playwright#43164, `Style` → `ScreencastActionStyle`). Don't special-case names in `ApiGenerator`.
+- After the upstream change lands, roll to a driver that includes it. Don't hand-edit the generated files.
 
 After editing the generator, recompile and re-run it:
 ```
@@ -127,7 +134,7 @@ Common patterns:
 
 **Protocol changes that remove events** — when a method's response now returns an object directly instead of via a subsequent event, update the Impl to capture it from the `sendMessage` result and remove the old event handler. Example: `videoStart` used to fire a `"video"` page event to deliver the artifact; it now returns the artifact directly in the response. Check git history of the upstream JS client when tests hang unexpectedly.
 
-**Protocol parameter renames** — protocol parameter names can change between versions (e.g. `wsEndpoint` → `endpoint` in `BrowserType.connect`). When a test fails with `expected string, got undefined` or similar validation errors from the driver, check `packages/protocol/src/protocol.yml` for the current parameter names and update the corresponding `params.addProperty(...)` call in the Impl class. Also check the JS client (`src/client/`) to see how it builds the params object.
+**Protocol parameter renames** — protocol parameter names can change between versions (e.g. `wsEndpoint` → `endpoint` in `BrowserType.connect`). When a test fails with `expected string, got undefined` or similar validation errors from the driver, check `packages/protocol/spec/*.yml` for the current parameter names and update the corresponding `params.addProperty(...)` call in the Impl class. Also check the JS client (`src/client/`) to see how it builds the params object.
 
 ## Rebuilding the driver-bundle after a roll
 
@@ -149,6 +156,15 @@ mvn -f driver-bundle/pom.xml install -DskipTests
 **Remove tests for behavior that was removed upstream.** When the JS client drops a client-side error check (e.g., "Page is not yet closed before saveAs", "Page did not produce any video frames"), delete the corresponding Java tests rather than trying to keep them passing. Check the upstream `tests/library/` spec to confirm the behavior is gone.
 
 **Run the full suite to catch regressions, re-run flaky failures in isolation.** Some tests (e.g., `TestClientCertificates#shouldKeepSupportingHttp`) time out only under heavy parallel load. Run the failing test alone to confirm it's flaky before investigating further.
+
+**Don't change the driver environment per test.** The driver is a JVM-wide singleton, so `Playwright.CreateOptions.env` (e.g. `PWTEST_UNDER_TEST`) only applies to the first `Playwright.create()` in the JVM. Forcing a new driver instance from a test breaks unrelated tests (`ClosedFileSystemException`). Test through what the public API exposes instead — e.g. screencast action decorations render in a closed shadow root, so the style test checks screencast frames for the decoration's pixels rather than querying the DOM.
+
+## Reviewing the diff before the PR
+
+Before opening the PR (and before pushing follow-ups), read `git diff upstream/main` end to end:
+- **Removed generated methods** — `git diff upstream/main -- playwright/src/main/java/com/microsoft/playwright/*.java | grep '^-.*;'`. A return type change like `void` → `AutoCloseable` still compiles for callers but breaks code compiled against the previous jar. Call these out in the PR.
+- **Behavior beyond upstream** — client-side checks or fixes not in the JS client (e.g. an option that was never sent). Keep them only if deliberate, and list them in the PR.
+- **Stray files** — local config such as `.claude/settings.json`, or unrelated edits like `examples/pom.xml`, must not be committed.
 
 ## Diagnosing hanging tests
 

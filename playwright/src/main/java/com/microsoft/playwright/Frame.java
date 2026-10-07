@@ -419,6 +419,26 @@ public interface Frame {
       return this;
     }
   }
+  class ContentOptions {
+    /**
+     * When true, contents of open shadow roots are included as <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM#declaratively_with_html">declarative
+     * shadow DOM</a>, i.e. {@code <template shadowrootmode="open">} elements nested inside their host elements. Closed shadow
+     * roots are never included. Defaults to {@code false}.
+     */
+    public @Nullable Boolean includeShadow;
+
+    /**
+     * When true, contents of open shadow roots are included as <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM#declaratively_with_html">declarative
+     * shadow DOM</a>, i.e. {@code <template shadowrootmode="open">} elements nested inside their host elements. Closed shadow
+     * roots are never included. Defaults to {@code false}.
+     */
+    public ContentOptions setIncludeShadow(boolean includeShadow) {
+      this.includeShadow = includeShadow;
+      return this;
+    }
+  }
   class DblclickOptions {
     /**
      * Defaults to {@code left}.
@@ -2747,7 +2767,15 @@ public interface Frame {
    *
    * @since v1.8
    */
-  String content();
+  default String content() {
+    return content(null);
+  }
+  /**
+   * Gets the full HTML contents of the frame, including the doctype.
+   *
+   * @since v1.8
+   */
+  String content(@Nullable ContentOptions options);
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>

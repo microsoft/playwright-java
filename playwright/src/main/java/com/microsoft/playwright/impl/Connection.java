@@ -28,12 +28,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.lang.System.currentTimeMillis;
 
 class Message {
-  int id;
+  String id;
   String guid;
   String method;
   JsonObject params;
@@ -62,8 +63,10 @@ public class Connection {
   private final Root root;
   final boolean isRemote;
   private int lastId = 0;
+  // Use a unique prefix for each client to avoid id clashes in a trace.
+  private final String callIdPrefix = createCallIdPrefix();
   private final StackTraceCollector stackTraceCollector;
-  private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
+  private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private String title;
   private boolean titleReported = false;
   private static final boolean isLogging;
@@ -109,6 +112,15 @@ public class Connection {
     stackTraceCollector = StackTraceCollector.createFromEnv(env);
   }
 
+  private static String createCallIdPrefix() {
+    String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    StringBuilder prefix = new StringBuilder();
+    for (int i = 0; i < 4; i++) {
+      prefix.append(alphabet.charAt(ThreadLocalRandom.current().nextInt(alphabet.length())));
+    }
+    return prefix.toString();
+  }
+
   void setIsTracing(boolean tracing) {
     if (tracing) {
       ++tracingCount;
@@ -146,7 +158,7 @@ public class Connection {
   }
 
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
-    int id = ++lastId;
+    String id = callIdPrefix + "@" + (++lastId);
     WaitableResult<JsonElement> result = new WaitableResult<>();
     if (expectsReply) {
       callbacks.put(id, result);
@@ -256,7 +268,7 @@ public class Connection {
 
   private void dispatch(Message message) {
 //    System.out.println("Message: " + message.method + " " + message.id);
-    if (message.id != 0) {
+    if (message.id != null) {
       WaitableResult<JsonElement> callback = callbacks.get(message.id);
       if (callback == null) {
         throw new PlaywrightException("Cannot find command to respond: " + message.id);

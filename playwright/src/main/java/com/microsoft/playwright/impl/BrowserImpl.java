@@ -160,11 +160,17 @@ class BrowserImpl extends ChannelOwner implements Browser {
       if (options.recordVideoSize != null) {
         recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
       }
+      if (options.recordVideoFps != null) {
+        recordVideo.addProperty("fps", options.recordVideoFps);
+      }
       params.remove("recordVideoDir");
       params.remove("recordVideoSize");
+      params.remove("recordVideoFps");
       params.add("recordVideo", recordVideo);
     } else if (options.recordVideoSize != null) {
       throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
+    } else if (options.recordVideoFps != null) {
+      throw new PlaywrightException("recordVideoFps is set but recordVideoDir is null");
     }
     if (options.viewportSize != null) {
       if (options.viewportSize.isPresent()) {

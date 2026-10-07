@@ -34,6 +34,15 @@ public class TestPageSetContent extends TestBase {
   }
 
   @Test
+  void shouldIncludeShadowRoots() {
+    String html = "<!DOCTYPE html><html lang=\"en\"><head></head><body><div id=\"host\"><template shadowrootmode=\"open\"><div id=\"nested\"><template shadowrootmode=\"open\"><span>nested</span></template><slot></slot></div></template><span>light</span></div><div id=\"closed\"></div></body></html>";
+    // Closed shadow roots are not accessible from script and are never serialized.
+    page.setContent(html.replace("<div id=\"closed\">", "<div id=\"closed\"><template shadowrootmode=\"closed\"><span>closed</span></template>"));
+    assertEquals("<!DOCTYPE html><html lang=\"en\"><head></head><body><div id=\"host\"><span>light</span></div><div id=\"closed\"></div></body></html>", page.content());
+    assertEquals(html, page.content(new Page.ContentOptions().setIncludeShadow(true)));
+  }
+
+  @Test
   void shouldWorkWithDomcontentloaded() {
     page.setContent("<div>hello</div>", new Page.SetContentOptions().setWaitUntil(DOMCONTENTLOADED));
     Object result = page.content();

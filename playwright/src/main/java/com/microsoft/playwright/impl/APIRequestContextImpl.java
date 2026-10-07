@@ -21,19 +21,23 @@ import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
+import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.RequestOptions;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.toFilePayload;
+import static java.util.Arrays.asList;
 
 class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   private final TracingImpl tracing;
@@ -49,6 +53,38 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   @Override
   public TracingImpl tracing() {
     return tracing;
+  }
+
+  @Override
+  public List<Cookie> cookies(String url) {
+    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
+  }
+
+  @Override
+  public List<Cookie> cookies(List<String> urls) {
+    JsonObject params = new JsonObject();
+    if (urls == null) {
+      urls = new ArrayList<>();
+    }
+    params.add("urls", gson().toJsonTree(urls));
+    JsonObject json = sendMessage("cookies", params, NO_TIMEOUT).getAsJsonObject();
+    Cookie[] cookies = gson().fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
+    return asList(cookies);
+  }
+
+  @Override
+  public void addCookies(List<Cookie> cookies) {
+    JsonObject params = new JsonObject();
+    params.add("cookies", gson().toJsonTree(cookies));
+    sendMessage("addCookies", params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void clearCookies(ClearCookiesOptions options) {
+    if (options == null) {
+      options = new ClearCookiesOptions();
+    }
+    sendMessage("clearCookies", toClearCookiesParams(options.name, options.domain, options.path), NO_TIMEOUT);
   }
 
   @Override

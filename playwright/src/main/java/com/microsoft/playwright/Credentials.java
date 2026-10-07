@@ -68,7 +68,8 @@ import java.util.*;
  *     .setId(credential.id)
  *     .setUserHandle(credential.userHandle)
  *     .setPrivateKey(credential.privateKey)
- *     .setPublicKey(credential.publicKey));
+ *     .setPublicKey(credential.publicKey)
+ *     .setSignCount(credential.signCount));
  * context.credentials().install();
  *
  * Page page = context.newPage();
@@ -78,7 +79,7 @@ import java.util.*;
  *
  * <p> <strong>Usage: save credentials in the storage state, restore later</strong>
  *
- * <p> See <a href="https://playwright.dev/java/docs/auth">authentication guide</a> for examples of using saving and resotring
+ * <p> See <a href="https://playwright.dev/java/docs/auth">authentication guide</a> for examples of using saving and restoring
  * the storage state.
  *
  * <p> <strong>Defaults</strong>
@@ -97,6 +98,12 @@ public interface Credentials {
      * Base64url-encoded SPKI (DER) public key. Auto-generated if omitted.
      */
     public @Nullable String publicKey;
+    /**
+     * Initial value of the <a href="https://www.w3.org/TR/webauthn-2/#signature-counter">signature counter</a>. The counter is
+     * incremented by one on every successful {@code navigator.credentials.get()} assertion, so the first assertion reports
+     * {@code signCount + 1}. Defaults to {@code 0}.
+     */
+    public @Nullable Integer signCount;
     /**
      * Base64url-encoded user handle. Auto-generated if omitted.
      */
@@ -121,6 +128,15 @@ public interface Credentials {
      */
     public CreateOptions setPublicKey(String publicKey) {
       this.publicKey = publicKey;
+      return this;
+    }
+    /**
+     * Initial value of the <a href="https://www.w3.org/TR/webauthn-2/#signature-counter">signature counter</a>. The counter is
+     * incremented by one on every successful {@code navigator.credentials.get()} assertion, so the first assertion reports
+     * {@code signCount + 1}. Defaults to {@code 0}.
+     */
+    public CreateOptions setSignCount(int signCount) {
+      this.signCount = signCount;
       return this;
     }
     /**
@@ -177,7 +193,8 @@ public interface Credentials {
    * The returned object carries the private and public keys, so it can be persisted to disk and re-seeded in a later test.
    *
    * <p> To **import a known credential**, supply all four of {@code id}, {@code userHandle}, {@code privateKey} and {@code
-   * publicKey} together.
+   * publicKey} together. Pass {@code signCount} as well to continue from the signature counter the relying party has already
+   * seen.
    *
    * <p> Call {@link com.microsoft.playwright.Credentials#install Credentials.install()} before navigating to a page that uses
    * WebAuthn.
@@ -196,7 +213,8 @@ public interface Credentials {
    * The returned object carries the private and public keys, so it can be persisted to disk and re-seeded in a later test.
    *
    * <p> To **import a known credential**, supply all four of {@code id}, {@code userHandle}, {@code privateKey} and {@code
-   * publicKey} together.
+   * publicKey} together. Pass {@code signCount} as well to continue from the signature counter the relying party has already
+   * seen.
    *
    * <p> Call {@link com.microsoft.playwright.Credentials#install Credentials.install()} before navigating to a page that uses
    * WebAuthn.
@@ -219,9 +237,9 @@ public interface Credentials {
    * includes both credentials seeded with {@link com.microsoft.playwright.Credentials#create Credentials.create()} and
    * credentials the page registered itself by calling {@code navigator.credentials.create()}.
    *
-   * <p> Each returned credential includes its private and public keys, so a passkey the app just registered can be saved and
-   * re-seeded into a later test with {@link com.microsoft.playwright.Credentials#create Credentials.create()} — see the
-   * second example in the class overview.
+   * <p> Each returned credential includes its private and public keys and the current signature counter, so a passkey the app
+   * just registered can be saved and re-seeded into a later test with {@link com.microsoft.playwright.Credentials#create
+   * Credentials.create()} — see the second example in the class overview.
    *
    * @since v1.61
    */
@@ -233,9 +251,9 @@ public interface Credentials {
    * includes both credentials seeded with {@link com.microsoft.playwright.Credentials#create Credentials.create()} and
    * credentials the page registered itself by calling {@code navigator.credentials.create()}.
    *
-   * <p> Each returned credential includes its private and public keys, so a passkey the app just registered can be saved and
-   * re-seeded into a later test with {@link com.microsoft.playwright.Credentials#create Credentials.create()} — see the
-   * second example in the class overview.
+   * <p> Each returned credential includes its private and public keys and the current signature counter, so a passkey the app
+   * just registered can be saved and re-seeded into a later test with {@link com.microsoft.playwright.Credentials#create
+   * Credentials.create()} — see the second example in the class overview.
    *
    * @since v1.61
    */

@@ -736,8 +736,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public String content() {
-    return mainFrame.content();
+  public String content(ContentOptions options) {
+    return mainFrame.content(convertType(options, Frame.ContentOptions.class));
   }
 
   @Override
@@ -890,6 +890,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
     return mainFrame.getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class));
+  }
+
+  @Override
+  public Locator getByRef(String ref) {
+    return locator("aria-ref=" + ref);
   }
 
   @Override

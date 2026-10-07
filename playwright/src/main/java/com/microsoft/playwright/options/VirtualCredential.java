@@ -37,5 +37,9 @@ public class VirtualCredential {
    * Base64url-encoded SPKI (DER) public key.
    */
   public String publicKey;
+  /**
+   * Signature counter, the value reported to the relying party in the most recent assertion.
+   */
+  public int signCount;
 
 }

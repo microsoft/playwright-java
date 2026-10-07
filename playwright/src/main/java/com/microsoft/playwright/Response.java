@@ -64,9 +64,10 @@ public interface Response {
    */
   Map<String, String> headers();
   /**
-   * An array with all the request HTTP headers associated with this response. Unlike {@link
+   * An array with all the response HTTP headers associated with this response. Unlike {@link
    * com.microsoft.playwright.Response#allHeaders Response.allHeaders()}, header names are NOT lower-cased. Headers with
-   * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
+   * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times. Some browser network stacks combine
+   * multiple field values before reporting them, so separate entries are not always available.
    *
    * @since v1.15
    */

@@ -37,4 +37,30 @@ public class TestVideo extends TestBase {
     assertTrue(videoPath.isAbsolute(), "videosPath = " + videoPath);
     assertTrue(Files.exists(videoPath), "videosPath = " + videoPath);
   }
+
+  @Test
+  void shouldRecordVideoWithTheRequestedFps(@TempDir Path tmpDir) {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setRecordVideoDir(tmpDir).setRecordVideoFps(60));
+    Page page = context.newPage();
+    page.evaluate("() => document.body.style.backgroundColor = 'red'");
+    page.waitForTimeout(500);
+    Path videoPath = page.video().path();
+    context.close();
+    assertTrue(Files.exists(videoPath), "videosPath = " + videoPath);
+  }
+
+  @Test
+  void shouldThrowOnInvalidFps(@TempDir Path tmpDir) {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> browser.newContext(new Browser.NewContextOptions()
+      .setRecordVideoDir(tmpDir).setRecordVideoFps(0)));
+    assertTrue(e.getMessage().contains("\"recordVideo.fps\" must be a positive number, got 0"), e.getMessage());
+  }
+
+  @Test
+  void shouldThrowWhenFpsIsSetWithoutDir() {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> browser.newContext(new Browser.NewContextOptions()
+      .setRecordVideoFps(60)));
+    assertTrue(e.getMessage().contains("recordVideoFps is set but recordVideoDir is null"), e.getMessage());
+  }
 }

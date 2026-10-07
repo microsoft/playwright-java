@@ -299,7 +299,7 @@ public interface BrowserType {
      */
     public @Nullable Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 180000} (3 minutes). Pass
      * {@code 0} to disable timeout.
      */
     public @Nullable Double timeout;
@@ -466,7 +466,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 180000} (3 minutes). Pass
      * {@code 0} to disable timeout.
      */
     public LaunchOptions setTimeout(double timeout) {
@@ -654,8 +654,8 @@ public interface BrowserType {
     public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public @Nullable Boolean isMobile;
     /**
@@ -714,6 +714,11 @@ public interface BrowserType {
      */
     public @Nullable Path recordVideoDir;
     /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public @Nullable Integer recordVideoFps;
+    /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
@@ -751,7 +756,7 @@ public interface BrowserType {
      */
     public @Nullable Boolean strictSelectors;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 180000} (3 minutes). Pass
      * {@code 0} to disable timeout.
      */
     public @Nullable Double timeout;
@@ -1071,8 +1076,8 @@ public interface BrowserType {
     }
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -1177,6 +1182,14 @@ public interface BrowserType {
       return this;
     }
     /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public LaunchPersistentContextOptions setRecordVideoFps(int recordVideoFps) {
+      this.recordVideoFps = recordVideoFps;
+      return this;
+    }
+    /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
      * page will be scaled down if necessary to fit the specified size.
@@ -1247,7 +1260,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 180000} (3 minutes). Pass
      * {@code 0} to disable timeout.
      */
     public LaunchPersistentContextOptions setTimeout(double timeout) {

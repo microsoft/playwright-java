@@ -23,11 +23,11 @@ public class TestPageAriaSnapshotAI {
     assertTrue(snapshot1.contains("button \"One\" [ref=e2]"), snapshot1);
     assertTrue(snapshot1.contains("button \"Two\" [ref=e3]"), snapshot1);
     assertTrue(snapshot1.contains("button \"Three\" [ref=e4]"), snapshot1);
-    assertThat(page.locator("aria-ref=e2")).hasText("One");
-    assertThat(page.locator("aria-ref=e3")).hasText("Two");
-    assertThat(page.locator("aria-ref=e4")).hasText("Three");
+    assertThat(page.getByRef("e2")).hasText("One");
+    assertThat(page.getByRef("e3")).hasText("Two");
+    assertThat(page.getByRef("e4")).hasText("Three");
 
-    page.locator("aria-ref=e3").evaluate("e => e.textContent = 'Not Two'");
+    page.getByRef("e3").evaluate("e => e.textContent = 'Not Two'");
 
     String snapshot2 = aiSnapshot(page);
     assertTrue(snapshot2.contains("button \"One\" [ref=e2]"), snapshot2);

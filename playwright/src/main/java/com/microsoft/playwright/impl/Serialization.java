@@ -53,6 +53,7 @@ class Serialization {
     .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
     .registerTypeAdapter(HttpCredentialsSend.class, new ToLowerCaseSerializer<HttpCredentialsSend>())
     .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
+    .registerTypeAdapter(ScreencastCursor.class, new ToLowerCaseSerializer<ScreencastCursor>())
     .registerTypeAdapter(ScreenshotAnimations.class, new ToLowerCaseSerializer<ScreenshotAnimations>())
     .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
     .registerTypeAdapter(ScreenshotScale.class, new ToLowerCaseSerializer<ScreenshotScale>())
@@ -384,6 +385,24 @@ class Serialization {
         options.addProperty("urlRegexSource", pattern.pattern());
         options.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
       }
+  }
+
+  static JsonObject toClearCookiesParams(Object name, Object domain, Object path) {
+    JsonObject params = new JsonObject();
+    setStringOrRegex(params, "name", name);
+    setStringOrRegex(params, "domain", domain);
+    setStringOrRegex(params, "path", path);
+    return params;
+  }
+
+  private static void setStringOrRegex(JsonObject params, String name, Object value) {
+    if (value instanceof String) {
+      params.addProperty(name, (String) value);
+    } else if (value instanceof Pattern) {
+      Pattern pattern = (Pattern) value;
+      params.addProperty(name + "RegexSource", pattern.pattern());
+      params.addProperty(name + "RegexFlags", toJsRegexFlags(pattern));
+    }
   }
 
   static JsonArray toNameValueArray(Iterable<? extends Map.Entry<String, ?>> collection) {

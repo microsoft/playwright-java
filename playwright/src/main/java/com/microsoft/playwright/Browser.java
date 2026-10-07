@@ -173,8 +173,8 @@ public interface Browser extends AutoCloseable {
     public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public @Nullable Boolean isMobile;
     /**
@@ -232,6 +232,11 @@ public interface Browser extends AutoCloseable {
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public @Nullable Path recordVideoDir;
+    /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public @Nullable Integer recordVideoFps;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
@@ -451,8 +456,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -554,6 +559,14 @@ public interface Browser extends AutoCloseable {
      */
     public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
+      return this;
+    }
+    /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public NewContextOptions setRecordVideoFps(int recordVideoFps) {
+      this.recordVideoFps = recordVideoFps;
       return this;
     }
     /**
@@ -769,8 +782,8 @@ public interface Browser extends AutoCloseable {
     public @Nullable Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public @Nullable Boolean isMobile;
     /**
@@ -828,6 +841,11 @@ public interface Browser extends AutoCloseable {
      * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public @Nullable Path recordVideoDir;
+    /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public @Nullable Integer recordVideoFps;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
      * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
@@ -1047,8 +1065,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
-     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
+     * so you don't actually need to set it manually. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -1150,6 +1168,14 @@ public interface Browser extends AutoCloseable {
      */
     public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
+      return this;
+    }
+    /**
+     * Frame rate of the recorded videos in frames per second. Defaults to {@code 25}. Firefox and WebKit currently capture up
+     * to 25 frames per second.
+     */
+    public NewPageOptions setRecordVideoFps(int recordVideoFps) {
+      this.recordVideoFps = recordVideoFps;
       return this;
     }
     /**

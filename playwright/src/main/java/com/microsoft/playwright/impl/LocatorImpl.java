@@ -683,6 +683,11 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator within(Locator locator) {
+    return locator.locator(this);
+  }
+
+  @Override
   public String toString() {
     String description = description();
     if (description != null) {

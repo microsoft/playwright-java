@@ -288,7 +288,8 @@ public interface Tracing {
     }
   }
   /**
-   * Start tracing.
+   * Start tracing. Disposing the returned {@code Disposable} stops tracing without saving the trace, similarly to calling
+   * {@link com.microsoft.playwright.Tracing#stop Tracing.stop()} without a path.
    *
    * <p> <strong>NOTE:</strong> You probably want to <a href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enable tracing in
    * your config file</a> instead of using {@code Tracing.start}.The {@code context.tracing} API captures browser operations and network activity, but it doesn't record test assertions
@@ -309,11 +310,12 @@ public interface Tracing {
    *
    * @since v1.12
    */
-  default void start() {
-    start(null);
+  default AutoCloseable start() {
+    return start(null);
   }
   /**
-   * Start tracing.
+   * Start tracing. Disposing the returned {@code Disposable} stops tracing without saving the trace, similarly to calling
+   * {@link com.microsoft.playwright.Tracing#stop Tracing.stop()} without a path.
    *
    * <p> <strong>NOTE:</strong> You probably want to <a href="https://playwright.dev/docs/api/class-testoptions#test-options-trace">enable tracing in
    * your config file</a> instead of using {@code Tracing.start}.The {@code context.tracing} API captures browser operations and network activity, but it doesn't record test assertions
@@ -334,12 +336,13 @@ public interface Tracing {
    *
    * @since v1.12
    */
-  void start(@Nullable StartOptions options);
+  AutoCloseable start(@Nullable StartOptions options);
   /**
-   * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link
-   * com.microsoft.playwright.Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link
-   * com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk
-   * Tracing.stopChunk()}.
+   * Start a new trace chunk. Disposing the returned {@code Disposable} stops the chunk without saving it, similarly to
+   * calling {@link com.microsoft.playwright.Tracing#stopChunk Tracing.stopChunk()} without a path. If you'd like to record
+   * multiple traces on the same {@code BrowserContext}, use {@link com.microsoft.playwright.Tracing#start Tracing.start()}
+   * once, and then create multiple trace chunks with {@link com.microsoft.playwright.Tracing#startChunk
+   * Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk Tracing.stopChunk()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -364,14 +367,15 @@ public interface Tracing {
    *
    * @since v1.15
    */
-  default void startChunk() {
-    startChunk(null);
+  default AutoCloseable startChunk() {
+    return startChunk(null);
   }
   /**
-   * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link
-   * com.microsoft.playwright.Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link
-   * com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk
-   * Tracing.stopChunk()}.
+   * Start a new trace chunk. Disposing the returned {@code Disposable} stops the chunk without saving it, similarly to
+   * calling {@link com.microsoft.playwright.Tracing#stopChunk Tracing.stopChunk()} without a path. If you'd like to record
+   * multiple traces on the same {@code BrowserContext}, use {@link com.microsoft.playwright.Tracing#start Tracing.start()}
+   * once, and then create multiple trace chunks with {@link com.microsoft.playwright.Tracing#startChunk
+   * Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk Tracing.stopChunk()}.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -396,7 +400,7 @@ public interface Tracing {
    *
    * @since v1.15
    */
-  void startChunk(@Nullable StartChunkOptions options);
+  AutoCloseable startChunk(@Nullable StartChunkOptions options);
   /**
    * Start recording a HAR (HTTP Archive) of network activity in this context. The HAR file is written to disk when {@link
    * com.microsoft.playwright.Tracing#stopHar Tracing.stopHar()} is called, or when the returned {@code Disposable} is

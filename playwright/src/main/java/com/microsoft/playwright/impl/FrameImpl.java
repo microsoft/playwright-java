@@ -245,8 +245,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public String content() {
-    return sendMessage("content").getAsJsonObject().get("value").getAsString();
+  public String content(ContentOptions options) {
+    if (options == null) {
+      options = new ContentOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    return sendMessage("content", params, NO_TIMEOUT).getAsJsonObject().get("value").getAsString();
   }
 
   @Override

@@ -443,21 +443,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new ClearCookiesOptions();
     }
-    JsonObject params = new JsonObject();
-    setStringOrRegex(params, "name", options.name);
-    setStringOrRegex(params, "domain", options.domain);
-    setStringOrRegex(params, "path", options.path);
-    sendMessage("clearCookies", params, NO_TIMEOUT);
-  }
-
-  private static void setStringOrRegex(JsonObject params, String name, Object value) {
-    if (value instanceof String) {
-      params.addProperty(name, (String) value);
-    } else if (value instanceof Pattern) {
-      Pattern pattern = (Pattern) value;
-      params.addProperty(name + "RegexSource", pattern.pattern());
-      params.addProperty(name + "RegexFlags", toJsRegexFlags(pattern));
-    }
+    sendMessage("clearCookies", toClearCookiesParams(options.name, options.domain, options.path), NO_TIMEOUT);
   }
 
   @Override

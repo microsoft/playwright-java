@@ -28,6 +28,14 @@ import java.util.function.Consumer;
 public interface Screencast {
   class StartOptions {
     /**
+     * Frame rate of the video recording in frames per second. Only used together with {@code path}. Defaults to {@code 25}.
+     *
+     * <p> Higher frame rates make animations and scrolling smoother at the cost of more CPU spent on encoding. Combine with {@code
+     * size} to record high resolution videos. The video can only contain as many distinct frames as the browser produces;
+     * Firefox and WebKit currently capture up to 25 frames per second.
+     */
+    public @Nullable Integer fps;
+    /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
     public @Nullable Consumer<ScreencastFrame> onFrame;
@@ -47,6 +55,17 @@ public interface Screencast {
      */
     public @Nullable Size size;
 
+    /**
+     * Frame rate of the video recording in frames per second. Only used together with {@code path}. Defaults to {@code 25}.
+     *
+     * <p> Higher frame rates make animations and scrolling smoother at the cost of more CPU spent on encoding. Combine with {@code
+     * size} to record high resolution videos. The video can only contain as many distinct frames as the browser produces;
+     * Firefox and WebKit currently capture up to 25 frames per second.
+     */
+    public StartOptions setFps(int fps) {
+      this.fps = fps;
+      return this;
+    }
     /**
      * Callback that receives JPEG-encoded frame data along with the page viewport size at the time of capture.
      */
@@ -140,13 +159,19 @@ public interface Screencast {
      */
     public @Nullable Double duration;
     /**
-     * Font size of the action title in pixels. Defaults to {@code 24}.
+     * @deprecated Use {@code title} in {@code style} instead, for example {@code style: { title: 'font-size: 32px' }}.
      */
     public @Nullable Integer fontSize;
     /**
      * Position of the action title overlay. Defaults to {@code "top-right"}.
      */
     public @Nullable AnnotatePosition position;
+    /**
+     * Styles of the action decorations. All decorations fade out over {@code duration}.
+     *
+     * <p> <strong>Usage</strong>
+     */
+    public @Nullable ScreencastActionStyle style;
 
     /**
      * Cursor decoration shown for pointer actions. {@code "pointer"} (the default) renders a mouse pointer that animates from
@@ -164,7 +189,7 @@ public interface Screencast {
       return this;
     }
     /**
-     * Font size of the action title in pixels. Defaults to {@code 24}.
+     * @deprecated Use {@code title} in {@code style} instead, for example {@code style: { title: 'font-size: 32px' }}.
      */
     public ShowActionsOptions setFontSize(int fontSize) {
       this.fontSize = fontSize;
@@ -175,6 +200,15 @@ public interface Screencast {
      */
     public ShowActionsOptions setPosition(AnnotatePosition position) {
       this.position = position;
+      return this;
+    }
+    /**
+     * Styles of the action decorations. All decorations fade out over {@code duration}.
+     *
+     * <p> <strong>Usage</strong>
+     */
+    public ShowActionsOptions setStyle(ScreencastActionStyle style) {
+      this.style = style;
       return this;
     }
   }

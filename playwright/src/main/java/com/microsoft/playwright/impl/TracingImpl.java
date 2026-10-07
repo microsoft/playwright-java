@@ -131,11 +131,12 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   @Override
-  public void startChunk(StartChunkOptions options) {
+  public AutoCloseable startChunk(StartChunkOptions options) {
     if (options == null) {
       options = new StartChunkOptions();
     }
     tracingStartChunk(options.name, options.title);
+    return new DisposableStub(this::stopChunk);
   }
 
   @Override
@@ -182,7 +183,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   @Override
-  public void start(StartOptions options) {
+  public AutoCloseable start(StartOptions options) {
     if (options == null) {
       options = new StartOptions();
     }
@@ -196,6 +197,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     renameProperty(params, "screenshots", "screencast");
     sendMessage("tracingStart", params, NO_TIMEOUT);
     tracingStartChunk(options.name, options.title);
+    return new DisposableStub(this::stop);
   }
 
   @Override

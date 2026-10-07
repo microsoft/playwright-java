@@ -460,6 +460,27 @@ public class TestTracing extends TestBase {
     }
   }
 
+  @Test
+  void startShouldReturnADisposableThatDiscardsTheTrace(@TempDir Path tempDir) throws Exception {
+    AutoCloseable disposable = context.tracing().start();
+    page.navigate(server.EMPTY_PAGE);
+    disposable.close();
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> context.tracing().stop(new Tracing.StopOptions().setPath(tempDir.resolve("trace.zip"))));
+    assertTrue(e.getMessage().contains("Must start tracing before stopping"), e.getMessage());
+  }
+
+  @Test
+  void startChunkShouldReturnADisposableThatDiscardsTheChunk(@TempDir Path tempDir) throws Exception {
+    context.tracing().start();
+    AutoCloseable disposable = context.tracing().startChunk();
+    page.navigate(server.EMPTY_PAGE);
+    disposable.close();
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(tempDir.resolve("trace.zip"))));
+    assertTrue(e.getMessage().contains("Must start tracing before stopping"), e.getMessage());
+  }
+
   private static List<JsonObject> traceEvents(Map<String, byte[]> resources) {
     List<JsonObject> events = new ArrayList<>();
     for (Map.Entry<String, byte[]> entry : resources.entrySet()) {
