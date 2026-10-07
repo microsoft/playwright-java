@@ -36,7 +36,10 @@ public class PlaywrightExtension implements ParameterResolver {
   // There should be at most one instance of PlaywrightRegistry per test run, it keeps
   // track of all created Playwright instances and calls `close()` on each of them after
   // the tests finished.
-  static class PlaywrightRegistry implements AutoCloseable {
+  // CloseableResource is kept alongside AutoCloseable because JUnit < 5.13 only closes
+  // store values that implement it; newer versions close it once through AutoCloseable.
+  @SuppressWarnings("deprecation")
+  static class PlaywrightRegistry implements AutoCloseable, ExtensionContext.Store.CloseableResource {
     private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
     static synchronized PlaywrightRegistry getOrCreateFor(ExtensionContext extensionContext) {
@@ -55,6 +58,9 @@ public class PlaywrightExtension implements ParameterResolver {
       return playwright;
     }
 
+    boolean owns(Playwright playwright) {
+      return playwrightList.contains(playwright);
+    }
 
     // This is a workaround for JUnit's lack of an "AfterTestRun" hook
     // This will be called once after all tests have completed.
@@ -85,13 +91,15 @@ public class PlaywrightExtension implements ParameterResolver {
    * @return The Playwright that belongs to the current test.
    */
   public static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
+    PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     Playwright playwright = threadLocalPlaywright.get();
-    if (playwright != null) {
+    // Reuse only while the current run's registry still owns it: a previous launcher run on this
+    // thread (e.g. a surefire rerun) has already closed the Playwright it left in the thread local.
+    if (playwright != null && registry.owns(playwright)) {
       return playwright;
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
-    PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     playwright = registry.createPlaywright(options.playwrightCreateOptions);
     threadLocalPlaywright.set(playwright);
 
