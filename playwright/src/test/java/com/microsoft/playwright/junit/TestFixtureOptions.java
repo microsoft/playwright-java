@@ -36,6 +36,7 @@ public class TestFixtureOptions {
       return new Options()
         .setBaseUrl(serverMap.get(TestFixtureOptions.class).EMPTY_PAGE)
         .setBrowserName("webkit")
+        .setDefaultTimeout(10_000.0)
         .setTestIdAttribute("data-my-custom-testid");
     }
   }
