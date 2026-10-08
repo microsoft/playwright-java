@@ -17,6 +17,10 @@
 package com.microsoft.playwright.impl;
 
 import java.util.List;
+import com.microsoft.playwright.options.Clip;
+import com.microsoft.playwright.options.ScreenshotCaret;
+import com.microsoft.playwright.options.ScreenshotAnimations;
+import com.microsoft.playwright.options.ScreenshotScale;
 
 class Channel {
   String guid;
@@ -126,6 +130,39 @@ class FrameExpectErrorDetails {
   FrameExpectResult.Received received;
   Boolean timedOut;
   String customErrorMessage;
+}
+
+class PageExpectScreenshotOptions {
+  String expected;
+  boolean isNot;
+  LocatorImpl locator;
+  String comparator;
+  Integer maxDiffPixels;
+  Double maxDiffPixelRatio;
+  Double threshold;
+  Boolean fullPage;
+  Clip clip;
+  Boolean omitBackground;
+  ScreenshotCaret caret;
+  ScreenshotAnimations animations;
+  ScreenshotScale scale;
+  List<LocatorImpl> mask;
+  String maskColor;
+  String style;
+  Double timeout;
+}
+
+class PageExpectScreenshotResult {
+  String actual;
+}
+
+class PageExpectScreenshotErrorDetails {
+  String diff;
+  String customErrorMessage;
+  String actual;
+  String previous;
+  Boolean timedOut;
+  List<String> log;
 }
 
 

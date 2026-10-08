@@ -88,7 +88,6 @@ public class PageImpl extends ChannelOwner implements Page {
     Map<EventType, String> result = new HashMap<>();
     result.put(EventType.CONSOLE, "console");
     result.put(EventType.DIALOG, "dialog");
-    result.put(EventType.DIALOGCLOSED, "dialogClosed");
     result.put(EventType.REQUEST, "request");
     result.put(EventType.RESPONSE, "response");
     result.put(EventType.REQUESTFINISHED, "requestFinished");
@@ -111,7 +110,6 @@ public class PageImpl extends ChannelOwner implements Page {
     CONSOLE,
     CRASH,
     DIALOG,
-    DIALOGCLOSED,
     DOMCONTENTLOADED,
     DOWNLOAD,
     FILECHOOSER,
@@ -303,16 +301,6 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void offDialog(Consumer<Dialog> handler) {
     listeners.remove(EventType.DIALOG, handler);
-  }
-
-  @Override
-  public void onDialogClosed(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOGCLOSED, handler);
-  }
-
-  @Override
-  public void offDialogClosed(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOGCLOSED, handler);
   }
 
   @Override
@@ -1262,6 +1250,45 @@ public class PageImpl extends ChannelOwner implements Page {
   public List<String> selectOption(String selector, SelectOption value, SelectOptionOptions options) {
     SelectOption[] values = value == null ? null : new SelectOption[]{value};
     return selectOption(selector, values, options);
+  }
+
+  static class ExpectScreenshotResult {
+    byte[] actual;
+    byte[] previous;
+    byte[] diff;
+    String errorMessage;
+    List<String> log;
+    boolean timedOut;
+  }
+
+  ExpectScreenshotResult expectScreenshot(PageExpectScreenshotOptions options, String title) {
+    return withTitle(title, () -> expectScreenshot(options));
+  }
+
+  ExpectScreenshotResult expectScreenshot(PageExpectScreenshotOptions options) {
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    ExpectScreenshotResult result = new ExpectScreenshotResult();
+    try {
+      JsonObject json = sendMessage("expectScreenshot", params, options.timeout).getAsJsonObject();
+      if (json.has("actual")) {
+        result.actual = Base64.getDecoder().decode(json.get("actual").getAsString());
+      }
+    } catch (ServerErrorWithDetails e) {
+      PageExpectScreenshotErrorDetails details = gson().fromJson(e.errorDetails(), PageExpectScreenshotErrorDetails.class);
+      if (details.actual != null) {
+        result.actual = Base64.getDecoder().decode(details.actual);
+      }
+      if (details.previous != null) {
+        result.previous = Base64.getDecoder().decode(details.previous);
+      }
+      if (details.diff != null) {
+        result.diff = Base64.getDecoder().decode(details.diff);
+      }
+      result.errorMessage = details.customErrorMessage;
+      result.log = details.log;
+      result.timedOut = Boolean.TRUE.equals(details.timedOut);
+    }
+    return result;
   }
 
   private byte[] screenshotImpl(ScreenshotOptions options) {
