@@ -695,14 +695,14 @@ class LocatorImpl implements Locator {
 
   @Override
   public String toString() {
-    if (stringRepresentation == null) {
-      try {
-        stringRepresentation = frame.connection.localUtils().asLocatorDescription(selector);
-      } catch (PlaywrightException e) {
-        return "Locator@" + selector;
-      }
+    if (stringRepresentation != null) {
+      return stringRepresentation;
     }
-    return stringRepresentation;
+    String description = description();
+    if (description != null) {
+      return description;
+    }
+    return "Locator@" + selector;
   }
 
   @Override

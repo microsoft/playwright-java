@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
@@ -31,10 +30,10 @@ public class TestLocatorConvenience extends TestBase {
     Locator check = page.locator("#check");
     JSHandle text = inner.evaluateHandle("e => e.firstChild");
     page.evaluate("() => 1");  // Give them a chance to calculate the preview.
-    assertEquals("locator(\"#outer\")", outer.toString());
-    assertEquals("locator(\"#outer\").locator(\"#inner\")", inner.toString());
+    assertEquals("Locator@#outer", outer.toString());
+    assertEquals("Locator@#outer >> #inner", inner.toString());
     assertEquals("JSHandle@#text=Text,↵more text", text.toString());
-    assertEquals("locator(\"#check\")", check.toString());
+    assertEquals("Locator@#check", check.toString());
   }
 
   @Test
@@ -225,15 +224,15 @@ public class TestLocatorConvenience extends TestBase {
 
   @Test
   void toStringShouldReturnFormattedLocator() {
-    Locator locator = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit"));
-    assertEquals("getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"Submit\"))", locator.toString());
-    assertNull(locator.description());
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div");
+    assertTrue(locator.toString().startsWith("Locator@"));
   }
 
   @Test
   void toStringShouldPreferDescription() {
-    Locator locator = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).describe("Submit button");
-    assertEquals("Submit button", locator.toString());
-    assertEquals(locator.description(), locator.toString());
+    page.setContent("<div>Hello</div>");
+    Locator locator = page.locator("div").describe("my div");
+    assertEquals("my div", locator.toString());
   }
 }

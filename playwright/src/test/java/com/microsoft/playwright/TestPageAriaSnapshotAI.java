@@ -2,7 +2,6 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
-import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.AriaSnapshotMode;
 import org.junit.jupiter.api.Test;
 
@@ -201,7 +200,6 @@ public class TestPageAriaSnapshotAI {
 
     Locator normalized = page.getByRef("e2").normalize();
     assertEquals("getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"Submit\"))", normalized.toString());
-    assertEquals(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit")).toString(), normalized.toString());
 
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.getByRef("e1000").normalize());
     assertTrue(e.getMessage().contains("No element matching aria-ref=e1000"), e.getMessage());

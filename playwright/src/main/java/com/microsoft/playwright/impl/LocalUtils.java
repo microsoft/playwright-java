@@ -78,12 +78,4 @@ public class LocalUtils extends ChannelOwner {
     String regex = json.get("regex").getAsString();
     return Pattern.compile(regex);
   }
-
-  String asLocatorDescription(String selector) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("sdkLanguage", "java");
-    JsonObject json = sendMessage("asLocatorDescription", params, NO_TIMEOUT).getAsJsonObject();
-    return json.get("description").getAsString();
-  }
 }
