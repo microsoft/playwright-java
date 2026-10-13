@@ -47,6 +47,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
   PageImpl page;
   boolean isDetached;
+  private final WebMCPImpl webmcp = new WebMCPImpl(this);
 
   FrameImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -1135,6 +1136,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
       }
       internalListeners.notify(InternalEventType.NAVIGATED, params);
     }
+  }
+
+  @Override
+  public WebMCP webmcp() {
+    return webmcp;
   }
 
   protected double timeout(Double timeout) {

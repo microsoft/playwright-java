@@ -8968,6 +8968,16 @@ public interface Page extends AutoCloseable {
    */
   Worker waitForWorker(@Nullable WaitForWorkerOptions options, Runnable callback);
   /**
+   * Tools that the main frame registers through the experimental {@code WebMCP} browser API. Shortcut for {@link
+   * com.microsoft.playwright.Frame#webmcp Frame.webmcp()} of {@link com.microsoft.playwright.Page#mainFrame
+   * Page.mainFrame()}, see {@code WebMCP} for details.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * @since v1.64
+   */
+  WebMCP webmcp();
+  /**
    * This method returns all of the dedicated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorkers</a> associated with the page.
    *
