@@ -4610,6 +4610,21 @@ public interface Locator {
    * and other user-facing attributes over CSS selectors. This is useful for converting implementation-detail selectors into
    * more resilient, human-readable locators.
    *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> An agent can pick an element by its ref from an {@link com.microsoft.playwright.Page#ariaSnapshot Page.ariaSnapshot()}
+   * taken in the {@code "ai"} mode. Refs only work for the latest snapshot. Normalize the ref locator and convert it to a
+   * string to get resilient locator code in your language, the same way {@code codegen} does.
+   *
+   * <p> Consider the following aria snapshot.
+   *
+   * <p> You can turn the ref into locator code:
+   * <pre>{@code
+   * Locator normalized = page.getByRef("e2").normalize();
+   * System.out.println(normalized.toString());
+   * // getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit"))
+   * }</pre>
+   *
    * @since v1.59
    */
   Locator normalize();

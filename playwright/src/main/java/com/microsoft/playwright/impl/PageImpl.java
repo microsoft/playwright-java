@@ -1089,6 +1089,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public WebMCP webmcp() {
+    return mainFrame.webmcp();
+  }
+
+  @Override
   public void hideHighlight() {
     sendMessage("hideHighlight", new JsonObject(), NO_TIMEOUT);
   }

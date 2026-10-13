@@ -191,4 +191,17 @@ public class TestPageAriaSnapshotAI {
     assertTrue(snapshot4.contains("listitem [ref=e7]: item2"), snapshot4);
     assertFalse(snapshot4.contains("item3"), snapshot4);
   }
+
+  @Test
+  void shouldNormalizeRefLocatorToLocatorCode(Page page) {
+    page.setContent("<button>Submit</button>");
+    String snapshot = aiSnapshot(page);
+    assertTrue(snapshot.contains("button \"Submit\" [ref=e2]"), snapshot);
+
+    Locator normalized = page.getByRef("e2").normalize();
+    assertEquals("getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"Submit\"))", normalized.toString());
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.getByRef("e1000").normalize());
+    assertTrue(e.getMessage().contains("No element matching aria-ref=e1000"), e.getMessage());
+  }
 }

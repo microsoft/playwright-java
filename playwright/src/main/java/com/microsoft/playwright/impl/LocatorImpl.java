@@ -35,6 +35,7 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 class LocatorImpl implements Locator {
   final FrameImpl frame;
   final String selector;
+  private String stringRepresentation;
 
   LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this(frame, selector, options, null);
@@ -113,8 +114,13 @@ class LocatorImpl implements Locator {
   public Locator normalize() {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
+    params.addProperty("sdkLanguage", "java");
     JsonObject result = frame.sendMessage("resolveSelector", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
-    return new LocatorImpl(frame, result.get("resolvedSelector").getAsString(), null);
+    LocatorImpl locator = new LocatorImpl(frame, result.get("resolvedSelector").getAsString(), null);
+    if (result.has("locatorCode")) {
+      locator.stringRepresentation = result.get("locatorCode").getAsString();
+    }
+    return locator;
   }
 
   @Override
@@ -689,6 +695,9 @@ class LocatorImpl implements Locator {
 
   @Override
   public String toString() {
+    if (stringRepresentation != null) {
+      return stringRepresentation;
+    }
     String description = description();
     if (description != null) {
       return description;

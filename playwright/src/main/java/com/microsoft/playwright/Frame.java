@@ -5457,5 +5457,11 @@ public interface Frame {
    * @since v1.11
    */
   void waitForURL(Predicate<String> url, @Nullable WaitForURLOptions options);
+  /**
+   * Tools that the frame registers through the experimental {@code WebMCP} browser API. See {@code WebMCP} for details.
+   *
+   * @since v1.64
+   */
+  WebMCP webmcp();
 }
 

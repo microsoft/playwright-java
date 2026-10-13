@@ -1065,7 +1065,7 @@ class Interface extends TypeDefinition {
     if (asList("Playwright", "FormData", "RequestOptions").contains(jsonName) && methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
       output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger", "Screencast", "WebError", "Credentials", "WebStorage").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "FrameLocator", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard", "Tracing", "Video", "Debugger", "Screencast", "WebError", "Credentials", "WebStorage", "WebMCP").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if ("Download".equals(jsonName)) {
@@ -1077,7 +1077,7 @@ class Interface extends TypeDefinition {
     if ("Clock".equals(jsonName)) {
       output.add("import java.util.Date;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "APIRequestContext", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute", "Credentials", "WebStorage").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "LocatorAssertions", "APIRequest", "APIRequestContext", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright", "Debugger", "Screencast", "WebSocketRoute", "Credentials", "WebStorage", "WebMCP").contains(jsonName)) {
       output.add("import java.util.*;");
     }
     if (asList("WebSocketRoute").contains(jsonName)) {
