@@ -357,9 +357,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     JsonObject params = new JsonObject();
     params.add("page", ((PageImpl) page).toProtocolRef());
     JsonObject result = sendMessage("newCDPSession", params, NO_TIMEOUT).getAsJsonObject();
-    CDPSessionImpl session = connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
-    session.timeoutSettings = ((PageImpl) page).timeoutSettings;
-    return session;
+    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
   }
 
   @Override
@@ -367,10 +365,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     JsonObject params = new JsonObject();
     params.add("frame", ((FrameImpl) frame).toProtocolRef());
     JsonObject result = sendMessage("newCDPSession", params, NO_TIMEOUT).getAsJsonObject();
-    CDPSessionImpl session = connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
-    PageImpl page = ((FrameImpl) frame).page();
-    session.timeoutSettings = page != null ? page.timeoutSettings : timeoutSettings;
-    return session;
+    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
   }
 
   @Override

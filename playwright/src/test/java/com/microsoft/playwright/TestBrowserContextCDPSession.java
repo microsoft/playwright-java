@@ -45,29 +45,6 @@ public class TestBrowserContextCDPSession extends TestBase {
   }
 
   @Test
-  void shouldRespectDefaultTimeout() {
-    page.context().setDefaultTimeout(500);
-    CDPSession cdpSession = page.context().newCDPSession(page);
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", "new Promise(() => {})");
-    params.addProperty("awaitPromise", true);
-    TimeoutError e = assertThrows(TimeoutError.class, () -> cdpSession.send("Runtime.evaluate", params));
-    assertTrue(e.getMessage().contains("Timeout 500ms exceeded"), e.getMessage());
-  }
-
-  @Test
-  void shouldNotTimeOutWhenDefaultTimeoutIsZero() {
-    page.setDefaultTimeout(0);
-    CDPSession cdpSession = page.context().newCDPSession(page);
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", "new Promise(f => setTimeout(() => f(42), 100))");
-    params.addProperty("awaitPromise", true);
-    params.addProperty("returnByValue", true);
-    JsonObject result = cdpSession.send("Runtime.evaluate", params);
-    assertEquals(42, result.getAsJsonObject("result").get("value").getAsInt());
-  }
-
-  @Test
   void shouldSendEvents() {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");
