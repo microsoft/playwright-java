@@ -26,6 +26,8 @@ import java.util.function.Consumer;
 public class CDPSessionImpl extends ChannelOwner implements CDPSession {
   private final ListenerCollection<String> listeners = new ListenerCollection<>(new HashMap<>(), this);
   private final ListenerCollection<EventType> typedListeners = new ListenerCollection<>(new HashMap<>(), this);
+  // Set for page and frame sessions, browser sessions have no timeout.
+  TimeoutSettings timeoutSettings;
 
   enum EventType {
     CLOSE,
@@ -71,7 +73,7 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
       args.add("params", params);
     }
     args.addProperty("method", method);
-    JsonElement response = connection.sendMessage(guid, "send", args);
+    JsonElement response = sendMessage("send", args, timeoutSettings == null ? NO_TIMEOUT : timeoutSettings.timeout(null));
     if (response == null) return null;
     else return response.getAsJsonObject().get("result").getAsJsonObject();
   }
