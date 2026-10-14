@@ -54,6 +54,11 @@ public class BrowserContextOptionsExtension implements ParameterResolver {
       if (deviceDescriptor == null) {
         throw new PlaywrightException("Unknown device name: " + options.deviceName);
       }
+      if (options.browserName != null && deviceDescriptor.defaultBrowserType != null &&
+          !options.browserName.equals(deviceDescriptor.defaultBrowserType)) {
+        throw new PlaywrightException("Device \"" + options.deviceName + "\" requires \"" + deviceDescriptor.defaultBrowserType +
+          "\" browser, but browserName is \"" + options.browserName + "\"");
+      }
       contextOptions.userAgent = deviceDescriptor.userAgent;
       if (deviceDescriptor.viewport != null) {
         contextOptions.setViewportSize(deviceDescriptor.viewport.width, deviceDescriptor.viewport.height);
