@@ -15,6 +15,8 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
       -exec sed -i "s|http://archive.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}archive.ubuntu.com|g; s|http://ports.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}ports.ubuntu.com|g" {} + && \
     apt-get update && \
     apt-get install -y --no-install-recommends openjdk-25-jdk \
+    # Ubuntu 26.04 ships Maven 3.9.12
+    maven \
     # Install utilities required for downloading browsers
     wget \
     # Install utilities required for downloading driver
@@ -24,15 +26,6 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
     rm -rf /var/lib/apt/lists/* && \
     # Create the pwuser
     useradd -m -s /bin/bash pwuser
-
-# Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
-# Java 25, so we install latest Maven from Apache instead.
-RUN VERSION=3.9.12 && \
-    wget --tries=3 --timeout=30 --retry-connrefused -O /tmp/maven.tar.gz \
-      https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$VERSION/apache-maven-$VERSION-bin.tar.gz && \
-    tar zxf /tmp/maven.tar.gz -C /opt/ && \
-    rm /tmp/maven.tar.gz && \
-    ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
 ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk-${PW_TARGET_ARCH}
