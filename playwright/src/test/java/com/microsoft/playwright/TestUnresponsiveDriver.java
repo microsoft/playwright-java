@@ -18,16 +18,18 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
 
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class TestUnresponsiveDriver {
   @Test
   @DisabledOnOs(OS.WINDOWS)
+  @EnabledForJreRange(min = JRE.JAVA_9)
   void shouldThrowTimeoutErrorWhenDriverStopsResponding() throws Exception {
     try (Playwright playwright = Playwright.create()) {
       Browser browser = Utils.getBrowserTypeFromEnv(playwright).launch(TestBase.createLaunchOptions());
@@ -52,15 +54,8 @@ public class TestUnresponsiveDriver {
   private static long driverPid(Playwright playwright) throws Exception {
     Field field = playwright.getClass().getDeclaredField("driverProcess");
     field.setAccessible(true);
-    Process process = (Process) field.get(playwright);
-    long pid = -1;
-    try {
-      // Process.pid() is only available since Java 9.
-      pid = (long) Process.class.getMethod("pid").invoke(process);
-    } catch (NoSuchMethodException e) {
-      assumeTrue(false, "Process.pid() is not available");
-    }
-    return pid;
+    // Called via reflection as the tests are compiled with JDK 8 on CI.
+    return (long) Process.class.getMethod("pid").invoke(field.get(playwright));
   }
 
   private static void signal(String signal, long pid) throws Exception {
