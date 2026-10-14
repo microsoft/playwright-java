@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.toJsRegexSource;
 
 class UrlMatcher {
   public final String glob;
@@ -128,7 +129,7 @@ class UrlMatcher {
     if (glob != null)
       return String.format("<glob pattern=\"%s\">", glob);  
     if (pattern != null)
-      return String.format("<regex pattern=\"%s\" flags=\"%s\">", pattern.pattern(), toJsRegexFlags(pattern));
+      return String.format("<regex pattern=\"%s\" flags=\"%s\">", toJsRegexSource(pattern), toJsRegexFlags(pattern));
     if (this.predicate != null)
       return "<predicate>";
     return "<true>";

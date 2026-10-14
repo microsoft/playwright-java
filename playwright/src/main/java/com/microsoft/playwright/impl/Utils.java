@@ -324,6 +324,41 @@ public class Utils {
     return regexFlags;
   }
 
+  // JavaScript regular expressions do not support \Q...\E quoting, so convert quoted sections into escaped literals.
+  static String toJsRegexSource(Pattern pattern) {
+    String source = pattern.pattern();
+    if (!source.contains("\\Q")) {
+      return source;
+    }
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < source.length(); i++) {
+      char c = source.charAt(i);
+      if (c != '\\' || i + 1 == source.length()) {
+        result.append(c);
+        continue;
+      }
+      char next = source.charAt(++i);
+      if (next != 'Q') {
+        result.append(c).append(next);
+        continue;
+      }
+      int end = source.indexOf("\\E", i + 1);
+      if (end == -1) {
+        end = source.length();
+      }
+      for (int j = i + 1; j < end; j++) {
+        char ch = source.charAt(j);
+        if ("^$\\.*+?()[]{}|/".indexOf(ch) != -1) {
+          result.append('\\');
+        }
+        result.append(ch);
+      }
+      // Skip past the closing \E.
+      i = end + 1;
+    }
+    return result.toString();
+  }
+
   static int fromJsRegexFlags(String regexFlags) {
     int flags = 0;
     if (regexFlags.contains("i")) {
@@ -409,7 +444,7 @@ public class Utils {
       if (matcher.glob != null) {
         jsonPattern.addProperty("glob", matcher.glob);
       } else if (matcher.pattern != null) {
-        jsonPattern.addProperty("regexSource", matcher.pattern.pattern());
+        jsonPattern.addProperty("regexSource", toJsRegexSource(matcher.pattern));
         jsonPattern.addProperty("regexFlags", toJsRegexFlags(matcher.pattern));
       } else {
         // Match all requests.

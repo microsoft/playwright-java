@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.toJsRegexSource;
 import static java.util.Arrays.asList;
 
 abstract class AssertionsBase {
@@ -95,7 +96,7 @@ abstract class AssertionsBase {
 
   static ExpectedTextValue expectedRegex(Pattern pattern) {
     ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
+    expected.regexSource = toJsRegexSource(pattern);
     if (pattern.flags() != 0) {
       expected.regexFlags = toJsRegexFlags(pattern);
     }

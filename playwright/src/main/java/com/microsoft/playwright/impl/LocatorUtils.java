@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.toJsRegexSource;
 
 public class LocatorUtils {
   static String getByTextSelector(Object text, Locator.GetByTextOptions options) {
@@ -132,6 +133,6 @@ public class LocatorUtils {
   }
 
   private static String toJsRegExp(Pattern pattern) {
-    return "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
+    return "/" + toJsRegexSource(pattern) + "/" + toJsRegexFlags(pattern);
   }
 }

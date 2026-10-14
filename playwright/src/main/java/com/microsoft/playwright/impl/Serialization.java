@@ -38,6 +38,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.toJsRegexSource;
 import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
 class Serialization {
@@ -176,7 +177,7 @@ class Serialization {
         result.bi = ((BigInteger)value).toString();
       } else if (value instanceof Pattern) {
         result.r = new SerializedValue.R();
-        result.r.p = ((Pattern)value).pattern();
+        result.r.p = toJsRegexSource((Pattern)value);
         result.r.f = toJsRegexFlags(((Pattern)value));
       } else if (value instanceof Exception) {
         Exception exception = (Exception) value;
@@ -382,7 +383,7 @@ class Serialization {
         options.addProperty("urlGlob", (String) urlFilter);
       } else if (urlFilter instanceof Pattern) {
         Pattern pattern = (Pattern) urlFilter;
-        options.addProperty("urlRegexSource", pattern.pattern());
+        options.addProperty("urlRegexSource", toJsRegexSource(pattern));
         options.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
       }
   }
@@ -400,7 +401,7 @@ class Serialization {
       params.addProperty(name, (String) value);
     } else if (value instanceof Pattern) {
       Pattern pattern = (Pattern) value;
-      params.addProperty(name + "RegexSource", pattern.pattern());
+      params.addProperty(name + "RegexSource", toJsRegexSource(pattern));
       params.addProperty(name + "RegexFlags", toJsRegexFlags(pattern));
     }
   }
