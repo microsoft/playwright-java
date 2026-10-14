@@ -22,9 +22,12 @@ import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 import static com.microsoft.playwright.impl.junit.PageExtension.cleanUpPage;
@@ -130,7 +133,42 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     String outputDirName = extensionContext.getRequiredTestClass().getName() + "." +
       extensionContext.getRequiredTestMethod().getName() + "-" +
       browserType.name();
+    if (isTestTemplateInvocation(extensionContext)) {
+      // Each invocation of a parameterized or repeated test gets its own directory.
+      outputDirName += "-" + trimLongString(sanitizeForFilePath(extensionContext.getDisplayName()), 60);
+    }
     return defaultOutputPath.resolve(outputDirName);
+  }
+
+  private static boolean isTestTemplateInvocation(ExtensionContext extensionContext) {
+    return extensionContext.getParent().flatMap(ExtensionContext::getTestMethod).isPresent();
+  }
+
+  private static String sanitizeForFilePath(String s) {
+    return s.replaceAll("[\\x00-\\x2C\\x2E-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7F]+", "-");
+  }
+
+  private static String trimLongString(String s, int length) {
+    if (s.length() <= length) {
+      return s;
+    }
+    String middle = "-" + calculateSha1(s).substring(0, 5) + "-";
+    int start = (length - middle.length()) / 2;
+    int end = length - middle.length() - start;
+    return s.substring(0, start) + middle + s.substring(s.length() - end);
+  }
+
+  private static String calculateSha1(String s) {
+    try {
+      byte[] digest = MessageDigest.getInstance("SHA-1").digest(s.getBytes(StandardCharsets.UTF_8));
+      StringBuilder hex = new StringBuilder();
+      for (byte b : digest) {
+        hex.append(String.format("%02x", b));
+      }
+      return hex.toString();
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static Path getDefaultOutputPath(ExtensionContext extensionContext) {
