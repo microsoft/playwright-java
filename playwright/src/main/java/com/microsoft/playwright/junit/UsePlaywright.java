@@ -36,10 +36,22 @@ import java.lang.annotation.*;
  * <li> {@link com.microsoft.playwright.Browser Browser browser}</li>
  * <li> {@link com.microsoft.playwright.APIRequestContext APIRequestContext request}</li>
  * <li> {@link com.microsoft.playwright.Playwright Playwright playwright}</li>
+ * <li> {@link com.microsoft.playwright.Browser.NewContextOptions Browser.NewContextOptions contextOptions}</li>
  * </ul>
  * {@code Page} and {@code BrowserContext} are created before each test and closed
  * after the test has finished. {@code Browser} and {@code Playwright} are reused
- * between tests for better efficiency.
+ * between tests for better efficiency. {@code Browser.NewContextOptions} is a new instance
+ * every time it is requested, configured from the {@link OptionsFactory} the same way as for
+ * the {@code BrowserContext} fixture. Unlike {@code Page} and {@code BrowserContext}, it can also
+ * be used in {@code @BeforeAll} and {@code @AfterAll} methods to create a context manually:
+ * <pre>{@code
+ * @BeforeAll
+ * static void beforeAll(Browser browser, Browser.NewContextOptions contextOptions) {
+ *   BrowserContext context = browser.newContext(contextOptions);
+ *   // ...
+ *   context.close();
+ * }
+ * }</pre>
  *
  * <p> An example of using {@code @UsePlaywright} annotation:
  * <pre>{@code
@@ -73,7 +85,7 @@ import java.lang.annotation.*;
  * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.
  */
 @ExtendWith({OptionsExtension.class, PlaywrightExtension.class, BrowserExtension.class, BrowserContextExtension.class,
-             PageExtension.class, APIRequestContextExtension.class})
+             PageExtension.class, APIRequestContextExtension.class, BrowserContextOptionsExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
