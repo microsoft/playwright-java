@@ -70,8 +70,6 @@ public class Connection {
   private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private String title;
   private boolean titleReported = false;
-  // How long past a call's timeout to wait for the driver's reply. The driver may spend up to 3s
-  // in tracing instrumentation both before and after the call itself.
   private static final long DRIVER_RESPONSE_GRACE_MS = 10_000;
   private static final boolean isLogging;
   static {
@@ -153,13 +151,12 @@ public class Connection {
     if (timeout == null || timeout == 0) {
       return root.runUntil(() -> {}, result);
     }
-    // The timeout is enforced by the driver, but if the driver or the browser hangs no reply ever
-    // comes. Give up once the driver is well past the timeout and has stopped sending messages.
+    // The driver enforces the timeout, but the driver itself may hang.
     long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
     while (!result.isDone()) {
       if (!processOneMessage() && System.nanoTime() - deadline > 0) {
         result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
-          method + ". The driver or the browser process is not responding."));
+          method + ". The driver is not responding."));
       }
     }
     return result.get();
@@ -249,7 +246,6 @@ public class Connection {
     objects.remove(guid);
   }
 
-  // Returns false if no message arrived within the poll interval.
   boolean processOneMessage() {
     JsonObject message = transport.poll(Duration.ofMillis(10));
     if (message == null) {
