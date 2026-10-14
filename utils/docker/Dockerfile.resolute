@@ -28,7 +28,10 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
 # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
 # Java 25, so we install latest Maven from Apache instead.
 RUN VERSION=3.9.12 && \
-    wget -O - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
+    wget --tries=3 --timeout=30 --retry-connrefused -O /tmp/maven.tar.gz \
+      https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$VERSION/apache-maven-$VERSION-bin.tar.gz && \
+    tar zxf /tmp/maven.tar.gz -C /opt/ && \
+    rm /tmp/maven.tar.gz && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
