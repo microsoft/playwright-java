@@ -58,6 +58,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>com.microsoft.playwright</groupId>
         <artifactId>driver</artifactId>
         <version>${project.version}</version>
