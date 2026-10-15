@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
@@ -62,7 +61,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     setTestIdAttribute(playwright, options);
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
-    Browser.NewContextOptions contextOptions = getContextOptions(playwright, options);
+    Browser.NewContextOptions contextOptions = BrowserContextOptionsExtension.getContextOptions(playwright, options);
     browserContext = browser.newContext(contextOptions);
     if (options.defaultTimeout != null) {
       browserContext.setDefaultTimeout(options.defaultTimeout);
@@ -191,36 +190,5 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
 
   private static boolean shouldRecordTrace(Options options) {
     return options.trace.equals(Options.Trace.ON) || options.trace.equals(Options.Trace.RETAIN_ON_FAILURE);
-  }
-
-  private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
-    Browser.NewContextOptions contextOptions = Utils.clone(options.contextOptions);
-    if (contextOptions == null) {
-      contextOptions = new Browser.NewContextOptions();
-    }
-
-    if (options.baseUrl != null) {
-      contextOptions.setBaseURL(options.baseUrl);
-    }
-
-    if (options.deviceName != null) {
-      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
-      if (deviceDescriptor == null) {
-        throw new PlaywrightException("Unknown device name: " + options.deviceName);
-      }
-      contextOptions.userAgent = deviceDescriptor.userAgent;
-      if (deviceDescriptor.viewport != null) {
-        contextOptions.setViewportSize(deviceDescriptor.viewport.width, deviceDescriptor.viewport.height);
-      }
-      contextOptions.deviceScaleFactor = deviceDescriptor.deviceScaleFactor;
-      contextOptions.isMobile = deviceDescriptor.isMobile;
-      contextOptions.hasTouch = deviceDescriptor.hasTouch;
-    }
-
-    if (options.ignoreHTTPSErrors != null) {
-      contextOptions.setIgnoreHTTPSErrors(options.ignoreHTTPSErrors);
-    }
-
-    return contextOptions;
   }
 }
