@@ -18,33 +18,71 @@ package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.junit.OptionsFactory;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class OptionsExtension implements AfterAllCallback {
   private static final ThreadLocal<Options> threadLocalOptions = new ThreadLocal<>();
+  // Test instance that the options were created for, when the factory is an inner class of the test class.
+  private static final ThreadLocal<Object> threadLocalEnclosingInstance = new ThreadLocal<>();
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
     threadLocalOptions.remove();
+    threadLocalEnclosingInstance.remove();
   }
 
   static Options getOptions(ExtensionContext extensionContext) {
+    Class<? extends OptionsFactory> factoryClass = getUsePlaywrightAnnotation(extensionContext).value();
     Options options = threadLocalOptions.get();
-    if (options != null) {
+    if (!isInnerClass(factoryClass)) {
+      if (options == null) {
+        options = createFactory(factoryClass, null).getOptions();
+        threadLocalOptions.set(options);
+      }
       return options;
     }
 
-    UsePlaywright usePlaywrightAnnotation = getUsePlaywrightAnnotation(extensionContext);
+    // Inner class factories can access fields of the test instance, so the options are
+    // re-created for each test instance.
+    Class<?> enclosingClass = factoryClass.getDeclaringClass();
+    Object enclosingInstance = extensionContext.getTestInstances()
+      .flatMap(instances -> instances.findInstance(enclosingClass).map(Object.class::cast))
+      .orElse(null);
+    if (options != null && (enclosingInstance == null || enclosingInstance == threadLocalEnclosingInstance.get())) {
+      return options;
+    }
+    if (enclosingInstance == null) {
+      throw new PlaywrightException("Cannot create " + factoryClass.getName() + " without an instance of " +
+        enclosingClass.getName() + ". Make the options factory a static class or use " +
+        "@TestInstance(TestInstance.Lifecycle.PER_CLASS) to request Playwright fixtures in @BeforeAll methods.");
+    }
+    options = createFactory(factoryClass, enclosingInstance).getOptions();
+    threadLocalOptions.set(options);
+    threadLocalEnclosingInstance.set(enclosingInstance);
+    return options;
+  }
+
+  private static boolean isInnerClass(Class<?> clazz) {
+    return clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers());
+  }
+
+  private static OptionsFactory createFactory(Class<? extends OptionsFactory> factoryClass, Object enclosingInstance) {
     try {
-      options = usePlaywrightAnnotation.value().newInstance().getOptions();
-      threadLocalOptions.set(options);
-    } catch (InstantiationException | IllegalAccessException e) {
+      if (enclosingInstance == null) {
+        return factoryClass.newInstance();
+      }
+      Constructor<? extends OptionsFactory> constructor = factoryClass.getDeclaredConstructor(factoryClass.getDeclaringClass());
+      constructor.setAccessible(true);
+      return constructor.newInstance(enclosingInstance);
+    } catch (ReflectiveOperationException e) {
       throw new PlaywrightException("Failed to create options", e);
     }
-    return options;
   }
 }
