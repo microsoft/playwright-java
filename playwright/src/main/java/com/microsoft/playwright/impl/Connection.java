@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.lang.System.currentTimeMillis;
@@ -69,6 +70,7 @@ public class Connection {
   private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private String title;
   private boolean titleReported = false;
+  private static final long DRIVER_RESPONSE_GRACE_MS = 10_000;
   private static final boolean isLogging;
   static {
     String debug = System.getenv("DEBUG");
@@ -145,7 +147,19 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params, Double timeout) {
-    return root.runUntil(() -> {}, internalSendMessage(guid, method, params, timeout, true, true));
+    WaitableResult<JsonElement> result = internalSendMessage(guid, method, params, timeout, true, true);
+    if (timeout == null || timeout == 0) {
+      return root.runUntil(() -> {}, result);
+    }
+    // The driver enforces the timeout, but the driver itself may hang.
+    long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
+    while (!result.isDone()) {
+      if (!processOneMessage() && System.nanoTime() - deadline > 0) {
+        result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
+          method + ". The driver is not responding."));
+      }
+    }
+    return result.get();
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
@@ -232,14 +246,15 @@ public class Connection {
     objects.remove(guid);
   }
 
-  void processOneMessage() {
+  boolean processOneMessage() {
     JsonObject message = transport.poll(Duration.ofMillis(10));
     if (message == null) {
-      return;
+      return false;
     }
     Gson gson = gson();
     Message messageObj = gson.fromJson(message, Message.class);
     dispatch(messageObj);
+    return true;
   }
 
   private static String formatCallLog(JsonArray log) {
