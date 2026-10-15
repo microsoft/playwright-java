@@ -54,6 +54,29 @@ package com.microsoft.playwright.junit;
  * }
  * }</pre>
  *
+ * <p> If the options depend on the state of the test instance (e.g. a server injected by
+ * a dependency injection framework), declare the factory as a non-static inner class of
+ * the test class. It will be created for each test instance and can access its fields:
+ * <pre>{@code
+ * @UsePlaywright(MyTest.CustomOptions.class)
+ * public class MyTest {
+ *   @Inject
+ *   EmbeddedServer server;
+ *
+ *   class CustomOptions implements OptionsFactory {
+ *     @Override
+ *     public Options getOptions() {
+ *       return new Options().setBaseUrl(server.getURL().toString());
+ *     }
+ *   }
+ * }
+ * }</pre>
+ * Only context level options (e.g. base URL, context options, trace) are re-evaluated for each
+ * test instance; {@code Playwright} and {@code Browser} are created with the options of the first
+ * test instance and reused. Unless the test class uses {@code @TestInstance(Lifecycle.PER_CLASS)},
+ * Playwright fixtures cannot be requested in {@code @BeforeAll} methods because there is no
+ * test instance yet.
+ *
  * <p>For more details and usage examples see our
  * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.
  */
