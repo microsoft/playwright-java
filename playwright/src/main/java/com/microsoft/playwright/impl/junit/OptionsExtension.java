@@ -40,28 +40,12 @@ public class OptionsExtension implements AfterAllCallback {
 
   static Options getOptions(ExtensionContext extensionContext) {
     Class<? extends OptionsFactory> factoryClass = getUsePlaywrightAnnotation(extensionContext).value();
-    Options options = threadLocalOptions.get();
-    if (!isInnerClass(factoryClass)) {
-      if (options == null) {
-        options = createFactory(factoryClass, null).getOptions();
-        threadLocalOptions.set(options);
-      }
-      return options;
-    }
-
     // Inner class factories can access fields of the test instance, so the options are
     // re-created for each test instance.
-    Class<?> enclosingClass = factoryClass.getDeclaringClass();
-    Object enclosingInstance = extensionContext.getTestInstances()
-      .flatMap(instances -> instances.findInstance(enclosingClass).map(Object.class::cast))
-      .orElse(null);
+    Object enclosingInstance = findEnclosingInstance(factoryClass, extensionContext);
+    Options options = threadLocalOptions.get();
     if (options != null && (enclosingInstance == null || enclosingInstance == threadLocalEnclosingInstance.get())) {
       return options;
-    }
-    if (enclosingInstance == null) {
-      throw new PlaywrightException("Cannot create " + factoryClass.getName() + " without an instance of " +
-        enclosingClass.getName() + ". Make the options factory a static class or use " +
-        "@TestInstance(TestInstance.Lifecycle.PER_CLASS) to request Playwright fixtures in @BeforeAll methods.");
     }
     options = createFactory(factoryClass, enclosingInstance).getOptions();
     threadLocalOptions.set(options);
@@ -73,11 +57,26 @@ public class OptionsExtension implements AfterAllCallback {
     return clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers());
   }
 
+  private static Object findEnclosingInstance(Class<?> factoryClass, ExtensionContext extensionContext) {
+    if (!isInnerClass(factoryClass)) {
+      return null;
+    }
+    return extensionContext.getTestInstances()
+      .flatMap(instances -> instances.findInstance(factoryClass.getDeclaringClass()))
+      .orElse(null);
+  }
+
   private static OptionsFactory createFactory(Class<? extends OptionsFactory> factoryClass, Object enclosingInstance) {
+    if (enclosingInstance == null && isInnerClass(factoryClass)) {
+      throw new PlaywrightException("Cannot create " + factoryClass.getName() + " without an instance of " +
+        factoryClass.getDeclaringClass().getName() + ". Make the options factory a static class or use " +
+        "@TestInstance(TestInstance.Lifecycle.PER_CLASS) to request Playwright fixtures in @BeforeAll methods.");
+    }
     try {
       if (enclosingInstance == null) {
         return factoryClass.newInstance();
       }
+      // Use the declaring class rather than enclosingInstance.getClass(), which may be a subclass.
       Constructor<? extends OptionsFactory> constructor = factoryClass.getDeclaredConstructor(factoryClass.getDeclaringClass());
       constructor.setAccessible(true);
       return constructor.newInstance(enclosingInstance);

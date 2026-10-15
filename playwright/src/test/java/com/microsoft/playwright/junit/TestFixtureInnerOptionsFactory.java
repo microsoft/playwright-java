@@ -16,23 +16,25 @@
 
 package com.microsoft.playwright.junit;
 
+import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Server;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.jupiter.api.TestInstance;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
 @UsePlaywright(TestFixtureInnerOptionsFactory.CustomOptions.class)
 public class TestFixtureInnerOptionsFactory {
-  private static final List<Object> factoryInstances = new ArrayList<>();
   // Set per instance, similar to fields injected by Spring or Micronaut.
   private final Server server;
+  private boolean optionsCreated;
 
   TestFixtureInnerOptionsFactory(Server server) {
     this.server = server;
@@ -41,30 +43,31 @@ public class TestFixtureInnerOptionsFactory {
   class CustomOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
-      factoryInstances.add(TestFixtureInnerOptionsFactory.this);
+      optionsCreated = true;
       return new Options().setBaseUrl(server.PREFIX);
     }
   }
 
-  @Test
-  void shouldUseTestInstanceFields(Page page) {
+  // Each repetition gets a new test instance.
+  @RepeatedTest(2)
+  void shouldCreateOptionsForEachTestInstance(Page page) {
+    assertTrue(optionsCreated);
     page.navigate("/empty.html");
     assertThat(page).hasURL(server.EMPTY_PAGE);
   }
 
-  @Test
-  void shouldCreateOptionsForEachTestInstance(Page page) {
-    page.navigate("/empty.html");
-    assertSame(this, factoryInstances.get(factoryInstances.size() - 1));
-  }
-
   @Nested
-  class NestedClass {
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class PerClassLifecycle {
+    @BeforeAll
+    void beforeAll(Browser.NewContextOptions contextOptions) {
+      assertEquals(server.PREFIX, contextOptions.baseURL);
+    }
+
     @Test
-    void shouldUseOuterInstanceInNestedClass(Page page) {
+    void shouldUseOuterInstance(Page page) {
       page.navigate("/empty.html");
       assertThat(page).hasURL(server.EMPTY_PAGE);
-      assertSame(TestFixtureInnerOptionsFactory.this, factoryInstances.get(factoryInstances.size() - 1));
     }
   }
 }
