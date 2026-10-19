@@ -41,6 +41,14 @@ public class TestBrowserContextExposeFunction extends TestBase {
     assertEquals(page, bindingSource[0].page());
     assertEquals(page.mainFrame(), bindingSource[0].frame());
     assertEquals(11, result);
+
+    // https://github.com/microsoft/playwright-java/issues/2009
+    page.onConsoleMessage(message -> {
+      throw new IllegalStateException("failure in console listener");
+    });
+    IllegalStateException e = assertThrows(IllegalStateException.class,
+      () -> page.evaluate("() => { add(1, 2); console.log('after add'); }"));
+    assertEquals("failure in console listener", e.getMessage());
   }
 
   @Test
