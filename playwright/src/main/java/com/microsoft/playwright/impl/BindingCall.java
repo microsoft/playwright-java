@@ -22,7 +22,6 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.BindingCallback;
 
 import java.util.ArrayList;
@@ -79,25 +78,10 @@ class BindingCall extends ChannelOwner {
       Object result = binding.call(source, args.toArray());
       params.add("result", gson().toJsonTree(serializeArgument(result)));
     } catch (RuntimeException exception) {
-      reject(exception);
+      params.add("error", gson().toJsonTree(serializeError(exception)));
+      sendMessage("reject", params, NO_TIMEOUT);
       return;
     }
-    WaitableResult<JsonElement> resolved = sendMessageAsync("resolve", params);
-    // Exceptions thrown by event listeners while waiting for the reply are not the binding's
-    // failure, so they propagate to the caller as is.
-    while (!resolved.isDone()) {
-      connection.processOneMessage();
-    }
-    try {
-      resolved.get();
-    } catch (PlaywrightException exception) {
-      reject(exception);
-    }
-  }
-
-  private void reject(RuntimeException exception) {
-    JsonObject params = new JsonObject();
-    params.add("error", gson().toJsonTree(serializeError(exception)));
-    sendMessage("reject", params, NO_TIMEOUT);
+    sendMessage("resolve", params, NO_TIMEOUT);
   }
 }
