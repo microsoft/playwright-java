@@ -18,27 +18,30 @@ package com.microsoft.playwright.junit;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixtureTest
-@UsePlaywright(TestFixtureOptions.CustomOptions.class)
+@UsePlaywright
 public class TestFixtureOptions {
+  private final Server server;
 
-  public static class CustomOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options()
-        .setBaseUrl(serverMap.get(TestFixtureOptions.class).EMPTY_PAGE)
-        .setBrowserName("webkit")
-        .setDefaultTimeout(10_000.0)
-        .setTestIdAttribute("data-my-custom-testid");
-    }
+  TestFixtureOptions(Server server) {
+    this.server = server;
+  }
+
+  @PlaywrightOptions
+  Options options() {
+    return new Options()
+      .setBaseUrl(server.EMPTY_PAGE)
+      .setBrowserName("webkit")
+      .setDefaultTimeout(10_000.0)
+      .setTestIdAttribute("data-my-custom-testid");
   }
 
   @Test

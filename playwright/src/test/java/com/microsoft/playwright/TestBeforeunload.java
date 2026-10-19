@@ -17,12 +17,19 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
+
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestBeforeunload {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void shouldBeAbleToNavigateAwayFromPageWithBeforeunload(Page page, Server server) {
     page.navigate(server.PREFIX + "/beforeunload.html");

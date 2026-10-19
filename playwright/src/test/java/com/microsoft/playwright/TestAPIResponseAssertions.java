@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -24,12 +26,16 @@ import org.opentest4j.AssertionFailedError;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestAPIResponseAssertions {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void passWithResponse(Page page, Server server) {
     APIResponse res = page.request().get(server.EMPTY_PAGE);

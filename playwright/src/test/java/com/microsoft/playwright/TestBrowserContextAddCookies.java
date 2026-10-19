@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
@@ -27,15 +29,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static com.microsoft.playwright.TestBase.defaultSameSiteCookieValue;
-import static com.microsoft.playwright.TestOptionsFactories.isFirefox;
+import static com.microsoft.playwright.TestEnv.getBrowserName;
+import static com.microsoft.playwright.TestEnv.isFirefox;
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestBrowserContextAddCookies {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void shouldWork(Page page, Server server, BrowserContext context) {
     page.navigate(server.EMPTY_PAGE);

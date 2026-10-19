@@ -25,8 +25,8 @@ import java.lang.annotation.*;
  * <strong>NOTE:</strong> this API is experimental and is subject to changes.
  *
  * Use {@code @UsePlaywright} annotation to automatically manage Playwright objects
- * used in your test. Custom configuration can be provided by implementing
- * {@link OptionsFactory} and passing the class as a parameter.
+ * used in your test. Custom configuration can be provided by annotating a field or
+ * a method of the test class with {@link PlaywrightOptions}.
  *
  * <p> When a test class is annotated with {@code @UsePlaywright} each test method can
  * use any of the following arguments that will be automatically created at run time:
@@ -41,7 +41,7 @@ import java.lang.annotation.*;
  * {@code Page} and {@code BrowserContext} are created before each test and closed
  * after the test has finished. {@code Browser} and {@code Playwright} are reused
  * between tests for better efficiency. {@code Browser.NewContextOptions} is a new instance
- * every time it is requested, configured from the {@link OptionsFactory} the same way as for
+ * every time it is requested, configured from the {@link Options} the same way as for
  * the {@code BrowserContext} fixture. Unlike {@code Page} and {@code BrowserContext}, it can also
  * be used in {@code @BeforeAll} and {@code @AfterAll} methods to create a context manually:
  * <pre>{@code
@@ -90,5 +90,4 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface UsePlaywright {
-  Class<? extends OptionsFactory> value() default DefaultOptions.class;
 }

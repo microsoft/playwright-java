@@ -16,18 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
-
-public class TestOptionsFactories {
-
-  public static class BasicOptionsFactory implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options().setBrowserName(getBrowserName());
-    }
-  }
-
+public class TestEnv {
   public static String getBrowserChannelFromEnv() {
     return System.getenv("BROWSER_CHANNEL");
   }

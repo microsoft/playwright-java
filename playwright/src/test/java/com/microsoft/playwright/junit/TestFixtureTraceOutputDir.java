@@ -36,17 +36,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
-@UsePlaywright(TestFixtureTraceOutputDir.TraceOptions.class)
+@UsePlaywright
 public class TestFixtureTraceOutputDir {
   @TempDir
   static Path outputDir;
   private static String browserName;
 
-  public static class TraceOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options().setTrace(Options.Trace.ON).setOutputDir(outputDir);
-    }
+  // A method rather than a field because outputDir is injected after the class is initialized.
+  @PlaywrightOptions
+  static Options options() {
+    return new Options().setTrace(Options.Trace.ON).setOutputDir(outputDir);
   }
 
   @Test

@@ -23,8 +23,8 @@ import java.nio.file.Path;
 /**
  * <strong>NOTE:</strong> this API is experimental and is subject to changes.
  *
- * <p> Instances of this class are expected to be created by custom {@link OptionsFactory}
- * implementations. Implement custom factories to provide custom Playwright configurations.
+ * <p> Provide an instance of this class from a field or a method of the test class
+ * annotated with {@link PlaywrightOptions} to customize the Playwright fixtures.
  *
  * <p> For more details and usage examples see our
  * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.

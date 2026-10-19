@@ -26,14 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.microsoft.playwright.Utils.nextFreePort;
 
 public class ServerLifecycle implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
-  // This is a public map so that objects outside test scope can access the server.
-  // For example, nested classes inside test classes that define custom options and need the server.
-  public static Map<Class<?>, Server> serverMap;
-
-  static {
-    // Test classes run concurrently.
-    serverMap = new ConcurrentHashMap<>();
-  }
+  // Test classes run concurrently.
+  private static final Map<Class<?>, Server> serverMap = new ConcurrentHashMap<>();
 
   @Override
   public void beforeAll(ExtensionContext extensionContext) throws Exception {

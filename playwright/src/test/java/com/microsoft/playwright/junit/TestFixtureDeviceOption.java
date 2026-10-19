@@ -20,20 +20,14 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixtureTest
-@UsePlaywright(TestFixtureDeviceOption.CustomOptions.class)
+@UsePlaywright
 public class TestFixtureDeviceOption {
-
-  public static class CustomOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options().setDeviceName("iPhone 14");
-    }
-  }
+  @PlaywrightOptions
+  static final Options options = new Options().setDeviceName("iPhone 14");
 
   @Test
   public void testPredefinedDeviceParameters(Server server, Page page) {

@@ -22,20 +22,14 @@ import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestFixtureChannelOption.CustomOptions.class)
+@UsePlaywright
 @EnabledIf("isChannelSpecified")
 public class TestFixtureChannelOption {
-
-  public static class CustomOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options().setChannel(channel());
-    }
-  }
+  @PlaywrightOptions
+  static final Options options = new Options().setChannel(channel());
 
   public static boolean isChannelSpecified() {
     return channel() != null;

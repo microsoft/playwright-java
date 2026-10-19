@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -27,12 +29,15 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 @Tag("smoke")
 public class TestBrowser1 {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
 
   @Test
   void shouldCreateNewPage(Browser browser) {
@@ -81,7 +86,7 @@ public class TestBrowser1 {
   }
 
   @Test
-  @EnabledIf(value = "com.microsoft.playwright.TestOptionsFactories#isChromium",
+  @EnabledIf(value = "com.microsoft.playwright.TestEnv#isChromium",
              disabledReason = "Chrome Devtools Protocol supported by chromium only")
   void shouldWorkWithNewBrowserCDPSession(Browser browser) {
     CDPSession session = browser.newBrowserCDPSession();

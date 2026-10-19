@@ -23,17 +23,11 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 
 class ExtensionUtils {
   static boolean hasUsePlaywrightAnnotation(ExtensionContext extensionContext) {
     Class<?> outerClass = getOuterClass(extensionContext.getRequiredTestClass());
     return AnnotationSupport.isAnnotated(outerClass, UsePlaywright.class);
-  }
-
-  static UsePlaywright getUsePlaywrightAnnotation(ExtensionContext extensionContext) {
-    Class<?> topLevelClass = getOuterClass(extensionContext.getRequiredTestClass());
-    return findAnnotation(topLevelClass, UsePlaywright.class).get();
   }
 
   static boolean isClassHook(ExtensionContext extensionContext) {

@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.AnnotatePosition;
 import com.microsoft.playwright.options.ScreencastCursor;
@@ -34,12 +36,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.TestOptionsFactories.createLaunchOptions;
+import static com.microsoft.playwright.TestEnv.createLaunchOptions;
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestScreencast {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   private static Browser.NewContextOptions recordVideoOptions(Path videosDir) {
     return new Browser.NewContextOptions()
       .setRecordVideoDir(videosDir)
