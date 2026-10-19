@@ -32,7 +32,7 @@ public class TestFixturePlaywrightOptionsStatic {
   private static final String NESTED_BASE_URL = "http://localhost:1234/nested/";
 
   @PlaywrightOptions
-  static final Options options = new Options().setBaseUrl(BASE_URL);
+  static final Options options = new Options().setBaseUrl(BASE_URL).setIgnoreHTTPSErrors(true);
 
   // A static member does not need a test instance.
   @BeforeAll
@@ -68,6 +68,20 @@ public class TestFixturePlaywrightOptionsStatic {
     @Test
     void shouldOverrideOptionsOfEnclosingClass(Browser.NewContextOptions contextOptions) {
       assertEquals(NESTED_BASE_URL, contextOptions.baseURL);
+    }
+  }
+
+  @Nested
+  class NestedClassWithOwnContextOptions {
+    @PlaywrightOptions
+    Browser.NewContextOptions contextOptions = new Browser.NewContextOptions().setLocale("de-DE");
+
+    @Test
+    void shouldOverrideOnlyContextOptionsOfEnclosingClass(Browser.NewContextOptions contextOptions) {
+      assertEquals("de-DE", contextOptions.locale);
+      // The other options of the enclosing class still apply.
+      assertEquals(BASE_URL, contextOptions.baseURL);
+      assertEquals(true, contextOptions.ignoreHTTPSErrors);
     }
   }
 }

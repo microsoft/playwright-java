@@ -21,19 +21,30 @@ import java.lang.annotation.*;
 /**
  * <strong>NOTE:</strong> this API is experimental and is subject to changes.
  *
- * <p> Marks the field or method of a test class annotated with {@link UsePlaywright} that
- * provides the {@link Options} for the Playwright fixtures. A field must be of type
- * {@code Options}, a method must return {@code Options} and take no parameters.
+ * <p> Marks a field or method of a test class annotated with {@link UsePlaywright} that provides
+ * options for the Playwright fixtures. A method must take no parameters. The member must be of one
+ * of the following types, and a test class may have one member of each type:
+ * <ul>
+ * <li> {@link Options} - all options;</li>
+ * <li> {@link com.microsoft.playwright.BrowserType.LaunchOptions BrowserType.LaunchOptions} -
+ *      options for launching the browser, overrides {@link Options#setLaunchOptions};</li>
+ * <li> {@link com.microsoft.playwright.Browser.NewContextOptions Browser.NewContextOptions} -
+ *      options for creating the browser context, overrides {@link Options#setContextOptions};</li>
+ * <li> {@link com.microsoft.playwright.APIRequest.NewContextOptions APIRequest.NewContextOptions} -
+ *      options for creating the API request context, overrides {@link Options#setApiRequestOptions}.</li>
+ * </ul>
  *
  * <p> A static field or method is read once per test class:
  * <pre>{@code
  * @UsePlaywright
  * public class MyTest {
  *   @PlaywrightOptions
- *   static final Options options = new Options()
- *       .setHeadless(false)
- *       .setContextOptions(new Browser.NewContextOptions()
- *           .setBaseURL("https://github.com"));
+ *   static final Options options = new Options().setHeadless(false).setDeviceName("iPhone 14");
+ *
+ *   @PlaywrightOptions
+ *   static final Browser.NewContextOptions contextOptions = new Browser.NewContextOptions()
+ *       .setBaseURL("https://github.com")
+ *       .setLocale("de-DE");
  *
  *   @Test
  *   void testWithCustomOptions(Page page) {
@@ -53,8 +64,8 @@ import java.lang.annotation.*;
  *   EmbeddedServer server;
  *
  *   @PlaywrightOptions
- *   Options options() {
- *     return new Options().setBaseUrl(server.getURL().toString());
+ *   Browser.NewContextOptions contextOptions() {
+ *     return new Browser.NewContextOptions().setBaseURL(server.getURL().toString());
  *   }
  *
  *   @Test
@@ -67,8 +78,9 @@ import java.lang.annotation.*;
  * member cannot be used when Playwright fixtures are requested in {@code @BeforeAll} methods or in
  * the constructor, because there is no test instance yet.
  *
- * <p> The annotated member may be declared in a superclass or in an enclosing class of the test
- * class. A {@code @Nested} class can declare its own member to run its tests with different options:
+ * <p> The annotated members may be declared in a superclass or in an enclosing class of the test
+ * class. A {@code @Nested} class can declare its own members to run its tests with different options,
+ * the members of other types declared in the enclosing class still apply:
  * <pre>{@code
  * @UsePlaywright
  * public class MyTest {
@@ -76,12 +88,12 @@ import java.lang.annotation.*;
  *   static final Options options = new Options().setBaseUrl("https://example.com");
  *
  *   @Nested
- *   class Mobile {
+ *   class InGerman {
  *     @PlaywrightOptions
- *     Options options = new Options().setBaseUrl("https://m.example.com").setDeviceName("iPhone 14");
+ *     Browser.NewContextOptions contextOptions = new Browser.NewContextOptions().setLocale("de-DE");
  *
  *     @Test
- *     void testOnMobile(Page page) {
+ *     void testInGerman(Page page) {
  *       page.navigate("/");
  *     }
  *   }

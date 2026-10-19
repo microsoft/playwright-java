@@ -36,8 +36,10 @@ public class TestFixtureNewContextOptions {
   static final Options options = new Options()
     .setBaseUrl(BASE_URL)
     .setDeviceName("iPhone 14")
-    .setIgnoreHTTPSErrors(true)
-    .setContextOptions(new Browser.NewContextOptions().setLocale("de-DE"));
+    .setIgnoreHTTPSErrors(true);
+
+  @PlaywrightOptions
+  static final Browser.NewContextOptions contextOptions = new Browser.NewContextOptions().setLocale("de-DE");
 
   private static void assertConfiguredFromOptions(Browser.NewContextOptions contextOptions) {
     assertNotNull(contextOptions);

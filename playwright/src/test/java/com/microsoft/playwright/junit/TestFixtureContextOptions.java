@@ -34,10 +34,13 @@ public class TestFixtureContextOptions {
   }
 
   @PlaywrightOptions
-  Options options() {
-    return new Options()
-      .setApiRequestOptions(new APIRequest.NewContextOptions().setBaseURL(server.EMPTY_PAGE))
-      .setContextOptions(new Browser.NewContextOptions().setBaseURL(server.EMPTY_PAGE));
+  Browser.NewContextOptions contextOptions() {
+    return new Browser.NewContextOptions().setBaseURL(server.EMPTY_PAGE);
+  }
+
+  @PlaywrightOptions
+  APIRequest.NewContextOptions apiRequestOptions() {
+    return new APIRequest.NewContextOptions().setBaseURL(server.EMPTY_PAGE);
   }
 
   @Test
