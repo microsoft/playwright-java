@@ -63,15 +63,35 @@ import java.lang.annotation.*;
  *   }
  * }
  * }</pre>
- * {@code Playwright} and {@code Browser} are shared between tests, so they are created with the
- * options of the first test instance; only the options of {@code BrowserContext} and
- * {@code APIRequestContext} take effect for every test instance. Unless the test class uses
- * {@code @TestInstance(TestInstance.Lifecycle.PER_CLASS)}, a non-static member cannot be used
- * when Playwright fixtures are requested in {@code @BeforeAll} methods or in the constructor,
- * because there is no test instance yet.
+ * Unless the test class uses {@code @TestInstance(TestInstance.Lifecycle.PER_CLASS)}, a non-static
+ * member cannot be used when Playwright fixtures are requested in {@code @BeforeAll} methods or in
+ * the constructor, because there is no test instance yet.
  *
  * <p> The annotated member may be declared in a superclass or in an enclosing class of the test
- * class.
+ * class. A {@code @Nested} class can declare its own member to run its tests with different options:
+ * <pre>{@code
+ * @UsePlaywright
+ * public class MyTest {
+ *   @PlaywrightOptions
+ *   static final Options options = new Options().setBaseUrl("https://example.com");
+ *
+ *   @Nested
+ *   class Mobile {
+ *     @PlaywrightOptions
+ *     Options options = new Options().setBaseUrl("https://m.example.com").setDeviceName("iPhone 14");
+ *
+ *     @Test
+ *     void testOnMobile(Page page) {
+ *       page.navigate("/");
+ *     }
+ *   }
+ * }
+ * }</pre>
+ *
+ * <p> {@code Playwright} and {@code Browser} are shared between the tests of a class, so they are
+ * created with the options in effect for the first test; only the options of {@code BrowserContext}
+ * and {@code APIRequestContext} (base URL, device, context and API request options, timeout, tracing)
+ * take effect for every test instance and nested class.
  *
  * <p> For more details and usage examples see our
  * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.

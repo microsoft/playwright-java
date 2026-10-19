@@ -17,6 +17,7 @@
 package com.microsoft.playwright.junit;
 
 import com.microsoft.playwright.Browser;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestFixturePlaywrightOptionsStatic {
   // Only checked as an option value, never navigated to.
   private static final String BASE_URL = "http://localhost:1234/base/";
+  private static final String NESTED_BASE_URL = "http://localhost:1234/nested/";
 
   @PlaywrightOptions
   static final Options options = new Options().setBaseUrl(BASE_URL);
@@ -43,11 +45,29 @@ public class TestFixturePlaywrightOptionsStatic {
     assertEquals(BASE_URL, contextOptions.baseURL);
   }
 
+  // Runs after the nested classes, so the options of the enclosing class must be in effect again.
+  @AfterAll
+  static void afterAll(Browser.NewContextOptions contextOptions) {
+    assertEquals(BASE_URL, contextOptions.baseURL);
+  }
+
   @Nested
   class NestedClass {
     @Test
     void shouldUseOptionsOfEnclosingClass(Browser.NewContextOptions contextOptions) {
       assertEquals(BASE_URL, contextOptions.baseURL);
+    }
+  }
+
+  @Nested
+  class NestedClassWithOwnOptions {
+    // Inner classes cannot declare static fields, so the options are read for each nested test instance.
+    @PlaywrightOptions
+    Options options = new Options().setBaseUrl(NESTED_BASE_URL);
+
+    @Test
+    void shouldOverrideOptionsOfEnclosingClass(Browser.NewContextOptions contextOptions) {
+      assertEquals(NESTED_BASE_URL, contextOptions.baseURL);
     }
   }
 }
