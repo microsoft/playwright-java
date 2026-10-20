@@ -1,6 +1,6 @@
 ---
 name: playwright-java-release
-description: Prepare a Playwright Java release after the rolling PR has merged — cut the release branch, mark the Maven version, draft the GitHub release, and tick the Java boxes in the internal checklist.
+description: Prepare a Playwright Java release after the rolling PR has merged — cut the release branch, mark the Maven version, add Java-specific changes to the release notes, draft the GitHub release, and tick the Java boxes in the internal checklist.
 ---
 
 Use this skill once the `chore: roll driver to 1.X.0` PR has merged into `main` and the upstream JS `v1.X.0` is published. The rolling work itself is covered by the [[playwright-roll]] skill.
@@ -31,23 +31,17 @@ git fetch upstream main
 git push upstream upstream/main:refs/heads/release-1.X
 ```
 
-## 2. Draft the GitHub release
+## 2. Release notes
 
-Generate the release notes from the upstream docs:
+The Java notes in `docs/src/release-notes-java.md` are written upstream together with the Node.js notes, following the `playwright-release-notes` skill (`../playwright/.claude/skills/playwright-release-notes/SKILL.md`). Assume the `## Version 1.X` section is already on `release-1.X`, and only add what's missing: significant changes that only the Java port has, such as a new JUnit fixture or a Java-only API. Leave out minor bug fixes. To find candidates, list this repo's changes since the previous release branch was cut:
 
 ```bash
-cd ~/playwright
-node utils/render_release_notes.mjs java 1.X > /tmp/v1.X.0-release-notes.md
+git log --oneline --no-merges $(git merge-base upstream/release-1.<X-1> upstream/main)..upstream/main | grep -E '^\w+ (feat|fix)'
 ```
 
-The renderer leaves JS-isms that need fixing for Java. Apply these substitutions — the list is not exhaustive, eyeball the diff before publishing:
+Ask the user before adding anything. Send additions upstream as `docs: release notes for v1.X Java`, and cherry-pick them to `release-1.X`.
 
-- `toMatchAriaSnapshot()` → `matchesAriaSnapshot()`
-- `toHaveCSS()` → `hasCSS()` (and other `toHaveX` matchers → `hasX`)
-- `browser.on('context')` → `browser.onContext()`
-- `browserContext.on('download' | 'frameattached' | ...)` → `browserContext.onDownload()` / `onFrameAttached()` / …
-
-Create the draft directly against `release-1.X` — drafting against `main` and retargeting later is fragile because every `gh release edit` rotates the `untagged-<hash>` ID:
+Write the GitHub release body from the section as step 3 of the upstream skill describes, and save it as `/tmp/v1.X.0-release-notes.md`. Create the draft directly against `release-1.X`. Drafting against `main` and retargeting later is fragile, because every `gh release edit` rotates the `untagged-<hash>` ID:
 
 ```bash
 gh release create v1.X.0 --repo microsoft/playwright-java --draft \
