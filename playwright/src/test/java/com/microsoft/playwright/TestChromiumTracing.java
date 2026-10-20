@@ -57,8 +57,7 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  private static void rafraf(Page page) {
-    int count = 2;
+  private static void rafraf(Page page, int count) {
     for (int i = 0; i < count; i++) {
       page.evaluate("() => new Promise(f => requestAnimationFrame(() => requestAnimationFrame(f)))");
     }
@@ -71,7 +70,7 @@ public class TestChromiumTracing extends TestBase {
       browser.startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile)
         .setCategories(asList("disabled-by-default-cc.debug")));
-      rafraf(page);
+      rafraf(page, 2);
       browser.stopTracing();
       try (FileReader fileReader = new FileReader(outputTraceFile.toFile())) {
         JsonObject traceJson = new Gson().fromJson(fileReader, JsonObject.class);
@@ -134,6 +133,7 @@ public class TestChromiumTracing extends TestBase {
     try (Page page = browser.newPage()) {
       browser.startTracing(page, new Browser.StartTracingOptions().setScreenshots(true));
       page.navigate(server.PREFIX + "/grid.html");
+      rafraf(page, 100);
       byte[] trace = browser.stopTracing();
       assertTrue(new String(trace, StandardCharsets.UTF_8).contains("screenshot"));
     }
