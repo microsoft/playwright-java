@@ -62,27 +62,30 @@ class BindingCall extends ChannelOwner {
   }
 
   void call(BindingCallback binding) {
+    String method;
+    JsonObject params = new JsonObject();
     try {
-      Frame frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
-      BindingCallback.Source source = new SourceImpl(frame);
-      List<Object> args = new ArrayList<>();
-      if (initializer.has("handle")) {
-        JSHandle handle = connection.getExistingObject(initializer.getAsJsonObject("handle").get("guid").getAsString());
-        args.add(handle);
-      } else {
-        for (JsonElement arg : initializer.getAsJsonArray("args")) {
-          args.add(deserialize(gson().fromJson(arg, SerializedValue.class)));
-        }
-      }
-      Object result = binding.call(source, args.toArray());
-
-      JsonObject params = new JsonObject();
-      params.add("result", gson().toJsonTree(serializeArgument(result)));
-      sendMessage("resolve", params, NO_TIMEOUT);
+      params.add("result", gson().toJsonTree(serializeArgument(invoke(binding))));
+      method = "resolve";
     } catch (RuntimeException exception) {
-      JsonObject params = new JsonObject();
       params.add("error", gson().toJsonTree(serializeError(exception)));
-      sendMessage("reject", params, NO_TIMEOUT);
+      method = "reject";
     }
+    sendMessage(method, params, NO_TIMEOUT);
+  }
+
+  private Object invoke(BindingCallback binding) {
+    Frame frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    BindingCallback.Source source = new SourceImpl(frame);
+    List<Object> args = new ArrayList<>();
+    if (initializer.has("handle")) {
+      JSHandle handle = connection.getExistingObject(initializer.getAsJsonObject("handle").get("guid").getAsString());
+      args.add(handle);
+    } else {
+      for (JsonElement arg : initializer.getAsJsonArray("args")) {
+        args.add(deserialize(gson().fromJson(arg, SerializedValue.class)));
+      }
+    }
+    return binding.call(source, args.toArray());
   }
 }
