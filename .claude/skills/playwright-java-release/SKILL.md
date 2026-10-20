@@ -33,32 +33,15 @@ git push upstream upstream/main:refs/heads/release-1.X
 
 ## 2. Release notes
 
-The Java notes in `docs/src/release-notes-java.md` are written upstream, together with the Node.js notes. The `playwright-release-notes` skill in `../playwright/.claude/skills/playwright-release-notes/SKILL.md` covers that, including the Java code style. Check that the `## Version 1.X` section is on the release branch:
-
-```bash
-git -C ../playwright fetch upstream release-1.X
-git -C ../playwright show upstream/release-1.X:docs/src/release-notes-java.md | grep -n '^## Version 1.X$'
-```
-
-If it's missing, tell the user: it should have landed with the Node.js notes.
-
-### 2a. Add Java-specific changes
-
-List the user-visible changes in this repo since the previous release branch was cut:
+The Java notes in `docs/src/release-notes-java.md` are written upstream together with the Node.js notes, following the `playwright-release-notes` skill (`../playwright/.claude/skills/playwright-release-notes/SKILL.md`). Assume the `## Version 1.X` section is already on `release-1.X`, and only add what's missing: significant changes that only the Java port has, such as a new JUnit fixture or a Java-only API. Leave out minor bug fixes. To find candidates, list this repo's changes since the previous release branch was cut:
 
 ```bash
 git log --oneline --no-merges $(git merge-base upstream/release-1.<X-1> upstream/main)..upstream/main | grep -E '^\w+ (feat|fix)'
 ```
 
-Pick only significant changes that the Java port alone has, such as a new JUnit fixture or option, a Java-only API, or changed Java requirements. Leave out minor bug fixes, internal changes and anything the notes already cover. If nothing is significant, leave the notes as they are and move on.
+Ask the user before adding anything. Send additions upstream as `docs: release notes for v1.X Java`, and cherry-pick them to `release-1.X`.
 
-List the candidates for the user and ask which to add. Add them to the section in the style of the existing notes. Then send an upstream PR titled `docs: release notes for v1.X Java`. Once it merges, it needs a cherry-pick to `release-1.X` (the upstream `playwright-cherry-pick` skill). Tick the Java "write release notes" box with the PR link, or with the PR that added the section when there was nothing to add.
-
-### 2b. Write the GitHub release body
-
-Convert the `## Version 1.X` section of `upstream/release-1.X:docs/src/release-notes-java.md` to GitHub markdown with Java link text, and save it as `/tmp/v1.X.0-release-notes.md`. Follow step 3 of the upstream `playwright-release-notes` skill, including its link check and the Java scan. If the conversion shows a problem in the notes themselves, fix them upstream as well.
-
-Create the draft directly against `release-1.X`. Drafting against `main` and retargeting later is fragile, because every `gh release edit` rotates the `untagged-<hash>` ID:
+Write the GitHub release body from the section as step 3 of the upstream skill describes, and save it as `/tmp/v1.X.0-release-notes.md`. Create the draft directly against `release-1.X`. Drafting against `main` and retargeting later is fragile, because every `gh release edit` rotates the `untagged-<hash>` ID:
 
 ```bash
 gh release create v1.X.0 --repo microsoft/playwright-java --draft \
