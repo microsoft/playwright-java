@@ -46,3 +46,4 @@ Branch naming for issue fixes: `fix-<issue-number>`.
 
 - **playwright-roll** (`.claude/skills/playwright-roll/SKILL.md`) — roll Playwright Java to a new upstream version: bump the driver, regenerate the API, and port relevant upstream changes.
 - **playwright-java-release** (`.claude/skills/playwright-java-release/SKILL.md`) — prepare a release after the rolling PR merges: cut the release branch, mark the Maven version, and draft the GitHub release.
+- **playwright-cherry-pick** (upstream, `../playwright/.claude/skills/playwright-cherry-pick/SKILL.md`) — cherry-pick a merged PR into a `release-1.X` branch as `cherry-pick(#<pr>): <original title>`. Use the same rules for this repo's release branches.
