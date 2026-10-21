@@ -21,23 +21,26 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
-@UsePlaywright(TestFixtureContextOptions.CustomOptions.class)
+@UsePlaywright
 public class TestFixtureContextOptions {
+  private final Server server;
 
-  public static class CustomOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options()
-        .setApiRequestOptions(new APIRequest.NewContextOptions()
-          .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE))
-        .setContextOptions(new Browser.NewContextOptions()
-          .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE));
-    }
+  TestFixtureContextOptions(Server server) {
+    this.server = server;
+  }
+
+  @PlaywrightOptions
+  Browser.NewContextOptions contextOptions() {
+    return new Browser.NewContextOptions().setBaseURL(server.EMPTY_PAGE);
+  }
+
+  @PlaywrightOptions
+  APIRequest.NewContextOptions apiRequestOptions() {
+    return new APIRequest.NewContextOptions().setBaseURL(server.EMPTY_PAGE);
   }
 
   @Test

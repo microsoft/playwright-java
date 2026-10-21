@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
@@ -26,13 +28,17 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestBrowserContextClearCookies {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void shouldClearCookies(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);

@@ -18,17 +18,23 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Copied from expect-misc.spec.ts > toBeInViewport
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 public class TestAssertThatIsInViewport {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void shouldWork(Page page) {
     page.setContent("<div id=big style=\"height: 10000px;\"></div>\n" +

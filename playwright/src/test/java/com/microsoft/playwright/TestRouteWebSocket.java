@@ -1,6 +1,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.java_websocket.WebSocket;
 import org.junit.jupiter.api.*;
@@ -15,14 +17,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.TestEnv.getBrowserName;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestRouteWebSocket {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   private WebSocketServerImpl webSocketServer;
 
   @BeforeAll

@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.PlaywrightOptions;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,16 +27,20 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.TestOptionsFactories.isFirefox;
-import static com.microsoft.playwright.TestOptionsFactories.isWebKit;
+import static com.microsoft.playwright.TestEnv.getBrowserName;
+import static com.microsoft.playwright.TestEnv.isFirefox;
+import static com.microsoft.playwright.TestEnv.isWebKit;
 import static com.microsoft.playwright.Utils.verifyViewport;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+@UsePlaywright
 @Tag("smoke")
 public class TestBrowserContextBasic {
+  @PlaywrightOptions
+  static final Options options = new Options().setBrowserName(getBrowserName());
+
   @Test
   void shouldCreateNewContext(Browser browser) {
     assertEquals(0, browser.contexts().size());

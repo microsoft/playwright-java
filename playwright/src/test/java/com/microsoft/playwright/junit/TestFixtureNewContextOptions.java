@@ -26,24 +26,22 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestFixtureNewContextOptions.CustomOptions.class)
+@UsePlaywright
 public class TestFixtureNewContextOptions {
   // Only checked as an option value, never navigated to.
   private static final String BASE_URL = "http://localhost:1234/base/";
   private static Browser.NewContextOptions contextOptionsFromBeforeAll;
 
-  public static class CustomOptions implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options()
-        .setBaseUrl(BASE_URL)
-        .setDeviceName("iPhone 14")
-        .setIgnoreHTTPSErrors(true)
-        .setContextOptions(new Browser.NewContextOptions().setLocale("de-DE"));
-    }
-  }
+  @PlaywrightOptions
+  static final Options options = new Options()
+    .setBaseUrl(BASE_URL)
+    .setDeviceName("iPhone 14")
+    .setIgnoreHTTPSErrors(true);
 
-  private static void assertConfiguredFromOptionsFactory(Browser.NewContextOptions contextOptions) {
+  @PlaywrightOptions
+  static final Browser.NewContextOptions contextOptions = new Browser.NewContextOptions().setLocale("de-DE");
+
+  private static void assertConfiguredFromOptions(Browser.NewContextOptions contextOptions) {
     assertNotNull(contextOptions);
     assertEquals(BASE_URL, contextOptions.baseURL);
     assertEquals(true, contextOptions.ignoreHTTPSErrors);
@@ -57,7 +55,7 @@ public class TestFixtureNewContextOptions {
 
   @BeforeAll
   static void beforeAll(Browser browser, Browser.NewContextOptions contextOptions) {
-    assertConfiguredFromOptionsFactory(contextOptions);
+    assertConfiguredFromOptions(contextOptions);
     contextOptionsFromBeforeAll = contextOptions;
 
     BrowserContext context = browser.newContext(contextOptions);
@@ -74,12 +72,12 @@ public class TestFixtureNewContextOptions {
 
   @AfterAll
   static void afterAll(Browser.NewContextOptions contextOptions) {
-    assertConfiguredFromOptionsFactory(contextOptions);
+    assertConfiguredFromOptions(contextOptions);
   }
 
   @Test
-  void shouldBeConfiguredFromOptionsFactory(Browser.NewContextOptions contextOptions) {
-    assertConfiguredFromOptionsFactory(contextOptions);
+  void shouldBeConfiguredFromOptions(Browser.NewContextOptions contextOptions) {
+    assertConfiguredFromOptions(contextOptions);
   }
 
   @Test
@@ -87,7 +85,7 @@ public class TestFixtureNewContextOptions {
     assertNotSame(contextOptionsFromBeforeAll, contextOptions1);
     assertNotSame(contextOptions1, contextOptions2);
     contextOptions1.setBaseURL("http://localhost:1234/modified/").setLocale("fr-FR");
-    assertConfiguredFromOptionsFactory(contextOptions2);
+    assertConfiguredFromOptions(contextOptions2);
   }
 
   @Test
