@@ -38,6 +38,13 @@ PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 # it up via `COPY . /tmp/pw-java`.
 ../../scripts/download_driver.sh
 
+# The jammy and noble images install this Maven (see the Dockerfiles). Fetch it with the
+# host's Maven so that it resolves through the configured mirror: the release pipeline
+# cannot reach Maven Central directly (see .azure-pipelines/settings.xml).
+MAVEN_VERSION=3.9.12
+mvn dependency:copy -Dartifact="org.apache.maven:apache-maven:${MAVEN_VERSION}:tar.gz:bin" \
+  -DoutputDirectory=maven --no-transfer-progress -q
+
 SECRET_ARGS=()
 if [[ -n "${MAVEN_SETTINGS_SECRET:-}" ]]; then
   SECRET_ARGS+=(--secret "id=mavensettings,src=${MAVEN_SETTINGS_SECRET}")
@@ -59,6 +66,7 @@ fi
 for ((attempt = 1; attempt <= MAX_ATTEMPTS; attempt++)); do
   if docker build --platform "${PLATFORM}" \
       --build-arg "PW_TARGET_ARCH=${PW_TARGET_ARCH}" \
+      --build-arg "MAVEN_VERSION=${MAVEN_VERSION}" \
       --build-arg ACR_CACHE_PREFIX="${ACR_CACHE_PREFIX}" \
       --build-arg UBUNTU_MIRROR_PREFIX="${UBUNTU_MIRROR_PREFIX}" \
       "${SECRET_ARGS[@]}" \

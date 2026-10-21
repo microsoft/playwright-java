@@ -28,10 +28,12 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
     adduser pwuser
 
 # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
-# Java 25, so we install latest Maven from Apache instead.
-RUN VERSION=3.9.12 && \
-    wget -O - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
-    ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
+# Java 25, so we install latest Maven from Apache instead. build.sh
+# downloads it into utils/docker/maven.
+ARG MAVEN_VERSION
+RUN --mount=type=bind,source=utils/docker/maven,target=/tmp/maven \
+    tar zxf /tmp/maven/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt/ && \
+    ln -s /opt/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
 ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk-${PW_TARGET_ARCH}
