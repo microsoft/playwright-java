@@ -16,10 +16,13 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import com.microsoft.playwright.options.WebMCPTool;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -28,12 +31,14 @@ import java.util.List;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="WebKit does not implement WebMCP")
-public class TestWebMCP extends TestBase {
+@DisabledOnBrowser(value = WEBKIT, reason = "WebKit does not implement WebMCP")
+public class TestWebMCP {
   private static final String ADD_TOOL = "modelContext.registerTool({\n" +
     "  name: 'add',\n" +
     "  description: 'Adds two numbers',\n" +
@@ -42,18 +47,16 @@ public class TestWebMCP extends TestBase {
     "  async execute(input) { return { content: [{ type: 'text', text: String(input.a + input.b) }] }; },\n" +
     "});\n";
 
-  @Override
-  @BeforeAll
-  void launchBrowser() {
-    BrowserType.LaunchOptions options = createLaunchOptions();
-    if (isFirefox()) {
+  @Fixture(scope = Scope.WORKER)
+  static BrowserType.LaunchOptions launchOptions(BrowserType.LaunchOptions options, BrowserName browserName) {
+    if (browserName == FIREFOX) {
       options.setFirefoxUserPrefs(mapOf(
         "dom.modelcontext.enabled", true,
         "dom.modelcontext.testing.enabled", true));
     } else {
       options.setArgs(singletonList("--enable-features=WebMCP"));
     }
-    launchBrowser(options);
+    return options;
   }
 
   private static String registerScript(String tools) {
@@ -63,7 +66,7 @@ public class TestWebMCP extends TestBase {
       "</script>";
   }
 
-  private void serve(String path, String body) {
+  private void serve(Server server, String path, String body) {
     server.setRoute(path, exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/html");
       exchange.sendResponseHeaders(200, 0);
@@ -73,9 +76,9 @@ public class TestWebMCP extends TestBase {
     });
   }
 
-  @Test
-  void shouldListToolsRegisteredByThePage() {
-    serve("/", registerScript(ADD_TOOL +
+  @PlaywrightTest
+  void shouldListToolsRegisteredByThePage(Page page, Server server) {
+    serve(server, "/", registerScript(ADD_TOOL +
       "modelContext.registerTool({\n" +
       "  name: 'noop',\n" +
       "  description: 'Does nothing',\n" +
@@ -98,24 +101,24 @@ public class TestWebMCP extends TestBase {
     assertTrue(tools.get(0).annotations.readOnly);
   }
 
-  @Test
-  void shouldReportNoToolsWhenThePageRegistersNone() {
+  @PlaywrightTest
+  void shouldReportNoToolsWhenThePageRegistersNone(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(0, page.webmcp().tools().size());
   }
 
-  @Test
-  void shouldCallATool() {
-    serve("/", registerScript(ADD_TOOL));
+  @PlaywrightTest
+  void shouldCallATool(Page page, Server server) {
+    serve(server, "/", registerScript(ADD_TOOL));
     page.navigate(server.PREFIX + "/");
 
     Object result = page.webmcp().callTool("add", mapOf("a", 2, "b", 40));
     assertEquals(mapOf("content", asList(mapOf("type", "text", "text", "42"))), result);
   }
 
-  @Test
-  void shouldReturnIsErrorResultsAsIs() {
-    serve("/", registerScript(
+  @PlaywrightTest
+  void shouldReturnIsErrorResultsAsIs(Page page, Server server) {
+    serve(server, "/", registerScript(
       "modelContext.registerTool({\n" +
       "  name: 'broken',\n" +
       "  description: 'Always fails',\n" +
@@ -127,9 +130,9 @@ public class TestWebMCP extends TestBase {
     assertEquals(mapOf("content", asList(mapOf("type", "text", "text", "nope")), "isError", true), result);
   }
 
-  @Test
-  void shouldThrowForAnUnknownTool() {
-    serve("/", registerScript(ADD_TOOL));
+  @PlaywrightTest
+  void shouldThrowForAnUnknownTool(Page page, Server server) {
+    serve(server, "/", registerScript(ADD_TOOL));
     page.navigate(server.PREFIX + "/");
 
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.webmcp().callTool("missing"));
@@ -137,9 +140,9 @@ public class TestWebMCP extends TestBase {
     assertTrue(e.getMessage().contains("Available tools: add"), e.getMessage());
   }
 
-  @Test
-  void shouldTimeOutWhenTheToolDoesNotSettle() {
-    serve("/", registerScript(
+  @PlaywrightTest
+  void shouldTimeOutWhenTheToolDoesNotSettle(Page page, Server server) {
+    serve(server, "/", registerScript(
       "modelContext.registerTool({\n" +
       "  name: 'stuck',\n" +
       "  description: 'Never resolves',\n" +
@@ -151,11 +154,11 @@ public class TestWebMCP extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 500ms exceeded"), e.getMessage());
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="Firefox does not support registering WebMCP tools in iframes yet")
-  void shouldScopeToolsToTheirFrame() {
-    serve("/", registerScript(ADD_TOOL) + "<iframe src='/frame.html'></iframe>");
-    serve("/frame.html", registerScript(
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "Firefox does not support registering WebMCP tools in iframes yet")
+  void shouldScopeToolsToTheirFrame(Page page, Server server) {
+    serve(server, "/", registerScript(ADD_TOOL) + "<iframe src='/frame.html'></iframe>");
+    serve(server, "/frame.html", registerScript(
       "modelContext.registerTool({\n" +
       "  name: 'subscribe',\n" +
       "  description: 'Subscribes to the newsletter',\n" +

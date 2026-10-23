@@ -17,8 +17,8 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
-import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.regex.Pattern;
@@ -26,51 +26,51 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLocatorAssertions2 extends TestBase {
-  @Test
-  void isAttachedDefault() {
+public class TestLocatorAssertions2 {
+  @PlaywrightTest
+  void isAttachedDefault(Page page) {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
     assertThat(locator).isAttached();
   }
 
-  @Test
-  void isAttachedWithHiddenElement() {
+  @PlaywrightTest
+  void isAttachedWithHiddenElement(Page page) {
     page.setContent("<button style='display:none'>hello</button>");
     Locator locator = page.locator("button");
     assertThat(locator).isAttached();
   }
 
-  @Test
-  void isAttachedWithNot() {
+  @PlaywrightTest
+  void isAttachedWithNot(Page page) {
     page.setContent("<button>hello</button>");
     Locator locator = page.locator("input");
     assertThat(locator).not().isAttached();
   }
 
-  @Test
-  void isAttachedWithAttachedTrue() {
+  @PlaywrightTest
+  void isAttachedWithAttachedTrue(Page page) {
     page.setContent("<button>hello</button>");
     Locator locator = page.locator("button");
     assertThat(locator).isAttached(new LocatorAssertions.IsAttachedOptions().setAttached(true));
   }
 
-  @Test
-  void isAttachedWithAttachedFalse() {
+  @PlaywrightTest
+  void isAttachedWithAttachedFalse(Page page) {
     page.setContent("<button>hello</button>");
     Locator locator = page.locator("input");
     assertThat(locator).isAttached(new LocatorAssertions.IsAttachedOptions().setAttached(false));
   }
 
-  @Test
-  void isAttachedWithNotAndAttachedFalse() {
+  @PlaywrightTest
+  void isAttachedWithNotAndAttachedFalse(Page page) {
     page.setContent("<button>hello</button>");
     Locator locator = page.locator("button");
     assertThat(locator).not().isAttached(new LocatorAssertions.IsAttachedOptions().setAttached(false));
   }
 
-  @Test
-  void isAttachedEventually() {
+  @PlaywrightTest
+  void isAttachedEventually(Page page) {
     page.setContent("<div></div>");
     Locator locator = page.locator("span");
     page.evalOnSelector("div", "div => setTimeout(() => {\n" +
@@ -79,8 +79,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(locator).isAttached();
   }
 
-  @Test
-  void isAttachedEventuallyWithNot() {
+  @PlaywrightTest
+  void isAttachedEventuallyWithNot(Page page) {
     page.setContent("<div><span>Hello</span></div>");
     Locator locator = page.locator("span");
     page.evalOnSelector("div", "div => setTimeout(() => {\n" +
@@ -89,8 +89,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(locator).not().isAttached();
   }
 
-  @Test
-  void isAttachedFail() {
+  @PlaywrightTest
+  void isAttachedFail(Page page) {
     page.setContent("<button>Hello</button>");
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
@@ -98,8 +98,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertFalse(error.getMessage().contains("locator resolved to"), error.getMessage());
   }
 
-  @Test
-  void isAttachedFailWithNot() {
+  @PlaywrightTest
+  void isAttachedFailWithNot(Page page) {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
@@ -107,20 +107,20 @@ public class TestLocatorAssertions2 extends TestBase {
     assertTrue(error.getMessage().contains("locator resolved to <input/>"), error.getMessage());
   }
 
-  @Test
-  void isAttachedWithImpossibleTimeout() {
+  @PlaywrightTest
+  void isAttachedWithImpossibleTimeout(Page page) {
     page.setContent("<div id=node>Text content</div>");
     assertThat(page.locator("#node")).isAttached(new LocatorAssertions.IsAttachedOptions().setTimeout(1));
   }
 
-  @Test
-  void isAttachedWithImpossibleTimeoutNot() {
+  @PlaywrightTest
+  void isAttachedWithImpossibleTimeoutNot(Page page) {
     page.setContent("<div id=node>Text content</div>");
     assertThat(page.locator("no-such-thing")).not().isAttached(new LocatorAssertions.IsAttachedOptions().setTimeout(1));
   }
 
-  @Test
-  public void toHaveAccessibleName() {
+  @PlaywrightTest
+  public void toHaveAccessibleName(Page page) {
     page.setContent("<div role=\"button\" aria-label=\"Hello\"></div>");
 
     assertThat(page.locator("div")).hasAccessibleName("Hello");
@@ -134,8 +134,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(page.locator("button")).hasAccessibleName("foo bar baz");
   }
 
-  @Test
-  public void toHaveAccessibleDescription() {
+  @PlaywrightTest
+  public void toHaveAccessibleDescription(Page page) {
     page.setContent("<div role=\"button\" aria-description=\"Hello\"></div>");
 
     assertThat(page.locator("div")).hasAccessibleDescription("Hello");
@@ -150,16 +150,16 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(page.locator("div")).hasAccessibleDescription("foo bar baz");
   }
 
-  @Test
-  public void toHaveRole() {
+  @PlaywrightTest
+  public void toHaveRole(Page page) {
     page.setContent("<div role=\"button\">Button!</div>");
 
     assertThat(page.locator("div")).hasRole(AriaRole.BUTTON);
     assertThat(page.locator("div")).not().hasRole(AriaRole.CHECKBOX);
   }
 
-  @Test
-  void toHaveAccessibleErrorMessage() {
+  @PlaywrightTest
+  void toHaveAccessibleErrorMessage(Page page) {
     page.setContent("<form>" +
       "<input role=\"textbox\" aria-invalid=\"true\" aria-errormessage=\"error-message\" />" +
       "<div id=\"error-message\">Hello</div>" +
@@ -176,8 +176,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(locator).not().hasAccessibleErrorMessage("This should not be considered.");
   }
 
-  @Test
-  void toHaveAccessibleErrorMessageShouldHandleMultipleAriaErrorMessageReferences() {
+  @PlaywrightTest
+  void toHaveAccessibleErrorMessageShouldHandleMultipleAriaErrorMessageReferences(Page page) {
     page.setContent("<form>\n" +
       "  <input role=\"textbox\" aria-invalid=\"true\" aria-errormessage=\"error1 error2\" />\n" +
       "  <div id=\"error1\">First error message.</div>\n" +
@@ -193,16 +193,16 @@ public class TestLocatorAssertions2 extends TestBase {
     assertThat(locator).not().hasAccessibleErrorMessage(Pattern.compile("This should not be considered.", Pattern.CASE_INSENSITIVE));
   }
 
-  @Test
-  void toBeEditableWithIndeterminateTrue() {
+  @PlaywrightTest
+  void toBeEditableWithIndeterminateTrue(Page page) {
     page.setContent("<input type=checkbox></input>");
     page.locator("input").evaluate("e => e.indeterminate = true");
     Locator locator = page.locator("input");
     assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true));
   }
 
-  @Test
-  void toBeEditableWithIndeterminateTrueAndChecked() {
+  @PlaywrightTest
+  void toBeEditableWithIndeterminateTrueAndChecked(Page page) {
     page.setContent("<input type=checkbox></input>");
     page.locator("input").evaluate("e => e.indeterminate = true");
     Locator locator = page.locator("input");
@@ -211,8 +211,8 @@ public class TestLocatorAssertions2 extends TestBase {
     assertTrue(e.getMessage().contains("Can't assert indeterminate and checked at the same time"), e.getMessage());
   }
 
-  @Test
-  void toBeEditableFailWithIndeterminateTrue() {
+  @PlaywrightTest
+  void toBeEditableFailWithIndeterminateTrue(Page page) {
     page.setContent("<input type=checkbox></input>");
     Locator locator = page.locator("input");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () ->

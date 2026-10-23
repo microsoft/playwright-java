@@ -16,13 +16,13 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestUnrouteBehavior extends TestBase {
-  @Test
-  void contextUnrouteAllRemovesAllHandlers() {
+public class TestUnrouteBehavior {
+  @PlaywrightTest
+  void contextUnrouteAllRemovesAllHandlers(Page page, BrowserContext context, Server server) {
     context.route("**/*", route -> {
       route.abort();
     });
@@ -33,8 +33,8 @@ public class TestUnrouteBehavior extends TestBase {
     page.navigate(server.EMPTY_PAGE);
   }
 
-  @Test
-  void pageUnrouteAllRemovesAllRoutes() {
+  @PlaywrightTest
+  void pageUnrouteAllRemovesAllRoutes(Page page, Server server) {
     page.route("**/*", route -> {
       route.abort();
     });

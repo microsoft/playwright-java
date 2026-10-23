@@ -16,19 +16,19 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
-import org.junit.jupiter.api.Test;
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSelectorsRole extends TestBase {
-  @Test
-  void shouldDetectRoles() {
+public class TestSelectorsRole {
+  @PlaywrightTest
+  void shouldDetectRoles(Page page) {
     page.setContent("<button>Hello</button>\n" +
       "    <select multiple=\"\" size=\"2\"></select>\n" +
       "    <select></select>\n" +
@@ -52,8 +52,8 @@ public class TestSelectorsRole extends TestBase {
     assertEquals(emptyList(), page.getByRole(AriaRole.MENUITEM).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportSelected() {
+  @PlaywrightTest
+  void shouldSupportSelected(Page page) {
     page.setContent("<select>\n" +
       "      <option>Hi</option>\n" +
       "      <option selected>Hello</option>\n" +
@@ -87,8 +87,8 @@ public class TestSelectorsRole extends TestBase {
     ), page.getByRole(AriaRole.OPTION, new Page.GetByRoleOptions().setSelected(false)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportChecked() {
+  @PlaywrightTest
+  void shouldSupportChecked(Page page) {
     page.setContent("<input type=checkbox>\n" +
       "    <input type=checkbox checked>\n" +
       "    <input type=checkbox indeterminate>\n" +
@@ -134,8 +134,8 @@ public class TestSelectorsRole extends TestBase {
     ), page.locator("role=checkbox").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportPressed() {
+  @PlaywrightTest
+  void shouldSupportPressed(Page page) {
     page.setContent("<button>Hi</button>\n" +
       "    <button aria-pressed=\"true\">Hello</button>\n" +
       "    <button aria-pressed=\"false\">Bye</button>\n" +
@@ -168,8 +168,8 @@ public class TestSelectorsRole extends TestBase {
     ), page.locator("role=button").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportExpanded() {
+  @PlaywrightTest
+  void shouldSupportExpanded(Page page) {
     page.setContent("<div role=\"treeitem\">Hi</div>\n" +
       "    <div role=\"treeitem\" aria-expanded=\"true\">Hello</div>\n" +
       "    <div role=\"treeitem\" aria-expanded=\"false\">Bye</div>");
@@ -208,8 +208,8 @@ public class TestSelectorsRole extends TestBase {
     ), page.locator("[role=treeitem]:not([aria-expanded])").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportDisabled() {
+  @PlaywrightTest
+  void shouldSupportDisabled(Page page) {
     page.setContent("<button>Hi</button>\n" +
       "    <button disabled>Bye</button>\n" +
       "    <button aria-disabled=\"true\">Hello</button>\n" +
@@ -242,8 +242,8 @@ public class TestSelectorsRole extends TestBase {
       ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setDisabled(false)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldInheritDisabledFromTheAncestor() {
+  @PlaywrightTest
+  void shouldInheritDisabledFromTheAncestor(Page page) {
     page.setContent(
       "<span aria-disabled=\"true\">\n" +
       "  <button>Click me!</button>\n" +
@@ -258,8 +258,8 @@ public class TestSelectorsRole extends TestBase {
     assertThat(page.locator("h1")).isEnabled();
   }
 
-  @Test
-  void shouldSupportDisabledFieldset() {
+  @PlaywrightTest
+  void shouldSupportDisabledFieldset(Page page) {
     page.setContent(
       "<fieldset disabled>\n" +
       "  <input></input>\n" +
@@ -302,8 +302,8 @@ public class TestSelectorsRole extends TestBase {
     assertThat(page.getByTestId("deep-button")).isDisabled();
   }
 
-  @Test
-  void shouldSupportLevel() {
+  @PlaywrightTest
+  void shouldSupportLevel(Page page) {
     page.setContent("<h1>Hello</h1>\n" +
       "    <h3>Hi</h3>\n" +
       "    <div role=\"heading\" aria-level=\"5\">Bye</div>");
@@ -324,8 +324,8 @@ public class TestSelectorsRole extends TestBase {
       ), page.locator("role=heading[level=5]").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldFilterHiddenUnlessExplicitlyAskedFor() {
+  @PlaywrightTest
+  void shouldFilterHiddenUnlessExplicitlyAskedFor(Page page) {
     page.setContent("<button>Hi</button>\n" +
       "    <button hidden>Hello</button>\n" +
       "    <button aria-hidden=\"true\">Yay</button>\n" +
@@ -388,8 +388,8 @@ public class TestSelectorsRole extends TestBase {
     ), page.locator("role=button[include-hidden=false]").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void shouldSupportName() {
+  @PlaywrightTest
+  void shouldSupportName(Page page) {
     page.setContent("<div role=\"button\" aria-label=\" Hello \"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hallo\"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>\n" +
@@ -442,8 +442,8 @@ public class TestSelectorsRole extends TestBase {
       ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("123").setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
-  @Test
-  void errors() {
+  @PlaywrightTest
+  void errors(Page page) {
     PlaywrightException e0 = assertThrows(PlaywrightException.class, () -> page.querySelector("role=[bar]"));
     assertTrue(e0.getMessage().contains("Role must not be empty"), e0.getMessage());
 

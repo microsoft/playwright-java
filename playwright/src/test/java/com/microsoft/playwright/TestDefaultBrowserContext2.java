@@ -16,11 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
@@ -38,12 +39,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.options.ColorScheme.DARK;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.Env.isWindows;
+import static com.microsoft.playwright.options.ColorScheme.DARK;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestDefaultBrowserContext2 extends TestBase {
+public class TestDefaultBrowserContext2 {
 
 
   private BrowserContext persistentContext;
@@ -59,59 +62,59 @@ public class TestDefaultBrowserContext2 extends TestBase {
     }
   }
 
-  private Page launchPersistent() {
-    return launchPersistent(null);
+  private Page launchPersistent(BrowserType browserType) {
+    return launchPersistent(browserType, null);
   }
 
-  private Page launchPersistent(BrowserType.LaunchPersistentContextOptions options) {
+  private Page launchPersistent(BrowserType browserType, BrowserType.LaunchPersistentContextOptions options) {
     Path userDataDir = tempDir.resolve("user-data-dir");
     assertNull(persistentContext);
     persistentContext = browserType.launchPersistentContext(userDataDir, options);
     return persistentContext.pages().get(0);
   }
 
-  @Test
-  void shouldSupportHasTouchOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setHasTouch(true));
+  @PlaywrightTest
+  void shouldSupportHasTouchOption(BrowserType browserType, Server server) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions().setHasTouch(true));
     page.navigate(server.PREFIX + "/mobile.html");
     assertEquals(true, page.evaluate("() => 'ontouchstart' in window"));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
-  void shouldWorkInPersistentContext() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "skip")
+  void shouldWorkInPersistentContext(BrowserType browserType, Server server) {
     // Firefox does not support mobile.
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions()
       .setViewportSize(320, 480).setIsMobile(true));
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals(980, page.evaluate("() => window.innerWidth"));
   }
 
-  @Test
-  void shouldSupportColorSchemeOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setColorScheme(DARK));
+  @PlaywrightTest
+  void shouldSupportColorSchemeOption(BrowserType browserType) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions().setColorScheme(DARK));
     assertEquals(false, page.evaluate("matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(true, page.evaluate("matchMedia('(prefers-color-scheme: dark)').matches"));
   }
 
-  @Test
-  void shouldSupportTimezoneIdOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
+  @PlaywrightTest
+  void shouldSupportTimezoneIdOption(BrowserType browserType) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions()
       .setLocale("en-US").setTimezoneId("America/Jamaica"));
     assertEquals("Sat Nov 19 2016 13:12:34 GMT-0500 (Eastern Standard Time)",
       page.evaluate("new Date(1479579154987).toString()"));
   }
 
-  @Test
-  void shouldSupportLocaleOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
+  @PlaywrightTest
+  void shouldSupportLocaleOption(BrowserType browserType) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions()
       .setLocale("fr-FR"));
     assertEquals("fr-FR", page.evaluate("navigator.language"));
   }
 
-  @Test
-  void shouldSupportGeolocationAndPermissionsOptions() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
+  @PlaywrightTest
+  void shouldSupportGeolocationAndPermissionsOptions(BrowserType browserType, Server server) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions()
       .setGeolocation(new Geolocation(10, 10))
       .setPermissions(asList("geolocation")));
     page.navigate(server.EMPTY_PAGE);
@@ -121,25 +124,25 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals(mapOf("latitude", 10, "longitude", 10), geolocation);
   }
 
-  //  @Test
+  //  @PlaywrightTest
   void shouldSupportIgnoreHTTPSErrorsOption() {
     // TODO: net::ERR_EMPTY_RESPONSE at https://localhost:8908/empty.html
-//    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setIgnoreHTTPSErrors(true));
+//    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions().setIgnoreHTTPSErrors(true));
 //    Response response = page.navigate(httpsServer.EMPTY_PAGE);
 //    assertTrue(response.ok());
   }
 
-  @Test
-  void shouldSupportExtraHTTPHeadersOption() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportExtraHTTPHeadersOption(BrowserType browserType, Server server) throws ExecutionException, InterruptedException {
 //   TODO: test.flaky(browserName === "firefox" && headed && platform === "linux", "Intermittent timeout on bots");
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setExtraHTTPHeaders(mapOf("foo", "bar")));
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions().setExtraHTTPHeaders(mapOf("foo", "bar")));
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
-  @Test
-  void shouldAcceptUserDataDir() throws IOException {
+  @PlaywrightTest
+  void shouldAcceptUserDataDir(BrowserType browserType) throws IOException {
 // TODO:   test.flaky(browserName === "chromium");
     Path userDataDir = tempDir.resolve("user-data-dir");
     BrowserContext context = browserType.launchPersistentContext(userDataDir);
@@ -148,8 +151,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertTrue(userDataDir.toFile().listFiles().length > 0);
   }
 
-  @Test
-  void shouldRestoreStateFromUserDataDir() throws IOException {
+  @PlaywrightTest
+  void shouldRestoreStateFromUserDataDir(BrowserType browserType, Server server) throws IOException {
 //  TODO:  test.slow();
     Path userDataDir = tempDir.resolve("user-data-dir");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
@@ -173,16 +176,16 @@ public class TestDefaultBrowserContext2 extends TestBase {
     browserContext3.close();
   }
 
-  @Test
-  void shouldHaveDefaultURLWhenLaunchingBrowser() {
-    launchPersistent();
+  @PlaywrightTest
+  void shouldHaveDefaultURLWhenLaunchingBrowser(BrowserType browserType) {
+    launchPersistent(browserType);
     List<String> urls = persistentContext.pages().stream().map(page -> page.url()).collect(Collectors.toList());
     assertEquals(asList("about:blank"), urls);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
-  void shouldThrowIfPageArgumentIsPassed() throws IOException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "skip")
+  void shouldThrowIfPageArgumentIsPassed(BrowserType browserType, Server server) throws IOException {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .setArgs(asList(server.EMPTY_PAGE));
     Path userDataDir = tempDir.resolve("user-data-dir");
@@ -192,8 +195,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertTrue(e.getMessage().contains("can not specify page"));
   }
 
-  @Test
-  void shouldWorkWithIgnoreDefaultArgs() {
+  @PlaywrightTest
+  void shouldWorkWithIgnoreDefaultArgs(BrowserType browserType) {
     // Ignore arguments by name.
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setIgnoreDefaultArgs(asList("foo"));
     Browser browser = browserType.launch(options);
@@ -212,9 +215,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldHandleException() {
   }
 
-  @Test
-  void shouldFireCloseEventForAPersistentContext() {
-    launchPersistent();
+  @PlaywrightTest
+  void shouldFireCloseEventForAPersistentContext(BrowserType browserType) {
+    launchPersistent(browserType);
     boolean[] closed = {false};
     persistentContext.onClose(context -> closed[0] = true);
     closePersistentContext();
@@ -229,9 +232,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
     // TODO:
   }
 
-  @Test
-  void shouldRespectSelectors() {
-    Page page = launchPersistent();
+  @PlaywrightTest
+  void shouldRespectSelectors(BrowserType browserType, Playwright playwright) {
+    Page page = launchPersistent(browserType);
     String defaultContextCSS = "{\n" +
       "  create(root, target) {},\n" +
       "  query(root, selector) {\n" +
@@ -248,10 +251,10 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("hello", page.innerHTML("defaultContextCSS=div"));
   }
 
-  @Test
-  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldUploadLargeFile(BrowserType browserType, Server server, @TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
-    Page page = launchPersistent();
+    Page page = launchPersistent(browserType);
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Path uploadFile = tmpDir.resolve("200MB.zip");
     String str = String.join("", Collections.nCopies(4 * 1024, "A"));
@@ -289,9 +292,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 
-  @Test
-  void shouldSupportContrastOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setContrast(Contrast.MORE));
+  @PlaywrightTest
+  void shouldSupportContrastOption(BrowserType browserType) {
+    Page page = launchPersistent(browserType, new BrowserType.LaunchPersistentContextOptions().setContrast(Contrast.MORE));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-contrast: more)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-contrast: no-preference)').matches"));
   }
@@ -300,9 +303,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
     return isWindows;
   }
 
-  @Test
+  @PlaywrightTest
   @DisabledIf(value="tempDirCanBeOnDifferentRoot", disabledReason="IllegalArgument 'other' has different root on GitHub Actions.")
-  void shouldAcceptRelativeUserDataDir(@TempDir Path tmpDir) throws Exception {
+  void shouldAcceptRelativeUserDataDir(BrowserType browserType, @TempDir Path tmpDir) throws Exception {
     Path userDataDir = tempDir.resolve("user-data-dir");
     Path cwd = Paths.get("").toAbsolutePath();
     Path relativePath = cwd.relativize(userDataDir);
@@ -311,9 +314,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldExposeBrowser() {
-    Page page = launchPersistent();
+  @PlaywrightTest
+  void shouldExposeBrowser(BrowserType browserType) {
+    Page page = launchPersistent(browserType);
     BrowserContext context = page.context();
     Browser browser = context.browser();
     assertFalse(browser.version().isEmpty());

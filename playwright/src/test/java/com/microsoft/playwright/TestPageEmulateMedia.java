@@ -16,23 +16,25 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Contrast;
 import com.microsoft.playwright.options.ForcedColors;
 import com.microsoft.playwright.options.ReducedMotion;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.function.Supplier;
 
+import static com.microsoft.playwright.Utils.attachFrame;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static com.microsoft.playwright.options.ColorScheme.DARK;
 import static com.microsoft.playwright.options.ColorScheme.LIGHT;
 import static com.microsoft.playwright.options.Media.PRINT;
-import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageEmulateMedia extends TestBase {
-  @Test
-  void shouldEmulateType() {
+public class TestPageEmulateMedia {
+  @PlaywrightTest
+  void shouldEmulateType(Page page) {
     assertEquals(true, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('print').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions().setMedia(PRINT));
@@ -50,8 +52,8 @@ public class TestPageEmulateMedia extends TestBase {
     // Impossible in Java.
   }
 
-  @Test
-  void shouldEmulateSchemeWork() {
+  @PlaywrightTest
+  void shouldEmulateSchemeWork(Page page) {
     page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(LIGHT));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
@@ -60,8 +62,8 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
   }
 
-  @Test
-  void shouldDefaultToLight() {
+  @PlaywrightTest
+  void shouldDefaultToLight(Page page) {
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
 
@@ -83,8 +85,8 @@ public class TestPageEmulateMedia extends TestBase {
     // TODO: requires async API
   }
 
-  @Test
-  void shouldWorkInPopup() {
+  @PlaywrightTest
+  void shouldWorkInPopup(Browser browser, Server server) {
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setColorScheme(DARK));
       Page page = context.newPage();
@@ -104,8 +106,8 @@ public class TestPageEmulateMedia extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkInCrossProcessIframe() {
+  @PlaywrightTest
+  void shouldWorkInCrossProcessIframe(Browser browser, Server server) {
     Page page = browser.newPage(new Browser.NewPageOptions().setColorScheme(DARK));
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
@@ -114,8 +116,8 @@ public class TestPageEmulateMedia extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldChangeTheActualColorsInCss() {
+  @PlaywrightTest
+  void shouldChangeTheActualColorsInCss(Page page) {
     page.setContent("<style>\n" +
       "@media (prefers-color-scheme: dark) {\n" +
       "  div {\n" +
@@ -146,8 +148,8 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
   }
 
-  @Test
-  void shouldEmulateReducedMotion() {
+  @PlaywrightTest
+  void shouldEmulateReducedMotion(Page page) {
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-reduced-motion: no-preference)').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions().setReducedMotion(ReducedMotion.REDUCE));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-reduced-motion: reduce)').matches"));
@@ -158,9 +160,9 @@ public class TestPageEmulateMedia extends TestBase {
     page.emulateMedia(new Page.EmulateMediaOptions().setReducedMotion(null));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="https://bugs.webkit.org/show_bug.cgi?id=225281")
-  void shouldEmulateForcedColors() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "https://bugs.webkit.org/show_bug.cgi?id=225281")
+  void shouldEmulateForcedColors(Page page) {
     assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions().setForcedColors(ForcedColors.NONE));
     assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
@@ -172,8 +174,8 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
   }
 
-  @Test
-  void shouldEmulateContrast() {
+  @PlaywrightTest
+  void shouldEmulateContrast(Page page) {
     assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions().setContrast(Contrast.NO_PREFERENCE));
     assertEquals(true, page.evaluate("matchMedia('(prefers-contrast: no-preference)').matches"));

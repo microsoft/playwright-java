@@ -16,8 +16,9 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.WaitUntilState;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
@@ -28,13 +29,14 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.expectedSSLError;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Collections.nCopies;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageWaitForNavigation extends TestBase {
+public class TestPageWaitForNavigation {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForNavigation(() -> page.evaluate(
       "url => window.location.href = url", server.PREFIX + "/grid.html"));
@@ -42,8 +44,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertTrue(response.url().contains("grid.html"));
   }
 
-  @Test
-  void shouldRespectTimeout() {
+  @PlaywrightTest
+  void shouldRespectTimeout(Page page, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForNavigation(
         new Page.WaitForNavigationOptions().setUrl("**/frame.html").setTimeout(5000),
@@ -56,8 +58,8 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkWithBothDomcontentloadedAndLoad() {
   }
 
-  @Test
-  void shouldWorkWithCommit() {
+  @PlaywrightTest
+  void shouldWorkWithCommit(Page page, Server server) {
     server.setRoute("/script.js", exchange -> {});
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/html");
@@ -75,8 +77,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals("Hello", page.title());
   }
 
-  @Test
-  void shouldWorkWithClickingOnAnchorLinks() {
+  @PlaywrightTest
+  void shouldWorkWithClickingOnAnchorLinks(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='#foobar'>foobar</a>");
     Response response = page.waitForNavigation(() -> page.click("a"));
@@ -88,8 +90,8 @@ public class TestPageWaitForNavigation extends TestBase {
     return possibleErrorMessages.stream().anyMatch(exceptionMessage::contains);
   }
 
-  @Test
-  void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation(Page page, BrowserType browserType, Server server, HttpsServer httpsServer) throws InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -100,8 +102,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertTrue(checkSSLErrorMessage(e.getMessage(), possibleErrorMessages), "Unexpected exception: '" + e.getMessage() + "' check message(s): " + String.join(",", possibleErrorMessages));
   }
 
-  @Test
-  void shouldWorkWithHistoryPushState() {
+  @PlaywrightTest
+  void shouldWorkWithHistoryPushState(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a onclick='javascript:pushState()'>SPA</a>\n" +
       "<script>\n" +
@@ -112,8 +114,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(server.PREFIX + "/wow.html", page.url());
   }
 
-  @Test
-  void shouldWorkWithHistoryReplaceState() {
+  @PlaywrightTest
+  void shouldWorkWithHistoryReplaceState(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent(" <a onclick='javascript:replaceState()'>SPA</a>\n" +
       "<script>\n" +
@@ -124,8 +126,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(server.PREFIX + "/replaced.html", page.url());
   }
 
-  @Test
-  void shouldWorkWithDOMHistoryBackHistoryForward() {
+  @PlaywrightTest
+  void shouldWorkWithDOMHistoryBackHistoryForward(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a id=back onclick='javascript:goBack()'>back</a>\n" +
       "<a id=forward onclick='javascript:goForward()'>forward</a>\n" +
@@ -147,8 +149,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(server.PREFIX + "/second.html", page.url());
   }
 
-  @Test
-  void shouldWorkWhenSubframeIssuesWindowStop() {
+  @PlaywrightTest
+  void shouldWorkWhenSubframeIssuesWindowStop(Page page, Server server, BrowserName browserName) {
     server.setRoute("/frames/style.css", exchange -> {});
     boolean[] frameWindowStopCalled = {false};
     page.onFrameAttached(frame -> {
@@ -162,13 +164,13 @@ public class TestPageWaitForNavigation extends TestBase {
     try {
       page.navigate(server.PREFIX + "/frames/one-frame.html", new Page.NavigateOptions().setTimeout(2000));
     } catch (TimeoutError e) {
-      assertTrue(isWebKit()); // Chromium and Firefox issue load event in this case.
+      assertTrue(browserName == WEBKIT); // Chromium and Firefox issue load event in this case.
     }
     assertTrue(frameWindowStopCalled[0]);
   }
 
-  @Test
-  void shouldWorkWithUrlMatch() {
+  @PlaywrightTest
+  void shouldWorkWithUrlMatch(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
 
     Response response1 = page.waitForNavigation(
@@ -196,8 +198,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(server.PREFIX + "/frame.html?foo=bar", response3.url());
   }
 
-  @Test
-  void shouldWorkWithUrlMatchForSameDocumentNavigations() {
+  @PlaywrightTest
+  void shouldWorkWithUrlMatchForSameDocumentNavigations(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForNavigation(new Page.WaitForNavigationOptions().setUrl("**/third.html"), () -> {
       page.evaluate("() => {\n" +
@@ -213,8 +215,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertNull(response);
   }
 
-  @Test
-  void shouldWorkForCrossProcessNavigations() {
+  @PlaywrightTest
+  void shouldWorkForCrossProcessNavigations(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     String url = server.CROSS_PROCESS_PREFIX + "/empty.html";
     Response response = page.waitForNavigation(
@@ -225,8 +227,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(url, page.evaluate("document.location.href"));
   }
 
-  @Test
-  void shouldWorkOnFrame() {
+  @PlaywrightTest
+  void shouldWorkOnFrame(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     Response response = frame.waitForNavigation(() -> frame.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html"));
@@ -236,8 +238,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertTrue(page.url().contains("/frames/one-frame.html"));
   }
 
-  @Test
-  void shouldFailWhenFrameDetaches() throws InterruptedException {
+  @PlaywrightTest
+  void shouldFailWhenFrameDetaches(Page page, Server server) throws InterruptedException {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     server.setRoute("/empty.html", exchange -> {});
@@ -258,8 +260,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertTrue(ex.getMessage().contains("frame was detached"), ex.getMessage());
   }
 
-  @Test
-  void shouldThrowOnInvalidUrlMatcherTypeInPage() {
+  @PlaywrightTest
+  void shouldThrowOnInvalidUrlMatcherTypeInPage(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       Page.WaitForNavigationOptions options = new Page.WaitForNavigationOptions();
       options.url = new Object();
@@ -268,8 +270,8 @@ public class TestPageWaitForNavigation extends TestBase {
     assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
   }
 
-  @Test
-  void shouldThrowOnInvalidUrlMatcherTypeInFrame() {
+  @PlaywrightTest
+  void shouldThrowOnInvalidUrlMatcherTypeInFrame(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {

@@ -16,30 +16,31 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPdf extends TestBase {
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void shouldBeAbleToSaveFile(@TempDir Path tempDir) throws IOException {
+public class TestPdf {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "skip")
+  void shouldBeAbleToSaveFile(Page page, @TempDir Path tempDir) throws IOException {
     Path path = tempDir.resolve("output.pdf");
     page.pdf(new Page.PdfOptions().setPath(path));
     long size = Files.size(path);
     assertTrue(size > 0);
   }
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void shouldSupportFractionalScaleValue(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "skip")
+  void shouldSupportFractionalScaleValue(Page page, @TempDir Path tempDir) throws IOException {
     Path path = tempDir.resolve("output.pdf");
     page.pdf(new Page.PdfOptions().setPath(path).setScale(0.5));
     long size = Files.size(path);
@@ -47,9 +48,9 @@ public class TestPdf extends TestBase {
   }
 
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Printing to pdf is currently only supported in headless chromium.")
-  void shouldBeAbleToGenerateOutline(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "Printing to pdf is currently only supported in headless chromium.")
+  void shouldBeAbleToGenerateOutline(Page page, Server server, @TempDir Path tempDir) throws IOException {
     page.navigate(server.PREFIX + "/headings.html");
     Path outputFileNoOutline = tempDir.resolve("outputNoOutline.pdf");
     Path outputFileOutline = tempDir.resolve("outputOutline.pdf");
@@ -61,9 +62,9 @@ public class TestPdf extends TestBase {
   }
 
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void correctExceptionWithPersistentContext(@TempDir Path tempDir) {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "skip")
+  void correctExceptionWithPersistentContext(BrowserType browserType, @TempDir Path tempDir) {
     Path profile = tempDir.resolve("profile");
     try (BrowserContext context = browserType.launchPersistentContext(profile)) {
       Page page = context.newPage();

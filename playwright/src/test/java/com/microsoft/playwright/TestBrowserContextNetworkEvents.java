@@ -16,18 +16,20 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.sun.net.httpserver.Filter;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextNetworkEvents extends TestBase {
-  @Test
-  void BrowserContextEventsRequest() {
+public class TestBrowserContextNetworkEvents {
+  @PlaywrightTest
+  void BrowserContextEventsRequest(Page page, BrowserContext context, Server server, BrowserName browserName) {
     List<String> requests = new ArrayList<>();
     context.onRequest(request -> requests.add(request.url()));
     page.navigate(server.EMPTY_PAGE);
@@ -35,7 +37,7 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
     // In firefox one-style.css is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals(asList(
         server.EMPTY_PAGE,
         server.PREFIX + "/one-style.html",
@@ -49,8 +51,8 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     }
   }
 
-  @Test
-  void BrowserContextEventsResponse() {
+  @PlaywrightTest
+  void BrowserContextEventsResponse(Page page, BrowserContext context, Server server, BrowserName browserName) {
     List<String> responses = new ArrayList<>();
     context.onResponse(response -> responses.add(response.url()));
     page.navigate(server.EMPTY_PAGE);
@@ -58,7 +60,7 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
     // In firefox one-style.css is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals(asList(
         server.EMPTY_PAGE,
         server.PREFIX + "/one-style.html",
@@ -72,14 +74,14 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     }
   }
 
-  @Test
-  void BrowserContextEventsRequestFailed() {
+  @PlaywrightTest
+  void BrowserContextEventsRequestFailed(Page page, BrowserContext context, Server server, BrowserName browserName) {
     server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
     List<Request> failedRequests = new ArrayList<>();
     context.onRequestFailed(request -> failedRequests.add(request));
     page.navigate(server.PREFIX + "/one-style.html");
     // In firefox one-style.css is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertTrue(failedRequests.size() > 0);
     } else {
       assertEquals(1, failedRequests.size());
@@ -91,8 +93,8 @@ public class TestBrowserContextNetworkEvents extends TestBase {
   }
 
 
-  @Test
-  void BrowserContextEventsRequestFinished() {
+  @PlaywrightTest
+  void BrowserContextEventsRequestFinished(Page page, BrowserContext context, Server server) {
     Request[] requestRef = {null};
     context.onRequestFinished(r -> requestRef[0] = r);
     Response response = page.navigate(server.EMPTY_PAGE);
@@ -104,8 +106,8 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     assertNull(request.failure());
   }
 
-  @Test
-  void shouldFireEventsInProperOrder() {
+  @PlaywrightTest
+  void shouldFireEventsInProperOrder(Page page, BrowserContext context, Server server) {
     List<String> events = new ArrayList<>();
     context.onRequest(r -> events.add("request"));
     context.onResponse(r -> events.add("response"));

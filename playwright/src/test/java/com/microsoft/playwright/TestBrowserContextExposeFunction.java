@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BindingCallback;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,10 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextExposeFunction extends TestBase {
+public class TestBrowserContextExposeFunction {
 
-  @Test
-  void exposeBindingShouldWork() {
+  @PlaywrightTest
+  void exposeBindingShouldWork(BrowserContext context) {
     BindingCallback.Source[] bindingSource = {null};
     context.exposeBinding("add", (source, args) -> {
       bindingSource[0] = source;
@@ -51,8 +51,8 @@ public class TestBrowserContextExposeFunction extends TestBase {
     assertEquals("failure in console listener", e.getMessage());
   }
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(BrowserContext context) {
     context.exposeFunction("add", args -> (Integer) args[0] + (Integer) args[1]);
     Page page = context.newPage();
     page.exposeFunction("mul", args -> (Integer) args[0] * (Integer) args[1]);
@@ -62,8 +62,8 @@ public class TestBrowserContextExposeFunction extends TestBase {
     assertEquals(mapOf("mul", 36, "add", 13, "sub", 5, "addHandle", 11), result);
   }
 
-  @Test
-  void shouldThrowForDuplicateRegistrations() {
+  @PlaywrightTest
+  void shouldThrowForDuplicateRegistrations(BrowserContext context) {
     context.exposeFunction("foo", args -> null);
     context.exposeFunction("bar", args -> null);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.exposeFunction("foo", args -> null));
@@ -78,8 +78,8 @@ public class TestBrowserContextExposeFunction extends TestBase {
     assertTrue(e.getMessage().contains("Function \"baz\" has been already registered in one of the pages"));
   }
 
-  @Test
-  void shouldBeCallableFromInsideAddInitScript() {
+  @PlaywrightTest
+  void shouldBeCallableFromInsideAddInitScript(BrowserContext context) {
     List<Object> actualArgs = new ArrayList<>();
     context.exposeFunction("woof", args -> actualArgs.add(args[0]));
     context.addInitScript("window['woof']('context')");

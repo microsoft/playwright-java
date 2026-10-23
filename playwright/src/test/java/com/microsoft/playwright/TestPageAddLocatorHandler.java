@@ -16,16 +16,16 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
-import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageAddLocatorHandler extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageAddLocatorHandler {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     int[] beforeCount = {0};
@@ -73,8 +73,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithCustomCheck() {
+  @PlaywrightTest
+  void shouldWorkWithCustomCheck(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     page.addLocatorHandler(page.locator("body"), locator -> {
@@ -103,8 +103,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithLocatorHover() {
+  @PlaywrightTest
+  void shouldWorkWithLocatorHover(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
@@ -120,8 +120,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertEquals("rgb(255, 255, 0)", page.evalOnSelector("#target", "element => getComputedStyle(element).backgroundColor"));
   }
 
-  @Test
-  void shouldNotWorkWithForceTrue() {
+  @PlaywrightTest
+  void shouldNotWorkWithForceTrue(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
@@ -138,8 +138,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertNull(page.evaluate("window.clicked"));
   }
 
-  @Test
-  void shouldThrowWhenPageCloses() {
+  @PlaywrightTest
+  void shouldThrowWhenPageCloses(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
@@ -155,8 +155,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldWorkWithToBeVisible() {
+  @PlaywrightTest
+  void shouldWorkWithToBeVisible(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     int[] called = {0};
@@ -174,8 +174,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertEquals(1, called[0]);
  }
 
-  @Test
-  public void shouldWorkWhenOwnerFrameDetaches() {
+  @PlaywrightTest
+  public void shouldWorkWhenOwnerFrameDetaches(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.EMPTY_PAGE);
 
@@ -206,8 +206,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertTrue((Boolean) page.evaluate("window._clicked"));
   }
 
-  @Test
-  public void shouldWorkWithTimesOption() {
+  @PlaywrightTest
+  public void shouldWorkWithTimesOption(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
@@ -230,8 +230,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertTrue(e.getMessage().contains("<div>This interstitial covers the button</div> from <div class=\"visible\" id=\"interstitial\">…</div> subtree intercepts pointer events"), e.getMessage());
   }
 
-  @Test
-  public void shouldWaitForHiddenByDefault() {
+  @PlaywrightTest
+  public void shouldWaitForHiddenByDefault(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
@@ -253,8 +253,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertEquals(1, called[0]);
   }
 
-  @Test
-  public void shouldWaitForHiddenByDefault2() {
+  @PlaywrightTest
+  public void shouldWaitForHiddenByDefault2(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
@@ -276,8 +276,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertTrue(e.getMessage().contains("locator handler has finished, waiting for getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"close\")) to be hidden"), e.getMessage());
   }
 
-  @Test
-  public void shouldWorkWithNoWaitAfter() {
+  @PlaywrightTest
+  public void shouldWorkWithNoWaitAfter(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
@@ -303,8 +303,8 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertEquals(2, called[0]);
   }
 
-  @Test
-  public void shouldRemoveLocatorHandler() {
+  @PlaywrightTest
+  public void shouldRemoveLocatorHandler(Browser browser, Server server) {
     Page page = browser.newPage();
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 

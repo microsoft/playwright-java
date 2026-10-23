@@ -16,40 +16,43 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.WaitUntilState;
-import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageNavigate extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageNavigate {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
   }
 
-  @Test
-  void shouldWorkWithFileURL() {
+  @PlaywrightTest
+  void shouldWorkWithFileURL(Page page) {
     String fileUrl = Paths.get("src/test/resources/frames/two-frames.html").toUri().toString();
     page.navigate(fileUrl);
     assertEquals(fileUrl.toLowerCase(), page.url().toLowerCase());
     assertEquals(3, page.frames().size());
   }
 
-  @Test
-  void shouldUseHttpForNoProtocol() {
+  @PlaywrightTest
+  void shouldUseHttpForNoProtocol(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE.substring("http://".length()));
     assertEquals(server.EMPTY_PAGE, page.url());
   }
 
-  @Test
-  void shouldWorkCrossProcess() {
+  @PlaywrightTest
+  void shouldWorkCrossProcess(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
 
@@ -61,8 +64,8 @@ public class TestPageNavigate extends TestBase {
     assertEquals(url, response.url());
   }
 
-  @Test
-  void shouldCaptureIframeNavigationRequest() {
+  @PlaywrightTest
+  void shouldCaptureIframeNavigationRequest(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
     Request request = page.waitForRequest(server.PREFIX + "/frames/frame.html", () -> {
@@ -76,8 +79,8 @@ public class TestPageNavigate extends TestBase {
     assertEquals(page.frames().get(1), request.frame());
   }
 
-  @Test
-  void shouldWorkWithAnchorNavigation() {
+  @PlaywrightTest
+  void shouldWorkWithAnchorNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
     page.navigate(server.EMPTY_PAGE + "#foo");
@@ -86,8 +89,8 @@ public class TestPageNavigate extends TestBase {
     assertEquals(server.EMPTY_PAGE + "#bar", page.url());
   }
 
-  @Test
-  void shouldWorkWithRedirects() {
+  @PlaywrightTest
+  void shouldWorkWithRedirects(Page page, Server server) {
     server.setRedirect("/redirect/1.html", "/redirect/2.html");
     server.setRedirect("/redirect/2.html", "/empty.html");
     Response response = page.navigate(server.PREFIX + "/redirect/1.html");
@@ -95,20 +98,20 @@ public class TestPageNavigate extends TestBase {
     assertEquals(server.EMPTY_PAGE, page.url());
   }
 
-  @Test
-  void shouldNavigateToAboutBlank() {
+  @PlaywrightTest
+  void shouldNavigateToAboutBlank(Page page) {
     Response response = page.navigate("about:blank");
     assertNull(response);
   }
 
-  @Test
-  void shouldReturnResponseWhenPageChangesItsURLAfterLoad() {
+  @PlaywrightTest
+  void shouldReturnResponseWhenPageChangesItsURLAfterLoad(Page page, Server server) {
     Response response = page.navigate(server.PREFIX + "/historyapi.html");
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldWorkWithSubframesReturn204() {
+  @PlaywrightTest
+  void shouldWorkWithSubframesReturn204(Page page, Server server) {
     server.setRoute("/frames/frame.html", exchange -> {
       exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
@@ -116,8 +119,8 @@ public class TestPageNavigate extends TestBase {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
   }
 
-  @Test
-  void shouldWorkWithSubframesReturn204WithDomcontentloaded() {
+  @PlaywrightTest
+  void shouldWorkWithSubframesReturn204WithDomcontentloaded(Page page, Server server) {
     server.setRoute("/frames/frame.html", exchange -> {
       exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
@@ -125,38 +128,38 @@ public class TestPageNavigate extends TestBase {
     page.navigate(server.PREFIX + "/frames/one-frame.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
   }
 
-  @Test
-  void shouldFailWhenServerReturns204() {
+  @PlaywrightTest
+  void shouldFailWhenServerReturns204(Page page, Server server, BrowserName browserName) {
     // WebKit just loads an empty page.
     server.setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
     });
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
-    if (isChromium())
+    if (browserName == CHROMIUM)
       assertTrue(e.getMessage().contains("net::ERR_ABORTED"));
-    else if (isWebKit())
+    else if (browserName == WEBKIT)
       assertTrue(e.getMessage().contains("Aborted: 204 No Content"));
     else
       assertTrue(e.getMessage().contains("NS_BINDING_ABORTED"));
   }
 
-  @Test
-  void shouldNavigateToEmptyPageWithDomcontentloaded() {
+  @PlaywrightTest
+  void shouldNavigateToEmptyPageWithDomcontentloaded(Page page, Server server) {
     Response response = page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldWorkWhenPageCallsHistoryAPIInBeforeunload() {
+  @PlaywrightTest
+  void shouldWorkWhenPageCallsHistoryAPIInBeforeunload(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("window.addEventListener('beforeunload', () => history.replaceState(null, 'initial', window.location.href), false);");
     Response response = page.navigate(server.PREFIX + "/grid.html");
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldCaptureCrossProcessIframeNavigationRequest() {
+  @PlaywrightTest
+  void shouldCaptureCrossProcessIframeNavigationRequest(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
 
@@ -171,8 +174,8 @@ public class TestPageNavigate extends TestBase {
     assertEquals(page.frames().get(1), request.frame());
   }
 
-  @Test
-  void shouldSendReferer() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSendReferer(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request1 = server.futureRequest("/grid.html");
     Future<Server.Request> request2 = server.futureRequest("/digits/1.png");
 

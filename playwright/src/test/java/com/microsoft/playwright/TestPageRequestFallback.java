@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -30,15 +30,15 @@ import java.util.concurrent.Future;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageRequestFallback extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageRequestFallback {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.route("**/*", route -> route.fallback());
     page.navigate(server.EMPTY_PAGE);
   }
 
-  @Test
-  void shouldFallBack() {
+  @PlaywrightTest
+  void shouldFallBack(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/empty.html", route -> {
       intercepted.add(1);
@@ -56,8 +56,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals(asList(3, 2, 1), intercepted);
   }
 
-  @Test
-  void shouldFallBackAsync() {
+  @PlaywrightTest
+  void shouldFallBackAsync(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/empty.html", route -> {
       intercepted.add(1);
@@ -78,8 +78,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals(asList(3, 2, 1), intercepted);
   }
 
-  @Test
-  void shouldNotChainFulfill() {
+  @PlaywrightTest
+  void shouldNotChainFulfill(Page page, Server server) {
     boolean[] failed = {false};
     page.route("**/empty.html", route -> {
       failed[0] = true;
@@ -95,8 +95,8 @@ public class TestPageRequestFallback extends TestBase {
     assertFalse(failed[0]);
   }
 
-  @Test
-  void shouldNotChainAbort() {
+  @PlaywrightTest
+  void shouldNotChainAbort(Page page, Server server) {
     boolean[] failed = {false};
     page.route("**/empty.html", route -> {
       failed[0] = true;
@@ -111,8 +111,8 @@ public class TestPageRequestFallback extends TestBase {
     assertFalse(failed[0]);
   }
 
-  @Test
-  void shouldFallBackAfterException() {
+  @PlaywrightTest
+  void shouldFallBackAfterException(Page page, Server server) {
     page.route("**/empty.html", route -> {
       route.resume();
     });
@@ -126,8 +126,8 @@ public class TestPageRequestFallback extends TestBase {
     page.navigate(server.EMPTY_PAGE);
   }
 
-  @Test
-  void shouldChainOnce() {
+  @PlaywrightTest
+  void shouldChainOnce(Page page, Server server) {
     boolean didFulfill[] = {false};
     page.route("**/title.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
@@ -141,8 +141,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals("fulfilled one", response.text());
   }
 
-  @Test
-  void shouldAmendHTTPHeaders() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendHTTPHeaders(Page page, Server server) throws ExecutionException, InterruptedException {
     List<String> values = new ArrayList<>();
     page.route("**/sleep.zzz", route -> {
       values.add(route.request().headers().get("foo"));
@@ -161,8 +161,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals(asList("bar", "bar", "bar"), values);
   }
 
-  @Test
-  void shouldDeleteHeaderWithUndefinedValue() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldDeleteHeaderWithUndefinedValue(Page page, Server server) throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/13106
     page.navigate(server.PREFIX + "/empty.html");
     Future<Server.Request> serverRequest = server.futureRequest("/something");
@@ -201,8 +201,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals(asList("b"), serverRequest.get().headers.get("bar"));
   }
 
-  @Test
-  void shouldAmendMethod() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendMethod(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> sRequest = server.futureRequest("/sleep.zzz");
     page.navigate(server.EMPTY_PAGE);
     String[] method = {null};
@@ -217,8 +217,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals("POST", sRequest.get().method);
   }
 
-  @Test
-  void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverrideRequestUrl(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/global-var.html");
     String[] url = {null};
     page.route("**/global-var.html", route -> {
@@ -234,8 +234,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals("GET", request.get().method);
   }
 
-  @Test
-  void shouldAmendPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendPostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     String[] postData = {null};
     page.route("**/*", route -> {
@@ -251,8 +251,8 @@ public class TestPageRequestFallback extends TestBase {
     assertEquals("doggo", new String(serverRequest.get().postBody, StandardCharsets.UTF_8));
   }
 
-  @Test
-  void shouldAmendBinaryPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendBinaryPostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     byte[] arr = new byte[256];
     for (int i = 0; i < arr.length; i++) {

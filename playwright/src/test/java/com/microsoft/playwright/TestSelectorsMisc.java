@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSelectorsMisc extends TestBase {
+public class TestSelectorsMisc {
 
-  @Test
-  void shouldWorkWithLayoutSelectors() {
+  @PlaywrightTest
+  void shouldWorkWithLayoutSelectors(Page page) {
   /*
 
        +--+  +--+
@@ -212,8 +212,8 @@ public class TestSelectorsMisc extends TestBase {
     assertTrue(e.getMessage().contains("Malformed selector: left-of='span',3,4"));
   }
 
-  @Test
-  void shouldWorkWithInternalHasNot() {
+  @PlaywrightTest
+  void shouldWorkWithInternalHasNot(Page page) {
     page.setContent("<section><span></span><div></div></section><section><br></section>");
     assertEquals(1, page.evalOnSelectorAll("section >> internal:has-not=\"span\"", "els => els.length"));
     assertEquals(0, page.evalOnSelectorAll("section >> internal:has-not=\"span, div, br\"", "els => els.length"));
@@ -222,8 +222,8 @@ public class TestSelectorsMisc extends TestBase {
     assertEquals(2, page.evalOnSelectorAll("section >> internal:has-not=\"article\"", "els => els.length"));
   }
 
-  @Test
-  void shouldWorkWithInternalAnd() {
+  @PlaywrightTest
+  void shouldWorkWithInternalAnd(Page page) {
     page.setContent("<div class=foo>hello</div><div class=bar>world</div>\n" +
       "    <span class=foo>hello2</span><span class=bar>world2</span>");
     assertEquals(asList(), page.evalOnSelectorAll("div >> internal:and=\"span\"", "els => els.map(e => e.textContent)"));
@@ -234,8 +234,8 @@ public class TestSelectorsMisc extends TestBase {
     assertEquals(asList("world2"), page.evalOnSelectorAll(".bar >> internal:and=\"span\"", "els => els.map(e => e.textContent)"));
   }
 
-  @Test
-  void shouldWorkWithInternalOr() {
+  @PlaywrightTest
+  void shouldWorkWithInternalOr(Page page) {
     page.setContent("<div>hello</div>\n" +
       "    <span>world</span>");
     assertEquals(asList("hello", "world"), page.evalOnSelectorAll("div >> internal:or=\"span\"", "els => els.map(e => e.textContent)"));
@@ -246,8 +246,8 @@ public class TestSelectorsMisc extends TestBase {
     assertEquals("hello", page.locator("div >> internal:or=\"article\"").textContent());
     assertEquals("world", page.locator("span >> internal:or=\"article\"").textContent());
   }
-  @Test
-  void shouldWorkWithInternalChain() {
+  @PlaywrightTest
+  void shouldWorkWithInternalChain(Page page) {
     page.setContent("<div>one <span>two</span> <button>three</button> </div>\n" +
       "    <span>four</span>\n" +
       "    <button>five</button>");

@@ -16,7 +16,9 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * This test simply makes sure that all 4 main interfaces implement AutoCloseable. If it compiles, then it passes.
  */
 public class TestAutoClose {
-  @Test
-  void shouldAllowUsingTryWithResources() {
+  @PlaywrightTest
+  void shouldAllowUsingTryWithResources(BrowserName browserName) {
     try (Playwright playwright = Playwright.create();
-         Browser browser = Utils.getBrowserTypeFromEnv(playwright).launch();
+         Browser browser = browserName.browserType(playwright).launch(Env.launchOptions());
          BrowserContext context = browser.newContext();
          Page page = context.newPage()) {
       assertEquals(2021, page.evaluate("() => 2021"));

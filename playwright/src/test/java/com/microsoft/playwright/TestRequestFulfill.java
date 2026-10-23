@@ -16,19 +16,20 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestRequestFulfill extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestRequestFulfill {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(201)
@@ -42,8 +43,8 @@ public class TestRequestFulfill extends TestBase {
     assertEquals("Yo, page!", page.evaluate("() => document.body.textContent"));
   }
 
-  @Test
-  void shouldWorkWithStatusCode422() {
+  @PlaywrightTest
+  void shouldWorkWithStatusCode422(Page page, Server server) {
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(422)
@@ -55,13 +56,9 @@ public class TestRequestFulfill extends TestBase {
     assertEquals("Yo, page!", page.evaluate("document.body.textContent"));
   }
 
-  static boolean isFirefoxHeaded() {
-    return isFirefox() && isHeaded();
-  }
-
-  @Test
-  @DisabledIf(value="isFirefoxHeaded", disabledReason="skip")
-  void shouldAllowMockingBinaryResponses() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, headed = true, reason = "skip")
+  void shouldAllowMockingBinaryResponses(Page page, Server server) {
     page.route("**/*", route -> {
       byte[] imageBuffer;
       try {
@@ -84,9 +81,9 @@ public class TestRequestFulfill extends TestBase {
 //    expect(img.screenshot()).toMatchSnapshot("mock-binary-response.png");
   }
 
-  @Test
-  @DisabledIf(value="isFirefoxHeaded", disabledReason="skip")
-  void shouldAllowMockingSvgWithCharset() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, headed = true, reason = "skip")
+  void shouldAllowMockingSvgWithCharset(Page page, Server server) {
     // Firefox headed produces a different image.
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -104,8 +101,8 @@ public class TestRequestFulfill extends TestBase {
   }
 
 
-  @Test
-  void fulfillShouldThrowIfHandledTwice() {
+  @PlaywrightTest
+  void fulfillShouldThrowIfHandledTwice(Page page, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.fulfill();
@@ -116,8 +113,8 @@ public class TestRequestFulfill extends TestBase {
     assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 
-  @Test
-  void abortShouldThrowIfHandledTwice() {
+  @PlaywrightTest
+  void abortShouldThrowIfHandledTwice(Page page, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.abort();
@@ -128,8 +125,8 @@ public class TestRequestFulfill extends TestBase {
     assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 
-  @Test
-  void resumeShouldThrowIfHandledTwice() {
+  @PlaywrightTest
+  void resumeShouldThrowIfHandledTwice(Page page, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.resume();

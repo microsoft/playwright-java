@@ -18,23 +18,20 @@ package com.microsoft.playwright;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 @Tag("smoke")
 public class TestBrowser1 {
 
-  @Test
+  @PlaywrightTest
   void shouldCreateNewPage(Browser browser) {
     Page page1 = browser.newPage();
     assertEquals(1, browser.contexts().size());
@@ -49,7 +46,7 @@ public class TestBrowser1 {
     assertEquals(0, browser.contexts().size());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldThrowUponSecondCreateNewPage(Browser browser) {
     Page page = browser.newPage();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.context().newPage());
@@ -57,7 +54,7 @@ public class TestBrowser1 {
     page.close();
   }
 
-  @Test
+  @PlaywrightTest
   void versionShouldWork(Browser browser) {
     switch (browser.browserType().name()) {
       case "chromium":
@@ -75,14 +72,13 @@ public class TestBrowser1 {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldReturnBrowserType(BrowserType browserType, Browser browser) {
     assertEquals(browserType, browser.browserType());
   }
 
-  @Test
-  @EnabledIf(value = "com.microsoft.playwright.TestOptionsFactories#isChromium",
-             disabledReason = "Chrome Devtools Protocol supported by chromium only")
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "Chrome Devtools Protocol supported by chromium only")
   void shouldWorkWithNewBrowserCDPSession(Browser browser) {
     CDPSession session = browser.newBrowserCDPSession();
 
@@ -106,7 +102,7 @@ public class TestBrowser1 {
     session.detach();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldPropagateCloseReasonToPendingActions(Browser browser) {
     BrowserContext context = browser.newContext();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.waitForPage(() -> {
@@ -115,7 +111,7 @@ public class TestBrowser1 {
     assertTrue(e.getMessage().contains("The reason."), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldFireContextEvent(Browser browser) {
     BrowserContext[] contextEvent = { null };
     browser.onContext(c -> contextEvent[0] = c);

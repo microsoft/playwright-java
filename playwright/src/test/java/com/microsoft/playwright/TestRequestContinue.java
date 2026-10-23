@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,16 +28,16 @@ import java.util.concurrent.Future;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestRequestContinue extends TestBase {
+public class TestRequestContinue {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.route("**/*", route -> route.resume());
     page.navigate(server.EMPTY_PAGE);
   }
 
-  @Test
-  void shouldAmendHTTPHeaders() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendHTTPHeaders(Page page, Server server) throws ExecutionException, InterruptedException {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("FOO", "bar");
@@ -49,8 +49,8 @@ public class TestRequestContinue extends TestBase {
     assertEquals(Arrays.asList("bar"), request.get().headers.get("foo"));
   }
 
-  @Test
-  void shouldAmendMethod() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendMethod(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> sRequest = server.futureRequest("/sleep.zzz");
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> route.resume(new Route.ResumeOptions().setMethod("POST")));
@@ -60,8 +60,8 @@ public class TestRequestContinue extends TestBase {
     assertEquals("POST", sRequest.get().method);
   }
 
-  @Test
-  void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverrideRequestUrl(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/global-var.html");
     page.route("**/foo", route -> {
       route.resume(new Route.ResumeOptions().setUrl(server.PREFIX + "/global-var.html"));
@@ -73,9 +73,9 @@ public class TestRequestContinue extends TestBase {
     assertEquals("GET", serverRequest.get().method);
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("resume() method is now asynchronous")
-  void shouldNotAllowChangingProtocolWhenOverridingUrl() {
+  void shouldNotAllowChangingProtocolWhenOverridingUrl(Page page, Server server) {
     page.route("**/*", route -> {
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
         route.resume(new Route.ResumeOptions().setUrl("file:///tmp/foo"));
@@ -86,8 +86,8 @@ public class TestRequestContinue extends TestBase {
     page.navigate(server.EMPTY_PAGE);
   }
 
-  @Test
-  void shouldOverrideMethodAlongWithUrl() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverrideMethodAlongWithUrl(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     page.route("**/foo", route -> {
       route.resume(new Route.ResumeOptions().setUrl(server.EMPTY_PAGE).setMethod("POST"));
@@ -96,16 +96,16 @@ public class TestRequestContinue extends TestBase {
     assertEquals("POST", serverRequest.get().method);
   }
 
-  @Test
-  void shouldAmendMethodOnMainRequest() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendMethodOnMainRequest(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.route("**/*", route -> route.resume(new Route.ResumeOptions().setMethod("POST")));
     page.navigate(server.EMPTY_PAGE);
     assertEquals("POST", request.get().method);
   }
 
-  @Test
-  void shouldAmendPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendPostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("doggo"));
@@ -115,8 +115,8 @@ public class TestRequestContinue extends TestBase {
     assertEquals("doggo", new String(serverRequest.get().postBody, UTF_8));
   }
 
-  @Test
-  void shouldAmendUtf8PostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendUtf8PostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("пушкин"));
@@ -127,8 +127,8 @@ public class TestRequestContinue extends TestBase {
     assertEquals("пушкин", new String(serverRequest.get().postBody, UTF_8));
   }
 
-  @Test
-  void shouldAmendLongerPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendLongerPostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("doggo-is-longer-than-birdy"));
@@ -139,8 +139,8 @@ public class TestRequestContinue extends TestBase {
     assertEquals("doggo-is-longer-than-birdy", new String(serverRequest.get().postBody, UTF_8));
   }
 
-  @Test
-  void shouldAmendBinaryPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAmendBinaryPostData(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     byte[] arr = new byte[256];
     for (int i = 0; i < arr.length; i++) {

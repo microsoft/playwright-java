@@ -16,12 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import com.microsoft.playwright.options.RouteFromHarUpdateContentPolicy;
 import com.microsoft.playwright.options.Timing;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -39,12 +39,13 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.Utils.copy;
 import static com.microsoft.playwright.Utils.extractZip;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static com.microsoft.playwright.options.HarContentPolicy.ATTACH;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextHar extends TestBase {
-  @Test
-  void shouldContextRouteFromHARMatchingTheMethodAndFollowingRedirects() {
+public class TestBrowserContextHar {
+  @PlaywrightTest
+  void shouldContextRouteFromHARMatchingTheMethodAndFollowingRedirects(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path);
     Page page = context.newPage();
@@ -55,8 +56,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgb(255, 0, 0)");
   }
 
-  @Test
-  void shouldPageRouteFromHARMatchingTheMethodAndFollowingRedirects() {
+  @PlaywrightTest
+  void shouldPageRouteFromHARMatchingTheMethodAndFollowingRedirects(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     Page page = context.newPage();
     page.routeFromHAR(path);
@@ -67,8 +68,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgb(255, 0, 0)");
   }
 
-  @Test
-  void fallbackContinueShouldContinueWhenNotFoundInHar() {
+  @PlaywrightTest
+  void fallbackContinueShouldContinueWhenNotFoundInHar(BrowserContext context, Server server) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.FALLBACK));
     Page page = context.newPage();
@@ -76,16 +77,16 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
   }
 
-  @Test
-  void byDefaultShouldAbortRequestsNotFoundInHar() {
+  @PlaywrightTest
+  void byDefaultShouldAbortRequestsNotFoundInHar(BrowserContext context, Server server) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path);
     Page page = context.newPage();
     assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
   }
 
-  @Test
-  void fallbackContinueShouldContinueRequestsOnBadHar(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void fallbackContinueShouldContinueRequestsOnBadHar(BrowserContext context, Server server, @TempDir Path tmpDir) throws IOException {
     Path path = tmpDir.resolve("test.har");
     try (Writer stream = new OutputStreamWriter(Files.newOutputStream(path))) {
       stream.write("{ \"log\" : {} }");
@@ -96,8 +97,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
   }
 
-  @Test
-  void shouldOnlyHandleRequestsMatchingUrlFilter() {
+  @PlaywrightTest
+  void shouldOnlyHandleRequestsMatchingUrlFilter(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.FALLBACK).setUrl("**/*.js"));
     Page page = context.newPage();
@@ -114,8 +115,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgba(0, 0, 0, 0)");
   }
 
-  @Test
-  void shouldOnlyContextRouteFromHARRequestsMatchingUrlFilter() {
+  @PlaywrightTest
+  void shouldOnlyContextRouteFromHARRequestsMatchingUrlFilter(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl("**/*.js"));
     Page page = context.newPage();
@@ -132,8 +133,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgba(0, 0, 0, 0)");
   }
 
-  @Test
-  void shouldOnlyPageRouteFromHARRequestsMatchingUrlFilter() {
+  @PlaywrightTest
+  void shouldOnlyPageRouteFromHARRequestsMatchingUrlFilter(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     Page page = context.newPage();
     page.routeFromHAR(path, new Page.RouteFromHAROptions().setUrl("**/*.js"));
@@ -150,8 +151,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgba(0, 0, 0, 0)");
   }
 
-  @Test
-  void shouldSupportRegexFilter() {
+  @PlaywrightTest
+  void shouldSupportRegexFilter(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*(\\.js|.*\\.css|no.playwright\\/)$")));
     Page page = context.newPage();
@@ -160,8 +161,8 @@ public class TestBrowserContextHar extends TestBase {
     assertThat(page.locator("body")).hasCSS("background-color", "rgb(255, 0, 0)");
   }
 
-  @Test
-  void newPageShouldFulfillFromHarMatchingTheMethodAndFollowingRedirects() {
+  @PlaywrightTest
+  void newPageShouldFulfillFromHarMatchingTheMethodAndFollowingRedirects(Browser browser) {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     Page page = browser.newPage();
     page.routeFromHAR(path);
@@ -173,8 +174,8 @@ public class TestBrowserContextHar extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldChangeDocumentURLAfterRedirectedNavigation() {
+  @PlaywrightTest
+  void shouldChangeDocumentURLAfterRedirectedNavigation(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path);
     Page page = context.newPage();
@@ -187,8 +188,8 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("https://www.theverge.com/", page.evaluate("location.href"));
   }
 
-  @Test
-  void shouldChangeDocumentURLAfterRedirectedNavigationOnClick() {
+  @PlaywrightTest
+  void shouldChangeDocumentURLAfterRedirectedNavigationOnClick(BrowserContext context, Server server) {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));
     Page page = context.newPage();
@@ -200,8 +201,8 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("https://www.theverge.com/", page.evaluate("location.href"));
   }
 
-  @Test
-  void shouldGoBackToRedirectedNavigation() {
+  @PlaywrightTest
+  void shouldGoBackToRedirectedNavigation(BrowserContext context, Server server) {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));
     Page page = context.newPage();
@@ -214,9 +215,9 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("https://www.theverge.com/", page.evaluate("location.href"));
   }
 
-  @Test
-  @DisabledIf(value="isFirefox", disabledReason="Flaky in Firefox, upstream as well")
-  void shouldGoForwardToRedirectedNavigation() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "Flaky in Firefox, upstream as well")
+  void shouldGoForwardToRedirectedNavigation(BrowserContext context, Server server) {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));
     Page page = context.newPage();
@@ -232,8 +233,8 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("https://www.theverge.com/", page.evaluate("() => location.href"));
   }
 
-  @Test
-  void shouldReloadRedirectedNavigation() {
+  @PlaywrightTest
+  void shouldReloadRedirectedNavigation(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));
     Page page = context.newPage();
@@ -245,8 +246,8 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("https://www.theverge.com/", page.evaluate("() => location.href"));
   }
 
-  @Test
-  void shouldFulfillFromHarWithContentInAFile() {
+  @PlaywrightTest
+  void shouldFulfillFromHarWithContentInAFile(BrowserContext context) {
     Path path = Paths.get("src/test/resources/har-sha1.har");
     context.routeFromHAR(path);
     Page page = context.newPage();
@@ -254,8 +255,8 @@ public class TestBrowserContextHar extends TestBase {
     assertEquals("<html><head></head><body>Hello, world</body></html>", page.content());
   }
 
-  @Test
-  void shouldRoundTripHarZip(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldRoundTripHarZip(Browser browser, Server server, @TempDir Path tmpDir) {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext(new Browser.NewContextOptions()
       .setRecordHarPath(harPath)
@@ -272,8 +273,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldProduceExtractedZip(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldProduceExtractedZip(Browser browser, Server server, @TempDir Path tmpDir) throws IOException {
     Path harPath = tmpDir.resolve("har.har");
     try (BrowserContext context1 = browser.newContext(new Browser.NewContextOptions()
       .setRecordHarPath(harPath)
@@ -294,8 +295,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldRoundTripExtractedHarZip(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldRoundTripExtractedHarZip(Browser browser, Server server, @TempDir Path tmpDir) throws IOException {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext(new Browser.NewContextOptions()
       .setRecordHarPath(harPath)
@@ -316,8 +317,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldRoundTripHarWithPostData(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldRoundTripHarWithPostData(Browser browser, Server server, @TempDir Path tmpDir) {
     server.setRoute("/echo", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStream out = exchange.getResponseBody()) {
@@ -352,8 +353,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldDisambiguateByHeader(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldDisambiguateByHeader(Browser browser, Server server, @TempDir Path tmpDir) {
     server.setRoute("/echo", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStream out = exchange.getResponseBody()) {
@@ -398,8 +399,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldUpdateHarZipForContext(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldUpdateHarZipForContext(Browser browser, Server server, @TempDir Path tmpDir) {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext()) {
       context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
@@ -415,8 +416,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldUpdateHarZipForPage(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldUpdateHarZipForPage(Browser browser, Server server, @TempDir Path tmpDir) {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext()) {
       Page page1 = context1.newPage();
@@ -432,8 +433,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldUpdateHarZipForPageWithDifferentOptions(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldUpdateHarZipForPageWithDifferentOptions(Browser browser, Server server, @TempDir Path tmpDir) {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext()) {
       Page page1 = context1.newPage();
@@ -453,8 +454,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldUpdateExtractedHarZipForPage(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldUpdateExtractedHarZipForPage(Browser browser, Server server, @TempDir Path tmpDir) {
     Path harPath = tmpDir.resolve("har.har");
     try (BrowserContext context1 = browser.newContext()) {
       Page page1 = context1.newPage();
@@ -470,8 +471,8 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  @Test
-  void shouldIgnoreAbortedRequests(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldIgnoreAbortedRequests(Page page, Browser browser, Server server, @TempDir Path tmpDir) {
     Path path = tmpDir.resolve("test.har");
     try (BrowserContext context1 = browser.newContext()) {
       server.setRoute("/x", exchange -> exchange.close());
@@ -503,7 +504,7 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
-  private void setJsonRoute(String path, String json) {
+  private void setJsonRoute(Server server, String path, String json) {
     server.setRoute(path, exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/json");
       byte[] body = json.getBytes(StandardCharsets.UTF_8);
@@ -514,9 +515,9 @@ public class TestBrowserContextHar extends TestBase {
     });
   }
 
-  @Test
-  void shouldNotInterceptAPIRequestContextRequestsByDefault(@TempDir Path tmpDir) {
-    setJsonRoute("/api/data", "{\"hello\": \"live\"}");
+  @PlaywrightTest
+  void shouldNotInterceptAPIRequestContextRequestsByDefault(Browser browser, Server server, @TempDir Path tmpDir) {
+    setJsonRoute(server, "/api/data", "{\"hello\": \"live\"}");
     Path harPath = tmpDir.resolve("api.har");
     try (BrowserContext context1 = browser.newContext()) {
       context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
@@ -526,7 +527,7 @@ public class TestBrowserContextHar extends TestBase {
     }
 
     // Without the option, the live network is hit.
-    setJsonRoute("/api/data", "{\"hello\": \"fresh\"}");
+    setJsonRoute(server, "/api/data", "{\"hello\": \"fresh\"}");
     try (BrowserContext context2 = browser.newContext()) {
       context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.FALLBACK));
       Page page2 = context2.newPage();

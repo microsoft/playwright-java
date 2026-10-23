@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +25,9 @@ import java.util.List;
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleQuerySelector extends TestBase {
-  @Test
-  void shouldQueryExistingElement() {
+public class TestElementHandleQuerySelector {
+  @PlaywrightTest
+  void shouldQueryExistingElement(Page page, Server server) {
     page.navigate(server.PREFIX + "/playground.html");
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">A</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
@@ -37,16 +37,16 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertEquals( "A", content);
   }
 
-  @Test
-  void shouldReturnNullForNonExistingElement() {
+  @PlaywrightTest
+  void shouldReturnNullForNonExistingElement(Page page) {
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">B</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
     ElementHandle second = html.querySelector(".third");
     assertNull(second);
   }
 
-  @Test
-  void shouldWorkForAdoptedElements() {
+  @PlaywrightTest
+  void shouldWorkForAdoptedElements(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
       "url => window['__popup'] = window.open(url)", server.EMPTY_PAGE));
@@ -73,8 +73,8 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertEquals("hello", popup.querySelector("span").evaluate("e => e.textContent"));
   }
 
-  @Test
-  void shouldQueryExistingElements() {
+  @PlaywrightTest
+  void shouldQueryExistingElements(Page page) {
     page.setContent("<html><body><div>A</div><br/><div>B</div></body></html>");
     ElementHandle html = page.querySelector("html");
     List<ElementHandle> elements = html.querySelectorAll("div");
@@ -84,16 +84,16 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertTrue(Arrays.asList("A", "B").equals(result));
   }
 
-  @Test
-  void shouldReturnEmptyArrayForNonExistingElement() {
+  @PlaywrightTest
+  void shouldReturnEmptyArrayForNonExistingElement(Page page) {
     page.setContent("<html><body><span>A</span><br/><span>B</span></body></html>");
     ElementHandle html = page.querySelector("html");
     List<ElementHandle> elements = html.querySelectorAll("div");
     assertEquals(0, elements.size());
   }
 
-  @Test
-  void xpathShouldQueryExistingElement() {
+  @PlaywrightTest
+  void xpathShouldQueryExistingElement(Page page, Server server) {
     page.navigate(server.PREFIX + "/playground.html");
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">A</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
@@ -103,8 +103,8 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertEquals("A", content);
   }
 
-  @Test
-  void xpathShouldReturnNullForNonExistingElement() {
+  @PlaywrightTest
+  void xpathShouldReturnNullForNonExistingElement(Page page) {
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">B</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
     List<ElementHandle> second = html.querySelectorAll("xpath=/div[contains(@class, 'third')]");

@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.WaitUntilState;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.util.Collections;
@@ -26,16 +26,16 @@ import java.util.concurrent.Semaphore;
 import static java.util.Collections.nCopies;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageWaitForUrl extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageWaitForUrl {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");
     page.waitForURL("**/grid.html");
   }
 
-  @Test
-  void shouldRespectTimeout() {
+  @PlaywrightTest
+  void shouldRespectTimeout(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     TimeoutError e = assertThrows(TimeoutError.class, () -> {
       page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500));
@@ -43,15 +43,15 @@ public class TestPageWaitForUrl extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 2500ms exceeded"));
   }
 
-  @Test
-  void shouldWorkWithBothDomcontentloadedAndLoad() {
+  @PlaywrightTest
+  void shouldWorkWithBothDomcontentloadedAndLoad(Page page, Server server) {
     page.navigate(server.PREFIX + "/one-style.html");
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.LOAD));
   }
 
-  @Test
-  void shouldWorkWithCommit() {
+  @PlaywrightTest
+  void shouldWorkWithCommit(Page page, Server server) {
     server.setRoute("/script.js", exchange -> {});
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/html");
@@ -68,21 +68,21 @@ public class TestPageWaitForUrl extends TestBase {
     assertEquals("Hello", page.title());
   }
 
-  @Test
-  void shouldWorkWithCommitAndAboutBlank() {
+  @PlaywrightTest
+  void shouldWorkWithCommitAndAboutBlank(Page page) {
     page.waitForURL("about:blank", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.COMMIT));
   }
 
-  @Test
-  void shouldWorkWithClickingOnAnchorLinks() {
+  @PlaywrightTest
+  void shouldWorkWithClickingOnAnchorLinks(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='#foobar'>foobar</a>");
     page.click("a");
     page.waitForURL("**/*#foobar");
   }
 
-  @Test
-  void shouldWorkWithHistoryPushState() {
+  @PlaywrightTest
+  void shouldWorkWithHistoryPushState(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a onclick='javascript:pushState()'>SPA</a>\n" +
       "<script>\n" +
@@ -93,8 +93,8 @@ public class TestPageWaitForUrl extends TestBase {
     assertEquals(server.PREFIX + "/wow.html", page.url());
   }
 
-  @Test
-  void shouldWorkWithHistoryReplaceState() {
+  @PlaywrightTest
+  void shouldWorkWithHistoryReplaceState(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent(" <a onclick='javascript:replaceState()'>SPA</a>\n" +
       "<script>\n" +
@@ -105,8 +105,8 @@ public class TestPageWaitForUrl extends TestBase {
     assertEquals(server.PREFIX + "/replaced.html", page.url());
   }
 
-  @Test
-  void shouldWorkWithDOMHistoryBackHistoryForward() {
+  @PlaywrightTest
+  void shouldWorkWithDOMHistoryBackHistoryForward(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a id=back onclick='javascript:goBack()'>back</a>\n" +
       "<a id=forward onclick='javascript:goForward()'>forward</a>\n" +
@@ -127,8 +127,8 @@ public class TestPageWaitForUrl extends TestBase {
     assertEquals(server.PREFIX + "/second.html", page.url());
   }
 
-  @Test
-  void shouldWorkOnFrame() {
+  @PlaywrightTest
+  void shouldWorkOnFrame(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     frame.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");

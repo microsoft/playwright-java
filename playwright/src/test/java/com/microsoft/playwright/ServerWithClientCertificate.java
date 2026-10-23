@@ -26,7 +26,7 @@ import java.security.KeyStoreException;
 import java.security.cert.*;
 import java.util.*;
 
-public class ServerWithClientCertificate implements HttpHandler {
+public class ServerWithClientCertificate implements HttpHandler, AutoCloseable {
   private final HttpServer server;
   final String origin;
   final String crossOrigin;
@@ -41,7 +41,7 @@ public class ServerWithClientCertificate implements HttpHandler {
     origin = "https://localhost:" + port;
     crossOrigin = "https://127.0.0.1:" + port;;
     url = origin + "/index.html";
-    HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress("localhost", port), 0);
+    com.sun.net.httpserver.HttpsServer httpsServer = com.sun.net.httpserver.HttpsServer.create(new InetSocketAddress("localhost", port), 0);
     httpsServer.setHttpsConfigurator(new HttpsConfiguratorImpl(loadCertificates()));
     server = httpsServer;
     server.createContext("/", this);
@@ -51,6 +51,11 @@ public class ServerWithClientCertificate implements HttpHandler {
 
   public void stop() {
     server.stop(0);
+  }
+
+  @Override
+  public void close() {
+    stop();
   }
 
   private SSLContext loadCertificates() {

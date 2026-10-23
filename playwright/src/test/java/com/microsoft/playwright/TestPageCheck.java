@@ -16,14 +16,14 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BoundingBox;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageCheck extends TestBase {
-  @Test
-  void shouldCheckTheLabelWithPosition() {
+public class TestPageCheck {
+  @PlaywrightTest
+  void shouldCheckTheLabelWithPosition(Page page, Server server) {
     page.setContent("<input id='checkbox' type='checkbox' style='width: 5px; height: 5px;'>\n" +
       "    <label for='checkbox'>\n" +
       "      <a href=" + server.EMPTY_PAGE + ">I am a long link that goes away so that nothing good will happen if you click on me</a>\n" +
@@ -34,22 +34,22 @@ public class TestPageCheck extends TestBase {
     assertEquals(true, page.evalOnSelector("input", "input => input.checked"));
   }
 
-  @Test
-  void trialRunShouldNotCheck() {
+  @PlaywrightTest
+  void trialRunShouldNotCheck(Page page) {
     page.setContent("<input id='checkbox' type='checkbox'></input>");
     page.check("input", new Page.CheckOptions().setTrial(true));
     assertEquals(false, page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void trialRunShouldNotUncheck() {
+  @PlaywrightTest
+  void trialRunShouldNotUncheck(Page page) {
     page.setContent("<input id='checkbox' type='checkbox' checked></input>");
     page.uncheck("input", new Page.UncheckOptions().setTrial(true));
     assertEquals(true, page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldCheckTheBoxUsingSetChecked() {
+  @PlaywrightTest
+  void shouldCheckTheBoxUsingSetChecked(Page page) {
     page.setContent("<input id='checkbox' type='checkbox'></input>");
     page.setChecked("input", true);
     assertEquals(true, page.evaluate("() => window['checkbox'].checked"));

@@ -16,145 +16,145 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestEvalOnSelector extends TestBase {
+public class TestEvalOnSelector {
 
-  @Test
-  void shouldWorkWithCssSelector() {
+  @PlaywrightTest
+  void shouldWorkWithCssSelector(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("css=section", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithIdSelector() {
+  @PlaywrightTest
+  void shouldWorkWithIdSelector(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("id=testAttribute", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithDataTestSelector() {
+  @PlaywrightTest
+  void shouldWorkWithDataTestSelector(Page page) {
     page.setContent("<section data-test=foo id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("data-test=foo", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithDataTestidSelector() {
+  @PlaywrightTest
+  void shouldWorkWithDataTestidSelector(Page page) {
     page.setContent("<section data-testid=foo id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("data-testid=foo", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithDataTestIdSelector() {
+  @PlaywrightTest
+  void shouldWorkWithDataTestIdSelector(Page page) {
     page.setContent("<section data-test-id=foo id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("data-test-id=foo", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithTextSelector1() {
+  @PlaywrightTest
+  void shouldWorkWithTextSelector1(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("text='43543'", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithXpathSelector() {
+  @PlaywrightTest
+  void shouldWorkWithXpathSelector(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("xpath=/html/body/section", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldWorkWithTextSelector2() {
+  @PlaywrightTest
+  void shouldWorkWithTextSelector2(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("text=43543", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldAutoDetectCssSelector() {
+  @PlaywrightTest
+  void shouldAutoDetectCssSelector(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("section", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldAutoDetectCssSelectorWithAttributes() {
+  @PlaywrightTest
+  void shouldAutoDetectCssSelectorWithAttributes(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("section[id='testAttribute']", "e => e.id");
     assertEquals("testAttribute", idAttribute);
   }
 
-  @Test
-  void shouldAutoDetectNestedSelectors() {
+  @PlaywrightTest
+  void shouldAutoDetectNestedSelectors(Page page) {
     page.setContent("<div foo=bar><section>43543<span>Hello<div id=target></div></span></section></div>");
     Object idAttribute = page.evalOnSelector("div[foo=bar] > section >> 'Hello' >> div", "e => e.id");
     assertEquals("target", idAttribute);
   }
 
-  @Test
-  void shouldAcceptArguments() {
+  @PlaywrightTest
+  void shouldAcceptArguments(Page page) {
     page.setContent("<section>hello</section>");
     Object text = page.evalOnSelector("section", "(e, suffix) => e.textContent + suffix", " world!");
     assertEquals("hello world!", text);
   }
 
-  @Test
-  void shouldAcceptElementHandlesAsArguments() {
+  @PlaywrightTest
+  void shouldAcceptElementHandlesAsArguments(Page page) {
     page.setContent("<section>hello</section><div> world</div>");
     ElementHandle divHandle = page.querySelector("div");
     Object text = page.evalOnSelector("section", "(e, div) => e.textContent + div.textContent", divHandle);
     assertEquals("hello world", text);
   }
 
-  @Test
-  void shouldThrowErrorIfNoElementIsFound() {
+  @PlaywrightTest
+  void shouldThrowErrorIfNoElementIsFound(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("section", "e => e.id");
     });
     assertTrue(e.getMessage().contains("Failed to find element matching selector \"section\""), e.getMessage());
   }
 
-  @Test
-  void shouldSupportSyntax() {
+  @PlaywrightTest
+  void shouldSupportSyntax(Page page) {
     page.setContent("<section><div>hello</div></section>");
     Object text = page.evalOnSelector("css=section >> css=div", "(e, suffix) => e.textContent + suffix", " world!");
     assertEquals("hello world!", text);
   }
 
-  @Test
-  void shouldSupportSyntaxWithDifferentEngines() {
+  @PlaywrightTest
+  void shouldSupportSyntaxWithDifferentEngines(Page page) {
     page.setContent("<section><div><span>hello</span></div></section>");
     Object text = page.evalOnSelector("xpath=/html/body/section >> css=div >> text='hello'", "(e, suffix) => e.textContent + suffix", " world!");
     assertEquals("hello world!", text);
   }
 
-  @Test
-  void shouldSupportSpacesWithSyntax() {
+  @PlaywrightTest
+  void shouldSupportSpacesWithSyntax(Page page, Server server) {
     page.navigate(server.PREFIX + "/deep-shadow.html");
     Object text = page.evalOnSelector(" css = div >>css=div>>css   = span  ", "e => e.textContent");
     assertEquals("Hello from root2", text);
   }
 
-  @Test
-  void shouldNotStopAtFirstFailureWithSyntax() {
+  @PlaywrightTest
+  void shouldNotStopAtFirstFailureWithSyntax(Page page) {
     page.setContent("<div><span>Next</span><button>Previous</button><button>Next</button></div>");
     Object html = page.evalOnSelector("button >> 'Next'", "e => e.outerHTML");
     assertEquals("<button>Next</button>", html);
   }
 
-  @Test
-  void shouldSupportCapture() {
+  @PlaywrightTest
+  void shouldSupportCapture(Page page) {
     page.setContent("<section><div><span>a</span></div></section><section><div><span>b</span></div></section>");
     assertEquals("<div><span>b</span></div>", page.evalOnSelector("*css=div >> 'b'", "e => e.outerHTML"));
     assertEquals("<div><span>b</span></div>", page.evalOnSelector("section >> *css=div >> 'b'", "e => e.outerHTML"));
@@ -162,24 +162,24 @@ public class TestEvalOnSelector extends TestBase {
     assertNotNull(page.querySelector("*"));
   }
 
-  @Test
-  void shouldThrowOnMultipleCaptures() {
+  @PlaywrightTest
+  void shouldThrowOnMultipleCaptures(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("*css=div >> *css=span", "e => e.outerHTML");
     });
     assertTrue(e.getMessage().contains("Only one of the selectors can capture using * modifier"));
   }
 
-  @Test
-  void shouldThrowOnMalformedCapture() {
+  @PlaywrightTest
+  void shouldThrowOnMalformedCapture(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("*=div", "e => e.outerHTML");
     });
     assertTrue(e.getMessage().contains("Unknown engine \"\" while parsing selector *=div"));
   }
 
-  @Test
-  void shouldWorkWithSpacesInCssAttributes() {
+  @PlaywrightTest
+  void shouldWorkWithSpacesInCssAttributes(Page page) {
     page.setContent("<div><input placeholder='Select date'></div>");
     assertNotNull(page.waitForSelector("[placeholder=\"Select date\"]"));
     assertNotNull(page.waitForSelector("[placeholder='Select date']"));
@@ -201,8 +201,8 @@ public class TestEvalOnSelector extends TestBase {
     assertEquals("<input placeholder=\"Select date\">", page.evalOnSelector("div >> [placeholder='Select date']", "e => e.outerHTML"));
   }
 
-  @Test
-  void shouldWorkWithQuotesInCssAttributes() {
+  @PlaywrightTest
+  void shouldWorkWithQuotesInCssAttributes(Page page) {
     page.setContent("<div><input placeholder=\"Select&quot;date\"></div>");
     assertNotNull(page.querySelector("[placeholder=\"Select\\\"date\"]"));
     assertNotNull(page.querySelector("[placeholder='Select\"date']"));
@@ -217,22 +217,22 @@ public class TestEvalOnSelector extends TestBase {
     assertNotNull(page.querySelector("[placeholder='Select \\' date']"));
   }
 
-  @Test
-  void shouldWorkWithSpacesInCssAttributesWhenMissing() {
+  @PlaywrightTest
+  void shouldWorkWithSpacesInCssAttributesWhenMissing(Page page) {
     assertNull(page.querySelector("[placeholder='Select date']"));
     page.setContent("<div><input placeholder='Select date'></div>");
     page.waitForSelector("[placeholder='Select date']");
   }
 
-  @Test
-  void shouldWorkWithQuotesInCssAttributesWhenMissing() {
+  @PlaywrightTest
+  void shouldWorkWithQuotesInCssAttributesWhenMissing(Page page) {
     assertNull(page.querySelector("[placeholder='Select\\\"date']"));
     page.setContent("<div><input placeholder='Select&quot;date'></div>");
     page.waitForSelector("[placeholder='Select\\\"date']");
   }
 
-  @Test
-  void shouldReturnComplexValues() {
+  @PlaywrightTest
+  void shouldReturnComplexValues(Page page) {
     page.setContent("<section id='testAttribute'>43543</section>");
     Object idAttribute = page.evalOnSelector("css=section", "e => [{ id: e.id }]");
     assertEquals(Arrays.asList(Collections.singletonMap("id", "testAttribute")), idAttribute);

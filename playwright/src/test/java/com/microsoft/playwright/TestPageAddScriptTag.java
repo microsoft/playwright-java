@@ -16,19 +16,20 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestPageAddScriptTag extends TestBase {
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="Upstream behavior")
-  void shouldIncludeSourceURLWhenPathIsProvided() {
+public class TestPageAddScriptTag {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "Upstream behavior")
+  void shouldIncludeSourceURLWhenPathIsProvided(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Path path = Paths.get("src/test/resources/injectedfile.js");
     page.addScriptTag(new Page.AddScriptTagOptions().setPath(path));

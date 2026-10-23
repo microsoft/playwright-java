@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -27,24 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.Utils.waitForCondition;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestWebSocket extends TestBase {
-  private static WebSocketServerImpl webSocketServer;
-
-  @BeforeAll
-  static void startWebSockerServer() throws InterruptedException {
-    webSocketServer = WebSocketServerImpl.create();
+public class TestWebSocket {
+  @Fixture
+  WebSocketServerImpl webSocketServer() throws InterruptedException {
+    return WebSocketServerImpl.create();
   }
 
-  @AfterAll
-  static void stopWebSockerServer() throws IOException, InterruptedException {
-    webSocketServer.stop();
-  }
-
-
-  private void waitForCondition(boolean[] condition) {
+  private void waitForCondition(Page page, boolean[] condition) {
     assertEquals(1, condition.length);
     Instant start = Instant.now();
     while (!condition[0]) {
@@ -53,8 +47,8 @@ public class TestWebSocket extends TestBase {
     }
   }
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, WebSocketServerImpl webSocketServer) {
     Object value = page.evaluate("port => {\n" +
       "  let cb;\n" +
       "  const result = new Promise(f => cb = f);\n" +
@@ -65,8 +59,8 @@ public class TestWebSocket extends TestBase {
     assertEquals("incoming", value);
   }
 
-  @Test
-  void shouldEmitCloseEvents() {
+  @PlaywrightTest
+  void shouldEmitCloseEvents(Page page, WebSocketServerImpl webSocketServer) {
     boolean[] socketClosed = {false};
     List<String> log = new ArrayList<>();
     com.microsoft.playwright.WebSocket[] webSocket = {null};
@@ -82,13 +76,13 @@ public class TestWebSocket extends TestBase {
       "  const ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
       "  ws.addEventListener('open', () => ws.close());\n" +
       "}", webSocketServer.getPort());
-    waitForCondition(socketClosed);
+    waitForCondition(page, socketClosed);
     assertEquals(asList("open<ws://localhost:" + webSocketServer.getPort() + "/ws>", "close"), log);
     assertTrue(webSocket[0].isClosed());
   }
 
-  @Test
-  void shouldEmitFrameEvents() {
+  @PlaywrightTest
+  void shouldEmitFrameEvents(Page page, WebSocketServerImpl webSocketServer) {
     boolean[] socketClosed = {false};
     List<String> log = new ArrayList<>();
     page.onWebSocket(ws -> {
@@ -102,15 +96,15 @@ public class TestWebSocket extends TestBase {
       "    ws.addEventListener('open', () => ws.send('outgoing'));\n" +
       "    ws.addEventListener('message', () => { ws.close(); });\n" +
       "  }", webSocketServer.getPort());
-    waitForCondition(socketClosed);
+    waitForCondition(page, socketClosed);
     assertEquals("open", log.get(0), "Events: " + log);
     assertEquals("close", log.get(3), "Events: " + log);
     log.sort(String::compareTo);
     assertEquals(asList("close", "open", "received<incoming>", "sent<outgoing>"), log);
   }
 
-  @Test
-  void shouldEmitBinaryFrameEvents() {
+  @PlaywrightTest
+  void shouldEmitBinaryFrameEvents(Page page, WebSocketServerImpl webSocketServer) {
     boolean[] socketClosed = {false};
     List<WebSocketFrame> sent = new ArrayList<>();
     page.onWebSocket(ws -> {
@@ -128,15 +122,15 @@ public class TestWebSocket extends TestBase {
       "    ws.close();\n" +
       "  });\n" +
       "}", webSocketServer.getPort());
-    waitForCondition(socketClosed);
+    waitForCondition(page, socketClosed);
     assertEquals("text", sent.get(0).text());
     for (int i = 0; i < 5; ++i) {
       assertEquals(i, sent.get(1).binary()[i]);
     }
   }
 
-  @Test
-  void shouldEmitError() {
+  @PlaywrightTest
+  void shouldEmitError(Page page, Server server, BrowserName browserName) {
     boolean[] socketError = {false};
     String[] error = {null};
     page.onWebSocket(ws -> {
@@ -152,16 +146,16 @@ public class TestWebSocket extends TestBase {
     page.evaluate("port => {\n" +
       "  new WebSocket('ws://localhost:' + port + '/bogus-ws');\n" +
       "}", server.PORT);
-    waitForCondition(socketError);
-    if (isFirefox()) {
+    waitForCondition(page, socketError);
+    if (browserName == FIREFOX) {
       assertEquals("CLOSE_ABNORMAL", error[0]);
     } else {
       assertTrue(error[0].contains("404"), error[0]);
     }
   }
 
-  @Test
-  void shouldNotHaveStrayErrorEvents() {
+  @PlaywrightTest
+  void shouldNotHaveStrayErrorEvents(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
         page.evaluate("port => {\n" +
           "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -174,8 +168,8 @@ public class TestWebSocket extends TestBase {
     assertFalse(error[0]);
   }
 
-  @Test
-  void shouldRejectFutureEventOnSocketClose() {
+  @PlaywrightTest
+  void shouldRejectFutureEventOnSocketClose(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -188,8 +182,8 @@ public class TestWebSocket extends TestBase {
     assertTrue(e.getMessage().matches("Socket closed|Socket error"), e.getMessage());
   }
 
-  @Test
-  void shouldRejectFutureEventOnPageClose() {
+  @PlaywrightTest
+  void shouldRejectFutureEventOnPageClose(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -202,8 +196,8 @@ public class TestWebSocket extends TestBase {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldCallFrameReceivedPredicate() {
+  @PlaywrightTest
+  void shouldCallFrameReceivedPredicate(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -223,8 +217,8 @@ public class TestWebSocket extends TestBase {
     assertEquals("incoming", frame.text());
   }
 
-  @Test
-  void shouldCallFrameSentPredicate() {
+  @PlaywrightTest
+  void shouldCallFrameSentPredicate(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -245,8 +239,8 @@ public class TestWebSocket extends TestBase {
     assertEquals("outgoing", frame.text());
   }
 
-  @Test
-  void shouldRespectFrameReceivedTimeout() {
+  @PlaywrightTest
+  void shouldRespectFrameReceivedTimeout(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -261,8 +255,8 @@ public class TestWebSocket extends TestBase {
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
-  @Test
-  void shouldRespectFrameSentTimeout() {
+  @PlaywrightTest
+  void shouldRespectFrameSentTimeout(Page page, WebSocketServerImpl webSocketServer) {
     com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
       page.evaluate("port => {\n" +
         "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +

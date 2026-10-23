@@ -16,14 +16,14 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BindResult;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserBind extends TestBase {
-  @Test
-  void shouldBindAndUnbindBrowser() {
+public class TestBrowserBind {
+  @PlaywrightTest
+  void shouldBindAndUnbindBrowser(Browser browser) {
     BindResult serverInfo = browser.bind("default");
     try {
       assertNotNull(serverInfo);
@@ -34,8 +34,8 @@ public class TestBrowserBind extends TestBase {
     }
   }
 
-  @Test
-  void shouldBindWithCustomTitleAndOptions() {
+  @PlaywrightTest
+  void shouldBindWithCustomTitleAndOptions(Browser browser) {
     BindResult serverInfo = browser.bind("my-title",
       new Browser.BindOptions().setHost("127.0.0.1").setPort(0));
     try {

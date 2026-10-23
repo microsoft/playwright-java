@@ -16,9 +16,10 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,16 +27,19 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.options.LoadState.LOAD;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("smoke")
-public class TestPageBasic extends TestBase {
+public class TestPageBasic {
 
-  @Test
-  void shouldRejectAllPromisesWhenPageIsClosed() {
+  @PlaywrightTest
+  void shouldRejectAllPromisesWhenPageIsClosed(BrowserContext context) {
     Page newPage = context.newPage();
     newPage.close();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -44,16 +48,16 @@ public class TestPageBasic extends TestBase {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldNotBeVisibleInContextPages() {
+  @PlaywrightTest
+  void shouldNotBeVisibleInContextPages(BrowserContext context) {
     Page newPage = context.newPage();
     assertTrue(context.pages().contains(newPage));
     newPage.close();
     assertFalse(context.pages().contains(newPage));
   }
 
-  @Test
-  void shouldRunBeforeunloadIfAskedFor() {
+  @PlaywrightTest
+  void shouldRunBeforeunloadIfAskedFor(Page page, BrowserContext context, Server server, BrowserName browserName) {
     Page newPage = context.newPage();
     newPage.navigate(server.PREFIX + "/beforeunload.html");
     // We have to interact with a page so that "beforeunload" handlers
@@ -64,11 +68,11 @@ public class TestPageBasic extends TestBase {
       didShowDialog[0] = true;
       assertEquals("beforeunload", dialog.type());
       assertEquals("", dialog.defaultValue());
-      if (isChromium()) {
+      if (browserName == CHROMIUM) {
         assertEquals("", dialog.message());
-      } else if (isWebKit()) {
+      } else if (browserName == WEBKIT) {
         assertEquals("Leave?", dialog.message());
-      } else if (isChromium()) {
+      } else if (browserName == CHROMIUM) {
         assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
       } else {
         assertEquals("This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.", dialog.message());
@@ -85,8 +89,8 @@ public class TestPageBasic extends TestBase {
     assertTrue(didShowDialog[0]);
   }
 
-  @Test
-  void shouldNotRunBeforeunloadByDefault() {
+  @PlaywrightTest
+  void shouldNotRunBeforeunloadByDefault(BrowserContext context, Server server) {
     Page newPage = context.newPage();
     newPage.navigate(server.PREFIX + "/beforeunload.html");
     // We have to interact with a page so that "beforeunload" handlers
@@ -98,16 +102,16 @@ public class TestPageBasic extends TestBase {
     assertFalse(didShowDialog[0]);
   }
 
-  @Test
-  void shouldSetThePageCloseState() {
+  @PlaywrightTest
+  void shouldSetThePageCloseState(BrowserContext context) {
     Page newPage = context.newPage();
     assertEquals(false, newPage.isClosed());
     newPage.close();
     assertEquals(true, newPage.isClosed());
   }
 
-  @Test
-  void shouldTerminateNetworkWaiters() {
+  @PlaywrightTest
+  void shouldTerminateNetworkWaiters(BrowserContext context, Server server) {
     Page newPage = context.newPage();
     PlaywrightException e1 = assertThrows(PlaywrightException.class, () -> {
       newPage.waitForResponse("**", () -> {
@@ -122,16 +126,16 @@ public class TestPageBasic extends TestBase {
     assertFalse(e1.getMessage().contains("Timeout"), e1.getMessage());
   }
 
-  @Test
-  void shouldBeCallableTwice() {
+  @PlaywrightTest
+  void shouldBeCallableTwice(BrowserContext context) {
     Page newPage = context.newPage();
     newPage.close();
     newPage.close();
     newPage.close();
   }
 
-  @Test
-  void shouldFireLoadWhenExpected() {
+  @PlaywrightTest
+  void shouldFireLoadWhenExpected(Page page) {
     page.navigate("about:blank");
     page.waitForLoadState(LOAD);
   }
@@ -140,29 +144,29 @@ public class TestPageBasic extends TestBase {
   void asyncStacksShouldWork() {
   }
 
-  @Test
-  void shouldProvideAccessToTheOpenerPage() {
+  @PlaywrightTest
+  void shouldProvideAccessToTheOpenerPage(Page page) {
     Page popup = page.waitForPopup(() -> page.evaluate("() => window.open('about:blank')"));
     Page opener = popup.opener();
     assertEquals(page, opener);
   }
 
-  @Test
-  void shouldReturnNullIfParentPageHasBeenClosed() {
+  @PlaywrightTest
+  void shouldReturnNullIfParentPageHasBeenClosed(Page page) {
     Page popup = page.waitForPopup(() -> page.evaluate("() => window.open('about:blank')"));
     page.close();
     Page opener = popup.opener();
     assertEquals(null, opener);
   }
 
-  @Test
-  void shouldFireDomcontentloadedWhenExpected() {
+  @PlaywrightTest
+  void shouldFireDomcontentloadedWhenExpected(Page page) {
     page.navigate("about:blank");
     page.waitForLoadState(DOMCONTENTLOADED);
   }
 
-  @Test
-  void shouldPassSelfAsArgumentToDomcontentloadedEvent() {
+  @PlaywrightTest
+  void shouldPassSelfAsArgumentToDomcontentloadedEvent(Page page) {
     Page[] eventPage = {null};
     page.onDOMContentLoaded(p -> eventPage[0] = p);
     page.navigate("about:blank");
@@ -170,8 +174,8 @@ public class TestPageBasic extends TestBase {
     assertEquals(page, eventPage[0]);
   }
 
-  @Test
-  void shouldPassSelfAsArgumentToLoadEvent() {
+  @PlaywrightTest
+  void shouldPassSelfAsArgumentToLoadEvent(Page page) {
     Page[] eventPage = {null};
     page.onLoad(p -> eventPage[0] = p);
     page.navigate("about:blank");
@@ -183,15 +187,15 @@ public class TestPageBasic extends TestBase {
   void shouldFailWithErrorUponDisconnect() {
   }
 
-  @Test
-  void pageUrlShouldWork() {
+  @PlaywrightTest
+  void pageUrlShouldWork(Page page, Server server) {
     assertEquals("about:blank", page.url());
     page.navigate(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, page.url());
   }
 
-  @Test
-  void pageUrlShouldIncludeHashes() {
+  @PlaywrightTest
+  void pageUrlShouldIncludeHashes(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE + "#hash");
     assertEquals(server.EMPTY_PAGE + "#hash", page.url());
     page.evaluate("() => {\n" +
@@ -200,32 +204,32 @@ public class TestPageBasic extends TestBase {
     assertEquals(server.EMPTY_PAGE + "#dynamic", page.url());
   }
 
-  @Test
-  void pageTitleShouldReturnThePageTitle() {
+  @PlaywrightTest
+  void pageTitleShouldReturnThePageTitle(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     assertEquals("Woof-Woof", page.title());
   }
 
-  @Test
-  void pageCloseShouldWorkWithWindowClose() {
+  @PlaywrightTest
+  void pageCloseShouldWorkWithWindowClose(Page page) {
     Page newPage = page.waitForPopup(() -> page.evaluate(
       "() => window['newPage'] = window.open('about:blank')"));
     newPage.waitForClose(() -> page.evaluate("() => window['newPage'].close()"));
   }
 
-  @Test
-  void pageCloseShouldWorkWithPageClose() {
+  @PlaywrightTest
+  void pageCloseShouldWorkWithPageClose(BrowserContext context) {
     Page newPage = context.newPage();
     newPage.waitForClose(() -> newPage.close());
   }
 
-  @Test
-  void pageContextShouldReturnTheCorrectInstance() {
+  @PlaywrightTest
+  void pageContextShouldReturnTheCorrectInstance(Page page, BrowserContext context) {
     assertEquals(context, page.context());
   }
 
-  @Test
-  void pageFrameShouldRespectName() {
+  @PlaywrightTest
+  void pageFrameShouldRespectName(Page page) {
     page.setContent("<iframe name=target></iframe>");
     assertNull(page.frame("bogus"));
     Frame frame = page.frame("target");
@@ -233,8 +237,8 @@ public class TestPageBasic extends TestBase {
     assertEquals(page.mainFrame().childFrames().get(0), frame);
   }
 
-  @Test
-  void pageFrameShouldRespectUrl() {
+  @PlaywrightTest
+  void pageFrameShouldRespectUrl(Page page, Server server) {
     page.setContent("<iframe src='" + server.EMPTY_PAGE + "'></iframe>");
     assertNull(page.frameByUrl(Pattern.compile("bogus")));
     Frame frame = page.frameByUrl(Pattern.compile(".*empty.*"));
@@ -242,8 +246,8 @@ public class TestPageBasic extends TestBase {
     assertEquals(server.EMPTY_PAGE, frame.url());
   }
 
-  @Test
-  void shouldHaveSaneUserAgent() {
+  @PlaywrightTest
+  void shouldHaveSaneUserAgent(Page page, BrowserName browserName) {
     String userAgent = (String) page.evaluate("() => navigator.userAgent");
     List<String> parts = Arrays.stream(userAgent.split("[()]")).map(part -> part.trim()).collect(Collectors.toList());
     // First part is always 'Mozilla/5.0'
@@ -251,7 +255,7 @@ public class TestPageBasic extends TestBase {
     // Second part in parenthesis is platform - ignore it.
 
     // Third part for Firefox is the last one and encodes engine and browser versions.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       String[] engineAndBrowser = parts.get(2).split(" ");
       assertTrue(engineAndBrowser[0].startsWith("Gecko"));
       assertTrue(engineAndBrowser[1].startsWith("Firefox"));
@@ -263,22 +267,22 @@ public class TestPageBasic extends TestBase {
     // 5th part encodes real browser name and engine version.
     String[] engineAndBrowser = parts.get(4).split(" ");
     assertTrue(engineAndBrowser[1].startsWith("Safari"));
-    if (isChromium()) {
+    if (browserName == CHROMIUM) {
       assertTrue(engineAndBrowser[0].contains("Chrome/"));
     } else {
       assertTrue(engineAndBrowser[0].startsWith("Version/"));
     }
   }
 
-  @Test
-  void pagePressShouldWork() {
+  @PlaywrightTest
+  void pagePressShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.press("textarea", "a");
     assertEquals("a", page.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  void pagePressShouldWorkForEnter() {
+  @PlaywrightTest
+  void pagePressShouldWorkForEnter(Page page) {
     page.setContent("<input onkeypress='console.log(\"press\")'></input>");
     List<ConsoleMessage> messages = new ArrayList<>();
     page.onConsoleMessage(message ->  messages.add(message));
@@ -286,17 +290,17 @@ public class TestPageBasic extends TestBase {
     assertEquals("press", messages.get(0).text());
   }
 
-  @Test
-  void framePressShouldWork() {
+  @PlaywrightTest
+  void framePressShouldWork(Page page, Server server) {
     page.setContent("<iframe name=inner src='" + server.PREFIX + "/input/textarea.html'></iframe>");
     Frame frame = page.frame("inner");
     frame.press("textarea", "a");
     assertEquals("a", frame.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fail")
-  void frameFocusShouldWorkMultipleTimes() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "fail")
+  void frameFocusShouldWorkMultipleTimes(BrowserContext context) {
     Page page1 = context.newPage();
     Page page2 = context.newPage();
     for (Page page : asList(page1, page2)) {
@@ -306,15 +310,15 @@ public class TestPageBasic extends TestBase {
     }
   }
 
-  @Test
-  void frameDragAndDropShouldWork() {
+  @PlaywrightTest
+  void frameDragAndDropShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.dragAndDrop("#source", "#target");
     assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
 
-  @Test
-  void shouldWaitForCondition() {
+  @PlaywrightTest
+  void shouldWaitForCondition(Page page) {
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(m -> messages.add(m.text()));
     page.evaluate("setTimeout(() => {\n" +
@@ -325,14 +329,14 @@ public class TestPageBasic extends TestBase {
     assertEquals(asList("foo", "bar"), messages);
   }
 
-  @Test
-  void waitForConditionTimeout() {
+  @PlaywrightTest
+  void waitForConditionTimeout(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> page.waitForCondition(() -> false, new Page.WaitForConditionOptions().setTimeout(100)));
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
-  @Test
-  void waitForConditionPageClosed() {
+  @PlaywrightTest
+  void waitForConditionPageClosed(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> page.waitForCondition(() -> {
         page.close();
@@ -341,8 +345,8 @@ public class TestPageBasic extends TestBase {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldPropagateCloseReasonToPendingActions() {
+  @PlaywrightTest
+  void shouldPropagateCloseReasonToPendingActions(BrowserContext context) {
     Page page = context.newPage();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForPopup(() -> {
       page.close(new Page.CloseOptions().setReason("The reason."));
@@ -350,8 +354,8 @@ public class TestPageBasic extends TestBase {
     assertTrue(e.getMessage().contains("The reason."), e.getMessage());
   }
 
-  @Test
-  void shouldProhibitNullListeners() {
+  @PlaywrightTest
+  void shouldProhibitNullListeners(BrowserContext context) {
     Page newPage = context.newPage();
 
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> newPage.onClose(null));
@@ -359,8 +363,8 @@ public class TestPageBasic extends TestBase {
     assertTrue(e.getMessage().contains("Can't add a null listener"));
   }
 
-  @Test
-  void pagePauseShouldNotThrow() {
+  @PlaywrightTest
+  void pagePauseShouldNotThrow(Page page) {
     page.pause();
   }
 

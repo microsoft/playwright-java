@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,78 +25,78 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestQuerySelector extends TestBase {
+public class TestQuerySelector {
 
-  @Test
-  void shouldThrowForNonStringSelector() {
+  @PlaywrightTest
+  void shouldThrowForNonStringSelector(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.querySelector(null));
     assertTrue(e.getMessage().contains("selector: expected string, got undefined"));
   }
 
-  @Test
-  void shouldQueryExistingElementWithCssSelector() {
+  @PlaywrightTest
+  void shouldQueryExistingElementWithCssSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("css=section");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldQueryExistingElementWithTextSelector() {
+  @PlaywrightTest
+  void shouldQueryExistingElementWithTextSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("text='test'");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldQueryExistingElementWithXpathSelector() {
+  @PlaywrightTest
+  void shouldQueryExistingElementWithXpathSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("xpath=/html/body/section");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldReturnNullForNonExistingElement() {
+  @PlaywrightTest
+  void shouldReturnNullForNonExistingElement(Page page) {
     ElementHandle element = page.querySelector("non-existing-element");
     assertNull(element);
   }
 
-  @Test
-  void shouldAutoDetectXpathSelector() {
+  @PlaywrightTest
+  void shouldAutoDetectXpathSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("//html/body/section");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldAutoDetectXpathSelectorWithStartingParenthesis() {
+  @PlaywrightTest
+  void shouldAutoDetectXpathSelectorWithStartingParenthesis(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("(//section)[1]");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldAutoDetectTextSelector() {
+  @PlaywrightTest
+  void shouldAutoDetectTextSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("'test'");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldAutoDetectCssSelector() {
+  @PlaywrightTest
+  void shouldAutoDetectCssSelector(Page page) {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("section");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldSupportSyntax() {
+  @PlaywrightTest
+  void shouldSupportSyntax(Page page) {
     page.setContent("<section><div>test</div></section>");
     ElementHandle element = page.querySelector("css=section >> css=div");
     assertNotNull(element);
   }
 
-  @Test
-  void shouldQueryExistingElements() {
+  @PlaywrightTest
+  void shouldQueryExistingElements(Page page) {
     page.setContent("<div>A</div><br/><div>B</div>");
     List<ElementHandle> elements = page.querySelectorAll("div");
     assertEquals(2, elements.size());
@@ -107,36 +107,36 @@ public class TestQuerySelector extends TestBase {
     assertEquals(Arrays.asList("A", "B"), results);
   }
 
-  @Test
-  void shouldReturnEmptyArrayIfNothingIsFound() {
+  @PlaywrightTest
+  void shouldReturnEmptyArrayIfNothingIsFound(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     List<ElementHandle> elements = page.querySelectorAll("div");
     assertEquals(0, elements.size());
   }
 
-  @Test
-  void xpathShouldQueryExistingElement() {
+  @PlaywrightTest
+  void xpathShouldQueryExistingElement(Page page) {
     page.setContent("<section>test</section>");
     List<ElementHandle> elements = page.querySelectorAll("xpath=/html/body/section");
     assertNotNull(elements.get(0));
     assertEquals(1, elements.size());
   }
 
-  @Test
-  void xpathShouldReturnEmptyArrayForNonExistingElement() {
+  @PlaywrightTest
+  void xpathShouldReturnEmptyArrayForNonExistingElement(Page page) {
     List<ElementHandle> elements = page.querySelectorAll("//html/body/non-existing-element");
     assertEquals(Collections.emptyList(), elements);
   }
 
-  @Test
-  void xpathShouldReturnMultipleElements() {
+  @PlaywrightTest
+  void xpathShouldReturnMultipleElements(Page page) {
     page.setContent("<div></div><div></div>");
     List<ElementHandle> elements = page.querySelectorAll("xpath=/html/body/div");
     assertEquals(2, elements.size());
   }
 
-  @Test
-  void querySelectorAllShouldWorkWithBogusArrayFrom() throws InterruptedException {
+  @PlaywrightTest
+  void querySelectorAllShouldWorkWithBogusArrayFrom(Page page) throws InterruptedException {
     page.setContent("<div>hello</div><div></div>");
     JSHandle div1 = page.evaluateHandle("() => {\n" +
       "  Array.from = () => [];\n" +

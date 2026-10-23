@@ -1,19 +1,15 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestRequestGC {
 
-  @Test
+  @PlaywrightTest
   void shouldWork(Page page) {
       page.evaluate("() => {\n" +
         "    globalThis.objectToDestroy = { hello: 'world' };\n" +

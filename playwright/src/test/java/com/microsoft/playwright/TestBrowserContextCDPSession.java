@@ -19,20 +19,21 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIf(value = "com.microsoft.playwright.TestBase#isChromium", disabledReason = "Chrome Devtools Protocol supported by chromium only")
-public class TestBrowserContextCDPSession extends TestBase {
+@EnabledOnBrowser(value = CHROMIUM, reason = "Chrome Devtools Protocol supported by chromium only")
+public class TestBrowserContextCDPSession {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Runtime.enable");
 
@@ -44,8 +45,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertEquals("bar", foo);
   }
 
-  @Test
-  void shouldSendEvents() {
+  @PlaywrightTest
+  void shouldSendEvents(Page page, Server server) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");
 
@@ -61,8 +62,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertEquals(1, events.size());
   }
 
-  @Test
-  void shouldDetachSession() {
+  @PlaywrightTest
+  void shouldDetachSession(Page page) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Runtime.enable");
 
@@ -81,8 +82,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertTrue(exception.getMessage().contains("Target page, context or browser has been closed"));
   }
 
-  @Test
-  void shouldThrowNiceErrors() {
+  @PlaywrightTest
+  void shouldThrowNiceErrors(Page page) {
     CDPSession cdpSession = page.context().newCDPSession(page);
 
     PlaywrightException exception = assertThrows(PlaywrightException.class, () -> {
@@ -91,8 +92,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertTrue(exception.getMessage().contains("'ThisCommand.DoesNotExist' wasn't found"));
   }
 
-  @Test
-  void shouldWorkWithMainFrame() {
+  @PlaywrightTest
+  void shouldWorkWithMainFrame(Page page) {
     CDPSession cdpSession = page.context().newCDPSession(page.mainFrame());
     JsonObject params = new JsonObject();
     params.addProperty("expression", "window.foo = 'bar'");
@@ -102,8 +103,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertEquals("bar", foo);
   }
 
-  @Test
-  void shouldThrowIfTargetIsPartOfMain() {
+  @PlaywrightTest
+  void shouldThrowIfTargetIsPartOfMain(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertEquals(server.PREFIX + "/frames/one-frame.html", page.frames().get(0).url());
     assertEquals(server.PREFIX + "/frames/frame.html", page.frames().get(1).url());
@@ -114,8 +115,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertTrue(exception.getMessage().contains("This frame does not have a separate CDP session, it is a part of the parent frame's session"));
   }
 
-  @Test
-  void shouldNotBreakPageClose() {
+  @PlaywrightTest
+  void shouldNotBreakPageClose(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     CDPSession session = page.context().newCDPSession(page);
@@ -124,8 +125,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldDetachWhenPageCloses() {
+  @PlaywrightTest
+  void shouldDetachWhenPageCloses(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     CDPSession session = page.context().newCDPSession(page);
@@ -137,8 +138,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldAddMultipleEventListeners() {
+  @PlaywrightTest
+  void shouldAddMultipleEventListeners(Page page, Server server) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");
 
@@ -156,8 +157,8 @@ public class TestBrowserContextCDPSession extends TestBase {
     assertEquals(2, events.size());
   }
 
-  @Test
-  void shouldEmitEventForEachCDPEvent() {
+  @PlaywrightTest
+  void shouldEmitEventForEachCDPEvent(Page page, Server server) {
     CDPSession client = page.context().newCDPSession(page);
     client.send("Network.enable");
     List<JsonObject> events = new ArrayList<>();
@@ -176,8 +177,8 @@ public class TestBrowserContextCDPSession extends TestBase {
       requestEvent.getAsJsonObject("params").getAsJsonObject("request").get("url").getAsString());
   }
 
-  @Test
-  void shouldRemoveEventListeners() {
+  @PlaywrightTest
+  void shouldRemoveEventListeners(Page page, Server server) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");
 

@@ -16,76 +16,77 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.SelectOption;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class TestPageSelectOption extends TestBase {
-  @Test
-  void shouldSelectSingleOption() {
+public class TestPageSelectOption {
+  @PlaywrightTest
+  void shouldSelectSingleOption(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", "blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectSingleOptionByValue() {
+  @PlaywrightTest
+  void shouldSelectSingleOptionByValue(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setValue("blue"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldFallBackToSelectingByLabel() {
+  @PlaywrightTest
+  void shouldFallBackToSelectingByLabel(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", "Blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectSingleOptionByLabel() {
+  @PlaywrightTest
+  void shouldSelectSingleOptionByLabel(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setLabel("Indigo"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectSingleOptionByHandle() {
+  @PlaywrightTest
+  void shouldSelectSingleOptionByHandle(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", page.querySelector("[id=whiteOption]"));
     assertEquals(asList("white"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("white"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectSingleOptionByIndex() {
+  @PlaywrightTest
+  void shouldSelectSingleOptionByIndex(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setIndex(2));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectSingleOptionByMultipleAttributes() {
+  @PlaywrightTest
+  void shouldSelectSingleOptionByMultipleAttributes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setValue("green").setLabel("Green"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldNotSelectSingleOptionWhenSomeAttributesDoNotMatch() {
+  @PlaywrightTest
+  void shouldNotSelectSingleOptionWhenSomeAttributesDoNotMatch(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evalOnSelector("select", "s => s.value = undefined");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -96,24 +97,24 @@ public class TestPageSelectOption extends TestBase {
     assertEquals("", page.evaluate("() => document.querySelector('select').value"));
   }
 
-  @Test
-  void shouldSelectOnlyFirstOption() {
+  @PlaywrightTest
+  void shouldSelectOnlyFirstOption(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new String[]{"blue", "green", "red"});
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldNotThrowWhenSelectCausesNavigation() {
+  @PlaywrightTest
+  void shouldNotThrowWhenSelectCausesNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evalOnSelector("select", "select => select.addEventListener('input', () => window.location.href = '/empty.html')");
     page.waitForNavigation(() -> page.selectOption("select", "blue"));
     assertTrue(page.url().contains("empty.html"));
   }
 
-  @Test
-  void shouldSelectMultipleOptions() {
+  @PlaywrightTest
+  void shouldSelectMultipleOptions(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new String[]{"blue", "green", "red"});
@@ -121,8 +122,8 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(asList("blue", "green", "red"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldSelectMultipleOptionsWithAttributes() {
+  @PlaywrightTest
+  void shouldSelectMultipleOptionsWithAttributes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new SelectOption[] {
@@ -134,30 +135,30 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(asList("blue", "gray", "green"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldRespectEventBubbling() {
+  @PlaywrightTest
+  void shouldRespectEventBubbling(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", "blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onBubblingInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onBubblingChange"));
   }
 
-  @Test
-  void shouldThrowWhenElementIsNotASelect() {
+  @PlaywrightTest
+  void shouldThrowWhenElementIsNotASelect(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.selectOption("body", ""));
     assertTrue(e.getMessage().contains("Element is not a <select> element"), e.getMessage());
   }
 
-  @Test
-  void shouldReturnOnNoMatchedValues() {
+  @PlaywrightTest
+  void shouldReturnOnNoMatchedValues(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     List<String> result = page.selectOption("select", new String[]{});
     assertEquals(emptyList(), result);
   }
 
-  @Test
-  void shouldReturnAnArrayOfMatchedValues() {
+  @PlaywrightTest
+  void shouldReturnAnArrayOfMatchedValues(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     List<String> result = page.selectOption("select", new String[]{"blue", "black", "magenta"});
@@ -167,22 +168,22 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(expected, result);
   }
 
-  @Test
-  void shouldReturnAnArrayOfOneElementWhenMultipleIsNotSet() {
+  @PlaywrightTest
+  void shouldReturnAnArrayOfOneElementWhenMultipleIsNotSet(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     List<String> result = page.selectOption("select", new String[]{"42", "blue", "black", "magenta"});
     assertEquals(1, result.size());
   }
 
-  @Test
-  void shouldReturnOnNoValues() {
+  @PlaywrightTest
+  void shouldReturnOnNoValues(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     Object result = page.selectOption("select", new String[0]);
     assertEquals(emptyList(), result);
   }
 
 //  @Test
-  void shouldNotAllowNullItems() {
+  void shouldNotAllowNullItems(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -191,8 +192,8 @@ public class TestPageSelectOption extends TestBase {
     assertTrue(e.getMessage().contains("options.get(1): expected object, got null"));
   }
 
-  @Test
-  void shouldUnselectWithNull() {
+  @PlaywrightTest
+  void shouldUnselectWithNull(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     List<String> result = page.selectOption("select", new String[]{"blue", "black", "magenta"});
@@ -208,8 +209,8 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
   }
 
-  @Test
-  void shouldDeselectAllOptionsWhenPassedNoValuesForAMultipleSelect() {
+  @PlaywrightTest
+  void shouldDeselectAllOptionsWhenPassedNoValuesForAMultipleSelect(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new String[]{"blue", "black", "magenta"});
@@ -217,8 +218,8 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
   }
 
-  @Test
-  void shouldDeselectAllOptionsWhenPassedNoValuesForASelectWithoutMultiple() {
+  @PlaywrightTest
+  void shouldDeselectAllOptionsWhenPassedNoValuesForASelectWithoutMultiple(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new String[]{"blue", "black", "magenta"});
     page.selectOption("select", new String[0]);
@@ -230,8 +231,8 @@ public class TestPageSelectOption extends TestBase {
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/3327
-  @Test
-  void shouldWorkWhenReDefiningTopLevelEventClass() {
+  @PlaywrightTest
+  void shouldWorkWhenReDefiningTopLevelEventClass(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window.Event = null");
     page.selectOption("select", "blue");
@@ -239,8 +240,8 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
-  @Test
-  void shouldWaitForOptionToBeEnabled() {
+  @PlaywrightTest
+  void shouldWaitForOptionToBeEnabled(Page page) {
     page.setContent(
       "<select disabled>\n" +
       "  <option>one</option>\n" +
@@ -264,8 +265,8 @@ public class TestPageSelectOption extends TestBase {
     assertThat(page.locator("select")).hasValue("two");
   }
 
-  @Test
-  void shouldWaitForSelectToBeSwapped() {
+  @PlaywrightTest
+  void shouldWaitForSelectToBeSwapped(Page page) {
     page.setContent(
       "<select disabled>\n" +
       "  <option>one</option>\n" +

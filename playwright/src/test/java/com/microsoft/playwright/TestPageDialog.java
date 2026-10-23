@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TestPageDialog extends TestBase {
-  @Test
-  void shouldFire() {
+public class TestPageDialog {
+  @PlaywrightTest
+  void shouldFire(Page page) {
     page.onDialog(dialog -> {
       assertEquals("alert", dialog.type());
       assertEquals("", dialog.defaultValue());
@@ -36,8 +36,8 @@ public class TestPageDialog extends TestBase {
     page.evaluate("alert('yo')");
   }
 
-  @Test
-  void shouldAllowAcceptingPrompts() {
+  @PlaywrightTest
+  void shouldAllowAcceptingPrompts(Page page) {
     page.onDialog(dialog -> {
       assertEquals("prompt", dialog.type());
       assertEquals("yes.", dialog.defaultValue());
@@ -48,8 +48,8 @@ public class TestPageDialog extends TestBase {
     assertEquals("answer!", result);
   }
 
-  @Test
-  void shouldDismissThePrompt() {
+  @PlaywrightTest
+  void shouldDismissThePrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.dismiss();
     });
@@ -57,8 +57,8 @@ public class TestPageDialog extends TestBase {
     assertNull(result);
   }
 
-  @Test
-  void shouldAcceptTheConfirmPrompt() {
+  @PlaywrightTest
+  void shouldAcceptTheConfirmPrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.accept();
     });
@@ -66,8 +66,8 @@ public class TestPageDialog extends TestBase {
     assertEquals(true, result);
   }
 
-  @Test
-  void shouldDismissTheConfirmPrompt() {
+  @PlaywrightTest
+  void shouldDismissTheConfirmPrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.dismiss();
     });
@@ -75,8 +75,8 @@ public class TestPageDialog extends TestBase {
     assertEquals(false, result);
   }
 
-  @Test
-  void shouldBeAbleToCloseContextWithOpenAlert() {
+  @PlaywrightTest
+  void shouldBeAbleToCloseContextWithOpenAlert(BrowserContext context) {
     Page page = context.newPage();
     boolean[] didShowDialog = {false};
     page.onDialog(dialog -> didShowDialog[0] = true);
@@ -86,8 +86,8 @@ public class TestPageDialog extends TestBase {
     }
   }
 
-  @Test
-  void shouldHandleMultipleAlerts() {
+  @PlaywrightTest
+  void shouldHandleMultipleAlerts(Page page) {
     page.onDialog(dialog -> {
       dialog.accept();
     });
@@ -100,8 +100,8 @@ public class TestPageDialog extends TestBase {
     assertEquals("Hello World", page.textContent("p"));
   }
 
-  @Test
-  void shouldHandleMultipleConfirms() {
+  @PlaywrightTest
+  void shouldHandleMultipleConfirms(Page page) {
     page.onDialog(dialog -> {
       dialog.accept();
     });
@@ -114,21 +114,21 @@ public class TestPageDialog extends TestBase {
     assertEquals("Hello World", page.textContent("p"));
   }
 
-  @Test
-  void shouldAutoDismissThePromptWithoutListeners() {
+  @PlaywrightTest
+  void shouldAutoDismissThePromptWithoutListeners(Page page) {
     Object result = page.evaluate("() => prompt('question?')");
     assertNull(result);
   }
 
-  @Test
-  void shouldAutoDismissTheAlertWithoutListeners() {
+  @PlaywrightTest
+  void shouldAutoDismissTheAlertWithoutListeners(Page page) {
     page.setContent("<div onclick='window.alert(123); window._clicked=true'>Click me</div>");
     page.click("div");
     assertEquals(true, page.evaluate("window._clicked"));
   }
 
-  @Test
-  void shouldFireDialogClosedWhenDialogIsAccepted() {
+  @PlaywrightTest
+  void shouldFireDialogClosedWhenDialogIsAccepted(Page page) {
     List<Dialog> closed = new ArrayList<>();
     page.onDialogClosed(closed::add);
     Dialog[] opened = {null};
@@ -145,8 +145,8 @@ public class TestPageDialog extends TestBase {
     assertEquals(1, closed.size());
   }
 
-  @Test
-  void shouldFireDialogClosedWhenDialogIsDismissed() {
+  @PlaywrightTest
+  void shouldFireDialogClosedWhenDialogIsDismissed(Page page) {
     Dialog[] closed = {null};
     page.onDialogClosed(dialog -> closed[0] = dialog);
     page.onDialog(Dialog::dismiss);
@@ -156,8 +156,8 @@ public class TestPageDialog extends TestBase {
     assertEquals("boolean?", closed[0].message());
   }
 
-  @Test
-  void shouldFireDialogClosedForAutoDismissedDialogs() {
+  @PlaywrightTest
+  void shouldFireDialogClosedForAutoDismissedDialogs(Page page) {
     Dialog[] closed = {null};
     page.onDialogClosed(dialog -> closed[0] = dialog);
     page.evaluate("alert('yo')");

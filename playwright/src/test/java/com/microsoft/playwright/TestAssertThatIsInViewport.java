@@ -17,19 +17,15 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Copied from expect-misc.spec.ts > toBeInViewport
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestAssertThatIsInViewport {
-  @Test
+  @PlaywrightTest
   void shouldWork(Page page) {
     page.setContent("<div id=big style=\"height: 10000px;\"></div>\n" +
       "      <div id=small>foo</div>");
@@ -40,7 +36,7 @@ public class TestAssertThatIsInViewport {
     assertThat(page.locator("#small")).isInViewport(new LocatorAssertions.IsInViewportOptions().setRatio(1));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldRespectRatioOption(Page page) {
     page.setContent("<style>body, div, html { padding: 0; margin: 0; }</style>\n" +
       "      <div id=big style=\"height: 400vh;\"></div>");
@@ -58,14 +54,14 @@ public class TestAssertThatIsInViewport {
     assertThat(page.locator("div")).not().isInViewport(new LocatorAssertions.IsInViewportOptions().setRatio(0.8));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldHaveGoodStack(Page page) {
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page.locator("body")).not().isInViewport(new LocatorAssertions.IsInViewportOptions().setTimeout(100)));
     assertNotNull(error);
     assertTrue(error.getMessage().contains("Locator expected not to be in viewport"), error.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldReportIntersectionEvenIfFullyCoveredByOtherElement(Page page) {
     page.setContent("<h1>hello</h1>\n" +
       "      <div style=\"position: relative; height: 10000px; top: -5000px;></div>");

@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageStrict extends TestBase {
-  @Test
-  void shouldFailPageTextContentInStrictMode() {
+public class TestPageStrict {
+  @PlaywrightTest
+  void shouldFailPageTextContentInStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.textContent("span", new Page.TextContentOptions().setStrict(true));
@@ -32,8 +32,8 @@ public class TestPageStrict extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
-  @Test
-  void shouldFailPageGetAttributeInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageGetAttributeInStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.getAttribute("span", "id", new Page.GetAttributeOptions().setStrict(true));
@@ -41,8 +41,8 @@ public class TestPageStrict extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
-  @Test
-  void shouldFailPageFillInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageFillInStrictMode(Page page) {
     page.setContent("<input></input><div><input></input></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.fill("input", "text", new Page.FillOptions().setStrict(true));
@@ -51,8 +51,8 @@ public class TestPageStrict extends TestBase {
   }
 
 
-  @Test
-  void shouldFailPageInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageInStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.querySelector("span", new Page.QuerySelectorOptions().setStrict(true));
@@ -60,8 +60,8 @@ public class TestPageStrict extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
-  @Test
-  void shouldFailPageWaitForSelectorInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageWaitForSelectorInStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForSelector("span", new Page.WaitForSelectorOptions().setStrict(true));
@@ -69,8 +69,8 @@ public class TestPageStrict extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
-  @Test
-  void shouldFailPageDispatchEventInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageDispatchEventInStrictMode(Page page) {
     page.setContent("<span></span><div><span></span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.dispatchEvent("span", "click", new HashMap<>(), new Page.DispatchEventOptions().setStrict(true));

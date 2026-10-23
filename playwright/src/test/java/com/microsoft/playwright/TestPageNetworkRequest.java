@@ -17,8 +17,9 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HttpHeader;
-import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -29,11 +30,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
+import static com.microsoft.playwright.Utils.waitForCondition;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
+import static com.microsoft.playwright.fixtures.Env.isWindows;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageNetworkRequest extends TestBase {
-  @Test
-  void shouldReportRawHeaders() throws InterruptedException {
+public class TestPageNetworkRequest {
+  @PlaywrightTest
+  void shouldReportRawHeaders(Page page, Server server, BrowserName browserName) throws InterruptedException {
     List<HttpHeader> serverHeaders = new ArrayList<>();
     Semaphore responseWritten = new Semaphore(0);
     server.setRoute("/headers", exchange -> {
@@ -64,12 +69,12 @@ public class TestPageNetworkRequest extends TestBase {
     responseWritten.acquire();
 
     List<HttpHeader> expectedHeaders = serverHeaders;
-    if (isWebKit() && isWindows) {
+    if (browserName == WEBKIT && isWindows) {
       expectedHeaders = expectedHeaders.stream()
         .filter(h -> !"accept-encoding".equals(h.name.toLowerCase()) && !"accept-language".equals(h.name.toLowerCase()))
         .collect(Collectors.toList());
     }
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       expectedHeaders = expectedHeaders.stream()
         .filter(h -> !"priority".equals(h.name.toLowerCase()))
         .collect(Collectors.toList());
@@ -93,8 +98,8 @@ public class TestPageNetworkRequest extends TestBase {
     assertEquals(null, request.headerValue("not-there"));
   }
 
-  @Test
-  void shouldReportAllCookiesInOneHeader() {
+  @PlaywrightTest
+  void shouldReportAllCookiesInOneHeader(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => {\n" +
       "    document.cookie = 'myCookie=myValue';\n" +
@@ -105,8 +110,8 @@ public class TestPageNetworkRequest extends TestBase {
     assertEquals("myCookie=myValue; myOtherCookie=myOtherValue", cookie);
   }
 
-  @Test
-  void shouldReportPostDataFor403Request() throws InterruptedException, ExecutionException {
+  @PlaywrightTest
+  void shouldReportPostDataFor403Request(Page page, Server server) throws InterruptedException, ExecutionException {
     server.setRoute("/upload", exchange -> {
       exchange.sendResponseHeaders(403, 0);
       exchange.getResponseBody().close();
@@ -122,8 +127,8 @@ public class TestPageNetworkRequest extends TestBase {
     assertEquals(403, request.response().status());
   }
 
-  @Test
-  void shouldNotAllowToAccessFrameOnPopupMainRequest() {
+  @PlaywrightTest
+  void shouldNotAllowToAccessFrameOnPopupMainRequest(Page page, Server server) {
     page.setContent("<a target=_blank href='" + server.EMPTY_PAGE + "'>click me</a>");
     Request[] request = { null };
     PlaywrightException[] error = { null };
@@ -136,13 +141,13 @@ public class TestPageNetworkRequest extends TestBase {
       }
     });
     page.getByText("click me").click();
-    waitForCondition(() -> request[0] != null);
+    waitForCondition(page, () -> request[0] != null);
     assertTrue(request[0].isNavigationRequest());
     assertTrue(error[0].getMessage().contains("Frame for this navigation request is not available"), error[0].getMessage());
   }
 
-  @Test
-  void shouldParseDataIfContentTypeIsApplicationFormUrlEncoded() {
+  @PlaywrightTest
+  void shouldParseDataIfContentTypeIsApplicationFormUrlEncoded(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/post", exchange -> exchange.close());
     Request[] request = {null};
@@ -153,8 +158,8 @@ public class TestPageNetworkRequest extends TestBase {
     assertEquals("foo=bar&baz=123", request[0].postData());
   }
 
-  @Test
-  void shouldParseDataIfContentTypeIsApplicationFormUrlEncodedCharsetUTF8() {
+  @PlaywrightTest
+  void shouldParseDataIfContentTypeIsApplicationFormUrlEncodedCharsetUTF8(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**/post", () -> {
       page.evaluate("() => fetch('./post', {\n" +

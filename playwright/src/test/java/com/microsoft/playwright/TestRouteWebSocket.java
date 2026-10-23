@@ -1,10 +1,12 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.java_websocket.WebSocket;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
@@ -19,25 +21,10 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestRouteWebSocket {
-  private WebSocketServerImpl webSocketServer;
-
-  @BeforeAll
-  void startWebSockerServer() throws InterruptedException {
-    webSocketServer = WebSocketServerImpl.create();
-  }
-
-  @AfterAll
-  void stopWebSockerServer() throws IOException, InterruptedException {
-    webSocketServer.stop();
-  }
-
-  @AfterEach
-  void resetWebSocketServer() {
-    webSocketServer.reset();
+  @Fixture
+  WebSocketServerImpl webSocketServer() throws InterruptedException {
+    return WebSocketServerImpl.create();
   }
 
   private void setupWS(Page target, Server server, int port, String binaryType) {
@@ -90,96 +77,9 @@ public class TestRouteWebSocket {
     }
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithTextMessage(String mock, Page page, Server server) throws Exception {
-    setupRoute(page, mock);
-    Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, server, webSocketServer.getPort(), "blob");
 
-    page.waitForCondition(() -> {
-      Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
-      return result;
-    });
-    assertEquals(asList("open"), page.evaluate("window.log"));
-
-    org.java_websocket.WebSocket ws = wsPromise.get();
-    ws.send("hello");
-    page.waitForCondition(() -> {
-      Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
-      return result;
-    });
-
-    assertEquals(
-      asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
-      page.evaluate("window.log"));
-
-    assertEquals(1, page.evaluate("window.ws.readyState"));
-
-    Future<String> messagePromise = webSocketServer.waitForMessage();
-    page.evaluate("() => window.ws.send('hi')");
-    assertEquals("hi", messagePromise.get());
-    ws.close(1008, "oops");
-    page.waitForCondition(() -> {
-      Integer result = (Integer) page.evaluate("window.ws.readyState");
-      return result == 3;
-    });
-
-    assertEquals(
-      asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
-          "close code=1008 reason=oops"),
-      page.evaluate("window.log"));
-  }
-
-
-  @ParameterizedTest
-  @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithBinaryTypeBlob(String mock, Page page, Server server) throws Exception {
-    setupRoute(page, mock);
-    Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, server, webSocketServer.getPort(), "blob");
-    org.java_websocket.WebSocket ws = wsPromise.get();
-    ws.send("hi".getBytes(StandardCharsets.UTF_8));
-    page.waitForCondition(() -> {
-      Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
-      return result;
-    });
-
-    assertEquals(
-        asList("open", "message: data=blob:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
-        page.evaluate("window.log"));
-    Future<String> messagePromise = webSocketServer.waitForMessage();
-    page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
-    // Dispatch messages until web socket route is received.
-    page.waitForCondition(() -> messagePromise.isDone());
-    assertEquals("hi", messagePromise.get());
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
-  public void shouldWorkWithBinaryTypeArrayBuffer(String mock, Page page, Server server) throws Exception {
-    setupRoute(page, mock);
-    Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
-    setupWS(page, server, webSocketServer.getPort(), "arraybuffer");
-    org.java_websocket.WebSocket ws = wsPromise.get();
-    ws.send("hi".getBytes(StandardCharsets.UTF_8));
-    page.waitForCondition(() -> {
-      Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
-      return result;
-    });
-
-    assertEquals(
-      asList("open", "message: data=arraybuffer:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
-      page.evaluate("window.log"));
-    Future<String> messagePromise = webSocketServer.waitForMessage();
-    page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
-    // Dispatch messages until web socket route is received.
-    page.waitForCondition(() -> messagePromise.isDone());
-    assertEquals("hi", messagePromise.get());
-  }
-
-  @Test
-  public void shouldWorkWithServer(Page page, Server server) throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  public void shouldWorkWithServer(Page page, Server server, WebSocketServerImpl webSocketServer) throws ExecutionException, InterruptedException {
     WebSocketRoute[] wsRoute = new WebSocketRoute[]{null};
     page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
       WebSocketRoute serverRoute = ws.connectToServer();
@@ -276,8 +176,8 @@ public class TestRouteWebSocket {
       webSocketServer.logCopy());
   }
 
-  @Test
-  public void shouldWorkWithoutServer(Page page, Server server) {
+  @PlaywrightTest
+  public void shouldWorkWithoutServer(Page page, Server server, WebSocketServerImpl webSocketServer) {
     WebSocketRoute[] wsRoute = new WebSocketRoute[]{ null };
     page.routeWebSocket(Pattern.compile("/.*/"), ws -> {
       ws.onMessage(frame -> {
@@ -320,8 +220,8 @@ public class TestRouteWebSocket {
       page.evaluate("window.log"));
   }
 
-  @Test
-  public void shouldWorkWithBaseURL(Browser browser, Server server) throws Exception {
+  @PlaywrightTest
+  public void shouldWorkWithBaseURL(Browser browser, Server server, WebSocketServerImpl webSocketServer) throws Exception {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBaseURL("http://localhost:" + webSocketServer.getPort()));
     Page newPage = context.newPage();
 
@@ -352,8 +252,8 @@ public class TestRouteWebSocket {
       newPage.evaluate("window.log"));
   }
 
-  @Test
-  public void shouldWorkWithNoTrailingSlash(Page page) throws Exception {
+  @PlaywrightTest
+  public void shouldWorkWithNoTrailingSlash(Page page, WebSocketServerImpl webSocketServer) throws Exception {
     List<String> log = new ArrayList<>();
 
     // No trailing slash in the route pattern
@@ -392,8 +292,8 @@ public class TestRouteWebSocket {
     assertEquals(asList("response"), page.evaluate("window.log"));
   }
 
-  @Test
-  public void shouldExposeProtocolsToTheRouteHandler(Page page, Server server) {
+  @PlaywrightTest
+  public void shouldExposeProtocolsToTheRouteHandler(Page page, Server server, WebSocketServerImpl webSocketServer) {
     List<com.microsoft.playwright.WebSocketRoute> routes = new ArrayList<>();
     page.routeWebSocket(Pattern.compile(".*"), ws -> routes.add(ws));
 
@@ -415,5 +315,97 @@ public class TestRouteWebSocket {
     assertEquals(asList(), byUrl.get("/ws-none").protocols());
     assertEquals(asList("chat.v1"), byUrl.get("/ws-string").protocols());
     assertEquals(asList("chat.v2", "chat.v1"), byUrl.get("/ws-array").protocols());
+  }
+
+  @Nested
+  @ParameterizedClass
+  @ValueSource(strings = {"no-mock", "no-match", "pass-through"})
+  class WithMock {
+    @Parameter
+    String mock;
+
+    @PlaywrightTest
+    public void shouldWorkWithTextMessage(Page page, Server server, WebSocketServerImpl webSocketServer) throws Exception {
+      setupRoute(page, mock);
+      Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
+      setupWS(page, server, webSocketServer.getPort(), "blob");
+
+      page.waitForCondition(() -> {
+        Boolean result = (Boolean) page.evaluate("() => window.log.length >= 1");
+        return result;
+      });
+      assertEquals(asList("open"), page.evaluate("window.log"));
+
+      org.java_websocket.WebSocket ws = wsPromise.get();
+      ws.send("hello");
+      page.waitForCondition(() -> {
+        Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
+        return result;
+      });
+
+      assertEquals(
+        asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+        page.evaluate("window.log"));
+
+      assertEquals(1, page.evaluate("window.ws.readyState"));
+
+      Future<String> messagePromise = webSocketServer.waitForMessage();
+      page.evaluate("() => window.ws.send('hi')");
+      assertEquals("hi", messagePromise.get());
+      ws.close(1008, "oops");
+      page.waitForCondition(() -> {
+        Integer result = (Integer) page.evaluate("window.ws.readyState");
+        return result == 3;
+      });
+
+      assertEquals(
+        asList("open", "message: data=hello origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId=",
+            "close code=1008 reason=oops"),
+        page.evaluate("window.log"));
+    }
+
+    @PlaywrightTest
+    public void shouldWorkWithBinaryTypeBlob(Page page, Server server, WebSocketServerImpl webSocketServer) throws Exception {
+      setupRoute(page, mock);
+      Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
+      setupWS(page, server, webSocketServer.getPort(), "blob");
+      org.java_websocket.WebSocket ws = wsPromise.get();
+      ws.send("hi".getBytes(StandardCharsets.UTF_8));
+      page.waitForCondition(() -> {
+        Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
+        return result;
+      });
+
+      assertEquals(
+          asList("open", "message: data=blob:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+          page.evaluate("window.log"));
+      Future<String> messagePromise = webSocketServer.waitForMessage();
+      page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
+      // Dispatch messages until web socket route is received.
+      page.waitForCondition(() -> messagePromise.isDone());
+      assertEquals("hi", messagePromise.get());
+    }
+
+    @PlaywrightTest
+    public void shouldWorkWithBinaryTypeArrayBuffer(Page page, Server server, WebSocketServerImpl webSocketServer) throws Exception {
+      setupRoute(page, mock);
+      Future<WebSocket> wsPromise = webSocketServer.waitForWebSocket();
+      setupWS(page, server, webSocketServer.getPort(), "arraybuffer");
+      org.java_websocket.WebSocket ws = wsPromise.get();
+      ws.send("hi".getBytes(StandardCharsets.UTF_8));
+      page.waitForCondition(() -> {
+        Boolean result = (Boolean) page.evaluate("() => window.log.length >= 2");
+        return result;
+      });
+
+      assertEquals(
+        asList("open", "message: data=arraybuffer:hi origin=ws://localhost:" + webSocketServer.getPort() + " lastEventId="),
+        page.evaluate("window.log"));
+      Future<String> messagePromise = webSocketServer.waitForMessage();
+      page.evaluate("() => window.ws.send(new Blob([new Uint8Array(['h'.charCodeAt(0), 'i'.charCodeAt(0)])]))");
+      // Dispatch messages until web socket route is received.
+      page.waitForCondition(() -> messagePromise.isDone());
+      assertEquals("hi", messagePromise.get());
+    }
   }
 }

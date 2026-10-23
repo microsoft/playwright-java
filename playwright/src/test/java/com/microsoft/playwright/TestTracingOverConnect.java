@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
@@ -29,44 +29,33 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.TestBrowserTypeConnect.launchBrowserServer;
 import static com.microsoft.playwright.Utils.mapOf;
 import static com.microsoft.playwright.Utils.parseZip;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestTracingOverConnect extends TestBase {
+public class TestTracingOverConnect {
   private static final String SRC_DIRS = System.getenv("PLAYWRIGHT_JAVA_SRC") == null ? "src/test/java" : System.getenv("PLAYWRIGHT_JAVA_SRC");
 
-  private TestBrowserTypeConnect.BrowserServer browserServer;
-
-  @Override
-  Playwright.CreateOptions playwrightOptions() {
+  @Fixture(scope = Scope.WORKER)
+  static Playwright.CreateOptions createOptions() {
     // Set the source root here rather than relying on the environment so that the test runs in the
     // regular test job too, not only in the one that passes PLAYWRIGHT_JAVA_SRC.
     return new Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_JAVA_SRC", SRC_DIRS));
   }
 
-  @Override
-  @BeforeAll
-  void launchBrowser() {
-    initBrowserType();
-    browserServer = launchBrowserServer(browserType);
-    browser = browserType.connect(browserServer.wsEndpoint);
+  @Fixture(scope = Scope.WORKER)
+  static BrowserServer browserServer(BrowserType browserType) {
+    return BrowserServer.launch(browserType);
   }
 
-  @Override
-  @AfterAll
-  void closeBrowser() {
-    super.closeBrowser();
-    if (browserServer != null) {
-      browserServer.process.destroyForcibly();
-      browserServer = null;
-    }
+  @Fixture(scope = Scope.WORKER)
+  static Browser browser(BrowserType browserType, BrowserServer browserServer) {
+    return browserType.connect(browserServer.wsEndpoint);
   }
 
-  @Test
-  void shouldRecordSourcesForBrowserFromConnect(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldRecordSourcesForBrowserFromConnect(Page page, BrowserContext context, Server server, @TempDir Path tmpDir) throws IOException {
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");

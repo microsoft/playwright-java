@@ -16,13 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import org.junit.jupiter.api.condition.OS;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static com.microsoft.playwright.options.ElementState.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleWaitForElementState extends TestBase {
+public class TestElementHandleWaitForElementState {
 
   static void giveItAChanceToResolve(Page page) {
     for (int i = 0; i < 5; i++) {
@@ -30,8 +32,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     }
   }
 
-  @Test
-  void shouldWaitForVisible() {
+  @PlaywrightTest
+  void shouldWaitForVisible(Page page) {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
     giveItAChanceToResolve(page);
@@ -39,15 +41,15 @@ public class TestElementHandleWaitForElementState extends TestBase {
     div.waitForElementState(VISIBLE);
   }
 
-  @Test
-  void shouldWaitForAlreadyVisible() {
+  @PlaywrightTest
+  void shouldWaitForAlreadyVisible(Page page) {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
     div.waitForElementState(VISIBLE);
   }
 
-  @Test
-  void shouldTimeoutWaitingForVisible() {
+  @PlaywrightTest
+  void shouldTimeoutWaitingForVisible(Page page) {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -56,8 +58,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
   }
 
-  @Test
-  void shouldThrowWaitingForVisibleWhenDetached() {
+  @PlaywrightTest
+  void shouldThrowWaitingForVisibleWhenDetached(Page page) {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
     div.evaluate("div => div.remove()");
@@ -65,8 +67,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
-  @Test
-  void shouldWaitForHidden() {
+  @PlaywrightTest
+  void shouldWaitForHidden(Page page) {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
     giveItAChanceToResolve(page);
@@ -74,15 +76,15 @@ public class TestElementHandleWaitForElementState extends TestBase {
     div.waitForElementState(HIDDEN);
   }
 
-  @Test
-  void shouldWaitForAlreadyHidden() {
+  @PlaywrightTest
+  void shouldWaitForAlreadyHidden(Page page) {
     page.setContent("<div></div>");
     ElementHandle div = page.querySelector("div");
     div.waitForElementState(HIDDEN);
   }
 
-  @Test
-  void shouldWaitForHiddenWhenDetached() {
+  @PlaywrightTest
+  void shouldWaitForHiddenWhenDetached(Page page) {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
     giveItAChanceToResolve(page);
@@ -90,8 +92,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     div.waitForElementState(HIDDEN);
   }
 
-  @Test
-  void shouldWaitForEnabledButton() {
+  @PlaywrightTest
+  void shouldWaitForEnabledButton(Page page) {
     page.setContent("<button disabled><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
     giveItAChanceToResolve(page);
@@ -99,8 +101,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     span.waitForElementState(ENABLED);
   }
 
-  @Test
-  void shouldThrowWaitingForEnabledWhenDetached() {
+  @PlaywrightTest
+  void shouldThrowWaitingForEnabledWhenDetached(Page page) {
     page.setContent("<button disabled>Target</button>");
     ElementHandle button = page.querySelector("button");
     button.evaluate("button => button.remove()");
@@ -108,8 +110,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
-  @Test
-  void shouldWaitForDisabledButton() {
+  @PlaywrightTest
+  void shouldWaitForDisabledButton(Page page) {
     page.setContent("<button><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
     giveItAChanceToResolve(page);
@@ -117,12 +119,9 @@ public class TestElementHandleWaitForElementState extends TestBase {
     span.waitForElementState(DISABLED);
   }
 
-  static boolean isFirefoxLinux() {
-    return isFirefox() && Utils.getOS() == Utils.OS.LINUX;
-  }
-  @Test
-  @DisabledIf(value="isFirefoxLinux", disabledReason="fixme")
-  void shouldWaitForStablePosition() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, os = OS.LINUX, reason = "fixme")
+  void shouldWaitForStablePosition(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evalOnSelector("button", "button => {\n" +

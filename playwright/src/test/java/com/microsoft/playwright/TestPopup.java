@@ -16,7 +16,8 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Assumptions;
 
 import java.util.ArrayList;
@@ -25,14 +26,15 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPopup extends TestBase {
+public class TestPopup {
 
-  @Test
-  void shouldInheritUserAgentFromBrowserContext() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldInheritUserAgentFromBrowserContext(Browser browser, Server server) throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setUserAgent("hey"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -47,8 +49,8 @@ public class TestPopup extends TestBase {
     assertEquals(Arrays.asList("hey"), request.headers.get("user-agent"));
   }
 
-  @Test
-  void shouldRespectRoutesFromBrowserContext() {
+  @PlaywrightTest
+  void shouldRespectRoutesFromBrowserContext(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -64,8 +66,8 @@ public class TestPopup extends TestBase {
     assertTrue(intercepted[0]);
   }
 
-  @Test
-  void shouldInheritExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldInheritExtraHeadersFromBrowserContext(Browser browser, Server server) throws ExecutionException, InterruptedException {
     @SuppressWarnings("unchecked")
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setExtraHTTPHeaders(mapOf("foo", "bar")));
@@ -78,8 +80,8 @@ public class TestPopup extends TestBase {
     assertEquals(Arrays.asList("bar"), request.headers.get("foo"));
   }
 
-  @Test
-  void shouldInheritOfflineFromBrowserContext() {
+  @PlaywrightTest
+  void shouldInheritOfflineFromBrowserContext(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -92,8 +94,8 @@ public class TestPopup extends TestBase {
     assertFalse(online);
   }
 
-  @Test
-  void shouldInheritHttpCredentialsFromBrowserContext() {
+  @PlaywrightTest
+  void shouldInheritHttpCredentialsFromBrowserContext(Browser browser, Server server) {
     server.setAuth("/title.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials("user", "pass"));
@@ -106,10 +108,10 @@ public class TestPopup extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldInheritTouchSupportFromBrowserContext() {
+  @PlaywrightTest
+  void shouldInheritTouchSupportFromBrowserContext(Browser browser, Server server, BrowserName browserName) {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=2014330
-    Assumptions.assumeFalse(isFirefox() && Integer.parseInt(browser.version().split("\\.")[0]) >= 148);
+    Assumptions.assumeFalse(browserName == FIREFOX && Integer.parseInt(browser.version().split("\\.")[0]) >= 148);
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 500)
       .setHasTouch(true));
@@ -123,8 +125,8 @@ public class TestPopup extends TestBase {
     assertEquals(true, hasTouch);
   }
 
-  @Test
-  void shouldInheritViewportSizeFromBrowserContext() {
+  @PlaywrightTest
+  void shouldInheritViewportSizeFromBrowserContext(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 500));
     Page page = context.newPage();
@@ -137,8 +139,8 @@ public class TestPopup extends TestBase {
     assertEquals(mapOf("width", 400, "height", 500), size);
   }
 
-  @Test
-  void shouldUseViewportSizeFromWindowFeatures() {
+  @PlaywrightTest
+  void shouldUseViewportSizeFromWindowFeatures(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(700, 700));
     Page page = context.newPage();
@@ -166,8 +168,8 @@ public class TestPopup extends TestBase {
     assertEquals(mapOf("width", 500, "height", 400), resized);
   }
 
-  @Test
-  void shouldRespectRoutesFromBrowserContextWithWindowOpen() {
+  @PlaywrightTest
+  void shouldRespectRoutesFromBrowserContextWithWindowOpen(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -183,8 +185,8 @@ public class TestPopup extends TestBase {
     context.close();
   }
 
-  @Test
-  void BrowserContextAddInitScriptShouldApplyToAnInProcessPopup() {
+  @PlaywrightTest
+  void BrowserContextAddInitScriptShouldApplyToAnInProcessPopup(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     context.addInitScript("window['injected'] = 123");
     Page page = context.newPage();
@@ -197,8 +199,8 @@ public class TestPopup extends TestBase {
     assertEquals(123, injected);
   }
 
-  @Test
-  void BrowserContextAddInitScriptShouldApplyToACrossProcessPopup() {
+  @PlaywrightTest
+  void BrowserContextAddInitScriptShouldApplyToACrossProcessPopup(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     context.addInitScript("(() => window['injected'] = 123)()");
     Page page = context.newPage();
@@ -214,8 +216,8 @@ public class TestPopup extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldExposeFunctionFromBrowserContext() {
+  @PlaywrightTest
+  void shouldExposeFunctionFromBrowserContext(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     List<String> messages = new ArrayList<>();
     context.exposeFunction("add", args -> {

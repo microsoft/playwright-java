@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Sizes;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,9 +30,9 @@ import java.util.concurrent.Future;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestPageNetworkSizes extends TestBase {
-  @Test
-  void shouldSetBodySizeAndHeadersSize() {
+public class TestPageNetworkSizes {
+  @PlaywrightTest
+  void shouldSetBodySizeAndHeadersSize(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**/*", () -> {
       page.evaluate("() => fetch('./get', { method: 'POST', body: '12345' }).then(r => r.text())");
@@ -42,8 +42,8 @@ public class TestPageNetworkSizes extends TestBase {
     assertTrue(sizes.requestHeadersSize >= 250);
   }
 
-  @Test
-  void shouldSetBodySizeTo0IfThereWasNoBody() {
+  @PlaywrightTest
+  void shouldSetBodySizeTo0IfThereWasNoBody(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**/*",
       () -> page.evaluate("() => fetch('./get').then(r => r.text())"));
@@ -52,8 +52,8 @@ public class TestPageNetworkSizes extends TestBase {
     assertTrue(sizes.requestHeadersSize >= 200);
   }
 
-  @Test
-  void shouldSetBodySizeHeadersSizeAndTransferSize() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSetBodySizeHeadersSizeAndTransferSize(Page page, Server server) throws ExecutionException, InterruptedException {
     server.setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
       // from server.
@@ -74,16 +74,16 @@ public class TestPageNetworkSizes extends TestBase {
     assertTrue(sizes.responseHeadersSize > 10);
   }
 
-  @Test
-  void shouldSetBodySizeTo0WhenThereWasNoResponseBody() {
+  @PlaywrightTest
+  void shouldSetBodySizeTo0WhenThereWasNoResponseBody(Page page, Server server) {
     Response response = page.navigate(server.EMPTY_PAGE);
     Sizes sizes = response.request().sizes();
     assertEquals(0, sizes.responseBodySize);
     assertTrue(sizes.responseHeadersSize > 10, "" + sizes.responseHeadersSize);
   }
 
-  @Test
-  void shouldHaveTheCorrectResponseBodySize() throws IOException {
+  @PlaywrightTest
+  void shouldHaveTheCorrectResponseBodySize(Page page, Server server) throws IOException {
     Response response = page.navigate(server.PREFIX + "/simplezip.json");
     Sizes sizes = response.request().sizes();
     assertEquals(Files.size(Paths.get("src/test/resources/simplezip.json")), sizes.responseBodySize);

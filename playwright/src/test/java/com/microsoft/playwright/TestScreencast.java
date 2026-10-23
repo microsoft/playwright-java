@@ -16,12 +16,11 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AnnotatePosition;
-import com.microsoft.playwright.options.ScreencastCursor;
 import com.microsoft.playwright.options.ScreencastActionStyle;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.options.ScreencastCursor;
 import org.junit.jupiter.api.io.TempDir;
 
 import javax.imageio.ImageIO;
@@ -34,11 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.TestOptionsFactories.createLaunchOptions;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestScreencast {
   private static Browser.NewContextOptions recordVideoOptions(Path videosDir) {
     return new Browser.NewContextOptions()
@@ -47,7 +43,7 @@ public class TestScreencast {
       .setViewportSize(320, 240);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldExposeVideoPath(Browser browser, @TempDir Path videosDir) {
     Path path;
     try (BrowserContext context = browser.newContext(recordVideoOptions(videosDir))) {
@@ -59,7 +55,7 @@ public class TestScreencast {
     assertTrue(Files.exists(path));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSaveAsVideo(Browser browser, @TempDir Path videosDir) {
     Video video;
     try (BrowserContext context = browser.newContext(recordVideoOptions(videosDir))) {
@@ -73,7 +69,7 @@ public class TestScreencast {
     assertTrue(Files.exists(saveAsPath));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldDeleteVideo(Browser browser, @TempDir Path videosDir) {
     Video video;
     try (BrowserContext context = browser.newContext(recordVideoOptions(videosDir))) {
@@ -86,9 +82,9 @@ public class TestScreencast {
     assertFalse(Files.exists(video.path()));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldWaitForVideoFinishWhenPageIsClosed(BrowserType browserType, @TempDir Path videosDir) throws IOException {
-    try (Browser browser = browserType.launch(createLaunchOptions());
+    try (Browser browser = browserType.launch(Env.launchOptions());
          BrowserContext context = browser.newContext(recordVideoOptions(videosDir))) {
       Page page = context.newPage();
       page.evaluate("() => document.body.style.backgroundColor = 'red'");
@@ -102,7 +98,7 @@ public class TestScreencast {
     assertTrue(Files.size(files.get(0)) > 0);
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldDeliverFramesViaOnFrame(Page page, Server server) {
     List<ScreencastFrame> frames = new ArrayList<>();
     page.screencast().start(new Screencast.StartOptions().setOnFrame(frames::add));
@@ -118,7 +114,7 @@ public class TestScreencast {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldScaleFramesToFitSize(Browser browser, Server server) throws IOException {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1000, 400))) {
       Page page = context.newPage();
@@ -138,7 +134,7 @@ public class TestScreencast {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void onFrameShouldReceiveViewportSizeAndTimestamp(Browser browser, Server server) {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1000, 400))) {
       Page page = context.newPage();
@@ -157,7 +153,7 @@ public class TestScreencast {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldRecordVideoWithTheRequestedFps(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     Path videoPath = tmpDir.resolve("video.webm");
     page.screencast().start(new Screencast.StartOptions().setPath(videoPath).setFps(60));
@@ -169,14 +165,14 @@ public class TestScreencast {
     assertTrue(Files.size(videoPath) > 0);
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldThrowOnInvalidFps(Page page, @TempDir Path tmpDir) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.screencast().start(
       new Screencast.StartOptions().setPath(tmpDir.resolve("video.webm")).setFps(-1)));
     assertTrue(e.getMessage().contains("\"fps\" must be a positive number, got -1"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldThrowIfAlreadyStarted(Page page) {
     page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
     PlaywrightException e = assertThrows(PlaywrightException.class,
@@ -185,7 +181,7 @@ public class TestScreencast {
     page.screencast().stop();
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartShouldRecordVideoToPath(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     Path videoPath = tmpDir.resolve("video.webm");
     page.screencast().start(new Screencast.StartOptions().setPath(videoPath));
@@ -197,7 +193,7 @@ public class TestScreencast {
     assertTrue(Files.size(videoPath) > 0);
   }
 
-  @Test
+  @PlaywrightTest
   void screencastStartReturnsDisposable(Page page) throws Exception {
     AutoCloseable disposable = page.screencast().start(new Screencast.StartOptions().setOnFrame(data -> {}));
     disposable.close();
@@ -206,7 +202,7 @@ public class TestScreencast {
     page.screencast().stop();
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowOverlay(Page page, Server server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
     AutoCloseable disposable = page.screencast().showOverlay("<div>Hello Overlay</div>");
@@ -214,7 +210,7 @@ public class TestScreencast {
     disposable.close();
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowChapter(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.screencast().showChapter("Chapter Title");
@@ -222,7 +218,7 @@ public class TestScreencast {
       new Screencast.ShowChapterOptions().setDescription("Some details").setDuration(100));
   }
 
-  @Test
+  @PlaywrightTest
   void screencastHideShowOverlays(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.screencast().showOverlay("<div>visible</div>");
@@ -230,7 +226,7 @@ public class TestScreencast {
     page.screencast().showOverlays();
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowAndHideActions(Page page, Server server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
     AutoCloseable disposable = page.screencast().showActions();
@@ -239,7 +235,7 @@ public class TestScreencast {
     page.screencast().hideActions();
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowActionsShouldAcceptEveryPosition(Page page, Server server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
     for (AnnotatePosition position : AnnotatePosition.values()) {
@@ -250,7 +246,7 @@ public class TestScreencast {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowActionsShouldAcceptEveryCursor(Page page, Server server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
     for (ScreencastCursor cursor : ScreencastCursor.values()) {
@@ -261,7 +257,7 @@ public class TestScreencast {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void screencastShowActionsShouldRenderStyle(Page page, Server server) throws IOException {
     page.navigate(server.PREFIX + "/input/button.html");
     List<ScreencastFrame> frames = new ArrayList<>();

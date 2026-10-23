@@ -16,16 +16,16 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestPageEventPageError extends TestBase {
-  @Test
-  void pageErrorsShouldWork() {
+public class TestPageEventPageError {
+  @PlaywrightTest
+  void pageErrorsShouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("async () => {\n" +
       "    for (let i = 0; i < 301; i++)\n" +
@@ -44,8 +44,8 @@ public class TestPageEventPageError extends TestBase {
     }
   }
 
-  @Test
-  void clearPageErrorsShouldWork() {
+  @PlaywrightTest
+  void clearPageErrorsShouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("async () => {\n" +
       "  window.setTimeout(() => { throw new Error('error1'); }, 0);\n" +

@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HttpHeader;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
@@ -26,12 +26,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageRequestContinue extends TestBase {
-  @Test
-  void shouldDeleteHeaderWithUndefinedValue() throws ExecutionException, InterruptedException {
+public class TestPageRequestContinue {
+  @PlaywrightTest
+  void shouldDeleteHeaderWithUndefinedValue(Page page, Server server) throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/13106
     page.navigate(server.PREFIX + "/empty.html");
     Future<Server.Request> serverRequest = server.futureRequest("/something");
@@ -67,8 +68,8 @@ public class TestPageRequestContinue extends TestBase {
     assertEquals(asList("b"), serverRequest.get().headers.get("bar"));
   }
 
-  @Test
-  void shouldNotThrowWhenContinuingAfterPageIsClosed() {
+  @PlaywrightTest
+  void shouldNotThrowWhenContinuingAfterPageIsClosed(Page page, Server server) {
     boolean[] done = {false};
     page.route("**/*", route -> {
       page.close();
@@ -81,9 +82,9 @@ public class TestPageRequestContinue extends TestBase {
     assertTrue(done[0]);
   }
 
-  @Test
-  @DisabledIf(value = "com.microsoft.playwright.TestBase#isFirefox", disabledReason = "We currently clear all headers during interception in firefox")
-  void continueShouldNotPropagateCookieOverrideToRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "We currently clear all headers during interception in firefox")
+  void continueShouldNotPropagateCookieOverrideToRedirects(Page page, Server server) throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/35168
     server.setRoute("/set-cookie", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");
@@ -105,9 +106,9 @@ public class TestPageRequestContinue extends TestBase {
     assertEquals(asList("foo=bar"), serverRequest.get().headers.get("cookie"));
   }
 
-  @Test
-  @DisabledIf(value = "com.microsoft.playwright.TestBase#isFirefox", disabledReason = "We currently clear all headers during interception in firefox")
-  void continueShouldNotOverrideCookie() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "We currently clear all headers during interception in firefox")
+  void continueShouldNotOverrideCookie(Page page, Server server) throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/35168
     server.setRoute("/set-cookie", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");
@@ -132,8 +133,8 @@ public class TestPageRequestContinue extends TestBase {
     assertEquals(asList("value"), serverRequest.get().headers.get("custom"));
   }
 
-  @Test
-  void redirectAfterContinueShouldBeAbleToDeleteCookie() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void redirectAfterContinueShouldBeAbleToDeleteCookie(Page page, Server server) throws ExecutionException, InterruptedException {
     // https://github.com/microsoft/playwright/issues/35168
     server.setRoute("/set-cookie", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "foo=bar;");

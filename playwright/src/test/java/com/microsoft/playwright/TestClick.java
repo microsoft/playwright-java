@@ -16,30 +16,31 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static com.microsoft.playwright.options.KeyboardModifier.SHIFT;
 import static com.microsoft.playwright.options.MouseButton.RIGHT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestClick extends TestBase {
+public class TestClick {
 
-  @Test
-  void shouldClickTheButton() {
+  @PlaywrightTest
+  void shouldClickTheButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldClickSvg() {
+  @PlaywrightTest
+  void shouldClickSvg(Page page) {
     page.setContent("<svg height='100' width='100'>\n" +
       "<circle onclick='javascript:window.__CLICKED=42' cx='50' cy='50' r='40' stroke='black' stroke-width='3' fill='red'/>\n" +
       "</svg>\n");
@@ -47,8 +48,8 @@ public class TestClick extends TestBase {
     assertEquals(42, page.evaluate("__CLICKED"));
   }
 
-  @Test
-  void shouldClickTheButtonIfWindowNodeIsRemoved() {
+  @PlaywrightTest
+  void shouldClickTheButtonIfWindowNodeIsRemoved(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window.Node");
     page.click("button");
@@ -56,8 +57,8 @@ public class TestClick extends TestBase {
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4281
-  @Test
-  void shouldClickOnASpanWithAnInlineElementInside() {
+  @PlaywrightTest
+  void shouldClickOnASpanWithAnInlineElementInside(Page page) {
     page.setContent(
       "<style>\n" +
         "  span::before {\n" +
@@ -73,15 +74,15 @@ public class TestClick extends TestBase {
     // not supported in sync api
   }
 
-  @Test
-  void shouldClickThe1x1Div() {
+  @PlaywrightTest
+  void shouldClickThe1x1Div(Page page) {
     page.setContent("<div style='width: 1px; height: 1px;' onclick='window.__clicked = true'></div>");
     page.click("div");
     assertTrue((Boolean) page.evaluate("window.__clicked"));
   }
 
-  @Test
-  void shouldClickTheButtonAfterNavigation() {
+  @PlaywrightTest
+  void shouldClickTheButtonAfterNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     page.navigate(server.PREFIX + "/input/button.html");
@@ -89,8 +90,8 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldClickTheButtonAfterACrossOriginNavigation() {
+  @PlaywrightTest
+  void shouldClickTheButtonAfterACrossOriginNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     page.navigate(server.CROSS_PROCESS_PREFIX + "/input/button.html");
@@ -98,8 +99,8 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldClickWithDisabledJavascript() {
+  @PlaywrightTest
+  void shouldClickWithDisabledJavascript(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/wrappedlink.html");
@@ -110,8 +111,8 @@ public class TestClick extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldClickWhenOneOfInlineBoxChildrenIsOutsideOfViewport() {
+  @PlaywrightTest
+  void shouldClickWhenOneOfInlineBoxChildrenIsOutsideOfViewport(Page page) {
     page.setContent(
       "<style>\n" +
         "i {\n" +
@@ -124,8 +125,8 @@ public class TestClick extends TestBase {
     assertEquals(42, page.evaluate("CLICKED"));
   }
 
-  @Test
-  void shouldSelectTheTextByTripleClicking() {
+  @PlaywrightTest
+  void shouldSelectTheTextByTripleClicking(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     String text = "This is the text that we are going to try to select. Let's see how it goes.";
     page.fill("textarea", text);
@@ -136,8 +137,8 @@ public class TestClick extends TestBase {
       "}"));
   }
 
-  @Test
-  void shouldClickOffscreenButtons() {
+  @PlaywrightTest
+  void shouldClickOffscreenButtons(Page page, Server server) {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(message -> messages.add(message.text()));
@@ -161,15 +162,15 @@ public class TestClick extends TestBase {
     ), messages);
   }
 
-  @Test
-  void shouldWaitForVisibleWhenAlreadyVisible() {
+  @PlaywrightTest
+  void shouldWaitForVisibleWhenAlreadyVisible(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldNotWaitWithForce() {
+  @PlaywrightTest
+  void shouldNotWaitWithForce(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.display = 'none'");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -191,15 +192,15 @@ public class TestClick extends TestBase {
     // not supported in sync api
   }
 
-  @Test
-  void shouldClickWrappedLinks() {
+  @PlaywrightTest
+  void shouldClickWrappedLinks(Page page, Server server) {
     page.navigate(server.PREFIX + "/wrappedlink.html");
     page.click("a");
     assertTrue((Boolean) page.evaluate("__clicked"));
   }
 
-  @Test
-  void shouldClickOnCheckboxInputAndToggle() {
+  @PlaywrightTest
+  void shouldClickOnCheckboxInputAndToggle(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("input#agree");
@@ -218,8 +219,8 @@ public class TestClick extends TestBase {
     assertFalse((Boolean) page.evaluate("() => window['result'].check"));
   }
 
-  @Test
-  void shouldClickOnCheckboxLabelAndToggle() {
+  @PlaywrightTest
+  void shouldClickOnCheckboxLabelAndToggle(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("label[for='agree']");
@@ -233,8 +234,8 @@ public class TestClick extends TestBase {
     assertFalse((Boolean) page.evaluate("() => window['result'].check"));
   }
 
-  @Test
-  void shouldNotHangWithTouchEnabledViewports() {
+  @PlaywrightTest
+  void shouldNotHangWithTouchEnabledViewports(Browser browser) {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(375, 667)
@@ -246,8 +247,8 @@ public class TestClick extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldScrollAndClickTheButton() {
+  @PlaywrightTest
+  void shouldScrollAndClickTheButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-5");
     assertEquals("clicked", page.evaluate("() => document.querySelector('#button-5').textContent"));
@@ -255,8 +256,8 @@ public class TestClick extends TestBase {
     assertEquals("clicked", page.evaluate("() => document.querySelector('#button-80').textContent"));
   }
 
-  @Test
-  void shouldDoubleClickTheButton() {
+  @PlaywrightTest
+  void shouldDoubleClickTheButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +
@@ -270,8 +271,8 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldClickAPartiallyObscuredButton() {
+  @PlaywrightTest
+  void shouldClickAPartiallyObscuredButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  const button = document.querySelector('button');\n" +
@@ -283,30 +284,30 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldClickARotatedButton() {
+  @PlaywrightTest
+  void shouldClickARotatedButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/rotatedButton.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldFireContextmenuEventOnRightClick() {
+  @PlaywrightTest
+  void shouldFireContextmenuEventOnRightClick(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-8", new Page.ClickOptions().setButton(RIGHT));
     assertEquals("context menu", page.evaluate("() => document.querySelector('#button-8').textContent"));
   }
 
-  @Test
-  void shouldClickLinksWhichCauseNavigation() {
+  @PlaywrightTest
+  void shouldClickLinksWhichCauseNavigation(Page page, Server server) {
     // @see https://github.com/GoogleChrome/puppeteer/issues/206
     page.setContent("<a href=" + server.EMPTY_PAGE + ">empty.html</a>");
     // This should not hang.
     page.click("a");
   }
 
-  @Test
-  void shouldClickTheButtonInsideAnIframe() {
+  @PlaywrightTest
+  void shouldClickTheButtonInsideAnIframe(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<div style='width:100px;height:100px'>spacer</div>");
     Utils.attachFrame(page, "button-test", server.PREFIX + "/input/button.html");
@@ -316,9 +317,9 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", frame.evaluate("() => window['result']"));
   }
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fixme")
-  void shouldClickTheButtonWithFixedPositionInsideAnIframe() {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = FIREFOX, reason = "fixme")
+  void shouldClickTheButtonWithFixedPositionInsideAnIframe(Page page, Server server) {
     // @see https://github.com/GoogleChrome/puppeteer/issues/4110
     // @see https://bugs.chromium.org/p/chromium/issues/detail?id=986390
     // @see https://chromium-review.googlesource.com/c/chromium/src/+/1742784
@@ -333,8 +334,8 @@ public class TestClick extends TestBase {
   }
 
 
-  @Test
-  void shouldClickTheButtonWithDeviceScaleFactorSet() {
+  @PlaywrightTest
+  void shouldClickTheButtonWithDeviceScaleFactorSet(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400)
       .setDeviceScaleFactor(5.0));
@@ -349,8 +350,8 @@ public class TestClick extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldClickTheButtonWithPxBorderWithOffset() {
+  @PlaywrightTest
+  void shouldClickTheButtonWithPxBorderWithOffset(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
@@ -359,8 +360,8 @@ public class TestClick extends TestBase {
     assertEquals(10, page.evaluate("offsetY"));
   }
 
-  @Test
-  void shouldClickTheButtonWithEmBorderWithOffset() {
+  @PlaywrightTest
+  void shouldClickTheButtonWithEmBorderWithOffset(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
@@ -370,8 +371,8 @@ public class TestClick extends TestBase {
     assertEquals(10, page.evaluate("offsetY"));
   }
 
-  @Test
-  void shouldClickAVeryLargeButtonWithOffset() {
+  @PlaywrightTest
+  void shouldClickAVeryLargeButtonWithOffset(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
@@ -381,8 +382,8 @@ public class TestClick extends TestBase {
     assertEquals(1910, page.evaluate("offsetY"));
   }
 
-  @Test
-  void shouldClickAButtonInScrollingContainerWithOffset() {
+  @PlaywrightTest
+  void shouldClickAButtonInScrollingContainerWithOffset(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  const container = document.createElement('div');\n" +
@@ -407,9 +408,9 @@ public class TestClick extends TestBase {
   }
 
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
-  void shouldClickTheButtonWithOffsetWithPageScale() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "skip")
+  void shouldClickTheButtonWithOffsetWithPageScale(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400)
       .setIsMobile(true));
@@ -428,8 +429,8 @@ public class TestClick extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldWaitForStablePosition() {
+  @PlaywrightTest
+  void shouldWaitForStablePosition(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.transition = 'margin 500ms linear 0s';\n" +
@@ -452,8 +453,8 @@ public class TestClick extends TestBase {
     // not supported in sync api
   }
 
-  @Test
-  void shouldFailWhenObscuredAndNotWaitingForHitTarget() {
+  @PlaywrightTest
+  void shouldFailWhenObscuredAndNotWaitingForHitTarget(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("() => {\n" +
@@ -482,29 +483,29 @@ public class TestClick extends TestBase {
     // not supported in sync api
   }
 
-  @Test
-  void shouldClickDisabledDiv() {
+  @PlaywrightTest
+  void shouldClickDisabledDiv(Page page) {
     page.setContent("<div onclick='javascript:window.__CLICKED=true;' disabled>Click target</div>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
-  @Test
-  void shouldClimbDomForInnerLabelWithPointerEventsNone() {
+  @PlaywrightTest
+  void shouldClimbDomForInnerLabelWithPointerEventsNone(Page page) {
     page.setContent("<button onclick='javascript:window.__CLICKED=true;'><label style='pointer-events:none'>Click target</label></button>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
-  @Test
-  void shouldWorkWithUnicodeSelectors() {
+  @PlaywrightTest
+  void shouldWorkWithUnicodeSelectors(Page page) {
     page.setContent("<button onclick='javascript:window.__CLICKED=true;'><label style='pointer-events:none'>Найти</label></button>");
     page.click("text=Найти");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
-  @Test
-  void shouldClimbUpTo_roleButton_() {
+  @PlaywrightTest
+  void shouldClimbUpTo_roleButton_(Page page) {
     page.setContent("<div role=button onclick='javascript:window.__CLICKED=true;'><div style='pointer-events:none'><span><div>Click target</div></span></div>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
@@ -518,8 +519,8 @@ public class TestClick extends TestBase {
     // not supported in sync api
   }
 
-  @Test
-  void shouldUpdateModifiersCorrectly() {
+  @PlaywrightTest
+  void shouldUpdateModifiersCorrectly(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button", new Page.ClickOptions().setModifiers(asList(SHIFT)));
     assertEquals(true, page.evaluate("shiftKey"));
@@ -536,8 +537,8 @@ public class TestClick extends TestBase {
     assertEquals(false, page.evaluate("shiftKey"));
   }
 
-  @Test
-  void shouldClickAnOffscreenElementWhenScrollBehaviorIsSmooth() {
+  @PlaywrightTest
+  void shouldClickAnOffscreenElementWhenScrollBehaviorIsSmooth(Page page) {
     page.setContent(
       "<div style='border: 1px solid black; height: 500px; overflow: auto; width: 500px; scroll-behavior: smooth'>\n" +
         "    <button style='margin-top: 2000px' onClick='window.clicked = true'>hi</button>\n" +
@@ -546,8 +547,8 @@ public class TestClick extends TestBase {
     assertEquals(true, page.evaluate("window.clicked"));
   }
 
-  @Test
-  void shouldReportNiceErrorWhenElementIsDetachedAndForceClicked() {
+  @PlaywrightTest
+  void shouldReportNiceErrorWhenElementIsDetachedAndForceClicked(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/animating-button.html");
     page.evaluate("addButton()");
     ElementHandle handle = page.querySelector("button");
@@ -571,8 +572,8 @@ public class TestClick extends TestBase {
   void shouldFailWhenElementIsAnimatingFromOutsideTheViewportWithForce() {
     // not supported in sync api
   }
-  @Test
-  void shouldDispatchMicrotasksInOrder() {
+  @PlaywrightTest
+  void shouldDispatchMicrotasksInOrder(Page page) {
     page.setContent(
       "<button id=button>Click me</button>\n" +
       "<script>\n" +
@@ -594,8 +595,8 @@ public class TestClick extends TestBase {
     assertEquals(1, page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldClickTheButtonWhenWindowInnerWidthIsCorrupted() {
+  @PlaywrightTest
+  void shouldClickTheButtonWhenWindowInnerWidthIsCorrupted(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => Object.defineProperty(window, 'innerWidth', {value: 0})");
     page.click("button");

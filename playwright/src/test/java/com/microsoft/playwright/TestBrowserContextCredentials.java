@@ -16,24 +16,27 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HttpCredentials;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.Assumptions;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestBrowserContextCredentials extends TestBase {
+public class TestBrowserContextCredentials {
 
-  static boolean isChromiumHeadedLike() {
+  static boolean isChromiumHeadedLike(BrowserName browserName) {
     // --headless=new, the default in all Chromium channels, is like headless.
-    return isChromium() && (isHeaded() || getBrowserChannelFromEnv() != null);
+    return browserName == CHROMIUM && (Env.headed() || Env.channel() != null);
   }
 
-  @Test
-  @DisabledIf(value="isChromiumHeadedLike", disabledReason="fail")
-  void shouldFailWithoutCredentials() {
+  @PlaywrightTest
+  void shouldFailWithoutCredentials(Page page, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(isChromiumHeadedLike(browserName), "fail");
     server.setAuth("/empty.html", "user", "pass");
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(401, response.status());
@@ -43,8 +46,8 @@ public class TestBrowserContextCredentials extends TestBase {
     // The method is not exposed in Java.
   }
 
-  @Test
-  void shouldWorkWithCorrectCredentials() {
+  @PlaywrightTest
+  void shouldWorkWithCorrectCredentials(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials("user", "pass"))) {
@@ -54,8 +57,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldFailWithWrongCredentials() {
+  @PlaywrightTest
+  void shouldFailWithWrongCredentials(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials("foo", "bar"))) {
@@ -65,8 +68,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnResourceBody() {
+  @PlaywrightTest
+  void shouldReturnResourceBody(Browser browser, Server server) {
     server.setAuth("/playground.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials("user", "pass"))) {
@@ -78,8 +81,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithCorrectCredentialsAndMatchingOrigin() {
+  @PlaywrightTest
+  void shouldWorkWithCorrectCredentialsAndMatchingOrigin(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(server.PREFIX);
@@ -91,8 +94,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithCorrectCredentialsAndMatchingOriginCaseInsensitive() {
+  @PlaywrightTest
+  void shouldWorkWithCorrectCredentialsAndMatchingOriginCaseInsensitive(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(server.PREFIX.toUpperCase());
@@ -104,9 +107,9 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="isChromiumHeadedLike", disabledReason="fail")
-  void shouldFailWithCorrectCredentialsAndWrongOriginScheme() {
+  @PlaywrightTest
+  void shouldFailWithCorrectCredentialsAndWrongOriginScheme(Browser browser, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(isChromiumHeadedLike(browserName), "fail");
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
@@ -117,9 +120,9 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="isChromiumHeadedLike", disabledReason="fail")
-  void shouldFailWithCorrectCredentialsAndWrongOriginHostname() {
+  @PlaywrightTest
+  void shouldFailWithCorrectCredentialsAndWrongOriginHostname(Browser browser, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(isChromiumHeadedLike(browserName), "fail");
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
@@ -130,9 +133,9 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="isChromiumHeadedLike", disabledReason="fail")
-  void shouldFailWithCorrectCredentialsAndWrongOriginPort() {
+  @PlaywrightTest
+  void shouldFailWithCorrectCredentialsAndWrongOriginPort(Browser browser, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(isChromiumHeadedLike(browserName), "fail");
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
@@ -143,8 +146,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithASingleCredentialInAnArray() {
+  @PlaywrightTest
+  void shouldWorkWithASingleCredentialInAnArray(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials(asList(new HttpCredentials("user", "pass"))))) {
@@ -154,8 +157,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithMultipleCredentialsForDifferentOrigins() {
+  @PlaywrightTest
+  void shouldWorkWithMultipleCredentialsForDifferentOrigins(Browser browser, Server server) {
     server.setAuth("/empty.html", "user1", "pass1");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials(asList(
@@ -170,8 +173,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldFallBackToCredentialsWithoutOrigin() {
+  @PlaywrightTest
+  void shouldFallBackToCredentialsWithoutOrigin(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials(asList(
@@ -186,8 +189,8 @@ public class TestBrowserContextCredentials extends TestBase {
     }
   }
 
-  @Test
-  void shouldUseTheFirstMatchingCredential() {
+  @PlaywrightTest
+  void shouldUseTheFirstMatchingCredential(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials(asList(

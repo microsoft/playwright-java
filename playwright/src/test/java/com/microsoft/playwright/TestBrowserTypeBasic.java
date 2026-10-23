@@ -16,37 +16,36 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserTypeBasic extends TestBase {
-  @Test
-  void browserTypeExecutablePathShouldWork() {
-    Assumptions.assumeTrue(getBrowserChannelFromEnv() == null);
-    Assumptions.assumeTrue(createLaunchOptions().executablePath == null, "Skip with custom executable path");
+public class TestBrowserTypeBasic {
+  @PlaywrightTest
+  void browserTypeExecutablePathShouldWork(BrowserType browserType) {
+    Assumptions.assumeTrue(Env.channel() == null);
+    Assumptions.assumeTrue(Env.launchOptions().executablePath == null, "Skip with custom executable path");
     String executablePath = browserType.executablePath();
     assertTrue(Files.exists(Paths.get(executablePath)));
   }
 
-  @Test
-  void browserTypeNameShouldWork() {
-    assertEquals(getBrowserNameFromEnv(), browserType.name());
+  @PlaywrightTest
+  void browserTypeNameShouldWork(BrowserType browserType, BrowserName browserName) {
+    assertEquals(browserName.toString(), browserType.name());
   }
 
-  static boolean isChromiumOrWebKit() {
-    return isChromium() || isWebKit();
-  }
-
-  @Test
-  @DisabledIf(value="isChromiumOrWebKit", disabledReason="Connecting over CDP is supported in Chromium and WebKit")
-  void shouldThrowWhenTryingToConnectWithNotChromium() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = {CHROMIUM, WEBKIT}, reason = "Connecting over CDP is supported in Chromium and WebKit")
+  void shouldThrowWhenTryingToConnectWithNotChromium(BrowserType browserType) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> browserType.connectOverCDP("foo"));
     assertTrue(e.getMessage().contains("Connecting over CDP is only supported in Chromium and WebKit."));
   }

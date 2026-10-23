@@ -16,14 +16,10 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestBeforeunload {
-  @Test
+  @PlaywrightTest
   void shouldBeAbleToNavigateAwayFromPageWithBeforeunload(Page page, Server server) {
     page.navigate(server.PREFIX + "/beforeunload.html");
     // We have to interact with a page so that "beforeunload" handlers

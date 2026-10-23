@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static com.microsoft.playwright.options.WaitUntilState.NETWORKIDLE;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestFrameNavigate extends TestBase {
+public class TestFrameNavigate {
 
-  @Test
-  void shouldNavigateSubframes() {
+  @PlaywrightTest
+  void shouldNavigateSubframes(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertTrue(page.frames().get(0).url().contains("/frames/one-frame.html"));
     assertTrue(page.frames().get(1).url().contains("/frames/frame.html"));
@@ -38,8 +38,8 @@ public class TestFrameNavigate extends TestBase {
   void shouldRejectWhenFrameDetaches() {
   }
 
-  @Test
-  void shouldContinueAfterClientRedirect() {
+  @PlaywrightTest
+  void shouldContinueAfterClientRedirect(Page page, Server server) {
     server.setRoute("/frames/script.js", (httpExchange) -> {});
     String url = server.PREFIX + "/frames/child-redirect.html";
     TimeoutError e = assertThrows(TimeoutError.class, () ->  {

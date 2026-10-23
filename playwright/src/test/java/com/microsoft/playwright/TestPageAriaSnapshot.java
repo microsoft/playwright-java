@@ -1,8 +1,6 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.Arrays;
@@ -15,8 +13,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@FixtureTest
-@UsePlaywright
 public class TestPageAriaSnapshot {
   public static String unshift(String snapshot) {
     List<String> lines = Arrays.asList(snapshot.split("\n"));
@@ -46,13 +42,13 @@ public class TestPageAriaSnapshot {
     assertThat(locator).matchesAriaSnapshot(snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshot(Page page) {
     page.setContent("<h1>title</h1>");
     checkAndMatchSnapshot(page.locator("body"), "- heading \"title\" [level=1]");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotList(Page page) {
     page.setContent("<h1>title</h1><h1>title 2</h1>");
     checkAndMatchSnapshot(page.locator("body"), "" +
@@ -60,19 +56,19 @@ public class TestPageAriaSnapshot {
       "  - heading \"title 2\" [level=1]");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotListWithAccessibleName(Page page) {
     page.setContent("<ul aria-label=\"my list\"><li>one</li><li>two</li></ul>");
     checkAndMatchSnapshot(page.locator("body"), "- list \"my list\":\n  - listitem: one\n  - listitem: two");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotComplex(Page page) {
     page.setContent("<ul><li><a href='about:blank'>link</a></li></ul>");
     checkAndMatchSnapshot(page.locator("body"), "- list:\n  - listitem:\n    - link \"link\":\n      - /url: about:blank");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldAllowTextNodes(Page page) {
     page.setContent("<h1>Microsoft</h1><div>Open source projects and samples from Microsoft</div>");
     checkAndMatchSnapshot(page.locator("body"), "" +
@@ -80,13 +76,13 @@ public class TestPageAriaSnapshot {
       "    - text: Open source projects and samples from Microsoft");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotDetailsVisibility(Page page) {
     page.setContent("<details><summary>Summary</summary><div>Details</div></details>");
     checkAndMatchSnapshot(page.locator("body"), "- group: Summary");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotChildren(Page page) {
     page.setContent("<ul><li><img />One</li><li>Two</li><li>Three</li></ul>");
     assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: equal\n  - listitem\n  - listitem: Two\n  - listitem: Three");
@@ -97,7 +93,7 @@ public class TestPageAriaSnapshot {
     assertThat(page.locator("body")).matchesAriaSnapshot("- list:\n  - /children: deep-equal\n  - listitem:\n    - /children: contain\n    - text: One\n  - listitem: Two\n  - listitem: Three");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldMatchUrl(Page page) {
     page.setContent("<a href='https://example.com'>Link</a>");
     assertThat(page.locator("body")).matchesAriaSnapshot("" +
@@ -105,7 +101,7 @@ public class TestPageAriaSnapshot {
       "  - /url: /.*example.com/");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldHandleTopLevelDeepEqual(Page page) {
     // https://github.com/microsoft/playwright/issues/36456
     page.setContent("" +
@@ -128,7 +124,7 @@ public class TestPageAriaSnapshot {
     });
   }
 
-  @Test
+  @PlaywrightTest
   void matchValuesBothAgainstRegexAndString(Page page) {
     page.setContent("<a href=\"/auth?r=/\">Log in</a>");
     checkAndMatchSnapshot(page.locator("body"),
@@ -136,7 +132,7 @@ public class TestPageAriaSnapshot {
       "  - /url: /auth?r=/");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotIntegration(Page page) {
     page.setContent(
       "<h1>Microsoft</h1>" +
@@ -160,7 +156,7 @@ public class TestPageAriaSnapshot {
       "      - /url: about:blank");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSupportMultilineText(Page page) {
     page.setContent("<p>\n      Line 1\n      Line 2\n      Line 3\n    </p>");
     checkAndMatchSnapshot(page.locator("body"), "- paragraph: Line 1 Line 2 Line 3");
@@ -171,25 +167,25 @@ public class TestPageAriaSnapshot {
       "        Line 3");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldConcatenateSpanText(Page page) {
     page.setContent("<span>One</span> <span>Two</span> <span>Three</span>");
     checkAndMatchSnapshot(page.locator("body"), "- text: One Two Three");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldConcatenateSpanText2(Page page) {
     page.setContent("<span>One </span><span>Two </span><span>Three</span>");
     checkAndMatchSnapshot(page.locator("body"), "- text: One Two Three");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldConcatenateDivTextWithSpaces(Page page) {
     page.setContent("<div>One</div><div>Two</div><div>Three</div>");
     checkAndMatchSnapshot(page.locator("body"), "- text: One Two Three");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIncludePseudoInText(Page page) {
     page.setContent(
       "<style>span:before { content: 'world'; } div:after { content: 'bye'; }</style>" +
@@ -199,7 +195,7 @@ public class TestPageAriaSnapshot {
       "  - /url: about:blank");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotIncludeHiddenPseudoInText(Page page) {
     page.setContent(
       "<style>span:before { content: 'world'; display: none; } div:after { content: 'bye'; visibility: hidden; }</style>" +
@@ -209,7 +205,7 @@ public class TestPageAriaSnapshot {
       "  - /url: about:blank");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIncludeNewLineForBlockPseudo(Page page) {
     page.setContent(
       "<style>span:before { content: 'world'; display: block; } div:after { content: 'bye'; display: block; }</style>" +
@@ -219,7 +215,7 @@ public class TestPageAriaSnapshot {
       "  - /url: about:blank");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldWorkWithSlots(Page page) {
     // Text "foo" is assigned to the slot, should not be used twice.
     page.setContent(
@@ -265,7 +261,7 @@ public class TestPageAriaSnapshot {
     checkAndMatchSnapshot(page.locator("body"), "- button \"pre\"");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotInnerText(Page page) {
     page.setContent(
       "<div role=\"listitem\"><div><div><span title=\"a.test.ts\">a.test.ts</span></div>" +
@@ -286,25 +282,25 @@ public class TestPageAriaSnapshot {
       "      - button \"Watch\"");
   }
 
-  @Test
+  @PlaywrightTest
   void checkAriaHiddenText(Page page) {
     page.setContent("<p><span>hello</span><span aria-hidden=\"true\">world</span></p>");
     checkAndMatchSnapshot(page.locator("body"), "- paragraph: hello");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIgnorePresentationAndNoneRoles(Page page) {
     page.setContent("<ul><li role=\"presentation\">hello</li><li role=\"none\">world</li></ul>");
     checkAndMatchSnapshot(page.locator("body"), "- list: hello world");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotUseOnAsCheckboxValue(Page page) {
     page.setContent("<input type=\"checkbox\"><input type=\"radio\">");
     checkAndMatchSnapshot(page.locator("body"), "- checkbox\n- radio");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotReportTextareaTextContent(Page page) {
     page.setContent("<textarea>Before</textarea>");
     checkAndMatchSnapshot(page.locator("body"), "- textbox: Before");
@@ -312,7 +308,7 @@ public class TestPageAriaSnapshot {
     checkAndMatchSnapshot(page.locator("body"), "- textbox: After");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotShowVisibleChildrenOfHiddenElements(Page page) {
     page.setContent(
       "<div style=\"visibility: hidden;\">" +
@@ -321,7 +317,7 @@ public class TestPageAriaSnapshot {
     assertEquals("", page.locator("body").ariaSnapshot());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotShowUnhiddenChildrenOfAriaHiddenElements(Page page) {
     page.setContent(
       "<div aria-hidden=\"true\">" +
@@ -330,7 +326,7 @@ public class TestPageAriaSnapshot {
     assertEquals("", page.locator("body").ariaSnapshot());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotPlaceholderWhenDifferentFromName(Page page) {
     page.setContent("<input placeholder=\"Placeholder\">");
     assertThat(page.locator("body")).matchesAriaSnapshot("- textbox \"Placeholder\"");
@@ -341,7 +337,7 @@ public class TestPageAriaSnapshot {
       "  - /placeholder: Placeholder");
   }
 
-  @Test
+  @PlaywrightTest
   void pageMatchesAriaSnapshot(Page page) {
     page.setContent("<h1>hello</h1>");
     assertThat(page).matchesAriaSnapshot("- heading \"hello\" [level=1]");

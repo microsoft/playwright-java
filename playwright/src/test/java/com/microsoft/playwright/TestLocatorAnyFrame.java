@@ -17,15 +17,15 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
-import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLocatorAnyFrame extends TestBase {
+public class TestLocatorAnyFrame {
   private static void routePage(Page page, String url, String body) {
     page.route("**/" + url, route -> route.fulfill(new Route.FulfillOptions().setBody(body).setContentType("text/html")));
   }
@@ -41,8 +41,8 @@ public class TestLocatorAnyFrame extends TestBase {
     }
   }
 
-  @Test
-  void shouldClickAButtonInsideAnIframe() {
+  @PlaywrightTest
+  void shouldClickAButtonInsideAnIframe(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<button onclick=\"window.__clicked = true\">Click me</button>");
     page.navigate(server.EMPTY_PAGE);
@@ -50,8 +50,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertEquals(true, page.frames().get(1).evaluate("() => window.__clicked"));
   }
 
-  @Test
-  void shouldClickAButtonInTheMainFrame() {
+  @PlaywrightTest
+  void shouldClickAButtonInTheMainFrame(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe><button onclick=\"window.__clicked = true\">Click me</button>");
     routePage(page, "a.html", "<div>No buttons here</div>");
     page.navigate(server.EMPTY_PAGE);
@@ -59,8 +59,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertEquals(true, page.evaluate("() => window.__clicked"));
   }
 
-  @Test
-  void shouldFailClickWhenElementsMatchInMultipleFrames() {
+  @PlaywrightTest
+  void shouldFailClickWhenElementsMatchInMultipleFrames(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe><iframe src=\"b.html\"></iframe>");
     routePage(page, "a.html", "<button>one</button>");
     routePage(page, "b.html", "<button>two</button>");
@@ -71,8 +71,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertTrue(e.getMessage().contains("frameLocator() matched elements in multiple frames"), e.getMessage());
   }
 
-  @Test
-  void shouldFailClickUponStrictModeViolationInsideASingleFrame() {
+  @PlaywrightTest
+  void shouldFailClickUponStrictModeViolationInsideASingleFrame(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<button>one</button><button>two</button>");
     page.navigate(server.EMPTY_PAGE);
@@ -82,8 +82,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
   }
 
-  @Test
-  void shouldTimeOutOnClickWhenThereAreNoMatches() {
+  @PlaywrightTest
+  void shouldTimeOutOnClickWhenThereAreNoMatches(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<div>Nothing here</div>");
     page.navigate(server.EMPTY_PAGE);
@@ -92,8 +92,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"), e.getMessage());
   }
 
-  @Test
-  void shouldCountElementsInASingleFrame() {
+  @PlaywrightTest
+  void shouldCountElementsInASingleFrame(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<div>1</div><div>2</div><div>3</div>");
     page.navigate(server.EMPTY_PAGE);
@@ -102,8 +102,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertEquals(0, page.frameLocator().locator("button").count());
   }
 
-  @Test
-  void shouldFailCountWhenElementsMatchInMultipleFrames() {
+  @PlaywrightTest
+  void shouldFailCountWhenElementsMatchInMultipleFrames(Page page, Server server) {
     routePage(page, "empty.html", "<div>main</div><iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<div>child</div>");
     page.navigate(server.EMPTY_PAGE);
@@ -112,8 +112,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertTrue(e.getMessage().contains("frameLocator() matched elements in multiple frames"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportHasCount() {
+  @PlaywrightTest
+  void shouldSupportHasCount(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<span>one</span><span>two</span>");
     page.navigate(server.EMPTY_PAGE);
@@ -121,8 +121,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().locator("button")).hasCount(0);
   }
 
-  @Test
-  void shouldWaitForAFrameToAppearWithHasCount() {
+  @PlaywrightTest
+  void shouldWaitForAFrameToAppearWithHasCount(Page page, Server server) {
     routePage(page, "empty.html", "<div>No frames yet</div>");
     routePage(page, "a.html", "<span>one</span><span>two</span>");
     page.navigate(server.EMPTY_PAGE);
@@ -136,8 +136,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().locator("span")).hasCount(2);
   }
 
-  @Test
-  void shouldFailHasCountWhenElementsMatchInMultipleFrames() {
+  @PlaywrightTest
+  void shouldFailHasCountWhenElementsMatchInMultipleFrames(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe><iframe src=\"b.html\"></iframe>");
     routePage(page, "a.html", "<span>one</span>");
     routePage(page, "b.html", "<span>two</span>");
@@ -148,24 +148,24 @@ public class TestLocatorAnyFrame extends TestBase {
     assertTrue(e.getMessage().contains("frameLocator() matched elements in multiple frames"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportHasText() {
+  @PlaywrightTest
+  void shouldSupportHasText(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<div>Hello iframe</div>");
     page.navigate(server.EMPTY_PAGE);
     assertThat(page.frameLocator().locator("div")).hasText("Hello iframe");
   }
 
-  @Test
-  void shouldSupportEvaluate() {
+  @PlaywrightTest
+  void shouldSupportEvaluate(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<button>one</button>");
     page.navigate(server.EMPTY_PAGE);
     assertEquals("one", page.frameLocator().locator("button").evaluate("e => e.textContent"));
   }
 
-  @Test
-  void shouldSupportFirstLastNth() {
+  @PlaywrightTest
+  void shouldSupportFirstLastNth(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<span>one</span><span>two</span><span>three</span>");
     page.navigate(server.EMPTY_PAGE);
@@ -174,16 +174,16 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().locator("span").nth(1)).hasText("two");
   }
 
-  @Test
-  void shouldNotAllowNthFrameOnAnyFrameLocator() {
+  @PlaywrightTest
+  void shouldNotAllowNthFrameOnAnyFrameLocator(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.frameLocator().first());
     assertTrue(e.getMessage().contains("Selecting the nth frame is not allowed on frameLocator()"), e.getMessage());
     assertThrows(PlaywrightException.class, () -> page.frameLocator().last());
     assertThrows(PlaywrightException.class, () -> page.frameLocator().nth(1));
   }
 
-  @Test
-  void shouldSupportTwoFrameLocators() {
+  @PlaywrightTest
+  void shouldSupportTwoFrameLocators(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<iframe id=\"x\" src=\"b.html\"></iframe>");
     routePage(page, "b.html", "<iframe id=\"y\" src=\"c.html\"></iframe><button>decoy</button>");
@@ -192,8 +192,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().frameLocator("#x").frameLocator("#y").locator("button")).hasText("bottom");
   }
 
-  @Test
-  void shouldSupportLocatorBeforeFrameLocator() {
+  @PlaywrightTest
+  void shouldSupportLocatorBeforeFrameLocator(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<section><iframe src=\"b.html\"></iframe></section><iframe src=\"c.html\"></iframe>");
     routePage(page, "b.html", "<button>in-section</button>");
@@ -202,8 +202,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().locator("section").frameLocator("iframe").locator("button")).hasText("in-section");
   }
 
-  @Test
-  void shouldSupportOwnerOfAFrameLocator() {
+  @PlaywrightTest
+  void shouldSupportOwnerOfAFrameLocator(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<iframe id=\"target\" src=\"b.html\"></iframe>");
     routePage(page, "b.html", "<button>inside</button>");
@@ -211,8 +211,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertEquals("target", page.frameLocator().frameLocator("#target").owner().getAttribute("id"));
   }
 
-  @Test
-  void shouldSupportContentFrameAfterAnyFrameLocator() {
+  @PlaywrightTest
+  void shouldSupportContentFrameAfterAnyFrameLocator(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<iframe id=\"my-frame\" src=\"b.html\"></iframe>");
     routePage(page, "b.html", "<button>inside</button>");
@@ -220,8 +220,8 @@ public class TestLocatorAnyFrame extends TestBase {
     assertThat(page.frameLocator().locator("#my-frame").contentFrame().getByRole(AriaRole.BUTTON)).hasText("inside");
   }
 
-  @Test
-  void shouldWorkOnFrame() {
+  @PlaywrightTest
+  void shouldWorkOnFrame(Page page, Server server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<iframe src=\"b.html\"></iframe>");
     routePage(page, "b.html", "<button>deep</button>");

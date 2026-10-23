@@ -17,9 +17,9 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.*;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.FileOutputStream;
@@ -41,9 +41,9 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextFetch extends TestBase {
-  @Test
-  void getShouldWork() {
+public class TestBrowserContextFetch {
+  @PlaywrightTest
+  void getShouldWork(BrowserContext context, Server server) {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
     assertEquals(200, response.status());
@@ -57,8 +57,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void getShouldReturnTiming() {
+  @PlaywrightTest
+  void getShouldReturnTiming(BrowserContext context, Server server) {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertTrue(response.ok());
     Timing timing = response.timing();
@@ -73,8 +73,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(timing.responseEnd < 60_000, "responseEnd = " + timing.responseEnd);
   }
 
-  @Test
-  void fetchShouldWork() {
+  @PlaywrightTest
+  void fetchShouldWork(BrowserContext context, Server server) {
     APIResponse response = context.request().fetch(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
     assertEquals(200, response.status());
@@ -88,23 +88,23 @@ public class TestBrowserContextFetch extends TestBase {
   }
 
   //     server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
-  @Test
-  void shouldThrowOnNetworkError() {
+  @PlaywrightTest
+  void shouldThrowOnNetworkError(BrowserContext context, Server server) {
     server.setRoute("/test", exchange -> exchange.getResponseBody().close());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/test"));
     assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnNetworkErrorAfterRedirect() {
+  @PlaywrightTest
+  void shouldThrowOnNetworkErrorAfterRedirect(BrowserContext context, Server server) {
     server.setRedirect("/redirect", "/test");
     server.setRoute("/test", exchange -> exchange.getResponseBody().close());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
     assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnNetworkErrorWhenSendingBody() {
+  @PlaywrightTest
+  void shouldThrowOnNetworkErrorWhenSendingBody(BrowserContext context, Server server) {
     server.setRoute("/test", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
       exchange.sendResponseHeaders(200, 4096);
@@ -116,8 +116,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("aborted"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnNetworkErrorWhenSendingBodyAfterRedirect() {
+  @PlaywrightTest
+  void shouldThrowOnNetworkErrorWhenSendingBodyAfterRedirect(BrowserContext context, Server server) {
     server.setRedirect("/redirect", "/test");
     server.setRoute("/test", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
@@ -130,8 +130,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("aborted"), e.getMessage());
   }
 
-  @Test
-  void shouldAddSessionCookiesToRequest() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAddSessionCookiesToRequest(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Cookie cookie = new Cookie("username", "John Doe");
     cookie.domain = "localhost";
     cookie.path = "/";
@@ -145,8 +145,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("username=John Doe"), req.get().headers.get("cookie"));
   }
 
-  @Test
-  void getShouldSupportQueryParams() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void getShouldSupportQueryParams(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
     context.request().get(server.EMPTY_PAGE + "?p1=foo",
       RequestOptions.create().setQueryParam("p1", "v1").setQueryParam("парам2", "знач2"));
@@ -156,23 +156,23 @@ public class TestBrowserContextFetch extends TestBase {
 
   ;
 
-  @Test
-  void getShouldSupportFailOnStatusCode() {
+  @PlaywrightTest
+  void getShouldSupportFailOnStatusCode(BrowserContext context, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.PREFIX + "/does-not-exist.html", RequestOptions.create().setFailOnStatusCode(true));
     });
     assertTrue(e.getMessage().contains("404 Not Found"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Error: socket hang up")
-  void getShouldSupportIgnoreHTTPSErrorsOption() {
+  void getShouldSupportIgnoreHTTPSErrorsOption(BrowserContext context, HttpsServer httpsServer) {
     APIResponse response = context.request().get(httpsServer.EMPTY_PAGE, RequestOptions.create().setIgnoreHTTPSErrors(true));
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldNotAddContextCookieIfCookieHeaderPassedAsAParameter() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldNotAddContextCookieIfCookieHeaderPassedAsAParameter(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Cookie cookie = new Cookie("username", "John Doe");
     cookie.domain = "localhost";
     cookie.path = "/";
@@ -186,8 +186,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("foo=bar"), req.get().headers.get("cookie"));
   }
 
-  @Test
-  void shouldFollowRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldFollowRedirects(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/redirect1", "/redirect2");
     server.setRedirect("/redirect2", "/simple.json");
     Cookie cookie = new Cookie("username", "John Doe");
@@ -210,8 +210,8 @@ public class TestBrowserContextFetch extends TestBase {
     return Arrays.stream(cookieHeader.split(";")).map(String::trim).sorted().collect(Collectors.toList());
   }
 
-  @Test
-  void pageRequestAddCookiesShouldAddCookiesToTheBrowserContext() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void pageRequestAddCookiesShouldAddCookiesToTheBrowserContext(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     page.request().addCookies(asList(
       new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
       new Cookie("c", "d").setDomain("localhost").setPath("/").setExpires(System.currentTimeMillis() / 1000 + 3600)));
@@ -224,8 +224,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("a=b", "c=d"), sortedCookiePairs((String) page.evaluate("document.cookie")));
   }
 
-  @Test
-  void pageRequestCookiesShouldReturnBrowserContextCookies() {
+  @PlaywrightTest
+  void pageRequestCookiesShouldReturnBrowserContextCookies(Page page, BrowserContext context, Server server) {
     context.addCookies(asList(
       new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
       new Cookie("c", "d").setDomain("example.com").setPath("/")));
@@ -237,8 +237,8 @@ public class TestBrowserContextFetch extends TestBase {
       new Gson().toJson(page.request().cookies(server.EMPTY_PAGE)));
   }
 
-  @Test
-  void pageRequestClearCookiesShouldClearBrowserContextCookies() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void pageRequestClearCookiesShouldClearBrowserContextCookies(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     context.addCookies(asList(
       new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
       new Cookie("c", "d").setUrl(server.EMPTY_PAGE)));
@@ -251,8 +251,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertNull(req.get().headers.get("cookie"));
   }
 
-  @Test
-  void shouldAddCookiesFromSetCookieHeader() {
+  @PlaywrightTest
+  void shouldAddCookiesFromSetCookieHeader(Page page, BrowserContext context, Server server) {
     server.setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "session=value");
       exchange.getResponseHeaders().add("Set-Cookie", "foo=bar; max-age=3600");
@@ -272,9 +272,9 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("foo=bar", "session=value"), page.evaluate("() => document.cookie.split(';').map(s => s.trim()).sort()"));
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Default Java's HTTP server throws on 'CONNECT non-existent.com:80 HTTP/1.1' because path is null.")
-  void shouldWorkWithContextLevelProxy() throws ExecutionException, InterruptedException {
+  void shouldWorkWithContextLevelProxy(BrowserType browserType, Server server) throws ExecutionException, InterruptedException {
     server.setRoute("/target.html", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
       exchange.sendResponseHeaders(200, 0);
@@ -292,8 +292,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithHttpCredentials() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithHttpCredentials(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     server.setAuth("/empty.html", "user", "pass");
 
     String base64 = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));;
@@ -304,8 +304,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/empty.html", request.get().url);
   }
 
-  @Test
-  void shouldWorkWithSetHTTPCredentials() {
+  @PlaywrightTest
+  void shouldWorkWithSetHTTPCredentials(BrowserContext context, Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     APIResponse response1 = context.request().get(server.EMPTY_PAGE);
     assertEquals(401, response1.status());
@@ -317,8 +317,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnErrorWithWrongCredentials() {
+  @PlaywrightTest
+  void shouldReturnErrorWithWrongCredentials(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     try (BrowserContext context = browser.newContext(
       new Browser.NewContextOptions().setHttpCredentials("user", "wrong"))) {
@@ -327,8 +327,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void postShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void postShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().post(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -338,8 +338,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void deleteShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void deleteShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().delete(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -349,8 +349,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void patchShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void patchShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().patch(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -360,8 +360,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void putShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void putShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().put(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -371,8 +371,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void getShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void getShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().get(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -382,8 +382,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void headShouldSupportPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void headShouldSupportPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().head(server.PREFIX + "/simple.json",
       RequestOptions.create().setData("My request"));
@@ -393,8 +393,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
-  @Test
-  void shouldAddDefaultHeaders() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAddDefaultHeaders(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.request().get(server.EMPTY_PAGE);
 
@@ -404,8 +404,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("gzip,deflate,br"), request.get().headers.get("accept-encoding"));
   }
 
-  @Test
-  void shouldSendContentLength() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSendContentLength(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     byte[] bytes = new byte[256];
     for (int i = 0; i < 256; i++) {
       bytes[i] = (byte) i;
@@ -416,8 +416,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("application/octet-stream"), request.get().headers.get("content-type"));
   }
 
-  @Test
-  void shouldAddDefaultHeadersToRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAddDefaultHeadersToRedirects(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/redirect", "/empty.html");
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.request().get(server.PREFIX + "/redirect");
@@ -428,8 +428,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("gzip,deflate,br"), request.get().headers.get("accept-encoding"));
   }
 
-  @Test
-  void shouldAllowToOverrideDefaultHeaders() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAllowToOverrideDefaultHeaders(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.request().get(server.EMPTY_PAGE, RequestOptions.create()
         .setHeader(
@@ -441,8 +441,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("br"), request.get().headers.get("accept-encoding"));
   }
 
-  @Test
-  void shouldPropagateCustomHeadersWithRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldPropagateCustomHeadersWithRedirects(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
     Future<Server.Request> req1 = server.futureRequest("/a/redirect1");
@@ -455,8 +455,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("bar"), req3.get().headers.get("foo"));
   }
 
-  @Test
-  void shouldPropagateExtraHttpHeadersWithRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldPropagateExtraHttpHeadersWithRedirects(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
     context.setExtraHTTPHeaders(mapOf("My-Secret", "Value"));
@@ -470,8 +470,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(asList("Value"), req3.get().headers.get("my-secret"));
   }
 
-  @Test
-  void shouldThrowOnInvalidHeaderValue() {
+  @PlaywrightTest
+  void shouldThrowOnInvalidHeaderValue(BrowserContext context, Server server) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.EMPTY_PAGE, RequestOptions.create()
         .setHeader("foo", "недопустимое значение"));
@@ -479,8 +479,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Invalid character in header content"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnNonHttpSProtocol() {
+  @PlaywrightTest
+  void shouldThrowOnNonHttpSProtocol(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get("data:text/plain,test"));
     assertTrue(e.getMessage().contains("Protocol \"data:\" not supported"), e.getMessage());
 
@@ -488,8 +488,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Protocol \"file:\" not supported"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportTimeoutOption() {
+  @PlaywrightTest
+  void shouldSupportTimeoutOption(BrowserContext context, Server server) {
     server.setRoute("/slow", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
       exchange.sendResponseHeaders(200, 4096);
@@ -501,8 +501,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportATimeoutOf0() {
+  @PlaywrightTest
+  void shouldSupportATimeoutOf0(BrowserContext context, Server server) {
     server.setRoute("/slow", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
       exchange.sendResponseHeaders(200, 4);
@@ -520,8 +520,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("done", response.text());
   }
 
-  @Test
-  void shouldRespectTimeoutAfterRedirects() {
+  @PlaywrightTest
+  void shouldRespectTimeoutAfterRedirects(BrowserContext context, Server server) {
     server.setRedirect("/redirect", "/slow");
     server.setRoute("/slow", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
@@ -533,8 +533,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
-  @Test
-  void shouldDispose() {
+  @PlaywrightTest
+  void shouldDispose(BrowserContext context, Server server) {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
     response.dispose();
@@ -542,8 +542,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
-  @Test
-  void shouldDisposeWhenContextCloses() {
+  @PlaywrightTest
+  void shouldDisposeWhenContextCloses(BrowserContext context, Server server) {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
     context.close();
@@ -551,8 +551,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(e.getMessage().contains("Response has been disposed") ||
         e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
-  @Test
-  void shouldOverrideRequestParameters() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverrideRequestParameters(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Request pageReq = page.waitForRequest("**/*", () -> page.navigate(server.EMPTY_PAGE));
     Future<Server.Request> req = server.futureRequest("/empty.html");
     context.request().fetch(pageReq, RequestOptions.create().setMethod("POST")
@@ -571,8 +571,8 @@ public class TestBrowserContextFetch extends TestBase {
     public Date nullDate;
   }
 
-  @Test
-  void shouldSerializeDateAndLocalDateTime() throws ExecutionException, InterruptedException, ParseException {
+  @PlaywrightTest
+  void shouldSerializeDateAndLocalDateTime(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException, ParseException {
     Request pageReq = page.waitForRequest("**/*", () -> page.navigate(server.EMPTY_PAGE));
     Future<Server.Request> req = server.futureRequest("/empty.html");
     TestData testData = new TestData();
@@ -585,8 +585,8 @@ public class TestBrowserContextFetch extends TestBase {
       new String(req.get().postBody));
   }
 
-  @Test
-  void shouldSupportOffsetDateTimeInData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportOffsetDateTimeInData(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     OffsetDateTime offsetDateTime = OffsetDateTime.parse("2024-07-10T10:15:30-08:00");
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
@@ -600,8 +600,8 @@ public class TestBrowserContextFetch extends TestBase {
     public LocalDate date;
   }
 
-  @Test
-  void shouldSupportLocalDateInData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportLocalDateInData(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     LocalDateData testData = new LocalDateData();
     testData.name = "foo";
@@ -612,8 +612,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("{\"name\":\"foo\",\"date\":\"2022-12-23\"}", new String(body));
   }
 
-  @Test
-  void shouldSupportApplicationXWwwFormUrlencoded() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportApplicationXWwwFormUrlencoded(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
     context.request().post(server.EMPTY_PAGE, RequestOptions.create().setForm(
       FormData.create()
@@ -633,8 +633,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertTrue(body.contains("file=f.js"), body);
   }
 
-  @Test
-  void shouldEncodeToApplicationJsonByDefault() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldEncodeToApplicationJsonByDefault(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Map<String, Object> data = mapOf(
       "firstName", "John",
       "lastName", "Doe",
@@ -650,8 +650,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(new Gson().toJson(data), body);
   }
 
-  @Test
-  void shouldSupportMultipartFormData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportMultipartFormData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
 
     FilePayload file = new FilePayload("f.js", "text/javascript",
@@ -683,8 +683,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(200, response.status());
   }
 
-  @Test
-  public void shouldSupportRepeatingNamesInMultipartFormData() throws InterruptedException, ExecutionException {
+  @PlaywrightTest
+  public void shouldSupportRepeatingNamesInMultipartFormData(BrowserContext context, Server server) throws InterruptedException, ExecutionException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
 
     FilePayload file1 = new FilePayload("f.js", "text/javascript",
@@ -723,8 +723,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldSupportMultipartFormDataWithPathValues(@TempDir Path tmp) throws ExecutionException, InterruptedException, IOException {
+  @PlaywrightTest
+  void shouldSupportMultipartFormDataWithPathValues(BrowserContext context, Server server, @TempDir Path tmp) throws ExecutionException, InterruptedException, IOException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
 
     Path path = tmp.resolve("simplezip.json");
@@ -757,8 +757,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldSerializeDataToJsonRegardlessOfContentType() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSerializeDataToJsonRegardlessOfContentType(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Map<String, Object> data = mapOf(
       "firstName", "John",
       "lastName", "Doe");
@@ -772,14 +772,14 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(new Gson().toJson(data), body);
   }
 
-  @Test
-  void shouldNotThrowWhenDataPassedForUnsupportedRequest() {
+  @PlaywrightTest
+  void shouldNotThrowWhenDataPassedForUnsupportedRequest(BrowserContext context, Server server) {
     context.request().fetch(server.EMPTY_PAGE, RequestOptions.create()
       .setMethod("GET").setData("bar"));
   }
 
-  @Test
-  void contextRequestShouldExportSameStorageStateAsContext() {
+  @PlaywrightTest
+  void contextRequestShouldExportSameStorageStateAsContext(Page page, BrowserContext context, Server server) {
     server.setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "a=b");
       exchange.getResponseHeaders().add("Set-Cookie", "c=d");
@@ -795,8 +795,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(contextState, pageState);
   }
 
-  @Test
-  void shouldAcceptBoolAndNumericParams() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldAcceptBoolAndNumericParams(Page page, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
     page.request().get(server.EMPTY_PAGE, RequestOptions.create()
       .setQueryParam("str", "s")
@@ -806,8 +806,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/empty.html?str=s&num=10&bool=true&bool2=false", req.get().url);
   }
 
-  @Test
-  void shouldAbortRequestsWhenBrowserContextCloses() {
+  @PlaywrightTest
+  void shouldAbortRequestsWhenBrowserContextCloses(Browser browser, Server server) {
     server.setRoute("/empty.html", exchange -> {
     });
 
@@ -828,8 +828,8 @@ public class TestBrowserContextFetch extends TestBase {
       e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldWorkWithSetHTTPCredentialsAndMatchingOrigin() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOrigin(BrowserContext context, Browser browser, Server server) throws ExecutionException, InterruptedException {
     server.setAuth("/empty.html", "user", "pass");
     APIResponse response1 = context.request().get(server.EMPTY_PAGE);
     assertEquals(401, response1.status());
@@ -843,8 +843,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithSetHTTPCredentialsAndMatchingOriginCaseInsensitive() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOriginCaseInsensitive(BrowserContext context, Browser browser, Server server) throws ExecutionException, InterruptedException {
     server.setAuth("/empty.html", "user", "pass");
     APIResponse response1 = context.request().get(server.EMPTY_PAGE);
     assertEquals(401, response1.status());
@@ -858,8 +858,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
@@ -869,8 +869,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
@@ -880,8 +880,8 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort(Browser browser, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
@@ -891,65 +891,65 @@ public class TestBrowserContextFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldSerializeNullValuesInPostData() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSerializeNullValuesInPostData(BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
     APIResponse response = context.request().post(server.EMPTY_PAGE, RequestOptions.create().setData(mapOf("foo", null)));
     assertEquals(200, response.status());
     assertEquals("{\"foo\":null}", new String(req.get().postBody));
   }
 
-    @Test
-    void shouldSupportHTTPCredentialsSendImmediatelyForNewContext() throws ExecutionException, InterruptedException {
-      Browser.NewContextOptions options = new Browser.NewContextOptions().setHttpCredentials(
-          new HttpCredentials("user", "pass")
-            .setOrigin(server.PREFIX.toUpperCase())
-            .setSend(HttpCredentialsSend.ALWAYS));
-      try (BrowserContext context = browser.newContext(options)) {
-        Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
-        APIResponse response = context.request().get(server.EMPTY_PAGE);
-        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
-          serverRequest.get().headers.getFirst("authorization"));
-        assertEquals(200, response.status());
-
-        serverRequest = server.futureRequest("/empty.html");
-        response = context.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
-        // Not sent to another origin.
-        assertNull(serverRequest.get().headers.get("authorization"));
-        assertEquals(200, response.status());
-      }
-    }
-
-    @Test
-    void shouldSupportHTTPCredentialsSendImmediatelyForBrowserNewPage() throws ExecutionException, InterruptedException {
-      Browser.NewPageOptions options = new Browser.NewPageOptions().setHttpCredentials(
+  @PlaywrightTest
+  void shouldSupportHTTPCredentialsSendImmediatelyForNewContext(Browser browser, Server server) throws ExecutionException, InterruptedException {
+    Browser.NewContextOptions options = new Browser.NewContextOptions().setHttpCredentials(
         new HttpCredentials("user", "pass")
           .setOrigin(server.PREFIX.toUpperCase())
           .setSend(HttpCredentialsSend.ALWAYS));
-      try (Page newPage = browser.newPage(options)) {
-        Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
-        APIResponse response = newPage.request().get(server.EMPTY_PAGE);
-        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
-          serverRequest.get().headers.getFirst("authorization"));
-        assertEquals(200, response.status());
+    try (BrowserContext context = browser.newContext(options)) {
+      Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+      APIResponse response = context.request().get(server.EMPTY_PAGE);
+      assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
+        serverRequest.get().headers.getFirst("authorization"));
+      assertEquals(200, response.status());
 
-        serverRequest = server.futureRequest("/empty.html");
-        response = newPage.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
-        // Not sent to another origin.
-        assertNull(serverRequest.get().headers.get("authorization"));
-        assertEquals(200, response.status());
-      }
+      serverRequest = server.futureRequest("/empty.html");
+      response = context.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      // Not sent to another origin.
+      assertNull(serverRequest.get().headers.get("authorization"));
+      assertEquals(200, response.status());
     }
+  }
 
-  @Test
-  void shouldNotWorkAfterContextDispose() {
+  @PlaywrightTest
+  void shouldSupportHTTPCredentialsSendImmediatelyForBrowserNewPage(Browser browser, Server server) throws ExecutionException, InterruptedException {
+    Browser.NewPageOptions options = new Browser.NewPageOptions().setHttpCredentials(
+      new HttpCredentials("user", "pass")
+        .setOrigin(server.PREFIX.toUpperCase())
+        .setSend(HttpCredentialsSend.ALWAYS));
+    try (Page newPage = browser.newPage(options)) {
+      Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+      APIResponse response = newPage.request().get(server.EMPTY_PAGE);
+      assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
+        serverRequest.get().headers.getFirst("authorization"));
+      assertEquals(200, response.status());
+
+      serverRequest = server.futureRequest("/empty.html");
+      response = newPage.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+      // Not sent to another origin.
+      assertNull(serverRequest.get().headers.get("authorization"));
+      assertEquals(200, response.status());
+    }
+  }
+
+  @PlaywrightTest
+  void shouldNotWorkAfterContextDispose(BrowserContext context, Server server) {
     context.close(new BrowserContext.CloseOptions().setReason("Test ended."));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("Test ended."), e.getMessage());
   }
 
-  @Test
-  public void shouldRetryECONNRESET() {
+  @PlaywrightTest
+  public void shouldRetryECONNRESET(BrowserContext context, Server server) {
     int[] requestCount = {0};
     server.setRoute("/test", exchange -> {
       if (requestCount[0]++ < 3) {
@@ -972,8 +972,8 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(4, requestCount[0]);
   }
 
-  @Test
-  void shouldSupportMultipleHttpCredentials() {
+  @PlaywrightTest
+  void shouldSupportMultipleHttpCredentials(Browser browser, Server server) {
     server.setAuth("/empty.html", "user1", "pass1");
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials(asList(

@@ -16,13 +16,13 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageLocatorConvenience extends TestBase {
-  @Test
-  void shouldReturnPage() {
+public class TestPageLocatorConvenience {
+  @PlaywrightTest
+  void shouldReturnPage(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/two-frames.html");
     Locator outer = page.locator("#outer");
     assertEquals(page, outer.page());

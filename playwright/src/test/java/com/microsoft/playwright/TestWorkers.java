@@ -16,27 +16,31 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.time.Duration;
 import java.time.Instant;
 
 import static com.microsoft.playwright.Utils.attachFrame;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestWorkers extends TestBase {
+public class TestWorkers {
 
-  private int browserMajorVersion() {
+  private int browserMajorVersion(Browser browser) {
     String version = browser.version();
     return Integer.parseInt(version.split("\\.")[0]);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Started failing since last driver roll, flaky upstream")
-  void pageWorkers() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "Started failing since last driver roll, flaky upstream")
+  void pageWorkers(Page page, Server server) {
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     assertTrue(worker.url().contains("worker.js"));
     assertEquals("worker function result", worker.evaluate("() => self['workerFunction']()"));
@@ -44,8 +48,8 @@ public class TestWorkers extends TestBase {
     assertEquals(0, page.workers().size());
   }
 
-  @Test
-  void shouldEmitCreatedAndDestroyedEvents() {
+  @PlaywrightTest
+  void shouldEmitCreatedAndDestroyedEvents(Page page) {
     JSHandle[] workerObj = {null};
     Worker worker = page.waitForWorker(() -> {
       workerObj[0] = page.evaluateHandle(
@@ -62,18 +66,18 @@ public class TestWorkers extends TestBase {
 
   }
 
-  @Test
-  void shouldReportConsoleLogs() {
+  @PlaywrightTest
+  void shouldReportConsoleLogs(Page page) {
     ConsoleMessage message = page.waitForConsoleMessage(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals("1", message.text());
   }
 
-  @Test
-  void shouldHaveJSHandlesForConsoleLogs() {
+  @PlaywrightTest
+  void shouldHaveJSHandlesForConsoleLogs(Page page, BrowserName browserName) {
     ConsoleMessage log = page.waitForConsoleMessage(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))"));
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals("1 2 3 JSHandle@object", log.text());
     } else {
       assertEquals("1 2 3 DedicatedWorkerGlobalScope", log.text());
@@ -82,15 +86,15 @@ public class TestWorkers extends TestBase {
     assertEquals("null", (log.args().get(3).getProperty("origin")).jsonValue());
   }
 
-  @Test
-  void shouldEvaluate() {
+  @PlaywrightTest
+  void shouldEvaluate(Page page) {
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(2, worker.evaluate("1+1"));
   }
 
-  @Test
-  void shouldReportErrors() {
+  @PlaywrightTest
+  void shouldReportErrors(Page page) {
     String[] errorLog = {null};
     page.onPageError(e -> errorLog[0] = e);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
@@ -108,9 +112,9 @@ public class TestWorkers extends TestBase {
     assertTrue(errorLog[0].contains("this is my error"));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="flaky upstream")
-  void shouldClearUponNavigation() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "flaky upstream")
+  void shouldClearUponNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
@@ -120,8 +124,8 @@ public class TestWorkers extends TestBase {
     assertEquals(0, page.workers().size());
   }
 
-  @Test
-  void shouldClearUponCrossProcessNavigation() {
+  @PlaywrightTest
+  void shouldClearUponCrossProcessNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
@@ -133,9 +137,9 @@ public class TestWorkers extends TestBase {
     assertEquals(0, page.workers().size());
   }
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
-  void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe() {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = WEBKIT, reason = "fixme")
+  void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe(Page page, Server server) {
     page.navigate(server.PREFIX + "/empty.html");
     Frame[] frame = {null};
     Worker worker = page.waitForWorker(() -> {
@@ -150,10 +154,10 @@ public class TestWorkers extends TestBase {
     assertEquals(frame[0], request.frame());
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Started failing since last driver roll, flaky upstream")
-  void shouldReportNetworkActivity() {
-    Assumptions.assumeFalse(isFirefox() && browserMajorVersion() < 114);
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "Started failing since last driver roll, flaky upstream")
+  void shouldReportNetworkActivity(Page page, Browser browser, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(browserName == FIREFOX && browserMajorVersion(browser) < 114);
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     String url = server.PREFIX + "/one-style.css";
     Request[] request = {null};
@@ -167,9 +171,9 @@ public class TestWorkers extends TestBase {
     assertTrue(response.ok());
   }
 
-  @Test
-  void shouldReportNetworkActivityOnWorkerCreation() {
-    Assumptions.assumeFalse(isFirefox() && browserMajorVersion() < 114);
+  @PlaywrightTest
+  void shouldReportNetworkActivityOnWorkerCreation(Page page, Browser browser, Server server, BrowserName browserName) {
+    Assumptions.assumeFalse(browserName == FIREFOX && browserMajorVersion(browser) < 114);
     // Chromium needs waitForDebugger enabled for this one.
     page.navigate(server.EMPTY_PAGE);
     String url = server.PREFIX + "/one-style.css";
@@ -186,8 +190,8 @@ public class TestWorkers extends TestBase {
     assertTrue(response.ok());
   }
 
-  @Test
-  void shouldFormatNumberUsingContextLocale() {
+  @PlaywrightTest
+  void shouldFormatNumberUsingContextLocale(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("ru-RU"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -197,8 +201,8 @@ public class TestWorkers extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldReportConsoleEventOnTheWorker() {
+  @PlaywrightTest
+  void shouldReportConsoleEventOnTheWorker(Page page) {
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => { window.worker = new Worker(URL.createObjectURL(new Blob(['42'], {type: 'application/javascript'}))); }"
     ));

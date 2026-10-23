@@ -1,10 +1,11 @@
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import com.microsoft.playwright.options.ClientCertificate;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -16,13 +17,12 @@ import java.nio.file.Paths;
 
 import static com.microsoft.playwright.Utils.nextFreePort;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestClientCertificates extends TestBase {
-  private ServerWithClientCertificate customServer;
-
+public class TestClientCertificates {
   private static Path asset(String path) {
     return Paths.get("src/test/resources/" + path).toAbsolutePath();
   }
@@ -40,25 +40,13 @@ public class TestClientCertificates extends TestBase {
     }
   }
 
-  @BeforeAll
-  @Override
-  void startServer() throws IOException {
-    super.startServer();
-    customServer = ServerWithClientCertificate.create(nextFreePort());
+  @Fixture(scope = Scope.WORKER)
+  static ServerWithClientCertificate customServer() throws IOException {
+    return ServerWithClientCertificate.create(nextFreePort());
   }
 
-  @AfterAll
-  @Override
-  void stopServer() {
-    if (customServer != null) {
-      customServer.stop();
-      customServer = null;
-    }
-    super.stopServer();
-  }
-
-  @Test
-  public void shouldFailWithNoClientCertificatesProvided() {
+  @PlaywrightTest
+  public void shouldFailWithNoClientCertificatesProvided(Playwright playwright, ServerWithClientCertificate customServer) {
     APIRequestContext request = playwright.request().newContext(
         new APIRequest.NewContextOptions().setIgnoreHTTPSErrors(true));
     APIResponse response = request.get(customServer.url);
@@ -66,8 +54,8 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
-  @Test
-  public void shouldKeepSupportingHttp() {
+  @PlaywrightTest
+  public void shouldKeepSupportingHttp(Playwright playwright, Server server) {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -82,8 +70,8 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
-  @Test
-  public void shouldThrowWithUntrustedClientCerts() {
+  @PlaywrightTest
+  public void shouldThrowWithUntrustedClientCerts(Playwright playwright, ServerWithClientCertificate customServer) {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -101,8 +89,8 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
-  @Test
-  public void passWithTrustedClientCertificates() {
+  @PlaywrightTest
+  public void passWithTrustedClientCertificates(Playwright playwright, ServerWithClientCertificate customServer) {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -120,8 +108,8 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
-  @Test
-  public void passWithTrustedClientCertificatesPfx() {
+  @PlaywrightTest
+  public void passWithTrustedClientCertificatesPfx(Playwright playwright, ServerWithClientCertificate customServer) {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -139,13 +127,9 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
-  static boolean isWebKitMacOS() {
-    return isWebKit() && isMac;
-  }
-
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
-  public void shouldWorkWithBrowserNewContext() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.MAC, reason = "The network connection was lost.")
+  public void shouldWorkWithBrowserNewContext(Browser browser, ServerWithClientCertificate customServer) {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -170,9 +154,9 @@ public class TestClientCertificates extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
-  public void shouldWorkWithBrowserNewPage() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.MAC, reason = "The network connection was lost.")
+  public void shouldWorkWithBrowserNewPage(Browser browser, ServerWithClientCertificate customServer) {
     Browser.NewPageOptions options = new Browser.NewPageOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -196,9 +180,9 @@ public class TestClientCertificates extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
-  public void shouldWorkWithBrowserNewPageWhenPassingAsContent() throws IOException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.MAC, reason = "The network connection was lost.")
+  public void shouldWorkWithBrowserNewPageWhenPassingAsContent(Browser browser, ServerWithClientCertificate customServer) throws IOException {
     Browser.NewPageOptions options = new Browser.NewPageOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -222,11 +206,11 @@ public class TestClientCertificates extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.MAC, reason = "The network connection was lost.")
   // No cleanup: on Windows Chromium may keep chrome_debug.log in the user data dir
   // locked briefly after close, failing the deletion.
-  public void shouldWorkWithBrowserLaunchPersistentContext(@TempDir(cleanup = CleanupMode.NEVER) Path tmpDir) {
+  public void shouldWorkWithBrowserLaunchPersistentContext(Browser browser, ServerWithClientCertificate customServer, @TempDir(cleanup = CleanupMode.NEVER) Path tmpDir) {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(

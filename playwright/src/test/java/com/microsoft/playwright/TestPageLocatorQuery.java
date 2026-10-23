@@ -16,17 +16,17 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
-import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageLocatorQuery extends TestBase {
-  @Test
-  void shouldRespectFirstAndLast() {
+public class TestPageLocatorQuery {
+  @PlaywrightTest
+  void shouldRespectFirstAndLast(Page page) {
     page.setContent("<section>\n" +
       "    <div><p>A</p></div>\n" +
       "    <div><p>A</p><p>A</p></div>\n" +
@@ -38,8 +38,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertEquals(3, page.locator("div").last().locator("p").count());
   }
 
-  @Test
-  void shouldRespectNth() {
+  @PlaywrightTest
+  void shouldRespectNth(Page page) {
     page.setContent("<section>\n" +
       "    <div><p>A</p></div>\n" +
       "    <div><p>A</p><p>A</p></div>\n" +
@@ -50,8 +50,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertEquals(3, page.locator("div").nth(2).locator("p").count());
   }
 
-  @Test
-  void shouldThrowOnCaptureWNth() {
+  @PlaywrightTest
+  void shouldThrowOnCaptureWNth(Page page) {
     page.setContent("<section><div><p>A</p></div></section>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("*css=div >> p").nth(1).click();
@@ -59,8 +59,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertTrue(e.getMessage().contains("Can't query n-th element"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnDueToStrictness() {
+  @PlaywrightTest
+  void shouldThrowOnDueToStrictness(Page page) {
     page.setContent("<div>A</div><div>B</div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("div").isVisible();
@@ -68,8 +68,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowOnDueToStrictness2() {
+  @PlaywrightTest
+  void shouldThrowOnDueToStrictness2(Page page) {
     page.setContent("<select><option>One</option><option>Two</option></select>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("option").evaluate("e => {}");
@@ -77,38 +77,38 @@ public class TestPageLocatorQuery extends TestBase {
     assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
   }
 
-  @Test
-  void shouldFilterByText() {
+  @PlaywrightTest
+  void shouldFilterByText(Page page) {
     page.setContent("<div>Foobar</div><div>Bar</div>");
     assertEquals("Foobar", page.locator("div", new Page.LocatorOptions().setHasText("Foo")).textContent());
   }
 
-  @Test
-  void shouldFilterByText2() {
+  @PlaywrightTest
+  void shouldFilterByText2(Page page) {
     page.setContent("<div>foo <span>hello world</span> bar</div>");
     assertEquals("foo hello world bar", page.locator("div", new Page.LocatorOptions().setHasText("hello world")).textContent());
   }
 
-  @Test
-  void shouldFilterByRegex() {
+  @PlaywrightTest
+  void shouldFilterByRegex(Page page) {
     page.setContent("<div>Foobar</div><div>Bar</div>");
     assertEquals("Foobar", page.locator("div", new Page.LocatorOptions().setHasText(Pattern.compile("Foo.*"))).textContent());
   }
 
-  @Test
-  void shouldFilterByTextWithQuotes() {
+  @PlaywrightTest
+  void shouldFilterByTextWithQuotes(Page page) {
     page.setContent("<div>Hello \"world\"</div><div>Hello world</div>");
     assertEquals("Hello \"world\"", page.locator("div", new Page.LocatorOptions().setHasText("Hello \"world\"")).textContent());
   }
 
-  @Test
-  void shouldFilterByRegexWithQuotes() {
+  @PlaywrightTest
+  void shouldFilterByRegexWithQuotes(Page page) {
     page.setContent("<div>Hello \"world\"</div><div>Hello world</div>");
     assertEquals("Hello \"world\"", page.locator("div", new Page.LocatorOptions().setHasText(Pattern.compile("Hello \"world\""))).textContent());
   }
 
-  @Test
-  void shouldFilterByRegexWithASingleQuote() {
+  @PlaywrightTest
+  void shouldFilterByRegexWithASingleQuote(Page page) {
     page.setContent("<button>let's let's<span>hello</span></button>");
     assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
     assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
@@ -140,35 +140,35 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\\\'s let\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
   }
 
-  @Test
-  void shouldFilterByRegexAndRegexpFlags() {
+  @PlaywrightTest
+  void shouldFilterByRegexAndRegexpFlags(Page page) {
     page.setContent("<div>Hello \"world\"</div><div>Hello world</div>");
     Pattern pattern = Pattern.compile("hElLo \"world\"", Pattern.CASE_INSENSITIVE);
     assertEquals("Hello \"world\"", page.locator("div", new Page.LocatorOptions().setHasText(pattern)).textContent());
   }
 
-  @Test
-  void shouldFilterByCaseInsensitiveRegexInAChild() {
+  @PlaywrightTest
+  void shouldFilterByCaseInsensitiveRegexInAChild(Page page) {
     page.setContent("<div class=\"test\"><h5>Title Text</h5></div>");
     Pattern pattern = Pattern.compile("^title text$", Pattern.CASE_INSENSITIVE);
     assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasText("Title Text");
   }
 
-  @Test
-  void shouldFilterByCaseInsensitiveRegexInMultipleChildren() {
+  @PlaywrightTest
+  void shouldFilterByCaseInsensitiveRegexInMultipleChildren(Page page) {
     page.setContent("<div class=\"test\"><h5>Title</h5> <h2><i>Text</i></h2></div>`");
     Pattern pattern = Pattern.compile("^title text$", Pattern.CASE_INSENSITIVE);
     assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasClass("test");
   }
 
-  @Test
-  void shouldFilterByRegexWithSpecialSymbols() {
+  @PlaywrightTest
+  void shouldFilterByRegexWithSpecialSymbols(Page page) {
     page.setContent("<div class=\"test\"><h5>First/\"and\"</h5><h2><i>Second\\</i></h2></div>");
     Pattern pattern = Pattern.compile("first\\/\".*\"second\\\\$", Pattern.CASE_INSENSITIVE);
     assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasClass("test");
   }
-  @Test
-  void shouldFilterByTextWithAmpersand() {
+  @PlaywrightTest
+  void shouldFilterByTextWithAmpersand(Page page) {
     page.setContent("<div>Save & Continue</div>");
     assertEquals("Save & Continue", page.locator("div",
       new Page.LocatorOptions().setHasText("Save & Continue")).textContent());
@@ -177,8 +177,8 @@ public class TestPageLocatorQuery extends TestBase {
   private static String removeHighlight(String markup) {
     return markup.replaceAll("\\s__playwright_target__=\"[^\"]+\"", "");
   }
-  @Test
-  void shouldSupportHasLocator() {
+  @PlaywrightTest
+  void shouldSupportHasLocator(Page page) {
     page.setContent("<div><span>hello</span></div><div><span>world</span></div>");
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world")))).hasCount(1);
     assertEquals("<div><span>world</span></div>", removeHighlight((String) page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world"))).evaluate("e => e.outerHTML")));
@@ -193,8 +193,8 @@ public class TestPageLocatorQuery extends TestBase {
         .setHas(page.locator("span")).setHasText("wor"))).hasCount(1);
   }
 
-  @Test
-  void shouldSupportLocatorFilter() {
+  @PlaywrightTest
+  void shouldSupportLocatorFilter(Page page) {
     page.setContent("<section><div><span>hello</span></div><div><span>world</span></div></section>");
     assertThat(page.locator("div").filter(new Locator.FilterOptions().setHasText("hello"))).hasCount(1);
     assertThat(page.locator("div", new Page.LocatorOptions().setHasText("hello")).filter(new Locator.FilterOptions().setHasText("hello"))).hasCount(1);
@@ -217,8 +217,8 @@ public class TestPageLocatorQuery extends TestBase {
   }
 
 
-  @Test
-  void shouldSupportLocatorAnd() {
+  @PlaywrightTest
+  void shouldSupportLocatorAnd(Page page) {
     page.setContent("<div data-testid=foo>hello</div><div data-testid=bar>world</div>\n" +
       "    <span data-testid=foo>hello2</span><span data-testid=bar>world2</span>");
     assertThat(page.locator("div").and(page.locator("div"))).hasCount(2);
@@ -229,8 +229,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("span").and(page.getByTestId(Pattern.compile("bar|foo")))).hasCount(2);
   }
 
-  @Test
-  void shouldSupportLocatorOr() {
+  @PlaywrightTest
+  void shouldSupportLocatorOr(Page page) {
     page.setContent("<div>hello</div><span>world</span>");
     assertThat(page.locator("div").or(page.locator("span"))).hasCount(2);
     assertThat(page.locator("div").or(page.locator("span"))).hasText(new String[]{"hello", "world"});
@@ -242,8 +242,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("span").or(page.locator("article"))).hasText("world");
   }
 
-  @Test
-  void shouldSupportLocatorLocatorWithAndOr() {
+  @PlaywrightTest
+  void shouldSupportLocatorLocatorWithAndOr(Page page) {
     page.setContent("\n" +
       "    <div>one <span>two</span> <button>three</button> </div>\n" +
       "    <span>four</span>\n" +
@@ -258,8 +258,8 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("button").and(page.getByRole(AriaRole.BUTTON))).hasText(new String[]{"three", "five"});
   }
 
-  @Test
-  void shouldSupportLocatorWithin() {
+  @PlaywrightTest
+  void shouldSupportLocatorWithin(Page page) {
     page.setContent("\n" +
       "    <table>\n" +
       "      <tr><td>a1</td><td>a2</td><td>a3</td></tr>\n" +

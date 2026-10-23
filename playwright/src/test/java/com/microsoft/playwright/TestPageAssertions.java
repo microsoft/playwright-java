@@ -17,7 +17,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.PageAssertions;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.regex.Pattern;
@@ -25,15 +25,15 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageAssertions extends TestBase {
-  @Test
-  void hasURLTextPass() {
+public class TestPageAssertions {
+  @PlaywrightTest
+  void hasURLTextPass(Page page) {
     page.navigate("data:text/html,<div>A</div>");
     assertThat(page).hasURL("data:text/html,<div>A</div>");
   }
 
-  @Test
-  void hasURLTextFail() {
+  @PlaywrightTest
+  void hasURLTextFail(Page page) {
     page.navigate("data:text/html,<div>B</div>");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasURL("foo", new PageAssertions.HasURLOptions().setTimeout(1_000));
@@ -43,8 +43,8 @@ public class TestPageAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Page URL expected to be"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportHasUrlWithBaseUrl() {
+  @PlaywrightTest
+  void shouldSupportHasUrlWithBaseUrl(Browser browser, Server server) {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBaseURL(server.PREFIX))) {
       Page page = context.newPage();
       page.navigate(server.EMPTY_PAGE);
@@ -52,26 +52,26 @@ public class TestPageAssertions extends TestBase {
     }
   }
 
-  @Test
-  void notHasUrlText() {
+  @PlaywrightTest
+  void notHasUrlText(Page page) {
     page.navigate("data:text/html,<div>B</div>");
     assertThat(page).not().hasURL("about:blank", new PageAssertions.HasURLOptions().setTimeout(1000));
   }
 
-  @Test
-  public void hasUrlSupportIgnoreCase() {
+  @PlaywrightTest
+  public void hasUrlSupportIgnoreCase(Page page) {
     page.navigate("data:text/html,<div>A</div>");
     assertThat(page).hasURL("DATA:teXT/HTml,<div>a</div>", new PageAssertions.HasURLOptions().setIgnoreCase(true));
   }
 
-  @Test
-  void hasURLRegexPass() {
+  @PlaywrightTest
+  void hasURLRegexPass(Page page) {
     page.navigate("data:text/html,<div>A</div>");
     assertThat(page).hasURL(Pattern.compile("text"));
   }
 
-  @Test
-  void hasURLRegexFail() {
+  @PlaywrightTest
+  void hasURLRegexFail(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasURL(Pattern.compile(".*foo.*"), new PageAssertions.HasURLOptions().setTimeout(1_000));
@@ -81,26 +81,26 @@ public class TestPageAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Page URL expected to match regex"), e.getMessage());
   }
 
-  @Test
-  void notHasUrlRegEx() {
+  @PlaywrightTest
+  void notHasUrlRegEx(Page page) {
     page.navigate("data:text/html,<div>B</div>");
     assertThat(page).not().hasURL(Pattern.compile("about"), new PageAssertions.HasURLOptions().setTimeout(1000));
   }
 
-  @Test
-  void hasTitleTextPass() {
+  @PlaywrightTest
+  void hasTitleTextPass(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     assertThat(page).hasTitle("Woof-Woof", new PageAssertions.HasTitleOptions().setTimeout(1_000));
   }
 
-  @Test
-  void hasTitleTextNormalizeWhitespaces() {
+  @PlaywrightTest
+  void hasTitleTextNormalizeWhitespaces(Page page) {
     page.setContent("<title>     Foo     Bar    </title>");
     assertThat(page).hasTitle("  Foo  Bar", new PageAssertions.HasTitleOptions().setTimeout(1_000));
   }
 
-  @Test
-  void hasTitleTextFail() {
+  @PlaywrightTest
+  void hasTitleTextFail(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasTitle("foo", new PageAssertions.HasTitleOptions().setTimeout(1_000));
@@ -110,14 +110,14 @@ public class TestPageAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Page title expected to be\nExpected: foo\nReceived: Woof-Woof"), e.getMessage());
   }
 
-  @Test
-  void hasTitleRegexPass() {
+  @PlaywrightTest
+  void hasTitleRegexPass(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     assertThat(page).hasTitle(Pattern.compile("^.oof.+oof$"));
   }
 
-  @Test
-  void hasTitleRegexFail() {
+  @PlaywrightTest
+  void hasTitleRegexFail(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasTitle(Pattern.compile("^foo[AB]"), new PageAssertions.HasTitleOptions().setTimeout(1_000));
@@ -127,14 +127,14 @@ public class TestPageAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Page title expected to match regex\nExpected: ^foo[AB]\nReceived: Woof-Woof"), e.getMessage());
   }
 
-  @Test
-  void notHasTitleRegEx() {
+  @PlaywrightTest
+  void notHasTitleRegEx(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     assertThat(page).not().hasTitle(Pattern.compile("ab.ut"));
   }
 
-  @Test
-  void hasTitleRegExCaseInsensitivePass() {
+  @PlaywrightTest
+  void hasTitleRegExCaseInsensitivePass(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     assertThat(page).hasTitle(Pattern.compile("woof-woof", Pattern.CASE_INSENSITIVE));
   }

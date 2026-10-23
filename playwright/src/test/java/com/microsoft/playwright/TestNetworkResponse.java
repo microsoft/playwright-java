@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.ServerAddr;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,9 +30,9 @@ import java.util.concurrent.Semaphore;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestNetworkResponse extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestNetworkResponse {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("foo", "bar");
       exchange.getResponseHeaders().add("BaZ", "bAz");
@@ -45,22 +45,22 @@ public class TestNetworkResponse extends TestBase {
     assertNull(response.headers().get("BaZ"));
   }
 
-  @Test
-  void shouldReturnText() {
+  @PlaywrightTest
+  void shouldReturnText(Page page, Server server) {
     Response response = page.navigate(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void shouldReturnUncompressedText() {
+  @PlaywrightTest
+  void shouldReturnUncompressedText(Page page, Server server) {
     server.enableGzip("/simple.json");
     Response response = page.navigate(server.PREFIX + "/simple.json");
     assertEquals("gzip", response.headers().get("content-encoding"));
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void shouldThrowWhenRequestingBodyOfRedirectedResponse() {
+  @PlaywrightTest
+  void shouldThrowWhenRequestingBodyOfRedirectedResponse(Page page, Server server) {
     server.setRedirect("/foo.html", "/empty.html");
     Response response = page.navigate(server.PREFIX + "/foo.html");
     Request redirectedFrom = response.request().redirectedFrom();
@@ -71,8 +71,8 @@ public class TestNetworkResponse extends TestBase {
     assertTrue(e.getMessage().contains("Response body is unavailable for redirect responses"));
   }
 
-  @Test
-  void shouldWaitUntilResponseCompletes() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWaitUntilResponseCompletes(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     Semaphore responseWritten = new Semaphore(0);
     Semaphore responseRead = new Semaphore(0);
@@ -115,23 +115,23 @@ public class TestNetworkResponse extends TestBase {
   void shouldReturnJson() {
     // Not exposed in Java.
   }
-  @Test
-  void shouldReturnBody() throws IOException {
+  @PlaywrightTest
+  void shouldReturnBody(Page page, Server server) throws IOException {
     Response response = page.navigate(server.PREFIX + "/pptr.png");
     byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 
-  @Test
-  void shouldReturnBodyWithCompression() throws IOException {
+  @PlaywrightTest
+  void shouldReturnBodyWithCompression(Page page, Server server) throws IOException {
     server.enableGzip("/pptr.png");
     Response response = page.navigate(server.PREFIX + "/pptr.png");
     byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 
-  @Test
-  void shouldReturnStatusText() {
+  @PlaywrightTest
+  void shouldReturnStatusText(Page page, Server server) {
     server.setRoute("/cool", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
@@ -140,8 +140,8 @@ public class TestNetworkResponse extends TestBase {
     assertEquals("OK", response.statusText());
   }
 
-  @Test
-  void shouldReturnServerAddress() {
+  @PlaywrightTest
+  void shouldReturnServerAddress(Page page, Server server) {
     Response response = page.navigate(server.EMPTY_PAGE);
     ServerAddr address = response.serverAddr();
     assertNotNull(address);

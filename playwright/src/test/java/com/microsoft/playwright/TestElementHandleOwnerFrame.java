@@ -16,16 +16,16 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
-import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.attachFrame;
+import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TestElementHandleOwnerFrame extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestElementHandleOwnerFrame {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
@@ -35,8 +35,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(frame, elementHandle.ownerFrame());
   }
 
-  @Test
-  void shouldWorkForCrossProcessIframes() {
+  @PlaywrightTest
+  void shouldWorkForCrossProcessIframes(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
     Frame frame = page.frames().get(1);
@@ -46,8 +46,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(frame, elementHandle.ownerFrame());
   }
 
-  @Test
-  void shouldWorkForDocument() {
+  @PlaywrightTest
+  void shouldWorkForDocument(Page page, Server server) {
     // TODO: test.flaky(platform === "win32" && browserName === "webkit");
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
@@ -58,8 +58,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(frame, elementHandle.ownerFrame());
   }
 
-  @Test
-  void shouldWorkForIframeElements() {
+  @PlaywrightTest
+  void shouldWorkForIframeElements(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.mainFrame();
@@ -69,8 +69,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(frame, elementHandle.ownerFrame());
   }
 
-  @Test
-  void shouldWorkForCrossFrameEvaluations() {
+  @PlaywrightTest
+  void shouldWorkForCrossFrameEvaluations(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.mainFrame();
@@ -78,8 +78,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(frame.childFrames().get(0), elementHandle.asElement().ownerFrame());
   }
 
-  @Test
-  void shouldWorkForDetachedElements() {
+  @PlaywrightTest
+  void shouldWorkForDetachedElements(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
       "  const div = document.createElement('div');\n" +
@@ -94,8 +94,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
     assertEquals(page.mainFrame(), divHandle.asElement().ownerFrame());
 }
 
-  @Test
-  void shouldWorkForAdoptedElements() {
+  @PlaywrightTest
+  void shouldWorkForAdoptedElements(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE));
     JSHandle divHandle = page.evaluateHandle("() => {\n" +

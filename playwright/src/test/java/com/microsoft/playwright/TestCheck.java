@@ -16,64 +16,64 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestCheck extends TestBase {
+public class TestCheck {
 
-  @Test
-  void shouldCheckTheBox() {
+  @PlaywrightTest
+  void shouldCheckTheBox(Page page) {
     page.setContent("<input id='checkbox' type='checkbox'></input>");
     page.check("input");
     assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldNotCheckTheCheckedBox() {
+  @PlaywrightTest
+  void shouldNotCheckTheCheckedBox(Page page) {
     page.setContent("<input id='checkbox' type='checkbox' checked></input>");
     page.check("input");
     assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldUncheckTheBox() {
+  @PlaywrightTest
+  void shouldUncheckTheBox(Page page) {
     page.setContent("<input id='checkbox' type='checkbox' checked></input>");
     page.uncheck("input");
     assertEquals(false, page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldNotUncheckTheUncheckedBox() {
+  @PlaywrightTest
+  void shouldNotUncheckTheUncheckedBox(Page page) {
     page.setContent("<input id='checkbox' type='checkbox'></input>");
     page.uncheck("input");
     assertEquals(false, page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldCheckTheBoxByLabel() {
+  @PlaywrightTest
+  void shouldCheckTheBoxByLabel(Page page) {
     page.setContent("<label for='checkbox'><input id='checkbox' type='checkbox'></input></label>");
     page.check("label");
     assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldCheckTheBoxOutsideLabel() {
+  @PlaywrightTest
+  void shouldCheckTheBoxOutsideLabel(Page page) {
     page.setContent("<label for='checkbox'>Text</label><div><input id='checkbox' type='checkbox'></input></div>");
     page.check("label");
     assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldCheckTheBoxInsideLabelWOId() {
+  @PlaywrightTest
+  void shouldCheckTheBoxInsideLabelWOId(Page page) {
     page.setContent("<label>Text<span><input id='checkbox' type='checkbox'></input></span></label>");
     page.check("label");
     assertTrue((Boolean) page.evaluate("() => window['checkbox'].checked"));
   }
 
-  @Test
-  void shouldCheckRadio() {
+  @PlaywrightTest
+  void shouldCheckRadio(Page page) {
     page.setContent("<input type='radio'>one</input>\n" +
       "<input id='two' type='radio'>two</input>\n" +
       "<input type='radio'>three</input>");
@@ -81,8 +81,8 @@ public class TestCheck extends TestBase {
     assertTrue((Boolean) page.evaluate("() => window['two'].checked"));
   }
 
-  @Test
-  void shouldCheckTheBoxByAriaRole() {
+  @PlaywrightTest
+  void shouldCheckTheBoxByAriaRole(Page page) {
     page.setContent("<div role='checkbox' id='checkbox'>CHECKBOX</div>\n" +
       " <script>\n" +
       "  checkbox.addEventListener('click', () => checkbox.setAttribute('aria-checked', 'true'));\n" +

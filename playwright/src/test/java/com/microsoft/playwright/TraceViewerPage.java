@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.options.AriaRole;
 
@@ -100,7 +101,7 @@ class TraceViewerPage {
       exchange.getResponseBody().close();
     });
 
-    try (Browser browser = browserType.launch(TestBase.createLaunchOptions());
+    try (Browser browser = browserType.launch(Env.launchOptions());
          BrowserContext context = browser.newContext()) {
       Page page = context.newPage();
       page.navigate(traceServer.PREFIX + "/index.html?trace=" + traceServer.PREFIX + "/trace.zip");

@@ -16,22 +16,22 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestLocatorEvaluate extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestLocatorEvaluate {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     page.setContent("<html><body><div class='tweet'><div class='like'>100</div><div class='retweets'>10</div></div></body></html>");
     Locator tweet = page.locator(".tweet .like");
     Object content = tweet.evaluate("node => node.innerText");
     assertEquals("100", content);
   }
 
-  @Test
-  void shouldRetrieveContentFromSubtree() {
+  @PlaywrightTest
+  void shouldRetrieveContentFromSubtree(Page page) {
     String htmlContent = "<div class='a'>not-a-child-div</div><div id='myId'><div class='a'>a-child-div</div></div>";
     page.setContent(htmlContent);
     Locator locator = page.locator("#myId .a");
@@ -39,16 +39,16 @@ public class TestLocatorEvaluate extends TestBase {
     assertEquals("a-child-div", content);
   }
 
-  @Test
-  void shouldWorkForAll() {
+  @PlaywrightTest
+  void shouldWorkForAll(Page page) {
     page.setContent("<html><body><div class='tweet'><div class='like'>100</div><div class='like'>10</div></div></body></html>");
     Locator tweet = page.locator(".tweet .like");
     Object content = tweet.evaluateAll("nodes => nodes.map(n => n.innerText)");
     assertEquals(asList("100", "10"), content);
   }
 
-  @Test
-  void shouldRetrieveContentFromSubtreeForAll() {
+  @PlaywrightTest
+  void shouldRetrieveContentFromSubtreeForAll(Page page) {
     String htmlContent = "<div class='a'>not-a-child-div</div><div id='myId'><div class='a'>a1-child-div</div><div class='a'>a2-child-div</div></div>";
     page.setContent(htmlContent);
     Locator element = page.locator("#myId .a");
@@ -56,8 +56,8 @@ public class TestLocatorEvaluate extends TestBase {
     assertEquals(asList("a1-child-div", "a2-child-div"), content);
   }
 
-  @Test
-  void shouldNotThrowInCaseOfMissingSelectorForAll() {
+  @PlaywrightTest
+  void shouldNotThrowInCaseOfMissingSelectorForAll(Page page) {
     String htmlContent = "<div class='a'>not-a-child-div</div><div id='myId'></div>";
     page.setContent(htmlContent);
     Locator element = page.locator("#myId .a");

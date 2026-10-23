@@ -16,18 +16,20 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import static com.microsoft.playwright.Utils.waitForCondition;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestBrowserContextEvents extends TestBase {
-  @Test
-  void consoleEventShouldWorkSmoke() {
+public class TestBrowserContextEvents {
+  @PlaywrightTest
+  void consoleEventShouldWorkSmoke(Page page, BrowserContext context) {
     ConsoleMessage message = context.waitForConsoleMessage(() -> {
       page.evaluate("console.log('hello')");
     });
@@ -35,8 +37,8 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(page, message.page());
   }
 
-  @Test
-  void consoleEventShouldWorkInPopup() {
+  @PlaywrightTest
+  void consoleEventShouldWorkInPopup(Page page, BrowserContext context) {
     Page[] popup = { null };
     ConsoleMessage message = context.waitForConsoleMessage(() -> {
       popup[0] = page.waitForPopup(() -> {
@@ -48,9 +50,9 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(popup[0], message.page());
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="console message from javascript: url is not reported at all")
-  void consoleEventShouldWorkInPopup2() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "console message from javascript: url is not reported at all")
+  void consoleEventShouldWorkInPopup2(Page page, BrowserContext context) {
     Page[] popup = { null };
     ConsoleMessage message = context.waitForConsoleMessage(
       new BrowserContext.WaitForConsoleMessageOptions().setPredicate(msg -> "log".equals(msg.type())),
@@ -67,9 +69,9 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(popup[0], message.page());
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="console message is not reported at all")
-  void consoleEventShouldWorkInImmediatelyClosedPopup() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "console message is not reported at all")
+  void consoleEventShouldWorkInImmediatelyClosedPopup(Page page, BrowserContext context) {
     Page[] popup = { null };
     ConsoleMessage message = context.waitForConsoleMessage(() -> {
       popup[0] = page.waitForPopup(() -> {
@@ -84,8 +86,8 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(popup[0], message.page());
   }
 
-  @Test
-  void dialogEventShouldWorkSmoke() {
+  @PlaywrightTest
+  void dialogEventShouldWorkSmoke(Page page, BrowserContext context) {
     Dialog[] dialog = { null };
     context.onDialog(d -> {
       dialog[0] = d;
@@ -98,8 +100,8 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(page, dialog[0].page());
   }
 
-  @Test
-  void dialogEventShouldWorkInPopup() {
+  @PlaywrightTest
+  void dialogEventShouldWorkInPopup(Page page, BrowserContext context) {
     Dialog[] dialog = { null };
     context.onDialog(d -> {
       dialog[0] = d;
@@ -116,9 +118,9 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(popup, dialog[0].page());
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="dialog from javascript: url is not reported at all")
-  void dialogEventShouldWorkInPopup2() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "dialog from javascript: url is not reported at all")
+  void dialogEventShouldWorkInPopup2(Page page, BrowserContext context) {
     Dialog[] dialog = { null };
     context.onDialog(d -> {
       dialog[0] = d;
@@ -130,8 +132,8 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(null, dialog[0].page());
   }
 
-  @Test
-  void dialogEventShouldWorkInImmdiatelyClosedPopup() {
+  @PlaywrightTest
+  void dialogEventShouldWorkInImmdiatelyClosedPopup(Page page, BrowserContext context) {
     Dialog[] dialog = { null };
     context.onDialog(d -> {
       dialog[0] = d;
@@ -150,8 +152,8 @@ public class TestBrowserContextEvents extends TestBase {
     assertEquals(popup, dialog[0].page());
   }
 
-  @Test
-  void dialogEventShouldWorkWithInlineScriptTag() {
+  @PlaywrightTest
+  void dialogEventShouldWorkWithInlineScriptTag(Page page, BrowserContext context, Server server) {
     server.setRoute("/popup.html", exchange -> {
       exchange.getResponseHeaders().add("content-type", "text/html");
       exchange.sendResponseHeaders(200, 0);
@@ -174,20 +176,20 @@ public class TestBrowserContextEvents extends TestBase {
       new Page.WaitForConditionOptions().setTimeout(5_000));
   }
 
-  @Test
-  void pageErrorEventShouldWork() {
+  @PlaywrightTest
+  void pageErrorEventShouldWork(Page page, BrowserContext context) {
     WebError[] webError = { null };
     context.onWebError(e -> {
       webError[0] = e;
     });
     page.setContent("<script>throw new Error('boom')</script>");
-    waitForCondition(() -> webError[0] != null);
+    waitForCondition(page, () -> webError[0] != null);
     assertEquals(page, webError[0].page());
     assertTrue(webError[0].error().contains("boom"), webError[0].error());
   }
 
-  @Test
-  void weberrorEventShouldIncludeLocation() {
+  @PlaywrightTest
+  void weberrorEventShouldIncludeLocation(Page page, BrowserContext context, Server server) {
     server.setRoute("/error.js", exchange -> {
       exchange.getResponseHeaders().add("content-type", "application/javascript");
       exchange.sendResponseHeaders(200, 0);
@@ -205,44 +207,44 @@ public class TestBrowserContextEvents extends TestBase {
     WebError[] webError = { null };
     context.onWebError(e -> webError[0] = e);
     page.navigate(server.PREFIX + "/error.html");
-    waitForCondition(() -> webError[0] != null);
+    waitForCondition(page, () -> webError[0] != null);
     com.microsoft.playwright.options.WebErrorLocation location = webError[0].location();
     assertEquals(server.PREFIX + "/error.js", location.url);
     assertEquals(2, location.line);
     assertTrue(location.column > 0, "expected column > 0, got " + location.column);
   }
 
-  @Test
-  void pageLoadEventShouldWork() {
+  @PlaywrightTest
+  void pageLoadEventShouldWork(Page page, BrowserContext context, Server server) {
     Page[] loaded = { null };
     context.onPageLoad(p -> loaded[0] = p);
     page.navigate(server.EMPTY_PAGE);
-    waitForCondition(() -> loaded[0] != null);
+    waitForCondition(page, () -> loaded[0] != null);
     assertEquals(page, loaded[0]);
   }
 
-  @Test
-  void frameNavigatedEventShouldWork() {
+  @PlaywrightTest
+  void frameNavigatedEventShouldWork(Page page, BrowserContext context, Server server) {
     Frame[] navigated = { null };
     context.onFrameNavigated(f -> navigated[0] = f);
     page.navigate(server.EMPTY_PAGE);
-    waitForCondition(() -> navigated[0] != null);
+    waitForCondition(page, () -> navigated[0] != null);
     assertEquals(page.mainFrame(), navigated[0]);
     assertEquals(server.EMPTY_PAGE, navigated[0].url());
   }
 
-  @Test
-  void pageCloseEventShouldWork() {
+  @PlaywrightTest
+  void pageCloseEventShouldWork(Page page, BrowserContext context) {
     Page newPage = context.newPage();
     Page[] closed = { null };
     context.onPageClose(p -> closed[0] = p);
     newPage.close();
-    waitForCondition(() -> closed[0] != null);
+    waitForCondition(page, () -> closed[0] != null);
     assertEquals(newPage, closed[0]);
   }
 
-  @Test
-  void frameAttachedEventShouldWork() {
+  @PlaywrightTest
+  void frameAttachedEventShouldWork(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Frame[] attached = { null };
     context.onFrameAttached(f -> attached[0] = f);
@@ -251,12 +253,12 @@ public class TestBrowserContextEvents extends TestBase {
       "  iframe.src = 'about:blank';\n" +
       "  document.body.appendChild(iframe);\n" +
       "}");
-    waitForCondition(() -> attached[0] != null);
+    waitForCondition(page, () -> attached[0] != null);
     assertEquals(page.mainFrame(), attached[0].parentFrame());
   }
 
-  @Test
-  void frameDetachedEventShouldWork() {
+  @PlaywrightTest
+  void frameDetachedEventShouldWork(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => {\n" +
       "  const iframe = document.createElement('iframe');\n" +
@@ -268,12 +270,12 @@ public class TestBrowserContextEvents extends TestBase {
     Frame[] detached = { null };
     context.onFrameDetached(f -> detached[0] = f);
     page.evaluate("() => document.getElementById('x').remove()");
-    waitForCondition(() -> detached[0] != null);
+    waitForCondition(page, () -> detached[0] != null);
     assertEquals(page.mainFrame(), detached[0].parentFrame());
   }
 
-  @Test
-  void dialogClosedEventShouldWork() {
+  @PlaywrightTest
+  void dialogClosedEventShouldWork(Page page, BrowserContext context) {
     Dialog[] dialog = {null};
     Dialog[] closedOnContext = {null};
     Dialog[] closedOnPage = {null};

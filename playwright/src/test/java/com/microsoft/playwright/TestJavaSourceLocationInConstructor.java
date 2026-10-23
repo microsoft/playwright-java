@@ -16,7 +16,9 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
@@ -31,16 +33,16 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestJavaSourceLocationInConstructor extends TestBase {
+public class TestJavaSourceLocationInConstructor {
   private static final String SRC_DIRS = System.getenv("PLAYWRIGHT_JAVA_SRC") == null ? "src/test/java" : System.getenv("PLAYWRIGHT_JAVA_SRC");
 
-  @Override
-  Playwright.CreateOptions playwrightOptions() {
+  @Fixture(scope = Scope.WORKER)
+  static Playwright.CreateOptions createOptions() {
     return new Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_JAVA_SRC", SRC_DIRS));
   }
 
-  @Test
-  void shouldSupportSourcesLocationPassedToPlaywrightCreate(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldSupportSourcesLocationPassedToPlaywrightCreate(Page page, BrowserContext context, Server server, @TempDir Path tmpDir) throws IOException {
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");

@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.LoadState;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -26,23 +26,23 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageAutowaitingBasic extends TestBase {
-  @Test
-  void shouldWorkWithNoWaitAfterTrue() {
+public class TestPageAutowaitingBasic {
+  @PlaywrightTest
+  void shouldWorkWithNoWaitAfterTrue(Page page, Server server) {
     server.setRoute("/empty.html", exchange -> {});
     page.setContent("<a id='anchor' href='${server.EMPTY_PAGE}'>empty.html</a>");
     page.click("a", new Page.ClickOptions().setNoWaitAfter(true));
   }
 
-  @Test
-  void shouldWorkWithDblclickNoWaitAfterTrue() {
+  @PlaywrightTest
+  void shouldWorkWithDblclickNoWaitAfterTrue(Page page, Server server) {
     server.setRoute("/empty.html", exchange -> {});
     page.setContent("<a id='anchor' href='${server.EMPTY_PAGE}'>empty.html</a>");
     page.dblclick("a", new Page.DblclickOptions().setNoWaitAfter(true));
   }
 
-  @Test
-  void shouldWorkWithWaitForLoadStateLoad() {
+  @PlaywrightTest
+  void shouldWorkWithWaitForLoadStateLoad(Page page, Server server) {
     List<String> messages = new ArrayList<>();
     server.setRoute("/empty.html", exchange -> {
       messages.add("route");

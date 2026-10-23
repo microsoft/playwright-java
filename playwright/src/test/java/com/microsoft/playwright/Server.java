@@ -53,27 +53,36 @@ public class Server implements HttpHandler {
     }
   }
 
+  /** Listens on a port picked by the OS, which parallel tests cannot race for. */
+  public static Server createHttp() throws IOException {
+    return new Server(0, false);
+  }
+
   public static Server createHttp(int port) throws IOException {
     return new Server(port, false);
   }
 
-  static Server createHttps(int port) throws IOException {
-    return new Server(port, true);
+  public static HttpsServer createHttps() throws IOException {
+    return new HttpsServer(0);
   }
 
-  private Server(int port, boolean https) throws IOException {
-    PORT = port;
-    PREFIX = "http" + (https ? "s" : "") + "://localhost:" + PORT;
-    CROSS_PROCESS_PREFIX = "http" + (https ? "s" : "") + "://127.0.0.1:" + PORT;
-    EMPTY_PAGE = PREFIX + "/empty.html";
+  public static HttpsServer createHttps(int port) throws IOException {
+    return new HttpsServer(port);
+  }
 
+  protected Server(int port, boolean https) throws IOException {
     if (https) {
-      HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress("localhost", port), 0);
+      com.sun.net.httpserver.HttpsServer httpsServer = com.sun.net.httpserver.HttpsServer.create(new InetSocketAddress("localhost", port), 0);
       httpsServer.setHttpsConfigurator(HttpsConfiguratorImpl.create());
       server = httpsServer;
     } else {
       server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
     }
+    PORT = server.getAddress().getPort();
+    PREFIX = "http" + (https ? "s" : "") + "://localhost:" + PORT;
+    CROSS_PROCESS_PREFIX = "http" + (https ? "s" : "") + "://127.0.0.1:" + PORT;
+    EMPTY_PAGE = PREFIX + "/empty.html";
+
     server.createContext("/", this);
     server.setExecutor(null); // creates a default executor
     server.start();
@@ -85,19 +94,19 @@ public class Server implements HttpHandler {
     server.stop(0);
   }
 
-  void setAuth(String path, String user, String password) {
+  public void setAuth(String path, String user, String password) {
     auths.put(path, new Auth(user, password));
   }
 
-  void setCSP(String path, String csp) {
+  public void setCSP(String path, String csp) {
     this.csp.put(path, csp);
   }
 
-  void enableGzip(String path) {
+  public void enableGzip(String path) {
     gzipRoutes.add(path);
   }
 
-  void setResourceProvider(Function<String, InputStream> resourceProvider) {
+  public void setResourceProvider(Function<String, InputStream> resourceProvider) {
     this.resourceProvider = resourceProvider;
   }
 
@@ -118,7 +127,7 @@ public class Server implements HttpHandler {
     }
   }
 
-  Future<Request> futureRequest(String path) {
+  public Future<Request> futureRequest(String path) {
     CompletableFuture<Request> future = requestSubscribers.get(path);
     if (future == null) {
       future = new CompletableFuture<>();
@@ -128,11 +137,11 @@ public class Server implements HttpHandler {
   }
 
 
-  void setRoute(String path, HttpHandler handler) {
+  public void setRoute(String path, HttpHandler handler) {
     routes.put(path, handler);
   }
 
-  void setRedirect(String from, String to) {
+  public void setRedirect(String from, String to) {
     setRoute(from, exchange -> {
       exchange.getResponseHeaders().put("location", Arrays.asList(to));
       exchange.sendResponseHeaders(302, -1);
@@ -140,7 +149,7 @@ public class Server implements HttpHandler {
     });
   }
 
-  void reset() {
+  public void reset() {
     requestSubscribers.clear();
     auths.clear();
     csp.clear();

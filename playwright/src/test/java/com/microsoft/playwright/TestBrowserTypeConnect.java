@@ -16,11 +16,11 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import com.microsoft.playwright.impl.driver.Driver;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.*;
@@ -35,83 +35,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.*;
+import static com.microsoft.playwright.fixtures.Env.isWindows;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserTypeConnect extends TestBase {
+public class TestBrowserTypeConnect {
   static Path FILE_TO_UPLOAD = Paths.get("src/test/resources/file-to-upload.txt");
 
-  private Process browserServer;
-  private String wsEndpoint;
-
-  static class BrowserServer {
-    Process process;
-    String wsEndpoint;
-
-    void kill() throws InterruptedException {
-      process.destroy();
-      int exitCode = process.waitFor();
-      // FIXME: 2 tests are failing this check on windows:
-      // disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed
-      // shouldThrowWhenUsedAfterIsConnectedReturnsFalse
-      if (!isWindows) {
-        assertEquals(0, exitCode);
-      }
-    }
+  @Fixture(scope = Scope.WORKER)
+  static BrowserServer browserServer(BrowserType browserType) {
+    return BrowserServer.launch(browserType);
   }
 
-  static BrowserServer launchBrowserServer(BrowserType browserType) {
-    try {
-      Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
-      Path dir = driver.driverDir();
-      String node = dir.resolve(isWindows ? "node.exe" : "node").toString();
-      String cliJs = dir.resolve("package/cli.js").toString();
-      // We launch node process directly instead of using playwright.sh script as killing the script
-      // process will leave node process running and killing it would be more hassle.
-      ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", "--browser", browserType.name());
-      pb.directory(dir.toFile());
-      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-      BrowserServer result = new BrowserServer();
-      result.process = pb.start();
-      BufferedReader input =  new BufferedReader(new InputStreamReader(result.process.getInputStream()));
-      result.wsEndpoint = input.readLine();
-      if (!result.wsEndpoint.startsWith("ws://")) {
-        throw new RuntimeException("Invalid web socket address: " + result.wsEndpoint);
-      }
-      return result;
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to launch server", e);
-    }
+  @Fixture(scope = Scope.WORKER)
+  static Browser browser(BrowserType browserType, BrowserServer browserServer) {
+    return browserType.connect(browserServer.wsEndpoint);
   }
 
-  @Override
-  @BeforeAll
-  // Hide base class method to launch browser server and connect to it.
-  void launchBrowser() {
-    initBrowserType();
-    BrowserServer r = launchBrowserServer(browserType);
-    wsEndpoint = r.wsEndpoint;
-    browserServer = r.process;
-    browser = browserType.connect(wsEndpoint);
-    // Do not actually connect to browser, the tests will do it manually.
-  }
-
-  @Override
-  @AfterAll
-  void closeBrowser() {
-    super.closeBrowser();
-    if (browserServer != null) {
-      browserServer.destroyForcibly();
-      browserServer = null;
-      wsEndpoint = null;
-    }
-  }
-
-  @Test
-  void shouldBeAbleToReconnectToABrowser() {
+  @PlaywrightTest
+  void shouldBeAbleToReconnectToABrowser(BrowserType browserType, Server server, BrowserServer browserServer) {
     {
-      Browser browser = browserType.connect(wsEndpoint);
+      Browser browser = browserType.connect(browserServer.wsEndpoint);
       BrowserContext browserContext = browser.newContext();
       assertEquals(0, browserContext.pages().size());
       Page page = browserContext.newPage();
@@ -120,7 +65,7 @@ public class TestBrowserTypeConnect extends TestBase {
       browser.close();
     }
     {
-      Browser browser = browserType.connect(wsEndpoint);
+      Browser browser = browserType.connect(browserServer.wsEndpoint);
       BrowserContext browserContext = browser.newContext();
       Page page = browserContext.newPage();
       page.navigate(server.EMPTY_PAGE);
@@ -128,9 +73,9 @@ public class TestBrowserTypeConnect extends TestBase {
     }
   }
 
-  @Test
-  void shouldSupportSlowMo() {
-    Browser browser = browserType.connect(wsEndpoint,
+  @PlaywrightTest
+  void shouldSupportSlowMo(BrowserType browserType, Server server, BrowserServer browserServer) {
+    Browser browser = browserType.connect(browserServer.wsEndpoint,
       new BrowserType.ConnectOptions().setSlowMo(1));
     BrowserContext browserContext = browser.newContext();
     Page page = browserContext.newPage();
@@ -139,14 +84,14 @@ public class TestBrowserTypeConnect extends TestBase {
     browser.close();
   }
 
-  @Test
-  void shouldBeAbleToConnectTwoBrowsersAtTheSameTime() {
-    Browser browser1 = browserType.connect(wsEndpoint);
+  @PlaywrightTest
+  void shouldBeAbleToConnectTwoBrowsersAtTheSameTime(BrowserType browserType, BrowserServer browserServer) {
+    Browser browser1 = browserType.connect(browserServer.wsEndpoint);
     assertEquals(0, browser1.contexts().size());
     browser1.newContext();
     assertEquals(1, browser1.contexts().size());
 
-    Browser browser2 = browserType.connect(wsEndpoint);
+    Browser browser2 = browserType.connect(browserServer.wsEndpoint);
     assertEquals(0, browser2.contexts().size());
     browser2.newContext();
     assertEquals(1, browser2.contexts().size());
@@ -159,8 +104,8 @@ public class TestBrowserTypeConnect extends TestBase {
     browser2.close();
   }
 
-  @Test
-  void shouldSendExtraHeadersWithConnectRequest() throws Exception {
+  @PlaywrightTest
+  void shouldSendExtraHeadersWithConnectRequest(BrowserType browserType) throws Exception {
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
         browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
@@ -174,10 +119,10 @@ public class TestBrowserTypeConnect extends TestBase {
     }
   }
 
-  @Test
-  void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed() throws InterruptedException {
+  @PlaywrightTest
+  void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed(BrowserType browserType) throws InterruptedException {
     // Launch another server to not affect other tests.
-    BrowserServer remote = launchBrowserServer(browserType);
+    BrowserServer remote = BrowserServer.launch(browserType);
 
     Browser browser1 = browserType.connect(remote.wsEndpoint);
     Browser browser2 = browserType.connect(remote.wsEndpoint);
@@ -200,9 +145,9 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(1, disconnected2[0]);
   }
 
-  @Test
-  void disconnectedEventShouldHaveBrowserAsArgument() {
-    Browser browser = browserType.connect(wsEndpoint);
+  @PlaywrightTest
+  void disconnectedEventShouldHaveBrowserAsArgument(BrowserType browserType, BrowserServer browserServer) {
+    Browser browser = browserType.connect(browserServer.wsEndpoint);
     Browser[] disconnected = {null};
     browser.onDisconnected(b -> disconnected[0] = b);
     browser.close();
@@ -213,18 +158,18 @@ public class TestBrowserTypeConnect extends TestBase {
     // This is an implementation detail test
   }
 
-  @Test
-  void shouldSetTheBrowserConnectedState() {
-    Browser remote = browserType.connect(wsEndpoint);
+  @PlaywrightTest
+  void shouldSetTheBrowserConnectedState(BrowserType browserType, BrowserServer browserServer) {
+    Browser remote = browserType.connect(browserServer.wsEndpoint);
     assertTrue(remote.isConnected());
     remote.close();
     assertFalse(remote.isConnected());
   }
 
-  @Test
-  void shouldThrowWhenUsedAfterIsConnectedReturnsFalse() throws InterruptedException {
+  @PlaywrightTest
+  void shouldThrowWhenUsedAfterIsConnectedReturnsFalse(BrowserType browserType) throws InterruptedException {
     // Launch another server to not affect other tests.
-    BrowserServer server = launchBrowserServer(browserType);
+    BrowserServer server = BrowserServer.launch(browserType);
     Browser remote = browserType.connect(server.wsEndpoint);
     Page page = remote.newPage();
     boolean[] disconnected = {false};
@@ -242,9 +187,9 @@ public class TestBrowserTypeConnect extends TestBase {
     assertFalse(remote.isConnected());
   }
 
-  @Test
-  void shouldThrowWhenCallingWaitForNavigationAfterDisconnect() throws InterruptedException {
-    BrowserServer server = launchBrowserServer(browserType);
+  @PlaywrightTest
+  void shouldThrowWhenCallingWaitForNavigationAfterDisconnect(BrowserType browserType) throws InterruptedException {
+    BrowserServer server = BrowserServer.launch(browserType);
     Browser browser = browserType.connect(server.wsEndpoint);
     Page page = browser.newPage();
 
@@ -266,9 +211,9 @@ public class TestBrowserTypeConnect extends TestBase {
       e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
-  void shouldRejectNavigationWhenBrowserCloses() {
-    Browser remote = browserType.connect(wsEndpoint);
+  @PlaywrightTest
+  void shouldRejectNavigationWhenBrowserCloses(BrowserType browserType, Server server, BrowserServer browserServer) {
+    Browser remote = browserType.connect(browserServer.wsEndpoint);
     Page page = remote.newPage();
 
     server.setRoute("/one-style.css", r -> {});
@@ -279,9 +224,9 @@ public class TestBrowserTypeConnect extends TestBase {
     assertTrue(e.getMessage().contains("Browser has been closed"));
   }
 
-  @Test
-  void shouldEmitCloseEventsOnPagesAndContexts() throws InterruptedException {
-    BrowserServer server = launchBrowserServer(browserType);
+  @PlaywrightTest
+  void shouldEmitCloseEventsOnPagesAndContexts(BrowserType browserType) throws InterruptedException {
+    BrowserServer server = BrowserServer.launch(browserType);
     Browser browser = browserType.connect(server.wsEndpoint);
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
@@ -300,8 +245,8 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(Arrays.asList("page", "context"), events);
   }
 
-  @Test
-  void shouldRespectSelectors() {
+  @PlaywrightTest
+  void shouldRespectSelectors(BrowserType browserType, Playwright playwright, BrowserServer browserServer) {
     String mycss = "{\n" +
       "    query(root, selector) {\n" +
       "      return root.querySelector(selector);\n" +
@@ -313,7 +258,7 @@ public class TestBrowserTypeConnect extends TestBase {
     // Register one engine before connecting.
     playwright.selectors().register("mycss1", mycss);
 
-    Browser browser1 = browserType.connect(wsEndpoint);
+    Browser browser1 = browserType.connect(browserServer.wsEndpoint);
     BrowserContext context1 = browser1.newContext();
 
     // Register another engine after creating context.
@@ -325,7 +270,7 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals("hello", page1.innerHTML("mycss1=div"));
     assertEquals("hello", page1.innerHTML("mycss2=div"));
 
-    Browser browser2 = browserType.connect(wsEndpoint);
+    Browser browser2 = browserType.connect(browserServer.wsEndpoint);
 
     // Register third engine after second connect.
     playwright.selectors().register("mycss3", mycss);
@@ -341,9 +286,9 @@ public class TestBrowserTypeConnect extends TestBase {
     browser2.close();
   }
 
-  @Test
-  void shouldNotThrowOnCloseAfterDisconnect() throws InterruptedException {
-    BrowserServer remoteServer = launchBrowserServer(browserType);
+  @PlaywrightTest
+  void shouldNotThrowOnCloseAfterDisconnect(BrowserType browserType) throws InterruptedException {
+    BrowserServer remoteServer = BrowserServer.launch(browserType);
     Browser browser = browserType.connect(remoteServer.wsEndpoint);
     Page page = browser.newPage();
 
@@ -357,8 +302,8 @@ public class TestBrowserTypeConnect extends TestBase {
     browser.close();
   }
 
-  @Test
-  void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
+  @PlaywrightTest
+  void shouldSaveAsVideosFromRemoteBrowser(Browser browser, @TempDir Path tempDir) {
     Path videosPath = tempDir.resolve("videosPath");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(videosPath).setRecordVideoSize(320,  240));
@@ -374,8 +319,8 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
 
-  @Test
-  void shouldSaveDownload(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  void shouldSaveDownload(Browser browser, Server server, @TempDir Path tempDir) throws IOException {
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
@@ -397,8 +342,8 @@ public class TestBrowserTypeConnect extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldErrorWhenSavingDownloadAfterDeletion(@TempDir Path tempDir) {
+  @PlaywrightTest
+  void shouldErrorWhenSavingDownloadAfterDeletion(Browser browser, Server server, @TempDir Path tempDir) {
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
@@ -417,11 +362,9 @@ public class TestBrowserTypeConnect extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldSupportTracingOverWebSocket(@TempDir Path tempDir) throws IOException {
-    List<BrowserContext> contexts = browser.contexts();
-    assertEquals(1, contexts.size());
-    BrowserContext context = contexts.get(0);
+  @PlaywrightTest
+  void shouldSupportTracingOverWebSocket(Browser browser, BrowserContext context, Server server, @TempDir Path tempDir) throws IOException {
+    assertEquals(asList(context), browser.contexts());
 
     Page page = context.newPage();
     context.tracing().start(new Tracing.StartOptions().setName("test")
@@ -437,8 +380,8 @@ public class TestBrowserTypeConnect extends TestBase {
     assertTrue(Files.size(traceFile) > 0);
   }
 
-  @Test
-  void shouldRecordTraceWithSources(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldRecordTraceWithSources(Page page, BrowserContext context, Server server, @TempDir Path tmpDir) throws IOException {
     Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") != null, "PLAYWRIGHT_JAVA_SRC must point to the directory containing this test source.");
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
@@ -457,8 +400,8 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
   }
 
-  @Test
-  void shouldFulfillWithGlobalFetchResult() {
+  @PlaywrightTest
+  void shouldFulfillWithGlobalFetchResult(Page page, Playwright playwright, Server server) {
     page.route("**/*", route -> {
       APIRequestContext request = playwright.request().newContext();
       APIResponse response = request.get(server.PREFIX + "/simple.json");
@@ -469,8 +412,8 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldUploadLargeFile(Page page, Server server, @TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Path uploadFile = tmpDir.resolve("200MB.zip");
@@ -509,8 +452,8 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 
-  @Test
-  void setInputFilesShouldPreserveLastModifiedTimestamp() throws IOException {
+  @PlaywrightTest
+  void setInputFilesShouldPreserveLastModifiedTimestamp(Page page) throws IOException {
     page.setContent("<input type=file multiple=true/>");
     Locator input = page.locator("input");
     input.setInputFiles(FILE_TO_UPLOAD);

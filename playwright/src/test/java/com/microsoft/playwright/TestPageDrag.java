@@ -17,7 +17,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 
@@ -25,9 +25,9 @@ import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageDrag extends TestBase {
-  @Test
-  void shouldWorkIfTheDragIsCanceled() {
+public class TestPageDrag {
+  @PlaywrightTest
+  void shouldWorkIfTheDragIsCanceled(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.evaluate("() => {\n" +
       "      document.body.addEventListener('dragstart', event => {\n" +
@@ -41,8 +41,8 @@ public class TestPageDrag extends TestBase {
     assertEquals(false, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
 
-  @Test
-  void shouldWorkIfTheDragEventIsCapturedButNotCanceled() {
+  @PlaywrightTest
+  void shouldWorkIfTheDragEventIsCapturedButNotCanceled(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.evaluate("() => {\n" +
       "      document.body.addEventListener('dragstart', event => {\n" +
@@ -56,8 +56,8 @@ public class TestPageDrag extends TestBase {
     assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
 
-  @Test
-  void shouldBeAbleToDragTheMouseInAFrame() {
+  @PlaywrightTest
+  void shouldBeAbleToDragTheMouseInAFrame(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     JSHandle eventsHandle = trackEvents(page.frames().get(1).querySelector("html"));
     page.mouse().move(30, 30);
@@ -80,16 +80,16 @@ public class TestPageDrag extends TestBase {
       "}");
   }
 
-  @Test
-  void shouldWorkWithTheHelperMethod() {
+  @PlaywrightTest
+  void shouldWorkWithTheHelperMethod(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.dragAndDrop("#source", "#target");
     assertEquals(true, page.evalOnSelector("#target",
       "target => target.contains(document.querySelector('#source'))")); // could not find source in target
   }
 
-  @Test
-  void shouldAllowSpecifyingThePosition() {
+  @PlaywrightTest
+  void shouldAllowSpecifyingThePosition(Page page) {
     page.setContent("<div style='width:100px;height:100px;background:red;' id='red'>\n" +
       "</div>\n" +
       "<div style='width:100px;height:100px;background:blue;' id='blue'>\n" +
@@ -118,15 +118,15 @@ public class TestPageDrag extends TestBase {
     assertJsonEquals("[{type: \"mousedown\", x: 34, y: 7},{type: \"mouseup\", x: 10, y: 20}]", json);
   }
 
-  @Test
-  void shouldWorkWithLocators() {
+  @PlaywrightTest
+  void shouldWorkWithLocators(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.locator("#source").dragTo(page.locator("#target"));
     assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
 
-  @Test
-  void shouldDragAndDropWithTweenedMouseMovement() {
+  @PlaywrightTest
+  void shouldDragAndDropWithTweenedMouseMovement(Page page) {
     page.setContent(
       "<body style='margin: 0; padding: 0;'>\n" +
       "  <div style='width:100px;height:100px;background:red;' id='red'></div>\n" +
@@ -170,8 +170,8 @@ public class TestPageDrag extends TestBase {
     );
   }
 
-  @Test
-  void shouldDragToWithTweenedMouseMovement() {
+  @PlaywrightTest
+  void shouldDragToWithTweenedMouseMovement(Page page) {
     page.setContent(
       "<body style='margin: 0; padding: 0;'>\n" +
       "  <div style='width:100px;height:100px;background:red;' id='red'></div>\n" +

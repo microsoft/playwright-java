@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,9 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageEventRequest extends TestBase {
-  @Test
-  void shouldReturnLastRequests() throws ExecutionException, InterruptedException {
+public class TestPageEventRequest {
+  @PlaywrightTest
+  void shouldReturnLastRequests(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.PREFIX + "/title.html");
 
     // Set up routes for 200 requests

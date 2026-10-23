@@ -1,21 +1,17 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaSnapshotMode;
-import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright
 public class TestPageAriaSnapshotAI {
   private static String aiSnapshot(Page page) {
     return page.ariaSnapshot(new Page.AriaSnapshotOptions().setMode(AriaSnapshotMode.AI));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldGenerateRefs(Page page) {
     page.setContent("<button>One</button><button>Two</button><button>Three</button>");
 
@@ -35,7 +31,7 @@ public class TestPageAriaSnapshotAI {
     assertTrue(snapshot2.contains("button \"Three\" [ref=e4]"), snapshot2);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldListIframes(Page page) {
     page.setContent(
       "<h1>Hello</h1>" +
@@ -48,7 +44,7 @@ public class TestPageAriaSnapshotAI {
     assertEquals("- heading \"World\" [level=1]", frameSnapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldSnapshotLocatorInsideIframe(Page page) {
     page.setContent(
       "<h1>Main Page</h1>" +
@@ -61,21 +57,21 @@ public class TestPageAriaSnapshotAI {
     assertTrue(snapshot.contains("listitem [ref=f1e3]: Item 2"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldCollapseGenericNodes(Page page) {
     page.setContent("<div><div><div><button>Button</button></div></div></div>");
     String snapshot = aiSnapshot(page);
     assertTrue(snapshot.contains("button \"Button\" [ref=e5]"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIncludeCursorPointerHint(Page page) {
     page.setContent("<button style=\"cursor: pointer\">Button</button>");
     String snapshot = aiSnapshot(page);
     assertTrue(snapshot.contains("button \"Button\" [ref=e2] [cursor=pointer]"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotNestCursorPointerHints(Page page) {
     page.setContent(
       "<a style=\"cursor: pointer\" href=\"about:blank\">" +
@@ -91,7 +87,7 @@ public class TestPageAriaSnapshotAI {
     assertFalse(snapshot.contains("button \"Button\" [ref=e3] [cursor=pointer]"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldShowVisibleChildrenOfHiddenElements(Page page) {
     page.setContent(
       "<div style=\"visibility: hidden\">" +
@@ -110,7 +106,7 @@ public class TestPageAriaSnapshotAI {
       snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIncludeActiveElementInformation(Page page) {
     page.setContent(
       "<button id=\"btn1\">Button 1</button>" +
@@ -123,7 +119,7 @@ public class TestPageAriaSnapshotAI {
     assertFalse(snapshot.contains("button \"Button 1\" [active]"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldUpdateActiveElementOnFocus(Page page) {
     page.setContent(
       "<input id=\"input1\" placeholder=\"First input\">" +
@@ -142,7 +138,7 @@ public class TestPageAriaSnapshotAI {
     assertFalse(afterFocusSnapshot.contains("textbox \"First input\" [active]"), afterFocusSnapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldCollapseInlineGenericNodes(Page page) {
     page.setContent(
       "<ul>" +
@@ -156,14 +152,14 @@ public class TestPageAriaSnapshotAI {
     assertTrue(snapshot.contains("listitem [ref=e5]: 1,200 sqft"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotRemoveGenericNodesWithTitle(Page page) {
     page.setContent("<div title=\"Element title\">Element content</div>");
     String snapshot = aiSnapshot(page);
     assertTrue(snapshot.contains("generic \"Element title\" [ref=e2]"), snapshot);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldLimitDepth(Page page) {
     page.setContent(
       "<ul>" +
@@ -192,7 +188,7 @@ public class TestPageAriaSnapshotAI {
     assertFalse(snapshot4.contains("item3"), snapshot4);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNormalizeRefLocatorToLocatorCode(Page page) {
     page.setContent("<button>Submit</button>");
     String snapshot = aiSnapshot(page);

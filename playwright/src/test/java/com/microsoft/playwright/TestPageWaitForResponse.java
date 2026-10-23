@@ -16,13 +16,13 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageWaitForResponse extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageWaitForResponse {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse(server.PREFIX + "/digits/2.png", () -> {
       page.evaluate("() => {\n" +
@@ -34,8 +34,8 @@ public class TestPageWaitForResponse extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
-  @Test
-  void shouldRespectTimeout() {
+  @PlaywrightTest
+  void shouldRespectTimeout(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
@@ -47,8 +47,8 @@ public class TestPageWaitForResponse extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
-  @Test
-  void shouldWorkWithPredicate() {
+  @PlaywrightTest
+  void shouldWorkWithPredicate(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
@@ -60,8 +60,8 @@ public class TestPageWaitForResponse extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
-  @Test
-  void shouldRespectDefaultTimeout() {
+  @PlaywrightTest
+  void shouldRespectDefaultTimeout(Page page) {
     page.setDefaultTimeout(1);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForResponse(response -> false, () -> {});
@@ -69,8 +69,8 @@ public class TestPageWaitForResponse extends TestBase {
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
-  @Test
-  void shouldWorkWithNoTimeout() {
+  @PlaywrightTest
+  void shouldWorkWithNoTimeout(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse(
       server.PREFIX + "/digits/2.png",

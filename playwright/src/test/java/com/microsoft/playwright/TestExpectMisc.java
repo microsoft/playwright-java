@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestExpectMisc extends TestBase {
-  @Test
-  void strictModeViolationErrorFormat() {
+public class TestExpectMisc {
+  @PlaywrightTest
+  void strictModeViolationErrorFormat(Page page) {
     page.setContent(" <div>hello</div><div>hi</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () ->
       assertThat(page.locator("div")).isVisible());
@@ -34,8 +34,8 @@ public class TestExpectMisc extends TestBase {
     assertTrue(error.getMessage().contains("Error: strict mode violation: locator(\"div\") resolved to 2 elements:"), error.getMessage());
   }
 
-  @Test
-  void invalidSelectorErrorFormat() {
+  @PlaywrightTest
+  void invalidSelectorErrorFormat(Page page) {
     page.setContent("<div>hello</div><div>hi</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () ->
       assertThat(page.locator("##")).isVisible());

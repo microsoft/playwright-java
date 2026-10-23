@@ -16,28 +16,30 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.KeyboardModifier;
 import com.microsoft.playwright.options.ScrollMode;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("smoke")
-public class TestLocatorClick extends TestBase {
+public class TestLocatorClick {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     Locator button = page.locator("button");
     button.click();
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldWorkWithNodeRemoved() {
+  @PlaywrightTest
+  void shouldWorkWithNodeRemoved(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window['Node']");
     Locator button  = page.locator("button");
@@ -45,8 +47,8 @@ public class TestLocatorClick extends TestBase {
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldDoubleClickTheButton() {
+  @PlaywrightTest
+  void shouldDoubleClickTheButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +
@@ -61,16 +63,16 @@ public class TestLocatorClick extends TestBase {
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  @Test
-  void shouldSupportCotrolOrMetaModifier() {
+  @PlaywrightTest
+  void shouldSupportCotrolOrMetaModifier(Page page, Server server) {
     page.setContent("<a href='" + server.PREFIX + "/title.html'>Go</a>");
     Page newPage = page.context().waitForPage(() ->
       page.getByText("Go").click(new Locator.ClickOptions().setModifiers(asList(KeyboardModifier.CONTROLORMETA))));
     assertThat(newPage).hasURL(server.PREFIX + "/title.html");
   }
 
-  @Test
-  void shouldClickWithTweenedMouseMovement() {
+  @PlaywrightTest
+  void shouldClickWithTweenedMouseMovement(Page page, BrowserName browserName) {
     page.setContent(
       "<body style=\"margin: 0; padding: 0; height: 500px; width: 500px;\">\n" +
       "  <div style=\"position: relative; top: 280px; left: 150px; width: 100px; height: 40px\">Click me</div>\n" +
@@ -78,7 +80,7 @@ public class TestLocatorClick extends TestBase {
     );
 
     // The test becomes flaky on WebKit without next line.
-    if (isWebKit()) {
+    if (browserName == WEBKIT) {
       page.evaluate("() => new Promise(requestAnimationFrame)");
     }
 
@@ -106,8 +108,8 @@ public class TestLocatorClick extends TestBase {
     );
   }
 
-  @Test
-  void shouldNotScrollWhenScrollIsNone() {
+  @PlaywrightTest
+  void shouldNotScrollWhenScrollIsNone(Page page) {
     page.setContent("<div style='height: 2000px;'>filler</div>\n" +
       "<button onclick='window._clicked=true'>click me</button>");
     PlaywrightException e = assertThrows(PlaywrightException.class,
@@ -117,8 +119,8 @@ public class TestLocatorClick extends TestBase {
     assertEquals(0, page.evaluate("() => window.scrollY"));
   }
 
-  @Test
-  void shouldClickInViewportElementWhenScrollIsNone() {
+  @PlaywrightTest
+  void shouldClickInViewportElementWhenScrollIsNone(Page page) {
     page.setContent("<button onclick='window._clicked=true'>click me</button>\n" +
       "<div style='height: 2000px;'></div>");
     page.locator("button").click(new Locator.ClickOptions().setScroll(ScrollMode.NONE).setTimeout(2000));

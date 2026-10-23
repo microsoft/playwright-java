@@ -16,13 +16,13 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSelectorsRegister extends TestBase {
+public class TestSelectorsRegister {
   private static final String TAG_SELECTOR_SCRIPT = "{\n" +
     "  create(root, target) {\n" +
     "    return target.nodeName;\n" +
@@ -35,8 +35,8 @@ public class TestSelectorsRegister extends TestBase {
     "  }\n" +
     "}";
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Browser browser, Playwright playwright) {
     // Register one engine before creating context.
     playwright.selectors().register("tag", TAG_SELECTOR_SCRIPT);
 
@@ -62,15 +62,15 @@ public class TestSelectorsRegister extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldWorkWithPath() {
+  @PlaywrightTest
+  void shouldWorkWithPath(Page page, Playwright playwright) {
     playwright.selectors().register("foo", Paths.get("src/test/resources/sectionselectorengine.js"));
     page.setContent("<section></section>");
     assertEquals("SECTION", page.evalOnSelector("foo=whatever", "e => e.nodeName"));
   }
 
-  @Test
-  void shouldWorkInMainAndIsolatedWorld() {
+  @PlaywrightTest
+  void shouldWorkInMainAndIsolatedWorld(Page page, Playwright playwright) {
     String createDummySelector = "{\n" +
       "  create(root, target) { },\n" +
       "  query(root, selector) {\n" +
@@ -102,8 +102,8 @@ public class TestSelectorsRegister extends TestBase {
     assertEquals("SECTION", page.evalOnSelector("main=ignored >> css=section", "e => e.nodeName"));
   }
 
-  @Test
-  void shouldHandleErrors() {
+  @PlaywrightTest
+  void shouldHandleErrors(Page page, Playwright playwright) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.querySelector("neverregister=ignored");
     });
@@ -136,8 +136,8 @@ public class TestSelectorsRegister extends TestBase {
     assertTrue(e.getMessage().contains("\"css\" is a predefined selector engine"));
   }
 
-  @Test
-  void shouldThrowAlreadyRegisteredErrorWhenRegistering() {
+  @PlaywrightTest
+  void shouldThrowAlreadyRegisteredErrorWhenRegistering(BrowserContext context, Playwright playwright) {
     // https://github.com/microsoft/playwright/issues/36467
 
     // this test is about the exception *before* there's a context created

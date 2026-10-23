@@ -16,30 +16,32 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageFill extends TestBase {
+public class TestPageFill {
 
-  @Test
-  void shouldFillTextarea() {
+  @PlaywrightTest
+  void shouldFillTextarea(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("textarea", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldFillInput() {
+  @PlaywrightTest
+  void shouldFillInput(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldThrowOnUnsupportedInputs() {
+  @PlaywrightTest
+  void shouldThrowOnUnsupportedInputs(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
@@ -48,15 +50,15 @@ public class TestPageFill extends TestBase {
     }
   }
 
-  @Test
-  void shouldFillRangeInput() {
+  @PlaywrightTest
+  void shouldFillRangeInput(Page page) {
     page.setContent("<input type=range min=0 max=100 value=50>");
     page.fill("input", "42");
     assertEquals("42", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  void shouldThrowOnIncorrectRangeValue() {
+  @PlaywrightTest
+  void shouldThrowOnIncorrectRangeValue(Page page) {
     page.setContent("<input type=range min=0 max=100 value=50>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "foo"));
     assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
@@ -69,8 +71,8 @@ public class TestPageFill extends TestBase {
   }
 
 
-  @Test
-  void shouldFillDifferentInputTypes() {
+  @PlaywrightTest
+  void shouldFillDifferentInputTypes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"password", "search", "tel", "text", "url"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
@@ -79,61 +81,61 @@ public class TestPageFill extends TestBase {
     }
   }
 
-  @Test
-  void shouldFillDateInputAfterClicking() {
+  @PlaywrightTest
+  void shouldFillDateInputAfterClicking(Page page) {
     page.setContent("<input type=date>");
     page.click("input");
     page.fill("input", "2020-03-02");
     assertEquals("2020-03-02", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
-  void shouldThrowOnIncorrectDate() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "skip")
+  void shouldThrowOnIncorrectDate(Page page) {
     page.setContent("<input type=date>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "2020-13-05"));
     assertTrue(e.getMessage().contains("Malformed value"));
   }
 
-  @Test
-  void shouldFillTimeInput() {
+  @PlaywrightTest
+  void shouldFillTimeInput(Page page) {
     page.setContent("<input type=time>");
     page.fill("input", "13:15");
     assertEquals("13:15", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
-  void shouldThrowOnIncorrectTime() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "skip")
+  void shouldThrowOnIncorrectTime(Page page) {
     page.setContent("<input type=time>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "25:05"));
     assertTrue(e.getMessage().contains("Malformed value"));
   }
 
-  @Test
-  void shouldFillDatetimeLocalInput() {
+  @PlaywrightTest
+  void shouldFillDatetimeLocalInput(Page page) {
     page.setContent("<input type=datetime-local>");
     page.fill("input", "2020-03-02T05:15");
     assertEquals(page.evalOnSelector("input", "input => input.value"), "2020-03-02T05:15");
   }
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void shouldThrowOnIncorrectDatetimeLocal() {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "skip")
+  void shouldThrowOnIncorrectDatetimeLocal(Page page) {
     page.setContent("<input type=datetime-local>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
     assertTrue(e.getMessage().contains("Malformed value"));
   }
 
-  @Test
-  void shouldFillContenteditable() {
+  @PlaywrightTest
+  void shouldFillContenteditable(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("div[contenteditable]", "some value");
     assertEquals(page.evalOnSelector("div[contenteditable]", "div => div.textContent"), "some value");
   }
 
-  @Test
-  void shouldFillElementsWithExistingValueAndSelection() {
+  @PlaywrightTest
+  void shouldFillElementsWithExistingValueAndSelection(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
 
     page.evalOnSelector("input", "input => input.value = 'value one'");
@@ -159,8 +161,8 @@ public class TestPageFill extends TestBase {
     assertEquals("replace with this", page.evalOnSelector("div[contenteditable]", "div => div.textContent"));
   }
 
-  @Test
-  void shouldThrowWhenElementIsNotAnInputTextareaOrContenteditable() {
+  @PlaywrightTest
+  void shouldThrowWhenElementIsNotAnInputTextareaOrContenteditable(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("body", ""));
     assertTrue(e.getMessage().contains("Element is not an <input>"));
@@ -175,22 +177,22 @@ public class TestPageFill extends TestBase {
   }
   void shouldRetryOnInvisibleElement() {
   }
-  @Test
-  void shouldBeAbleToFillTheBody() {
+  @PlaywrightTest
+  void shouldBeAbleToFillTheBody(Page page) {
     page.setContent("<body contentEditable='true'></body>");
     page.fill("body", "some value");
     assertEquals("some value", page.evaluate("() => document.body.textContent"));
   }
 
-  @Test
-  void shouldFillFixedPositionInput() {
+  @PlaywrightTest
+  void shouldFillFixedPositionInput(Page page) {
     page.setContent("<input style='position: fixed;' />");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => document.querySelector('input').value"));
   }
 
-  @Test
-  void shouldBeAbleToFillWhenFocusIsInTheWrongFrame() {
+  @PlaywrightTest
+  void shouldBeAbleToFillWhenFocusIsInTheWrongFrame(Page page) {
     page.setContent("<div contentEditable='true'></div>\n" +
       "<iframe></iframe>");
     page.focus("iframe");
@@ -198,36 +200,36 @@ public class TestPageFill extends TestBase {
     assertEquals("some value", page.evalOnSelector("div", "d => d.textContent"));
   }
 
-  @Test
-  void shouldBeAbleToFillTheInputTypeNumber() {
+  @PlaywrightTest
+  void shouldBeAbleToFillTheInputTypeNumber(Page page) {
     page.setContent("<input id='input' type='number'></input>");
     page.fill("input", "42");
     assertEquals("42", page.evaluate("() => window['input'].value"));
   }
 
-  @Test
-  void shouldBeAbleToFillExponentIntoTheInputTypeNumber() {
+  @PlaywrightTest
+  void shouldBeAbleToFillExponentIntoTheInputTypeNumber(Page page) {
     page.setContent("<input id='input' type='number'></input>");
     page.fill("input", "-10e5");
     assertEquals("-10e5", page.evaluate("() => window['input'].value"));
   }
 
-  @Test
-  void shouldBeAbleToFillInputTypeNumberWithEmptyString() {
+  @PlaywrightTest
+  void shouldBeAbleToFillInputTypeNumberWithEmptyString(Page page) {
     page.setContent("<input id='input' type='number' value='123'></input>");
     page.fill("input", "");
     assertEquals("", page.evaluate("() => window['input'].value"));
   }
 
-  @Test
-  void shouldNotBeAbleToFillTextIntoTheInputTypeNumber() {
+  @PlaywrightTest
+  void shouldNotBeAbleToFillTextIntoTheInputTypeNumber(Page page) {
     page.setContent("<input id='input' type='number'></input>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
     assertTrue(e.getMessage().contains("Cannot type text into input[type=number]"));
   }
 
-  @Test
-  void shouldBeAbleToClear() {
+  @PlaywrightTest
+  void shouldBeAbleToClear(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
@@ -235,8 +237,8 @@ public class TestPageFill extends TestBase {
     assertEquals("", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void inputValueShouldWork() {
+  @PlaywrightTest
+  void inputValueShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "my-text-content");
     assertEquals("my-text-content", page.inputValue("input"));
@@ -244,8 +246,8 @@ public class TestPageFill extends TestBase {
     assertEquals("", page.inputValue("input"));
   }
 
-  @Test
-  void shouldBeAbleToClearUsingFill() {
+  @PlaywrightTest
+  void shouldBeAbleToClearUsingFill(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
