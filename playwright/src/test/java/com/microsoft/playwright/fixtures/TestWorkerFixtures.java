@@ -17,23 +17,38 @@
 package com.microsoft.playwright.fixtures;
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Isolated;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Runs alone so that no other test class can evict the workers whose reuse it checks.
+@Isolated
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestWorkerFixtures {
-  private static final AtomicInteger created = new AtomicInteger();
+  private static final Map<BrowserName, Set<WorkerResource>> resourcesByBrowser = new ConcurrentHashMap<>();
   private static final AtomicInteger closed = new AtomicInteger();
 
   static final class WorkerResource implements AutoCloseable {
     final Browser browser;
+    // Created by a worker fixture, so it is kept open from one test to the next.
+    final BrowserContext context;
 
     WorkerResource(Browser browser) {
       this.browser = browser;
-      created.incrementAndGet();
+      this.context = browser.newContext();
     }
 
     @Override
@@ -53,23 +68,33 @@ public class TestWorkerFixtures {
     return new WorkerResource(browser);
   }
 
+  private static void record(BrowserName browserName, WorkerResource resource) {
+    resourcesByBrowser.computeIfAbsent(browserName, k -> new HashSet<>()).add(resource);
+  }
+
   @AfterAll
-  static void workerResourcesOutliveTests() {
-    // Worker fixtures are closed with their worker, which the pool may evict while other classes
-    // run, never once per test.
-    assertTrue(created.get() > 0);
-    assertTrue(closed.get() <= created.get(), "created " + created.get() + ", closed " + closed.get());
+  static void workerFixturesAreSharedByTests() {
+    resourcesByBrowser.forEach((browserName, resources) ->
+      assertEquals(1, resources.size(), browserName + " tests did not share the worker: " + resources));
+    assertEquals(0, closed.get(), "Worker fixtures were closed while their worker was idle");
   }
 
   @PlaywrightTest
-  void shouldLaunchWithOverriddenOptions(BrowserType.LaunchOptions launchOptions, Browser browser, WorkerResource resource) {
+  @Order(1)
+  void shouldLaunchWithOverriddenOptions(BrowserType.LaunchOptions launchOptions, Browser browser, WorkerResource resource, BrowserName browserName) {
+    record(browserName, resource);
     assertEquals(123456, launchOptions.timeout);
     assertTrue(browser.isConnected());
     assertSame(browser, resource.browser);
+    // Left open on purpose: it must be closed before the next test gets this worker.
+    browser.newContext();
   }
 
   @PlaywrightTest
-  void shouldReuseWorkerFixtures(Browser browser, WorkerResource resource) {
+  @Order(2)
+  void shouldReuseWorkerFixtures(Browser browser, WorkerResource resource, BrowserName browserName) {
+    record(browserName, resource);
     assertSame(browser, resource.browser);
+    assertEquals(singletonList(resource.context), browser.contexts());
   }
 }

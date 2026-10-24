@@ -20,11 +20,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.opentest4j.TestAbortedException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,21 +29,10 @@ import java.util.Set;
  * {@link Worker} for the worker-scoped ones, and tears everything down when the test is over.
  */
 final class TestScope implements AutoCloseable {
-  private static final class Entry {
-    final FixtureDefinition definition;
-    final Object value;
-
-    Entry(FixtureDefinition definition, Object value) {
-      this.definition = definition;
-      this.value = value;
-    }
-  }
-
   private final ExtensionContext context;
   private final FixtureRegistry registry;
   private final BrowserName browserName;
-  private final Map<Object, Object> values = new HashMap<>();
-  private final List<Entry> created = new ArrayList<>();
+  private final FixtureValues values = new FixtureValues();
   private final Set<FixtureDefinition> resolving = new LinkedHashSet<>();
   private Worker worker;
 
@@ -69,11 +55,10 @@ final class TestScope implements AutoCloseable {
       if (definition.scope() == Scope.WORKER) {
         return worker().get(definition, new Resolver(definition));
       }
-      Object value = values.get(definition.identity());
+      Object value = values.get(definition);
       if (value == null) {
         value = create(definition);
-        values.put(definition.identity(), value);
-        created.add(new Entry(definition, value));
+        values.add(definition, value);
       }
       return value;
     } catch (RuntimeException | Error e) {
@@ -105,25 +90,20 @@ final class TestScope implements AutoCloseable {
     return worker;
   }
 
+  /** Closes the test fixtures and returns the worker; a failure to close any of them fails the test. */
   @Override
-  public void close() {
-    for (int i = created.size() - 1; i >= 0; i--) {
-      Entry entry = created.get(i);
-      try {
-        entry.definition.close(entry.value);
-      } catch (Throwable e) {
-        System.err.println("Failed to close " + entry.definition.describe() + ": " + e);
-      }
-    }
-    created.clear();
-    values.clear();
+  public void close() throws Exception {
+    Teardown teardown = new Teardown();
+    values.close(teardown);
     if (worker != null) {
       // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
       // browser or the Playwright instance in an unknown state.
-      boolean failed = context.getExecutionException().filter(e -> !(e instanceof TestAbortedException)).isPresent();
-      WorkerPool.INSTANCE.release(worker, failed);
+      boolean discard = teardown.failed()
+        || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException)).isPresent();
+      teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
       worker = null;
     }
+    teardown.rethrow();
   }
 
   private final class Resolver implements FixtureResolver {

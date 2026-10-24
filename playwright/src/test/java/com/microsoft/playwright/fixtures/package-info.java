@@ -29,7 +29,8 @@
  *   <li>Worker fixtures ({@code scope: 'worker'}) are {@link com.microsoft.playwright.fixtures.Scope#WORKER}
  *       fixtures. A worker is a bundle of such values that one test uses at a time; the pool hands it to
  *       the next test with the same worker fixtures and closes it after a failure, as Playwright Test
- *       restarts a worker process.</li>
+ *       restarts a worker process. Contexts that a test leaves open in a worker's browsers are closed
+ *       when the test ends; contexts created by worker fixtures stay open.</li>
  *   <li>{@code test.skip(({ browserName }) => ...)} is {@link com.microsoft.playwright.fixtures.DisabledOnBrowser}
  *       or {@link com.microsoft.playwright.fixtures.EnabledOnBrowser}; dynamic conditions use JUnit assumptions.</li>
  *   <li>Tests generated in a {@code for} loop are a {@code @Nested @ParameterizedClass} whose
@@ -40,6 +41,9 @@
  * Playwright objects are not thread-safe, so every worker is used by a single test at a time and tests
  * only touch the fixtures they were given. Workers are pooled rather than bound to threads because
  * JUnit's fork-join executor may add or retire threads; sequential use from different threads is safe.
+ * Each test thread runs a test in every browser one after another, so the pool keeps a worker per
+ * browser for every thread. Errors while closing fixtures fail the test that used them, or the whole
+ * run for idle workers that no test owns.
  *
  * <h2>Other extensions</h2>
  * The resolver only claims parameters whose type is a known fixture, so it coexists with the parameter

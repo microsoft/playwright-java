@@ -17,12 +17,12 @@
 package com.microsoft.playwright.fixtures;
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * A bundle of worker-scoped fixture values, the counterpart of a Playwright Test worker process.
@@ -60,56 +60,64 @@ final class Worker implements AutoCloseable {
     }
   }
 
-  private static final class Entry {
-    final FixtureDefinition definition;
-    final Object value;
-
-    Entry(FixtureDefinition definition, Object value) {
-      this.definition = definition;
-      this.value = value;
-    }
-  }
-
   final Key key;
-  private final Map<Object, Object> values = new HashMap<>();
-  private final List<Entry> created = new ArrayList<>();
+  private final FixtureValues values = new FixtureValues();
+  // Contexts created by worker fixtures. They belong to the worker and outlive tests.
+  private final Set<BrowserContext> workerContexts = new HashSet<>();
 
   Worker(Key key) {
     this.key = key;
-    values.put(BuiltinFixture.BROWSER_NAME.identity(), key.browserName);
+    values.add(BuiltinFixture.BROWSER_NAME, key.browserName);
   }
 
   Object get(FixtureDefinition definition, FixtureResolver resolver) throws Exception {
-    Object value = values.get(definition.identity());
+    Object value = values.get(definition);
     if (value == null) {
+      Set<BrowserContext> before = contexts();
       value = definition.create(resolver);
       if (value == null) {
         throw new IllegalStateException(definition.describe() + " returned null");
       }
-      values.put(definition.identity(), value);
-      created.add(new Entry(definition, value));
+      values.add(definition, value);
+      Set<BrowserContext> created = contexts();
+      created.removeAll(before);
+      workerContexts.addAll(created);
     }
     return value;
   }
 
+  /**
+   * Closes the contexts that the last test opened in this worker's browsers and left behind, so
+   * that the next test starts with only the contexts of the worker fixtures.
+   */
+  void closeTestContexts(Teardown teardown) {
+    Set<BrowserContext> leaked = contexts();
+    leaked.removeAll(workerContexts);
+    for (BrowserContext context : leaked) {
+      teardown.run(context::close);
+    }
+  }
+
+  private Set<BrowserContext> contexts() {
+    Set<BrowserContext> result = new HashSet<>();
+    for (Browser browser : values.ofType(Browser.class)) {
+      if (browser.isConnected()) {
+        result.addAll(browser.contexts());
+      }
+    }
+    return result;
+  }
+
   /** A worker whose browser got disconnected cannot serve another test. */
   boolean isHealthy() {
-    Object browser = values.get(BuiltinFixture.BROWSER.identity());
-    return browser == null || ((Browser) browser).isConnected();
+    return values.ofType(Browser.class).stream().allMatch(Browser::isConnected);
   }
 
   @Override
-  public void close() {
-    for (int i = created.size() - 1; i >= 0; i--) {
-      Entry entry = created.get(i);
-      try {
-        entry.definition.close(entry.value);
-      } catch (Throwable e) {
-        System.err.println("Failed to close " + entry.definition.describe() + ": " + e);
-      }
-    }
-    created.clear();
-    values.clear();
+  public void close() throws Exception {
+    Teardown teardown = new Teardown();
+    values.close(teardown);
+    teardown.rethrow();
   }
 
   @Override

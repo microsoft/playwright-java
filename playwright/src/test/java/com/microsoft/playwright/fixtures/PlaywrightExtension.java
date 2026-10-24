@@ -33,7 +33,7 @@ public final class PlaywrightExtension implements TestTemplateInvocationContextP
   @SuppressWarnings("deprecation")
   private static final class PoolCloser implements AutoCloseable, ExtensionContext.Store.CloseableResource {
     @Override
-    public void close() {
+    public void close() throws Exception {
       WorkerPool.INSTANCE.closeAll();
     }
   }
