@@ -16,17 +16,23 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
+import static com.microsoft.playwright.fixtures.Env.isMac;
+import static com.microsoft.playwright.fixtures.Env.isWindows;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageEventNetwork extends TestBase {
-  @Test
-  void PageEventsRequest() {
+public class TestPageEventNetwork {
+  @PlaywrightTest
+  void PageEventsRequest(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
     page.navigate(server.EMPTY_PAGE);
@@ -39,8 +45,8 @@ public class TestPageEventNetwork extends TestBase {
     assertEquals(server.EMPTY_PAGE, requests.get(0).frame().url());
   }
 
-  @Test
-  void PageEventsResponse() {
+  @PlaywrightTest
+  void PageEventsResponse(Page page, Server server) {
     List<Response> responses = new ArrayList<>();
     page.onResponse(response -> responses.add(response));
     page.navigate(server.EMPTY_PAGE);
@@ -51,14 +57,14 @@ public class TestPageEventNetwork extends TestBase {
     assertNotNull(responses.get(0).request());
   }
 
-  @Test
-  void PageEventsRequestFailed() {
+  @PlaywrightTest
+  void PageEventsRequestFailed(Page page, Server server, BrowserName browserName) {
     server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
     List<Request> failedRequests = new ArrayList<>();
     page.onRequestFailed(request -> failedRequests.add(request));
     page.navigate(server.PREFIX + "/one-style.html");
     // In firefox one-style.css is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertTrue(failedRequests.size() > 0);
     } else {
       assertEquals(1, failedRequests.size());
@@ -67,9 +73,9 @@ public class TestPageEventNetwork extends TestBase {
     assertNull(failedRequests.get(0).response());
     assertEquals("stylesheet", failedRequests.get(0).resourceType());
     String error = failedRequests.get(0).failure();
-    if (isChromium()) {
+    if (browserName == CHROMIUM) {
       assertEquals("net::ERR_EMPTY_RESPONSE", error);
-    } else if (isWebKit()) {
+    } else if (browserName == WEBKIT) {
       if (isMac)
         assertEquals("The network connection was lost.", error);
       else if (isWindows)
@@ -82,8 +88,8 @@ public class TestPageEventNetwork extends TestBase {
     assertNotNull(failedRequests.get(0).frame());
   }
 
-  @Test
-  void PageEventsRequestFinished() {
+  @PlaywrightTest
+  void PageEventsRequestFinished(Page page, Server server) {
     Request[] requestRef = {null};
     page.onRequestFinished(r -> requestRef[0] = r);
     Response response = page.navigate(server.EMPTY_PAGE);
@@ -99,8 +105,8 @@ public class TestPageEventNetwork extends TestBase {
     assertNull(request.failure());
   }
 
-  @Test
-  void PageWaitForRequestFinished() {
+  @PlaywrightTest
+  void PageWaitForRequestFinished(Page page, Server server) {
     Response[] responseRef = {null};
     Request request = page.waitForRequestFinished(() -> {
       responseRef[0] = page.navigate(server.EMPTY_PAGE);
@@ -117,8 +123,8 @@ public class TestPageEventNetwork extends TestBase {
     assertNull(request.failure());
   }
 
-  @Test
-  void shouldFireEventsInProperOrder() {
+  @PlaywrightTest
+  void shouldFireEventsInProperOrder(Page page, Server server) {
     List<String> events = new ArrayList<>();
     page.onRequest(request -> events.add("request"));
     page.onResponse(response -> events.add("response"));
@@ -128,8 +134,8 @@ public class TestPageEventNetwork extends TestBase {
     assertEquals(asList("request", "response", "requestfinished"), events);
   }
 
-  @Test
-  void shouldSupportRedirects() {
+  @PlaywrightTest
+  void shouldSupportRedirects(Page page, Server server) {
     List<String> events = new ArrayList<>();
     page.onRequest(request -> {
       events.add(request.method() + " " + request.url());

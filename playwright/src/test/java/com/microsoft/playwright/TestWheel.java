@@ -16,22 +16,25 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.Map;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.Env.isMac;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestWheel extends TestBase {
-  private void expectEvent(Map<String, Object> expected) {
+public class TestWheel {
+  private void expectEvent(Page page, BrowserName browserName, Map<String, Object> expected) {
     // Chromium reports deltaX/deltaY scaled by host device scale factor.
     // https://bugs.chromium.org/p/chromium/issues/detail?id=1324819
     // https://github.com/microsoft/playwright/issues/7362
     // Different bots have different scale factors (usually 1 or 2), so we just ignore the values
     // instead of guessing the host scale factor.
     // This first appeared in Chromium 102.
-    boolean ignoreDelta = isChromium() && isMac;
+    boolean ignoreDelta = browserName == CHROMIUM && isMac;
     Map<String, Object> received = (Map<String, Object>) page.evaluate("window.lastEvent");
     if (ignoreDelta) {
       expected.remove("deltaX");
@@ -42,8 +45,8 @@ public class TestWheel extends TestBase {
     assertEquals(expected, received);
   }
 
-  @Test
-  void shouldDispatchWheelEvents() {
+  @PlaywrightTest
+  void shouldDispatchWheelEvents(Page page, BrowserName browserName) {
     page.setContent("<div style='width: 5000px; height: 5000px;'></div>");
     page.mouse().move(50, 60);
     listenForWheelEvents(page, "div");
@@ -60,11 +63,11 @@ public class TestWheel extends TestBase {
       "altKey", false,
       "metaKey", false);
     page.waitForFunction("window.scrollY === 100");
-    expectEvent(expected);
+    expectEvent(page, browserName, expected);
   }
 
-  @Test
-  void shouldScrollWhenNobodyIsListening() {
+  @PlaywrightTest
+  void shouldScrollWhenNobodyIsListening(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     page.mouse().move(50, 60);
     page.mouse().wheel(0, 100);
@@ -72,8 +75,8 @@ public class TestWheel extends TestBase {
   }
 
 
-  @Test
-  void shouldSetTheModifiers() {
+  @PlaywrightTest
+  void shouldSetTheModifiers(Page page, BrowserName browserName) {
     page.setContent("<div style='width: 5000px; height: 5000px;'></div>");
     page.mouse().move(50, 60);
     listenForWheelEvents(page, "div");
@@ -89,11 +92,11 @@ public class TestWheel extends TestBase {
       "shiftKey", true,
       "altKey", false,
       "metaKey", false);
-    expectEvent(expected);
+    expectEvent(page, browserName, expected);
   }
 
-  @Test
-  void shouldScrollHorizontally() {
+  @PlaywrightTest
+  void shouldScrollHorizontally(Page page, BrowserName browserName) {
     page.setContent("<div style='width: 5000px; height: 5000px;'></div>");
     page.mouse().move(50, 60);
     listenForWheelEvents(page, "div");
@@ -109,11 +112,11 @@ public class TestWheel extends TestBase {
       "altKey", false,
       "metaKey", false);
     page.waitForFunction("window.scrollX === 100");
-    expectEvent(expected);
+    expectEvent(page, browserName, expected);
   }
 
-  @Test
-  void shouldWorkWhenTheEventIsCanceled() {
+  @PlaywrightTest
+  void shouldWorkWhenTheEventIsCanceled(Page page, BrowserName browserName) {
     page.setContent("<div style='width: 5000px; height: 5000px;'></div>");
     page.mouse().move(50, 60);
     listenForWheelEvents(page, "div");
@@ -133,7 +136,7 @@ public class TestWheel extends TestBase {
       "shiftKey", false,
       "altKey", false,
       "metaKey", false);
-    expectEvent(expected);
+    expectEvent(page, browserName, expected);
     // ensure that it did not.
     assertEquals(0, page.evaluate("window.scrollY"));
   }

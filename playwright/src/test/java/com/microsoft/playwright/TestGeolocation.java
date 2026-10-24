@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Geolocation;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +26,9 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestGeolocation extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestGeolocation {
+  @PlaywrightTest
+  void shouldWork(Page page, BrowserContext context, Server server) {
     context.grantPermissions(asList("geolocation"));
     page.navigate(server.EMPTY_PAGE);
     context.setGeolocation(new Geolocation(10, 10));
@@ -38,16 +38,16 @@ public class TestGeolocation extends TestBase {
     assertEquals(mapOf("latitude", 10, "longitude", 10), geolocation);
   }
 
-  @Test
-  void shouldThrowWhenInvalidLongitude() {
+  @PlaywrightTest
+  void shouldThrowWhenInvalidLongitude(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.setGeolocation(new Geolocation(10, 200));
     });
     assertTrue(e.getMessage().contains("geolocation.longitude: precondition -180 <= LONGITUDE <= 180 failed."));
   }
 
-  @Test
-  void shouldIsolateContexts() {
+  @PlaywrightTest
+  void shouldIsolateContexts(Page page, BrowserContext context, Browser browser, Server server) {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
     page.navigate(server.EMPTY_PAGE);
@@ -74,8 +74,8 @@ public class TestGeolocation extends TestBase {
     // Not applicable in Java.
   }
 
-  @Test
-  void shouldNotModifyPassedDefaultOptionsObject() {
+  @PlaywrightTest
+  void shouldNotModifyPassedDefaultOptionsObject(Browser browser) {
     Geolocation geolocation = new Geolocation(10, 10);
     Browser.NewContextOptions options = new Browser.NewContextOptions().setGeolocation(geolocation);
     BrowserContext context = browser.newContext(options);
@@ -88,8 +88,8 @@ public class TestGeolocation extends TestBase {
     // Not applicable in Java.
   }
 
-  @Test
-  void shouldUseContextOptions() {
+  @PlaywrightTest
+  void shouldUseContextOptions(Browser browser, Server server) {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
       .setGeolocation(new Geolocation(10, 10))
       .setPermissions(asList("geolocation"));
@@ -103,8 +103,8 @@ public class TestGeolocation extends TestBase {
     context.close();
   }
 
-  @Test
-  void watchPositionShouldBeNotified() {
+  @PlaywrightTest
+  void watchPositionShouldBeNotified(Page page, BrowserContext context, Server server) {
     context.grantPermissions(asList("geolocation"));
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
@@ -143,8 +143,8 @@ public class TestGeolocation extends TestBase {
     assertTrue(messages.contains("lat=40 lng=50"));
   }
 
-  @Test
-  void shouldUseContextOptionsForPopup() {
+  @PlaywrightTest
+  void shouldUseContextOptionsForPopup(Page page, BrowserContext context, Server server) {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
     Page popup = page.waitForPopup(() -> page.evaluate(

@@ -16,23 +16,29 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.SameSiteAttribute;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.OS;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
+import static com.microsoft.playwright.Utils.defaultSameSiteCookieValue;
 import static com.microsoft.playwright.Utils.getOS;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
+import static com.microsoft.playwright.fixtures.Env.isLinux;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextCookies extends TestBase {
-  @Test
-  void shouldGetACookie() {
+public class TestBrowserContextCookies {
+  @PlaywrightTest
+  void shouldGetACookie(Page page, BrowserContext context, Server server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
       "  document.cookie = 'username=John Doe';\n" +
@@ -48,13 +54,13 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue(browserName) +"'\n" +
       "  }]", cookies);
   }
 
 
-  @Test
-  void shouldGetANonSessionCookie() {
+  @PlaywrightTest
+  void shouldGetANonSessionCookie(Page page, BrowserContext context, Server server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);
     // @see https://en.wikipedia.org/wiki/Year_2038_problem
     Object documentCookie = page.evaluate("() => {\n" +
@@ -71,8 +77,8 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals("/", cookies.get(0).path);
     assertFalse(cookies.get(0).httpOnly);
     assertFalse(cookies.get(0).secure);
-    assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
-    assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
+    assertEquals(defaultSameSiteCookieValue(browserName), cookies.get(0).sameSite);
+    assertEquals(defaultSameSiteCookieValue(browserName), cookies.get(0).sameSite);
 
     // Browsers start to cap cookies with 400 days max expires value.
     // See https://github.com/httpwg/http-extensions/pull/1732
@@ -83,8 +89,8 @@ public class TestBrowserContextCookies extends TestBase {
     assertTrue(cookies.get(0).expires > ((System.currentTimeMillis() + FOUR_HUNDRED_DAYS - FIVE_MINUTES) / 1000));
   }
 
-  @Test
-  void shouldProperlyReportHttpOnlyCookie() {
+  @PlaywrightTest
+  void shouldProperlyReportHttpOnlyCookie(Page page, BrowserContext context, Server server) {
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;HttpOnly; Path=/");
       exchange.sendResponseHeaders(200, 0);
@@ -96,13 +102,9 @@ public class TestBrowserContextCookies extends TestBase {
     assertTrue(cookies.get(0).httpOnly);
   }
 
-  static boolean isWebKitWindows() {
-    return isWebKit() && getOS() == Utils.OS.WINDOWS;
-  }
-
-  @Test
-  @DisabledIf(value="isWebKitWindows", disabledReason="fail")
-  void shouldProperlyReportStrictSameSiteCookie() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.WINDOWS, reason = "fail")
+  void shouldProperlyReportStrictSameSiteCookie(Page page, BrowserContext context, Server server) {
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Strict");
       exchange.sendResponseHeaders(200, 0);
@@ -114,9 +116,9 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals(SameSiteAttribute.STRICT, cookies.get(0).sameSite);
   }
 
-  @Test
-  @DisabledIf(value="isWebKitWindows", disabledReason="fail")
-  void shouldProperlyReportLaxSameSiteCookie() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.WINDOWS, reason = "fail")
+  void shouldProperlyReportLaxSameSiteCookie(Page page, BrowserContext context, Server server) {
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Lax");
       exchange.sendResponseHeaders(200, 0);
@@ -128,8 +130,8 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals(SameSiteAttribute.LAX, cookies.get(0).sameSite);
   }
 
-  @Test
-  void shouldGetMultipleCookies() {
+  @PlaywrightTest
+  void shouldGetMultipleCookies(Page page, BrowserContext context, Server server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
       "  document.cookie = 'username=John Doe';\n" +
@@ -148,7 +150,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue(browserName) +"'\n" +
       "  },\n" +
       "  {\n" +
       "    name: 'username',\n" +
@@ -158,13 +160,13 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue(browserName) +"'\n" +
       "  }\n" +
       "]", cookies);
   }
 
-  @Test
-  void shouldGetCookiesFromMultipleUrls() {
+  @PlaywrightTest
+  void shouldGetCookiesFromMultipleUrls(BrowserContext context, BrowserName browserName) {
     context.addCookies(asList(
       new Cookie("doggo", "woofs").setUrl("https://foo.com"),
       new Cookie("catto", "purrs").setUrl("https://bar.com"),
@@ -179,7 +181,7 @@ public class TestBrowserContextCookies extends TestBase {
       "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue(browserName) +"'\n" +
       "}, {\n" +
       "  name: 'doggo',\n" +
       "  value: 'woofs',\n" +
@@ -188,17 +190,13 @@ public class TestBrowserContextCookies extends TestBase {
       "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue(browserName) +"'\n" +
       "}]", cookies);
   }
 
-  static boolean isWebkitWindows() {
-    return isWebKit() && isWindows;
-  }
-
-  @Test
-  @DisabledIf(value="isWebkitWindows", disabledReason="Same site is not implemented in curl")
-  void shouldAcceptSameSiteAttribute() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.WINDOWS, reason = "Same site is not implemented in curl")
+  void shouldAcceptSameSiteAttribute(Page page, BrowserContext context, Server server, BrowserName browserName) {
     context.addCookies(asList(
       new Cookie("one", "uno").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.LAX),
       new Cookie("two", "dos").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.STRICT),
@@ -206,14 +204,14 @@ public class TestBrowserContextCookies extends TestBase {
 
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("document.cookie.split('; ').sort().join('; ')");
-    if (isChromium() || (isLinux && isWebKit())) {
+    if (browserName == CHROMIUM || (isLinux && browserName == WEBKIT)) {
       assertEquals("one=uno; two=dos", documentCookie);
     } else {
       assertEquals("one=uno; three=tres; two=dos", documentCookie);
     }
 
     List<SameSiteAttribute> list = context.cookies().stream().map(c -> c.sameSite).sorted().collect(Collectors.toList());
-    if (isChromium() || (isLinux && isWebKit())) {
+    if (browserName == CHROMIUM || (isLinux && browserName == WEBKIT)) {
       assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX), list);
     } else {
       assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX, SameSiteAttribute.NONE), list);

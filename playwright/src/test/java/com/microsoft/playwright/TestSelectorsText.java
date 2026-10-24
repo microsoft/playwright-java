@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.regex.Pattern;
 
@@ -24,10 +24,10 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestSelectorsText extends TestBase {
+public class TestSelectorsText {
 
-  @Test
-  void shouldWorkSmoke() {
+  @PlaywrightTest
+  void shouldWorkSmoke(Page page) {
     page.setContent("<div>Hi&gt;&gt;<span></span></div>");
     assertEquals("<span></span>", page.evalOnSelector("text=\"Hi>>\">>span", "e => e.outerHTML"));
     assertEquals("<span></span>", page.evalOnSelector("text=/Hi\\>\\>/ >> span", "e => e.outerHTML"));
@@ -37,8 +37,8 @@ public class TestSelectorsText extends TestBase {
     assertEquals("<span>hello</span>", page.evalOnSelector("text=/let\'s/i >> span", "e => e.outerHTML"));
   }
 
-  @Test
-  void hasTextAndInternalTextShouldMatchFullNodeTextInStrictMode() {
+  @PlaywrightTest
+  void hasTextAndInternalTextShouldMatchFullNodeTextInStrictMode(Page page) {
     page.setContent("<div id=div1>hello<span>world</span></div>\n" +
       "    <div id=div2>hello</div>");
     assertThat(page.getByText("helloworld", new Page.GetByTextOptions().setExact(true))).hasId("div1");

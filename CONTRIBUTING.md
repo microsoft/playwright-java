@@ -47,12 +47,52 @@ Each driver is assembled from the [`playwright-core`](https://www.npmjs.com/pack
 
 ```bash
 mvn compile
+# Runs every test in Chromium, Firefox and WebKit
 mvn test
+# Selecting browsers
+BROWSER=chromium mvn test
+BROWSER=firefox,webkit mvn test
 # Executing a single test
 BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
 # Executing a single test class
 BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes
 ```
+
+Set `HEADED=1` to watch the browsers and `BROWSER_CHANNEL=chrome` (or `msedge`, ...) to test a stable channel.
+
+### Writing tests
+
+Tests use the fixtures from `playwright/src/test/java/com/microsoft/playwright/fixtures`, modeled after the
+upstream Playwright Test fixtures. A test is a `@PlaywrightTest` method that declares the fixtures it needs
+as parameters; it runs once per selected browser, in a fresh context:
+
+```java
+@PlaywrightTest
+void shouldWork(Page page, Server server) {
+  page.navigate(server.EMPTY_PAGE);
+}
+```
+
+The built-in fixtures are `Playwright`, `BrowserName`, `BrowserType`, `BrowserType.LaunchOptions`, `Browser`,
+`Browser.NewContextOptions`, `BrowserContext`, `Page`, `Server` and `HttpsServer`. Playwright, the browser and
+the test servers are shared by the tests that run one after another on the same thread; the context and the
+page are created for each test and closed afterwards. A test class adds or overrides fixtures with
+`@Fixture` methods, whose parameters are the fixtures they depend on:
+
+```java
+@Fixture
+Browser.NewContextOptions contextOptions() {
+  return new Browser.NewContextOptions().setHasTouch(true);
+}
+
+@Fixture(scope = Scope.WORKER)
+static BrowserType.LaunchOptions launchOptions(BrowserType.LaunchOptions defaults) {
+  return defaults.setArgs(asList("--enable-features=WebMCP"));
+}
+```
+
+Use `@DisabledOnBrowser` / `@EnabledOnBrowser` for browser-specific tests, and a `@Nested @ParameterizedClass`
+with a `@Fixture` method reading its `@Parameter` field to run the same tests with different options.
 
 ### Generating API
 

@@ -16,14 +16,17 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Clip;
 import com.microsoft.playwright.options.ScreenshotAnimations;
 import com.microsoft.playwright.options.ScreenshotCaret;
 import com.microsoft.playwright.options.ScreenshotScale;
 import com.microsoft.playwright.options.ScreenshotType;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 import org.opentest4j.AssertionFailedError;
 
@@ -37,15 +40,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static com.microsoft.playwright.options.ScreenshotAnimations.DISABLED;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 // TODO: suite.skip(browserName === "firefox" && headed");
-public class TestPageScreenshot extends TestBase {
-  @Test
-  void shouldWork() throws IOException {
+public class TestPageScreenshot {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot();
@@ -55,8 +61,8 @@ public class TestPageScreenshot extends TestBase {
 //    expect(screenshot).toMatchSnapshot("screenshot-sanity.png");
   }
 
-  @Test
-  void shouldClipRect() throws IOException {
+  @PlaywrightTest
+  void shouldClipRect(Page page, Server server) throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
@@ -74,16 +80,16 @@ public class TestPageScreenshot extends TestBase {
     assertEquals("WEBP", new String(screenshot, 8, 4, java.nio.charset.StandardCharsets.US_ASCII));
   }
 
-  @Test
-  void shouldProduceAValidWebpScreenshot() {
+  @PlaywrightTest
+  void shouldProduceAValidWebpScreenshot(Page page, Server server) {
     page.setViewportSize(300, 300);
     page.navigate(server.EMPTY_PAGE);
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP));
     assertWebp(screenshot);
   }
 
-  @Test
-  void pathOptionShouldDetectWebp(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void pathOptionShouldDetectWebp(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     page.setViewportSize(300, 300);
     page.navigate(server.EMPTY_PAGE);
     Path outputPath = tmpDir.resolve("screenshot.webp");
@@ -92,8 +98,8 @@ public class TestPageScreenshot extends TestBase {
     assertWebp(Files.readAllBytes(outputPath));
   }
 
-  @Test
-  void qualityOptionShouldWorkForWebp() {
+  @PlaywrightTest
+  void qualityOptionShouldWorkForWebp(Page page, Server server) {
     page.navigate(server.PREFIX + "/grid.html");
     byte[] lowQuality = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP).setQuality(0));
     byte[] highQuality = page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.WEBP).setQuality(100));
@@ -108,8 +114,8 @@ public class TestPageScreenshot extends TestBase {
       "  })");
   }
 
-  @Test
-  void shouldNotCaptureInfiniteCssAnimation() {
+  @PlaywrightTest
+  void shouldNotCaptureInfiniteCssAnimation(Page page, Server server) {
     page.navigate(server.PREFIX + "/rotate-z.html");
     Locator div = page.locator("div");
     byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
@@ -120,8 +126,8 @@ public class TestPageScreenshot extends TestBase {
     }
   }
 
-  @Test
-  void shouldNotCapturePseudoElementCssAnimation() {
+  @PlaywrightTest
+  void shouldNotCapturePseudoElementCssAnimation(Page page, Server server) {
     page.navigate(server.PREFIX + "/rotate-pseudo.html");
     Locator div = page.locator("div");
     byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
@@ -132,8 +138,8 @@ public class TestPageScreenshot extends TestBase {
     }
   }
 
-  @Test
-  void shouldNotCaptureCssAnimationsInShadowDOM() {
+  @PlaywrightTest
+  void shouldNotCaptureCssAnimationsInShadowDOM(Page page, Server server) {
     page.navigate(server.PREFIX + "/rotate-z-shadow-dom.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setAnimations(DISABLED));
     for (int i = 0; i < 10; ++i) {
@@ -143,8 +149,8 @@ public class TestPageScreenshot extends TestBase {
     }
   }
 
-  @Test
-  void shouldResumeInfiniteAnimations() {
+  @PlaywrightTest
+  void shouldResumeInfiniteAnimations(Page page, Server server) {
     page.navigate(server.PREFIX + "/rotate-z.html");
     page.screenshot(new Page.ScreenshotOptions().setAnimations(DISABLED));
     byte[] buffer1 = page.screenshot();
@@ -153,8 +159,8 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionFailedError.class, () -> assertArrayEquals(buffer1, buffer2));
   }
 
-  @Test
-  void shouldNotCaptureInfiniteWebAnimations() {
+  @PlaywrightTest
+  void shouldNotCaptureInfiniteWebAnimations(Page page, Server server) {
     page.navigate(server.PREFIX + "/web-animation.html");
     Locator div = page.locator("div");
     byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
@@ -170,8 +176,8 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionFailedError.class, () -> assertArrayEquals(buffer1, buffer2));
   }
 
-  @Test
-  void maskShouldWorkForPage() {
+  @PlaywrightTest
+  void maskShouldWorkForPage(Page page, Server server) {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
@@ -181,8 +187,8 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionFailedError.class, () -> assertArrayEquals(screenshot, originalScreenshot));
   }
 
-  @Test
-  void maskShouldWorkForLocator() {
+  @PlaywrightTest
+  void maskShouldWorkForLocator(Page page, Server server) {
     page.navigate(server.PREFIX + "/grid.html");
     Locator locatorToScreenshot = page.locator("div").first();
     byte[] screenshot = locatorToScreenshot.screenshot(new Locator.ScreenshotOptions()
@@ -192,8 +198,8 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionFailedError.class, () -> assertArrayEquals(screenshot, originalScreenshot));
   }
 
-  @Test
-  void shouldWorkWithDeviceScaleFactorAndClip() {
+  @PlaywrightTest
+  void shouldWorkWithDeviceScaleFactorAndClip(Browser browser, Server server) {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(500, 500).setDeviceScaleFactor(3))) {
       Page page = context.newPage();
@@ -205,8 +211,8 @@ public class TestPageScreenshot extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithDeviceScaleFactorAndScaleCss() {
+  @PlaywrightTest
+  void shouldWorkWithDeviceScaleFactorAndScaleCss(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(320, 480).setDeviceScaleFactor(2));
     Page page = context.newPage();
@@ -217,8 +223,8 @@ public class TestPageScreenshot extends TestBase {
     // expect(screenshot).toMatchSnapshot("screenshot-device-scale-factor-css-size.png");
   }
 
-  @Test
-  void shouldWorkWithDeviceScaleFactorAndScaleDevice() {
+  @PlaywrightTest
+  void shouldWorkWithDeviceScaleFactorAndScaleDevice(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(320, 480).setDeviceScaleFactor(2));
     Page page = context.newPage();
@@ -229,8 +235,8 @@ public class TestPageScreenshot extends TestBase {
     // expect(screenshot).toMatchSnapshot("screenshot-device-scale-factor-device-size.png");
   }
 
-  @Test
-  void shouldNotCaptureBlinkingCaretByDefault() {
+  @PlaywrightTest
+  void shouldNotCaptureBlinkingCaretByDefault(Page page, Server server) {
     page.setContent("<!-- Refer to stylesheet from other origin. Accessing this\n" +
       "           stylesheet rules will throw.\n" +
       "      -->\n" +
@@ -255,9 +261,9 @@ public class TestPageScreenshot extends TestBase {
     }
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fixme")
-  void shouldCaptureBlinkingCaretIfExplicitlyAskedFor() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "fixme")
+  void shouldCaptureBlinkingCaretIfExplicitlyAskedFor(Page page, Server server) {
     page.setContent("      <!-- Refer to stylesheet from other origin. Accessing this\n" +
       "           stylesheet rules will throw.\n" +
       "      -->\n" +
@@ -284,8 +290,8 @@ public class TestPageScreenshot extends TestBase {
     assertTrue(hasDifferentScreenshots);
   }
 
-  @Test
-  void shouldWorkWhenMaskColorIsNotPinkF0F() {
+  @PlaywrightTest
+  void shouldWorkWhenMaskColorIsNotPinkF0F(Page page, Server server) {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot1 = page.screenshot(
@@ -298,21 +304,21 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionError.class, () -> assertArrayEquals(screenshot1, screenshot2));
   }
 
-  static boolean isScreenshotTestDisabled() {
-    if (isWebKit() || isChromium()) {
+  static boolean isScreenshotTestDisabled(BrowserName browserName) {
+    if (browserName == WEBKIT || browserName == CHROMIUM) {
       // Array lengths differ.
       return true;
     }
-    if (getBrowserChannelFromEnv() != null) {
+    if (Env.channel() != null) {
       // Stable builds may have different expectations.
       return true;
     }
     return false;
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestPageScreenshot#isScreenshotTestDisabled", disabledReason="array lengths differ")
-  void shouldHideElementsBasedOnAttr() throws IOException {
+  @PlaywrightTest
+  void shouldHideElementsBasedOnAttr(Page page, BrowserType browserType, Server server, BrowserName browserName) throws IOException {
+    Assumptions.assumeFalse(isScreenshotTestDisabled(browserName), "array lengths differ");
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     page.locator("div").nth(5).evaluate("element => {\n" +
@@ -321,14 +327,14 @@ public class TestPageScreenshot extends TestBase {
     byte[] actual = page.screenshot(new Page.ScreenshotOptions().setStyle("[data-test-screenshot=\"hide\"] {\n" +
       "          visibility: hidden;\n" +
       "        }"));
-    assertArrayEquals(expectedScreenshot("hide-should-work"), actual, "Screenshots should match");
+    assertArrayEquals(expectedScreenshot(browserType, "hide-should-work"), actual, "Screenshots should match");
     Object visibility = page.locator("div").nth(5).evaluate("element => element.style.visibility");
     assertEquals("", visibility);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestPageScreenshot#isScreenshotTestDisabled", disabledReason="array lengths differ")
-  void shouldRemoveElementsBasedOnAttr() throws IOException {
+  @PlaywrightTest
+  void shouldRemoveElementsBasedOnAttr(Page page, BrowserType browserType, Server server, BrowserName browserName) throws IOException {
+    Assumptions.assumeFalse(isScreenshotTestDisabled(browserName), "array lengths differ");
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     page.locator("div").nth(5).evaluate("element => {\n" +
@@ -337,12 +343,12 @@ public class TestPageScreenshot extends TestBase {
     byte[] actual = page.screenshot(new Page.ScreenshotOptions().setStyle("[data-test-screenshot=\"remove\"] {\n" +
       "          display: none;\n" +
       "        }"));
-    assertArrayEquals(expectedScreenshot("remove-should-work"), actual, "Screenshots should match");
+    assertArrayEquals(expectedScreenshot(browserType, "remove-should-work"), actual, "Screenshots should match");
     Object display = page.locator("div").nth(5).evaluate("element => element.style.display");
     assertEquals("", display);
   }
 
-  private byte[] expectedScreenshot(String name) throws IOException {
+  private byte[] expectedScreenshot(BrowserType browserType, String name) throws IOException {
     Path path = Paths.get("src/test/resources/expectations");
     return Files.readAllBytes(path.resolve(name + "-" + browserType.name() + ".png"));
   }

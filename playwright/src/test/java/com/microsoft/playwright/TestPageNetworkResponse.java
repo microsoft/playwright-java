@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HttpHeader;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.util.List;
@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageNetworkResponse extends TestBase {
-  @Test
-  void shouldReportMultipleSetCookieHeaders() {
+public class TestPageNetworkResponse {
+  @PlaywrightTest
+  void shouldReportMultipleSetCookieHeaders(Page page, Server server) {
     server.setRoute("/headers", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "a=b");
       exchange.getResponseHeaders().add("Set-Cookie", "c=d");
@@ -46,8 +46,8 @@ public class TestPageNetworkResponse extends TestBase {
     assertEquals(asList("a=b", "c=d"), response.headerValues("set-cookie"));
   }
 
-  @Test
-  void shouldRejectResponseFinishedIfPageCloses() {
+  @PlaywrightTest
+  void shouldRejectResponseFinishedIfPageCloses(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
@@ -71,8 +71,8 @@ public class TestPageNetworkResponse extends TestBase {
     assertTrue(e.getMessage().contains("closed"), e.getMessage());
   }
 
-  @Test
-  void shouldReturnNullExistingResponseBeforeResponseReceived() {
+  @PlaywrightTest
+  void shouldReturnNullExistingResponseBeforeResponseReceived(Page page, Server server) {
     Request[] capturedRequest = {null};
     page.route("**/*", route -> {
       capturedRequest[0] = route.request();
@@ -83,8 +83,8 @@ public class TestPageNetworkResponse extends TestBase {
     assertNotNull(capturedRequest[0]);
   }
 
-  @Test
-  void shouldReturnExistingResponseAfterReceived() {
+  @PlaywrightTest
+  void shouldReturnExistingResponseAfterReceived(Page page, Server server) {
     Response[] responses = {null};
     page.onResponse(r -> responses[0] = r);
     page.navigate(server.EMPTY_PAGE);
@@ -92,16 +92,16 @@ public class TestPageNetworkResponse extends TestBase {
     assertEquals(responses[0], responses[0].request().existingResponse());
   }
 
-  @Test
-  void shouldReturnHttpVersion() {
+  @PlaywrightTest
+  void shouldReturnHttpVersion(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse("**/*", () -> page.navigate(server.EMPTY_PAGE));
     String version = response.httpVersion();
     assertTrue(version.matches("HTTP/[12](\\.[01])?"), "unexpected version: " + version);
   }
 
-  @Test
-  void shouldRejectResponseFinishedIfContextCloses() {
+  @PlaywrightTest
+  void shouldRejectResponseFinishedIfContextCloses(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header

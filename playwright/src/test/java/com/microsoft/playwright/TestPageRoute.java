@@ -16,9 +16,10 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.*;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
@@ -34,13 +35,16 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageRoute extends TestBase {
+public class TestPageRoute {
 
-  @Test
-  void shouldIntercept() {
+  @PlaywrightTest
+  void shouldIntercept(Page page, Server server) {
     boolean[] intercepted = {false};
     page.route("**/empty.html", route -> {
       Request request = route.request();
@@ -62,8 +66,8 @@ public class TestPageRoute extends TestBase {
   }
 
 
-  @Test
-  void shouldUnroute() {
+  @PlaywrightTest
+  void shouldUnroute(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/*", route -> {
       intercepted.add(1);
@@ -97,8 +101,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList(1), intercepted);
   }
 
-  @Test
-  void shouldUnrouteNonExistentPatternHandler() {
+  @PlaywrightTest
+  void shouldUnrouteNonExistentPatternHandler(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     page.route(Pattern.compile("empty.html"), route -> {
       intercepted.add(1);
@@ -109,8 +113,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList( 1), intercepted);
   }
 
-  @Test
-  void shouldNotSupportQuestionMarkInGlobPattern() {
+  @PlaywrightTest
+  void shouldNotSupportQuestionMarkInGlobPattern(Page page, Server server) {
     server.setRoute("/index", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -158,8 +162,8 @@ public class TestPageRoute extends TestBase {
     assertTrue(page.content().contains("index123hello"), page.content());
   }
 
-  @Test
-  void shouldUnroutePredicate() {
+  @PlaywrightTest
+  void shouldUnroutePredicate(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     Predicate<String> predicate = r -> true;
     page.route(predicate, route -> {
@@ -190,8 +194,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList(), intercepted);
   }
 
-  @Test
-  void shouldWorkWhenPOSTIsRedirectedWith302() {
+  @PlaywrightTest
+  void shouldWorkWhenPOSTIsRedirectedWith302(Page page, Server server) {
     server.setRedirect("/rredirect", "/empty.html");
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> route.resume());
@@ -202,8 +206,8 @@ public class TestPageRoute extends TestBase {
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/3973
-  @Test
-  void shouldWorkWhenHeaderManipulationHeadersWithRedirect() {
+  @PlaywrightTest
+  void shouldWorkWhenHeaderManipulationHeadersWithRedirect(Page page, Server server) {
     server.setRedirect("/rrredirect", "/empty.html");
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
@@ -214,8 +218,8 @@ public class TestPageRoute extends TestBase {
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4743
-  @Test
-  void shouldBeAbleToRemoveHeaders() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldBeAbleToRemoveHeaders(Page page, Server server) throws ExecutionException, InterruptedException {
     page.navigate(server.PREFIX + "/empty.html");
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
@@ -228,8 +232,8 @@ public class TestPageRoute extends TestBase {
     assertFalse(serverRequest.get().headers.containsKey("foo"));
   }
 
-  @Test
-  void shouldContainRefererHeader() {
+  @PlaywrightTest
+  void shouldContainRefererHeader(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.route("**/*", route -> {
       requests.add(route.request());
@@ -241,8 +245,8 @@ public class TestPageRoute extends TestBase {
     assertTrue(requests.get(1).headers().get("referer").contains("/one-style.html"));
   }
 
-  @Test
-  void shouldProperlyReturnNavigationResponseWhenURLHasCookies() {
+  @PlaywrightTest
+  void shouldProperlyReturnNavigationResponseWhenURLHasCookies(Page page, BrowserContext context, Server server) {
     // Setup cookie.
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(new Cookie("foo", "bar")
@@ -253,8 +257,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldShowCustomHTTPHeaders() {
+  @PlaywrightTest
+  void shouldShowCustomHTTPHeaders(Page page, Server server) {
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
     page.route("**/*", route -> {
       assertEquals("bar", route.request().headers().get("foo"));
@@ -265,9 +269,9 @@ public class TestPageRoute extends TestBase {
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4337
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
-  void shouldWorkWithRedirectInsideSyncXHR() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "fixme")
+  void shouldWorkWithRedirectInsideSyncXHR(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRedirect("/logo.png", "/pptr.png");
     page.route("**/*", route -> route.resume());
@@ -280,8 +284,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(200, status);
   }
 
-  @Test
-  void shouldWorkWithCustomRefererHeaders() {
+  @PlaywrightTest
+  void shouldWorkWithCustomRefererHeaders(Page page, Server server) {
     page.setExtraHTTPHeaders(mapOf("referer", server.EMPTY_PAGE));
     page.route("**/*", route -> {
       String referer = route.request().headers().get("referer");
@@ -293,8 +297,8 @@ public class TestPageRoute extends TestBase {
     assertTrue(response.ok());
   }
 
-  @Test
-  void shouldBeAbortable() {
+  @PlaywrightTest
+  void shouldBeAbortable(Page page, Server server) {
     page.route(Pattern.compile(".*\\.css$"), route -> route.abort());
     boolean[] failed = {false};
     page.onRequestFailed(request -> {
@@ -307,24 +311,24 @@ public class TestPageRoute extends TestBase {
     assertTrue(failed[0]);
   }
 
-  @Test
-  void shouldBeAbortableWithCustomErrorCodes() {
+  @PlaywrightTest
+  void shouldBeAbortableWithCustomErrorCodes(Page page, Server server, BrowserName browserName) {
     page.route("**/*", route -> route.abort("internetdisconnected"));
     Request[] failedRequest = {null};
     page.onRequestFailed(r -> failedRequest[0] = r);
     assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
     assertNotNull(failedRequest[0]);
-    if (isWebKit()) {
+    if (browserName == WEBKIT) {
       assertEquals("Blocked by Web Inspector", failedRequest[0].failure());
-    } else if (isFirefox()) {
+    } else if (browserName == FIREFOX) {
       assertEquals("NS_ERROR_OFFLINE", failedRequest[0].failure());
     } else {
       assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest[0].failure());
     }
   }
 
-  @Test
-  void shouldSendReferer() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSendReferer(Page page, Server server) throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("referer", "http://google.com/"));
     page.route("**/*", route -> route.resume());
     Future<Server.Request> request = server.futureRequest("/grid.html");
@@ -332,21 +336,21 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList("http://google.com/"), request.get().headers.get("referer"));
   }
 
-  @Test
-  void shouldFailNavigationWhenAbortingMainResource() {
+  @PlaywrightTest
+  void shouldFailNavigationWhenAbortingMainResource(Page page, Server server, BrowserName browserName) {
     page.route("**/*", route -> route.abort());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
-    if (isWebKit())
+    if (browserName == WEBKIT)
       assertTrue(e.getMessage().contains("Blocked by Web Inspector"), e.getMessage());
-    else if (isFirefox())
+    else if (browserName == FIREFOX)
       assertTrue(e.getMessage().contains("NS_ERROR_FAILURE"));
     else
       assertTrue(e.getMessage().contains("net::ERR_FAILED"));
   }
 
 
-  @Test
-  void shouldNotWorkWithRedirects() {
+  @PlaywrightTest
+  void shouldNotWorkWithRedirects(Page page, Server server) {
     List<Request> intercepted = new ArrayList<>();
     page.route("**/*", route -> {
       route.resume();
@@ -382,8 +386,8 @@ public class TestPageRoute extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithRedirectsForSubresources() {
+  @PlaywrightTest
+  void shouldWorkWithRedirectsForSubresources(Page page, Server server, BrowserName browserName) {
     List<Request> intercepted = new ArrayList<>();
     page.route("**/*", route -> {
       route.resume();
@@ -403,7 +407,7 @@ public class TestPageRoute extends TestBase {
     assertTrue(response.url().contains("one-style.html"));
 
     // In firefox one-style.css is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertTrue(intercepted.size() > 1);
     } else {
       assertEquals(2, intercepted.size());
@@ -420,8 +424,8 @@ public class TestPageRoute extends TestBase {
     assertNull(r);
   }
 
-  @Test
-  void shouldWorkWithEqualRequests() {
+  @PlaywrightTest
+  void shouldWorkWithEqualRequests(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     AtomicInteger responseCount = new AtomicInteger(1);
     server.setRoute("/zzz", exchange -> {
@@ -448,8 +452,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList("11", "FAILED", "22"), results);
   }
 
-  @Test
-  void shouldNavigateToDataURLAndNotFireDataURLRequests() {
+  @PlaywrightTest
+  void shouldNavigateToDataURLAndNotFireDataURLRequests(Page page) {
     List<Request> requests = new ArrayList<>();
     page.route("**/*", route -> {
       requests.add(route.request());
@@ -461,8 +465,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(0, requests.size());
   }
 
-  @Test
-  void shouldBeAbleToFetchDataURLAndNotFireDataURLRequests() {
+  @PlaywrightTest
+  void shouldBeAbleToFetchDataURLAndNotFireDataURLRequests(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.route("**/*", route -> {
@@ -475,8 +479,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(0, requests.size());
   }
 
-  @Test
-  void shouldNavigateToURLWithHashAndAndFireRequestsWithoutHash() {
+  @PlaywrightTest
+  void shouldNavigateToURLWithHashAndAndFireRequestsWithoutHash(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.route("**/*", route -> {
       requests.add(route.request());
@@ -489,8 +493,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(server.EMPTY_PAGE, requests.get(0).url());
   }
 
-  @Test
-  void shouldWorkWithEncodedServer() throws InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithEncodedServer(Page page, Server server) throws InterruptedException {
     // The requestWillBeSent will report encoded URL, whereas interception will
     // report URL as-is. @see crbug.com/759388
     page.route("**/*", route -> route.resume());
@@ -498,8 +502,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(404, response.status());
   }
 
-  @Test
-  void shouldWorkWithBadlyEncodedServer() {
+  @PlaywrightTest
+  void shouldWorkWithBadlyEncodedServer(Page page, Server server) {
     server.setRoute("/malformed", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
@@ -509,8 +513,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldWorkWithEncodedServer2() {
+  @PlaywrightTest
+  void shouldWorkWithEncodedServer2(Page page, Server server, BrowserName browserName) {
     // The requestWillBeSent will report URL as-is, whereas interception will
     // report encoded URL for stylesheet. @see crbug.com/759388
     List<Request> requests = new ArrayList<>();
@@ -521,7 +525,7 @@ public class TestPageRoute extends TestBase {
     Response response = page.navigate("data:text/html,<link rel='stylesheet' href='" + server.PREFIX + "/fonts?helvetica|arial'/>");
     assertNull(response);
     // In firefox linked resource is requested multiple times.
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertTrue(requests.size() > 0);
     } else {
       assertEquals(1, requests.size());
@@ -530,8 +534,8 @@ public class TestPageRoute extends TestBase {
     // assertEquals(404, requests.get(0).response().status());
   }
 
-  @Test
-  void shouldNotThrowIfResumeIsCalledAfterRouteHandlerFinished() {
+  @PlaywrightTest
+  void shouldNotThrowIfResumeIsCalledAfterRouteHandlerFinished(Page page, Server server) {
     page.setContent("<iframe></iframe>");
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
@@ -542,8 +546,8 @@ public class TestPageRoute extends TestBase {
     route[0].resume();
   }
 
-  @Test
-  void shouldInterceptMainResourceDuringCrossProcessNavigation() {
+  @PlaywrightTest
+  void shouldInterceptMainResourceDuringCrossProcessNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     boolean[] intercepted = {false};
     page.route(server.CROSS_PROCESS_PREFIX + "/empty.html", route -> {
@@ -555,9 +559,9 @@ public class TestPageRoute extends TestBase {
     assertTrue(intercepted[0]);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
-  void shouldFulfillWithRedirectStatus() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "fixme")
+  void shouldFulfillWithRedirectStatus(Page page, Server server) {
     page.navigate(server.PREFIX + "/title.html");
     server.setRoute("/final", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -581,8 +585,8 @@ public class TestPageRoute extends TestBase {
     assertEquals("", text);
   }
 
-  @Test
-  void shouldSupportCorsWithGET() {
+  @PlaywrightTest
+  void shouldSupportCorsWithGET(Page page, Server server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars*", route -> {
       Map<String, String> headers = new HashMap<>();
@@ -611,19 +615,19 @@ public class TestPageRoute extends TestBase {
           "  return response.json();\n" +
           "}");
       });
-      if (isChromium()) {
+      if (browserName == CHROMIUM) {
         assertTrue(e.getMessage().contains("Failed"), e.getMessage());
-      } else if (isWebKit()) {
+      } else if (browserName == WEBKIT) {
         assertTrue(e.getMessage().contains("TypeError"), e.getMessage());
-      } else if (isFirefox()) {
+      } else if (browserName == FIREFOX) {
         assertTrue(e.getMessage().contains("NetworkError"), e.getMessage());
       }
     }
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
-  void shouldSupportCorsWithPOST() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "https://github.com/microsoft/playwright/issues/6016")
+  void shouldSupportCorsWithPOST(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -644,9 +648,9 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList("electric", "gas"), resp);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
-  void shouldSupportCorsWithCredentials() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "https://github.com/microsoft/playwright/issues/6016")
+  void shouldSupportCorsWithCredentials(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -669,8 +673,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList("electric", "gas"), resp);
   }
 
-  @Test
-  void shouldRejectCorsWithDisallowedCredentials() {
+  @PlaywrightTest
+  void shouldRejectCorsWithDisallowedCredentials(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -695,9 +699,9 @@ public class TestPageRoute extends TestBase {
     });
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
-  void shouldSupportCorsForDifferentMethods() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, reason = "https://github.com/microsoft/playwright/issues/6016")
+  void shouldSupportCorsForDifferentMethods(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -734,8 +738,8 @@ public class TestPageRoute extends TestBase {
     }
   }
 
-  @Test
-  void shouldSupportTheTimesParameterWithRouteMatching() {
+  @PlaywrightTest
+  void shouldSupportTheTimesParameterWithRouteMatching(Page page, Server server) {
     int[] intercepted = {0};
     page.route("**/empty.html", route -> {
       ++intercepted[0];
@@ -747,8 +751,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(1, intercepted[0]);
   }
 
-  @Test
-  void shouldAddAccessControlAllowOriginByDefaultWhenFulfill() {
+  @PlaywrightTest
+  void shouldAddAccessControlAllowOriginByDefaultWhenFulfill(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
@@ -772,8 +776,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(server.PREFIX, response.headerValue("Access-Control-Allow-Origin"));
   }
 
-  @Test
-  void shouldChainFallbackWDynamicURL() {
+  @PlaywrightTest
+  void shouldChainFallbackWDynamicURL(Page page, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/bar", route -> {
       intercepted.add(1);
@@ -793,8 +797,8 @@ public class TestPageRoute extends TestBase {
     assertEquals(asList(3, 2, 1), intercepted);
   }
 
-  @Test
-  void shouldAllowToCallRouteAsynchronously() {
+  @PlaywrightTest
+  void shouldAllowToCallRouteAsynchronously(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Route[] route = new Route[] { null };
     page.route("**/cars", r -> {
@@ -823,8 +827,8 @@ public class TestPageRoute extends TestBase {
     assertEquals("Hi!", response);
   }
 
-  @Test
-  void shouldResumeIfFallbackIsCalledAsynchronously() {
+  @PlaywrightTest
+  void shouldResumeIfFallbackIsCalledAsynchronously(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Route[] route = new Route[] { null };
     page.route("**/simple.json", r -> {
@@ -850,8 +854,8 @@ public class TestPageRoute extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response);
   }
 
-  @Test
-  void shouldContinueIfAllHandlersCalledFallback() {
+  @PlaywrightTest
+  void shouldContinueIfAllHandlersCalledFallback(Page page, BrowserContext context, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     Predicate<String> predicate = r -> true;
     page.route(predicate, route -> {

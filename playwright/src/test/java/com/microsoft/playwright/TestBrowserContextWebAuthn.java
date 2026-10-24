@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.VirtualCredential;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextWebAuthn extends TestBase {
+public class TestBrowserContextWebAuthn {
   private static final String B64URL_TO_BYTES_JS =
     "  const b64UrlToBytes = s => {\n" +
     "    let str = s.replace(/-/g, '+').replace(/_/g, '/');\n" +
@@ -38,8 +38,8 @@ public class TestBrowserContextWebAuthn extends TestBase {
     "    return u8;\n" +
     "  };\n";
 
-  @Test
-  void shouldNotInterceptNavigatorCredentialsWithoutInstall() {
+  @PlaywrightTest
+  void shouldNotInterceptNavigatorCredentialsWithoutInstall(Page page, BrowserContext context, Server server) {
     // Seed a credential, but do not install the interceptor.
     context.credentials().create("localhost");
     page.navigate(server.EMPTY_PAGE);
@@ -48,8 +48,8 @@ public class TestBrowserContextWebAuthn extends TestBase {
     assertEquals(false, intercepted);
   }
 
-  @Test
-  void shouldSeedKnownCredentialAndAuthenticate() {
+  @PlaywrightTest
+  void shouldSeedKnownCredentialAndAuthenticate(Page page, BrowserContext context, Browser browser, Server server) {
     // This is the easiest way to create credentials. In practice, this
     // probably comes from environment.
     VirtualCredential known;
@@ -133,8 +133,8 @@ public class TestBrowserContextWebAuthn extends TestBase {
       "}", mapOf("rpId", rpId));
   }
 
-  @Test
-  void shouldSeedAndReportSignCount() {
+  @PlaywrightTest
+  void shouldSeedAndReportSignCount(Page page, BrowserContext context, Browser browser, Server server) {
     VirtualCredential fresh = context.credentials().create("fresh.example.com");
     assertEquals(0, fresh.signCount);
 
@@ -167,16 +167,16 @@ public class TestBrowserContextWebAuthn extends TestBase {
     }
   }
 
-  @Test
-  void shouldRejectInvalidSignCount() {
+  @PlaywrightTest
+  void shouldRejectInvalidSignCount(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> context.credentials().create("example.com", new Credentials.CreateOptions().setSignCount(-1)));
     assertTrue(e.getMessage().contains("signCount must be between 0 and 4294967295, got -1"), e.getMessage());
     assertEquals(0, context.credentials().get().size());
   }
 
-  @Test
-  void shouldCapturePageCreatedCredentialAndReuseItInAnotherContext() {
+  @PlaywrightTest
+  void shouldCapturePageCreatedCredentialAndReuseItInAnotherContext(Page page, BrowserContext context, Browser browser, Server server) {
     // Setup context: the app registers a passkey via navigator.credentials.create().
     String createdId;
     VirtualCredential captured;

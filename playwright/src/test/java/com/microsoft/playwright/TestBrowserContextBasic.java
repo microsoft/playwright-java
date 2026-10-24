@@ -16,26 +16,23 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.TestOptionsFactories.isFirefox;
-import static com.microsoft.playwright.TestOptionsFactories.isWebKit;
 import static com.microsoft.playwright.Utils.verifyViewport;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 @Tag("smoke")
 public class TestBrowserContextBasic {
-  @Test
+  @PlaywrightTest
   void shouldCreateNewContext(Browser browser) {
     assertEquals(0, browser.contexts().size());
     BrowserContext context = browser.newContext();
@@ -47,7 +44,7 @@ public class TestBrowserContextBasic {
     assertEquals(context.browser(), browser);
   }
 
-  @Test
+  @PlaywrightTest
   void windowOpenShouldUseParentTabContext(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
@@ -57,7 +54,7 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIsolateLocalStorageAndCookies(Browser browser, Server server) {
     // Create two incognito contexts.
     BrowserContext context1 = browser.newContext();
@@ -102,7 +99,7 @@ public class TestBrowserContextBasic {
     assertEquals(0, browser.contexts().size());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldPropagateDefaultViewportToThePage(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(456, 789));
     Page page = context.newPage();
@@ -114,7 +111,7 @@ public class TestBrowserContextBasic {
     // Doesn't make sense in Java.
   }
 
-  @Test
+  @PlaywrightTest
   void shouldRespectDeviceScaleFactor(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3.0));
     Page page = context.newPage();
@@ -123,7 +120,7 @@ public class TestBrowserContextBasic {
   }
 
 
-  @Test
+  @PlaywrightTest
   void shouldNotAllowDeviceScaleFactorWithNullViewport(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0).setViewportSize(null));
@@ -131,7 +128,7 @@ public class TestBrowserContextBasic {
     assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotAllowIsMobileWithNullViewport(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setIsMobile(true).setViewportSize(null));
@@ -139,13 +136,13 @@ public class TestBrowserContextBasic {
     assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
   }
 
-  @Test
+  @PlaywrightTest
   void closeShouldWorkForEmptyContext(Browser browser) {
     BrowserContext context = browser.newContext();
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void closeShouldAbortFutureEvent(Browser browser) {
     BrowserContext context = browser.newContext();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -154,7 +151,7 @@ public class TestBrowserContextBasic {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void closeShouldBeCallableTwice(Browser browser) {
     BrowserContext context = browser.newContext();
     context.close();
@@ -162,7 +159,7 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotReportFramelessPagesOnError(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
@@ -187,7 +184,7 @@ public class TestBrowserContextBasic {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldReturnAllOfThePages(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
@@ -199,7 +196,7 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldCloseAllBelongingPagesOnceClosingContext(Browser browser) {
     BrowserContext context = browser.newContext();
     context.newPage();
@@ -208,14 +205,14 @@ public class TestBrowserContextBasic {
     assertEquals(0, context.pages().size());
   }
 
-  @Test
-  void shouldDisableJavascript(Browser browser) {
+  @PlaywrightTest
+  void shouldDisableJavascript(BrowserName browserName, Browser browser) {
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
       Page page = context.newPage();
       page.navigate("data:text/html, <script>var something = 'forbidden'</script>");
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("something"));
-      if (isWebKit())
+      if (browserName == WEBKIT)
         assertTrue(e.getMessage().contains("Can\'t find variable: something"));
       else
         assertTrue(e.getMessage().contains("something is not defined"));
@@ -231,7 +228,7 @@ public class TestBrowserContextBasic {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldBeAbleToNavigateAfterDisablingJavascript(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
@@ -239,11 +236,11 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
-  void shouldWorkWithOfflineOption(Browser browser, Server server) {
+  @PlaywrightTest
+  void shouldWorkWithOfflineOption(BrowserName browserName, Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       // Firefox navigates to an error page, and this navigation might conflict with the
       // next navigation we do in test.
       // So we need to wait for the navigation explicitly.
@@ -260,7 +257,7 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldEmulateNavigatorOnLine(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
@@ -272,7 +269,7 @@ public class TestBrowserContextBasic {
     context.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldWaitForCondition(Page page, BrowserContext context) {
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(m -> messages.add(m.text()));
@@ -284,14 +281,14 @@ public class TestBrowserContextBasic {
     assertEquals(asList("foo", "bar"), messages);
   }
 
-  @Test
+  @PlaywrightTest
   void waitForConditionTimeout(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> context.waitForCondition(() -> false, new BrowserContext.WaitForConditionOptions().setTimeout(100)));
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void waitForConditionPageClosed(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> context.waitForCondition(() -> {
@@ -301,14 +298,14 @@ public class TestBrowserContextBasic {
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   void waitForConditionThatMayChangeToFalse(BrowserContext context) {
     int[] var = {0};
     context.waitForCondition(() -> ++var[0] == 1);
     assertEquals(1, var[0], "The predicate should be called only once.");
   }
 
-  @Test
+  @PlaywrightTest
   void shouldPropagateCloseReasonToPendingActions(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();

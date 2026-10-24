@@ -16,18 +16,20 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
+import org.junit.jupiter.api.condition.OS;
 
 import java.time.Duration;
 import java.time.Instant;
 
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestDialog extends TestBase {
+public class TestDialog {
 
-  @Test
-  void shouldFire() {
+  @PlaywrightTest
+  void shouldFire(Page page) {
     page.onDialog(dialog -> {
       assertEquals("alert", dialog.type());
       assertEquals( "", dialog.defaultValue());
@@ -37,8 +39,8 @@ public class TestDialog extends TestBase {
     page.evaluate("() => alert('yo')");
   }
 
-  @Test
-  void shouldAllowAcceptingPrompts() {
+  @PlaywrightTest
+  void shouldAllowAcceptingPrompts(Page page) {
     page.onDialog(dialog -> {
       assertEquals("prompt", dialog.type());
       assertEquals("yes.", dialog.defaultValue());
@@ -49,8 +51,8 @@ public class TestDialog extends TestBase {
     assertEquals("answer!", result);
   }
 
-  @Test
-  void shouldAcceptPromptOnce() {
+  @PlaywrightTest
+  void shouldAcceptPromptOnce(Page page) {
     int[] callCounter = {0};
     page.onceDialog(dialog -> {
       ++callCounter[0];
@@ -63,8 +65,8 @@ public class TestDialog extends TestBase {
     assertEquals(1, callCounter[0]);
   }
 
-  @Test
-  void shouldDismissThePrompt() {
+  @PlaywrightTest
+  void shouldDismissThePrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.dismiss();
     });
@@ -72,8 +74,8 @@ public class TestDialog extends TestBase {
     assertNull(result);
   }
 
-  @Test
-  void shouldAcceptTheConfirmPrompt() {
+  @PlaywrightTest
+  void shouldAcceptTheConfirmPrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.accept();
     });
@@ -81,8 +83,8 @@ public class TestDialog extends TestBase {
     assertEquals(true, result);
   }
 
-  @Test
-  void shouldDismissTheConfirmPrompt() {
+  @PlaywrightTest
+  void shouldDismissTheConfirmPrompt(Page page) {
     page.onDialog(dialog -> {
       dialog.dismiss();
     });
@@ -90,13 +92,9 @@ public class TestDialog extends TestBase {
     assertEquals(false, result);
   }
 
-  static boolean isWebKitMac() {
-    return isWebKit() && Utils.getOS() == Utils.OS.MAC;
-  }
-
-  @Test
-  @DisabledIf(value="isWebKitMac", disabledReason="fixme")
-  void shouldBeAbleToCloseContextWithOpenAlert() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.MAC, reason = "fixme")
+  void shouldBeAbleToCloseContextWithOpenAlert(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     boolean[] didShowDialog = {false};

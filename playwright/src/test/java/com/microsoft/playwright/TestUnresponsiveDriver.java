@@ -16,7 +16,9 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -27,12 +29,13 @@ import java.lang.reflect.Field;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUnresponsiveDriver {
-  @Test
+  @PlaywrightTest
   @DisabledOnOs(OS.WINDOWS)
   @EnabledForJreRange(min = JRE.JAVA_9)
-  void shouldThrowTimeoutErrorWhenDriverStopsResponding() throws Exception {
+  void shouldThrowTimeoutErrorWhenDriverStopsResponding(BrowserName browserName) throws Exception {
+    // A Playwright of its own: the test freezes the driver process.
     try (Playwright playwright = Playwright.create()) {
-      Browser browser = Utils.getBrowserTypeFromEnv(playwright).launch(TestBase.createLaunchOptions());
+      Browser browser = browserName.browserType(playwright).launch(Env.launchOptions());
       Page page = browser.newPage();
       long pid = driverPid(playwright);
       signal("STOP", pid);

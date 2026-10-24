@@ -16,19 +16,15 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.net.MalformedURLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestBrowserContextBaseUrl {
-  @Test
+  @PlaywrightTest
   void shouldConstructANewURLWhenABaseURLInBrowserNewContextIsPassedToPageGoto(Browser browser, Server server) {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBaseURL(server.PREFIX))) {
       Page page = context.newPage();
@@ -36,13 +32,13 @@ public class TestBrowserContextBaseUrl {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldConstructANewURLWhenABaseURLInBrowserNewPageIsPassedToPageGoto(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setBaseURL(server.PREFIX))) {
       assertEquals(server.EMPTY_PAGE, page.navigate("/empty.html").url());
     }
   }
-  @Test
+  @PlaywrightTest
   void shouldConstructTheURLsCorrectlyWhenABaseURLWithoutATrailingSlashInBrowserNewPageIsPassedToPageGoto(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setBaseURL(server.PREFIX + "/url-construction"))) {
       assertEquals(server.PREFIX + "/mypage.html", page.navigate("mypage.html").url());
@@ -51,7 +47,7 @@ public class TestBrowserContextBaseUrl {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldConstructTheURLsCorrectlyWhenABaseURLWithATrailingSlashInBrowserNewPageIsPassedToPageGoto(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setBaseURL(server.PREFIX + "/url-construction/"))) {
       assertEquals(server.PREFIX + "/url-construction/mypage.html", page.navigate("mypage.html").url());
@@ -62,7 +58,7 @@ public class TestBrowserContextBaseUrl {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotConstructANewURLWhenValidURLsArePassed(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setBaseURL("http://microsoft.com"))) {
       assertEquals(server.EMPTY_PAGE, page.navigate(server.EMPTY_PAGE).url());
@@ -75,7 +71,7 @@ public class TestBrowserContextBaseUrl {
     }
   }
 
-  @Test
+  @PlaywrightTest
   void shouldBeAbleToMatchAURLRelativeToItsGivenURLWithUrlMatcher(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setBaseURL(server.PREFIX + "/foobar/"))) {
       page.navigate("/kek/index.html");

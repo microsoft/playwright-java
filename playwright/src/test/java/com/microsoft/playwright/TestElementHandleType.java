@@ -16,28 +16,30 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestElementHandleType extends TestBase {
+public class TestElementHandleType {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     page.setContent("<input type='text' />");
     page.type("input", "hello");
     assertEquals("hello", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  void shouldNotSelectExistingValue() {
+  @PlaywrightTest
+  void shouldNotSelectExistingValue(Page page) {
     page.setContent("<input type='text' value='hello' />");
     page.type("input", "world");
     assertEquals("worldhello", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  void shouldResetSelectionWhenNotFocus() {
+  @PlaywrightTest
+  void shouldResetSelectionWhenNotFocus(Page page) {
     page.setContent("<input type='text' value='hello' /><div tabIndex=2>text</div>");
     page.evalOnSelector("input", "input => {\n" +
       "    input.selectionStart = 2;\n" +
@@ -48,8 +50,8 @@ public class TestElementHandleType extends TestBase {
     assertEquals("worldhello", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  void shouldNotModifySelectionWhenFocus() {
+  @PlaywrightTest
+  void shouldNotModifySelectionWhenFocus(Page page) {
     page.setContent("<input type='text' value='hello' />");
     page.evalOnSelector("input", "input => {\n" +
       "    input.focus();\n" +
@@ -60,10 +62,10 @@ public class TestElementHandleType extends TestBase {
     assertEquals("heworldo", page.evalOnSelector("input", "input => input.value"));
   }
 
-  @Test
-  void shouldWorkWithNumberInput() {
+  @PlaywrightTest
+  void shouldWorkWithNumberInput(Page page, BrowserName browserName) {
     page.setContent("<input type='number' value=2 />");
     page.type("input", "13");
-    assertEquals(isWebKit() ? "13" : "132", page.evalOnSelector("input", "input => input.value"));
+    assertEquals(browserName == WEBKIT ? "13" : "132", page.evalOnSelector("input", "input => input.value"));
   }
 }

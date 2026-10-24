@@ -16,10 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.*;
@@ -38,16 +40,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.Utils.chromiumVersionLessThan;
 import static com.microsoft.playwright.Utils.relativePathOrSkipTest;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class TestPageSetInputFiles extends TestBase {
+public class TestPageSetInputFiles {
   static Path FILE_TO_UPLOAD = Paths.get("src/test/resources/file-to-upload.txt");
 
-  @Test
-  void shouldUploadTheFile() {
+  @PlaywrightTest
+  void shouldUploadTheFile(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/fileupload.html");
     ElementHandle input = page.querySelector("input");
     input.setInputFiles(FILE_TO_UPLOAD);
@@ -60,8 +64,8 @@ public class TestPageSetInputFiles extends TestBase {
       "}", input));
   }
 
-  @Test
-  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldUploadLargeFile(Page page, Server server, @TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Path uploadFile = tmpDir.resolve("200MB.zip");
@@ -100,8 +104,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 
-  @Test
-  void shouldUploadMultipleLargeFiles(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldUploadMultipleLargeFiles(Page page, Server server, @TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
     int filesCount = 10;
     page.navigate(server.PREFIX + "/input/fileupload-multi.html");
@@ -128,8 +132,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(filesCount, filesLen);
   }
 
-  @Test
-  void shouldUploadLargeFileWithRelativePath(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldUploadLargeFileWithRelativePath(Page page, Server server, @TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Path uploadFile = tmpDir.resolve("200MB.zip");
@@ -171,24 +175,24 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     page.setContent("<input type=file>");
     page.setInputFiles("input", FILE_TO_UPLOAD);
     assertEquals(1, page.evalOnSelector("input", "input => input.files.length"));
     assertEquals("file-to-upload.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-  @Test
-  void shouldSetFromMemory() {
+  @PlaywrightTest
+  void shouldSetFromMemory(Page page) {
     page.setContent("<input type=file>");
     page.setInputFiles("input", new FilePayload("test.txt","text/plain","this is a test".getBytes()));
     assertEquals(1, page.evalOnSelector("input", "input => input.files.length"));
     assertEquals("test.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-  @Test
-  void shouldEmitEventOnce() {
+  @PlaywrightTest
+  void shouldEmitEventOnce(Page page) {
     page.setContent("<input type=file>");
     FileChooser chooser = page.waitForFileChooser(() -> page.click("input"));
     assertNotNull(chooser);
@@ -198,8 +202,8 @@ public class TestPageSetInputFiles extends TestBase {
     // Not applicable in Java.
   }
 
-  @Test
-  void shouldEmitEventAddListenerRemoveListener() {
+  @PlaywrightTest
+  void shouldEmitEventAddListenerRemoveListener(Page page) {
     page.setContent("<input type=file>");
     FileChooser[] chooser = { null };
     page.onFileChooser(new Consumer<FileChooser>() {
@@ -217,15 +221,15 @@ public class TestPageSetInputFiles extends TestBase {
     assertNotNull(chooser[0]);
   }
 
-  @Test
-  void shouldWorkWhenFileInputIsAttachedToDOM() {
+  @PlaywrightTest
+  void shouldWorkWhenFileInputIsAttachedToDOM(Page page) {
     page.setContent("<input type=file>");
     FileChooser chooser = page.waitForFileChooser(() -> page.click("input"));
     assertNotNull(chooser);
   }
 
-  @Test
-  void shouldWorkWhenFileInputIsNotAttachedToDOM() {
+  @PlaywrightTest
+  void shouldWorkWhenFileInputIsNotAttachedToDOM(Page page) {
     FileChooser chooser = page.waitForFileChooser(() -> {
       page.evaluate("() => {\n" +
         "  const el = document.createElement('input');\n" +
@@ -236,8 +240,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertNotNull(chooser);
   }
 
-  @Test
-  void shouldWorkWithCSP() {
+  @PlaywrightTest
+  void shouldWorkWithCSP(Page page, Server server) {
     server.setCSP("/empty.html", "default-src 'none'");
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<input type=file>");
@@ -246,16 +250,16 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals("file-to-upload.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-  @Test
-  void shouldRespectTimeout() {
+  @PlaywrightTest
+  void shouldRespectTimeout(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
     });
     assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
-  @Test
-  void shouldRespectDefaultTimeoutWhenThereIsNoCustomTimeout() {
+  @PlaywrightTest
+  void shouldRespectDefaultTimeoutWhenThereIsNoCustomTimeout(Page page) {
     page.setDefaultTimeout(1);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(() -> {});
@@ -263,8 +267,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
-  @Test
-  void shouldPrioritizeExactTimeoutOverDefaultTimeout() {
+  @PlaywrightTest
+  void shouldPrioritizeExactTimeoutOverDefaultTimeout(Page page) {
     page.setDefaultTimeout(0);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
@@ -272,8 +276,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
-  @Test
-  void shouldWorkWithNoTimeout() {
+  @PlaywrightTest
+  void shouldWorkWithNoTimeout(Page page) {
     FileChooser fileChooser = page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(0), () -> {
       page.evaluate("() => setTimeout(() => {\n" +
         "  const el = document.createElement('input');\n" +
@@ -284,8 +288,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertNotNull(fileChooser);
   }
 
-  @Test
-  void shouldReturnTheSameFileChooserWhenThereAreManyWatchdogsSimultaneously() {
+  @PlaywrightTest
+  void shouldReturnTheSameFileChooserWhenThereAreManyWatchdogsSimultaneously(Page page) {
     page.setContent("<input type=file>");
     FileChooser[] fileChooser = {null};
     FileChooser fileChooser1 = page.waitForFileChooser(() -> {
@@ -296,8 +300,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(fileChooser[0], fileChooser1);
   }
 
-  @Test
-  void shouldAcceptSingleFile() {
+  @PlaywrightTest
+  void shouldAcceptSingleFile(Page page) {
     page.setContent("<input type=file oninput='javascript:console.timeStamp()'>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertEquals(page, fileChooser.page());
@@ -307,8 +311,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals("file-to-upload.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-  @Test
-  void shouldAcceptSingleFilePayload() {
+  @PlaywrightTest
+  void shouldAcceptSingleFilePayload(Page page) {
     page.setContent("<input type=file oninput='javascript:console.timeStamp()'>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertEquals(page, fileChooser.page());
@@ -318,13 +322,13 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals("test.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-  //  @Test
+  //  @PlaywrightTest
   void shouldDetectMimeType() throws ExecutionException, InterruptedException {
     // TODO: Parse form fields on server
   }
 
-  @Test
-  void shouldBeAbleToReadSelectedFile() {
+  @PlaywrightTest
+  void shouldBeAbleToReadSelectedFile(Page page) {
     page.setContent("<input type=file>");
     page.onFileChooser(fileChooser -> {
       fileChooser.setFiles(FILE_TO_UPLOAD);
@@ -340,8 +344,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals("contents of the file", content);
   }
 
-  @Test
-  void shouldBeAbleToResetSelectedFilesWithEmptyFileList() {
+  @PlaywrightTest
+  void shouldBeAbleToResetSelectedFilesWithEmptyFileList(Page page) {
     page.setContent("<input type=file>");
     page.onFileChooser(new Consumer<FileChooser>() {
       @Override
@@ -372,8 +376,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(0, fileLength2);
   }
 
-  @Test
-  void shouldNotAcceptMultipleFilesForSingleFileInput() {
+  @PlaywrightTest
+  void shouldNotAcceptMultipleFilesForSingleFileInput(Page page) {
     page.setContent("<input type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -382,8 +386,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertTrue(e.getMessage().contains("Non-multiple file input can only accept single file"));
   }
 
-  @Test
-  void shouldEmitInputAndChangeEvents() {
+  @PlaywrightTest
+  void shouldEmitInputAndChangeEvents(Page page) {
     List<Object> events = new ArrayList<>();
     page.exposeFunction("eventHandled", args -> events.add(args[0]));
     page.setContent("<input id=input type=file></input>\n" +
@@ -395,29 +399,29 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(asList("input", "change"), events);
   }
 
-  @Test
-  void shouldWorkForSingleFilePick() {
+  @PlaywrightTest
+  void shouldWorkForSingleFilePick(Page page) {
     page.setContent("<input type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertFalse(fileChooser.isMultiple());
   }
 
-  @Test
-  void shouldWorkForMultiple() {
+  @PlaywrightTest
+  void shouldWorkForMultiple(Page page) {
     page.setContent("<input multiple type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertTrue(fileChooser.isMultiple());
   }
 
-  @Test
-  void shouldWorkForWebkitdirectory() {
+  @PlaywrightTest
+  void shouldWorkForWebkitdirectory(Page page) {
     page.setContent("<input multiple webkitdirectory type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertTrue(fileChooser.isMultiple());
   }
 
-  @Test
-  void shouldPreserveLastModifiedTimestamp() throws IOException {
+  @PlaywrightTest
+  void shouldPreserveLastModifiedTimestamp(Page page) throws IOException {
     page.setContent("<input type=file multiple=true/>");
     Locator input = page.locator("input");
     input.setInputFiles(FILE_TO_UPLOAD);
@@ -435,8 +439,8 @@ public class TestPageSetInputFiles extends TestBase {
     }
   }
 
-  @Test
-  void shouldUploadAFolder(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldUploadAFolder(Page page, Browser browser, Server server, BrowserName browserName, @TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
     Path dir = tmpDir.resolve("file-upload-test");
@@ -451,7 +455,7 @@ public class TestPageSetInputFiles extends TestBase {
     List<String> relativePathsSorted = new ArrayList<>(webkitRelativePaths);
     relativePathsSorted.sort(String::compareTo);
     // https://issues.chromium.org/issues/345393164
-    if (isChromium() && !isHeaded() && chromiumVersionLessThan(browser.version(), "127.0.6533.0")) {
+    if (browserName == CHROMIUM && !Env.headed() && chromiumVersionLessThan(browser.version(), "127.0.6533.0")) {
       assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2"), relativePathsSorted);
     } else {
       assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2", "file-upload-test/sub-dir/really.txt"), relativePathsSorted);
@@ -470,8 +474,8 @@ public class TestPageSetInputFiles extends TestBase {
     }
   }
 
-  @Test
-  void shouldUploadAFolderAndThrowForMultipleDirectories(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldUploadAFolderAndThrowForMultipleDirectories(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
     Path dir = tmpDir.resolve("file-upload-test");
@@ -484,8 +488,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertTrue(e.getMessage().contains("Multiple directories are not supported"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowIfADirectoryAndFilesArePassed(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldThrowIfADirectoryAndFilesArePassed(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     // Skipping conditions based on environment not directly translatable to Java; needs custom implementation
     page.navigate(server.PREFIX + "/input/folderupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
@@ -497,8 +501,8 @@ public class TestPageSetInputFiles extends TestBase {
     assertTrue(e.getMessage().contains("File paths must be all files or a single directory"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowWhenUploadingAFolderInANormalFileUploadInput(@TempDir Path tmpDir) throws IOException {
+  @PlaywrightTest
+  void shouldThrowWhenUploadingAFolderInANormalFileUploadInput(Page page, Server server, @TempDir Path tmpDir) throws IOException {
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Locator input = page.locator("input[name=\"file1\"]");
     Path dir = tmpDir.resolve("file-upload-test");

@@ -16,18 +16,19 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextStrict extends TestBase {
-  @Override
-  BrowserContext createContext() {
-    return browser.newContext(new Browser.NewContextOptions().setStrictSelectors(true));
+public class TestBrowserContextStrict {
+  @Fixture
+  Browser.NewContextOptions contextOptions() {
+    return new Browser.NewContextOptions().setStrictSelectors(true);
   }
 
-  @Test
-  void shouldNotFailPageTextContentInNonStrictMode() {
+  @PlaywrightTest
+  void shouldNotFailPageTextContentInNonStrictMode(Browser browser) {
     try (BrowserContext context = browser.newContext()) {
       Page page = context.newPage();
       page.setContent("<span>span1</span><div><span>target</span></div>");
@@ -35,15 +36,15 @@ public class TestBrowserContextStrict extends TestBase {
     }
   }
 
-  @Test
-  void shouldFailPageTextContentInStrictMode() {
+  @PlaywrightTest
+  void shouldFailPageTextContentInStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.textContent("span"));
     assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
-  @Test
-  void shouldOptOutOfStrictMode() {
+  @PlaywrightTest
+  void shouldOptOutOfStrictMode(Page page) {
     page.setContent("<span>span1</span><div><span>target</span></div>");
     assertEquals("span1", page.textContent("span", new Page.TextContentOptions().setStrict(false)));
   }

@@ -16,23 +16,24 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TestDispatchEvent extends TestBase {
+public class TestDispatchEvent {
 
-  @Test
-  void shouldDispatchClickEvent() {
+  @PlaywrightTest
+  void shouldDispatchClickEvent(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldDispatchClickEventProperties() {
+  @PlaywrightTest
+  void shouldDispatchClickEventProperties(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertNotNull(page.evaluate("bubbles"));
@@ -40,8 +41,8 @@ public class TestDispatchEvent extends TestBase {
     assertNotNull(page.evaluate("composed"));
   }
 
-  @Test
-  void shouldDispatchClickSvg() {
+  @PlaywrightTest
+  void shouldDispatchClickSvg(Page page) {
     page.setContent("<svg height='100' width='100'>\n" +
       "  <circle onclick='javascript:window.__CLICKED=42' cx='50' cy='50' r='40' stroke='black' stroke-width='3' fill='red' />\n" +
       "</svg>");
@@ -49,8 +50,8 @@ public class TestDispatchEvent extends TestBase {
     assertEquals(42, page.evaluate("() => window['__CLICKED']"));
   }
 
-  @Test
-  void shouldDispatchClickOnASpanWithAnInlineElementInside() {
+  @PlaywrightTest
+  void shouldDispatchClickOnASpanWithAnInlineElementInside(Page page) {
     page.setContent("<style>\n" +
       "span::before {\n" +
       "  content: 'q';\n" +
@@ -61,8 +62,8 @@ public class TestDispatchEvent extends TestBase {
     assertEquals(42, page.evaluate("() => window['CLICKED']"));
   }
 
-  @Test
-  void shouldDispatchClickAfterNavigation() {
+  @PlaywrightTest
+  void shouldDispatchClickAfterNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     page.navigate(server.PREFIX + "/input/button.html");
@@ -70,8 +71,8 @@ public class TestDispatchEvent extends TestBase {
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldDispatchClickAfterACrossOriginNavigation() {
+  @PlaywrightTest
+  void shouldDispatchClickAfterACrossOriginNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     page.navigate(server.CROSS_PROCESS_PREFIX + "/input/button.html");
@@ -79,8 +80,8 @@ public class TestDispatchEvent extends TestBase {
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldNotFailWhenElementIsBlockedOnHover() {
+  @PlaywrightTest
+  void shouldNotFailWhenElementIsBlockedOnHover(Page page) {
     page.setContent("<style>\n" +
       "  container { display: block; position: relative; width: 200px; height: 50px; }\n" +
       "  div, button { position: absolute; left: 0; top: 0; bottom: 0; right: 0; }\n" +
@@ -95,8 +96,8 @@ public class TestDispatchEvent extends TestBase {
     assertNotNull(page.evaluate("() => window['clicked']"));
   }
 
-  @Test
-  void shouldDispatchClickWhenNodeIsAddedInShadowDom() {
+  @PlaywrightTest
+  void shouldDispatchClickWhenNodeIsAddedInShadowDom(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => {\n" +
       "  const div = document.createElement('div');\n" +
@@ -120,8 +121,8 @@ public class TestDispatchEvent extends TestBase {
     // TODO: playwright.selectors.register
   }
 
-  @Test
-  void shouldDispatchDragDropEvents() {
+  @PlaywrightTest
+  void shouldDispatchDragDropEvents(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
     page.dispatchEvent("#source", "dragstart", mapOf("dataTransfer", dataTransfer));
@@ -133,8 +134,8 @@ public class TestDispatchEvent extends TestBase {
       "}", mapOf("source", source,"target", target)));
   }
 
-  @Test
-  void shouldDispatchDragDropEventsOnHandle() {
+  @PlaywrightTest
+  void shouldDispatchDragDropEventsOnHandle(Page page, Server server) {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
     ElementHandle source = page.querySelector("#source");
@@ -146,8 +147,8 @@ public class TestDispatchEvent extends TestBase {
       "}", mapOf("source", source,"target", target)));
   }
 
-  @Test
-  void shouldDispatchClickEventOnHandle() {
+  @PlaywrightTest
+  void shouldDispatchClickEventOnHandle(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     button.dispatchEvent("click");

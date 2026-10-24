@@ -16,22 +16,22 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleClick extends TestBase {
+public class TestElementHandleClick {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     button.click();
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldWorkWithNodeRemoved() {
+  @PlaywrightTest
+  void shouldWorkWithNodeRemoved(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window['Node']");
     ElementHandle button  = page.querySelector("button");
@@ -39,24 +39,24 @@ public class TestElementHandleClick extends TestBase {
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldWorkForShadowDOMV1() {
+  @PlaywrightTest
+  void shouldWorkForShadowDOMV1(Page page, Server server) {
     page.navigate(server.PREFIX + "/shadow.html");
     ElementHandle buttonHandle = page.evaluateHandle("() => window['button']").asElement();
     buttonHandle.click();
     assertEquals(true, page.evaluate("clicked"));
   }
 
-  @Test
-  void shouldWorkForTextNodes() {
+  @PlaywrightTest
+  void shouldWorkForTextNodes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle buttonTextNode = page.evaluateHandle("() => document.querySelector('button').firstChild").asElement();
     buttonTextNode.click();
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
-  @Test
-  void shouldThrowForDetachedNodes() {
+  @PlaywrightTest
+  void shouldThrowForDetachedNodes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.remove()", button);
@@ -64,8 +64,8 @@ public class TestElementHandleClick extends TestBase {
     assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
-  @Test
-  void shouldThrowForHiddenNodesWithForce() {
+  @PlaywrightTest
+  void shouldThrowForHiddenNodesWithForce(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.style.display = 'none'", button);
@@ -75,8 +75,8 @@ public class TestElementHandleClick extends TestBase {
     assertTrue(e.getMessage().contains("Element is not visible"));
   }
 
-  @Test
-  void shouldThrowForRecursivelyHiddenNodesWithForce() {
+  @PlaywrightTest
+  void shouldThrowForRecursivelyHiddenNodesWithForce(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.parentElement.style.display = 'none'", button);
@@ -86,8 +86,8 @@ public class TestElementHandleClick extends TestBase {
     assertTrue(e.getMessage().contains("Element is not visible"));
   }
 
-  @Test
-  void shouldThrowForBrElementsWithForce() {
+  @PlaywrightTest
+  void shouldThrowForBrElementsWithForce(Page page) {
     page.setContent("hello<br>goodbye");
     ElementHandle br = page.querySelector("br");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
@@ -96,8 +96,8 @@ public class TestElementHandleClick extends TestBase {
     assertTrue(e.getMessage().contains("Element is outside of the viewport"));
   }
 
-  @Test
-  void shouldDoubleClickTheButton() {
+  @PlaywrightTest
+  void shouldDoubleClickTheButton(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +

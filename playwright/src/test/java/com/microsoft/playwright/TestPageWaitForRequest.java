@@ -16,16 +16,16 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageWaitForRequest extends TestBase {
+public class TestPageWaitForRequest {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(server.PREFIX + "/digits/2.png", () -> {
       page.evaluate("() => {\n" +
@@ -37,8 +37,8 @@ public class TestPageWaitForRequest extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
-  @Test
-  void shouldWorkWithPredicate() {
+  @PlaywrightTest
+  void shouldWorkWithPredicate(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
@@ -50,16 +50,16 @@ public class TestPageWaitForRequest extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
-  @Test
-  void shouldRespectTimeout() {
+  @PlaywrightTest
+  void shouldRespectTimeout(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForRequest(url -> false, new Page.WaitForRequestOptions().setTimeout(1), () -> {});
     });
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
-  @Test
-  void shouldRespectDefaultTimeout() {
+  @PlaywrightTest
+  void shouldRespectDefaultTimeout(Page page) {
     page.setDefaultTimeout(1);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForRequest(request -> false, () -> {});
@@ -67,8 +67,8 @@ public class TestPageWaitForRequest extends TestBase {
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
-  @Test
-  void shouldWorkWithNoTimeout() {
+  @PlaywrightTest
+  void shouldWorkWithNoTimeout(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(
       server.PREFIX + "/digits/2.png",
@@ -82,8 +82,8 @@ public class TestPageWaitForRequest extends TestBase {
     assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
-  @Test
-  void shouldWorkWithUrlMatch() {
+  @PlaywrightTest
+  void shouldWorkWithUrlMatch(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(Pattern.compile(".*digits/\\d\\.png"), () -> {
       page.evaluate("() => {\n" +

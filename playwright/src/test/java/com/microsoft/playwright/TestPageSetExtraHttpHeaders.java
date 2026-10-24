@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,9 +25,9 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageSetExtraHttpHeaders extends TestBase {
-  @Test
-  void shouldWork() throws ExecutionException, InterruptedException {
+public class TestPageSetExtraHttpHeaders {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
@@ -35,8 +35,8 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     assertNull(request.get().headers.get("baz"));
   }
 
-  @Test
-  void shouldWorkWithRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithRedirects(Page page, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/foo.html", "/empty.html");
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
     Future<Server.Request> request = server.futureRequest("/empty.html");
@@ -44,8 +44,8 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
-  @Test
-  void shouldWorkWithExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldWorkWithExtraHeadersFromBrowserContext(Browser browser, Server server) throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext();
     context.setExtraHTTPHeaders(mapOf("foo", "bar"));
     Page page = context.newPage();
@@ -55,8 +55,8 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
-  @Test
-  void shouldOverrideExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverrideExtraHeadersFromBrowserContext(Browser browser, Server server) throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setExtraHTTPHeaders(mapOf("fOo", "bAr", "baR", "foO")));
     Page page = context.newPage();
@@ -68,8 +68,8 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     assertEquals(asList("foO"), request.get().headers.get("bar"));
   }
 
-  @Test
-  void shouldThrowForNonStringHeaderValues() {
+  @PlaywrightTest
+  void shouldThrowForNonStringHeaderValues(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
     });

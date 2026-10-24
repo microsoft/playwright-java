@@ -19,6 +19,9 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.options.SameSiteAttribute;
 import org.junit.jupiter.api.Assumptions;
 
 import java.io.*;
@@ -31,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -182,6 +186,34 @@ public class Utils {
       default:
         throw new IllegalArgumentException("Unknown browser: " + browserName);
     }
+  }
+
+  static SameSiteAttribute defaultSameSiteCookieValue(BrowserName browserName) {
+    if (browserName == BrowserName.CHROMIUM) return SameSiteAttribute.LAX;
+    if (browserName == BrowserName.WEBKIT && Env.isLinux) return SameSiteAttribute.LAX;
+    if (browserName == BrowserName.WEBKIT && !Env.isLinux) return SameSiteAttribute.NONE;
+    // for firefox version >= 103 'None' is used.
+    return SameSiteAttribute.NONE;
+  }
+
+  static void waitForCondition(Page page, BooleanSupplier predicate) {
+    waitForCondition(page, predicate, 5_000);
+  }
+
+  static void waitForCondition(Page page, BooleanSupplier predicate, int timeoutMs) {
+    page.waitForCondition(predicate, new Page.WaitForConditionOptions().setTimeout(timeoutMs));
+  }
+
+  static boolean chromiumVersionLessThan(String a, String b) {
+    String[] aParts = a.split("\\.");
+    String[] bParts = b.split("\\.");
+    for (int i = 0; i < 4; i++) {
+      int aPart = Integer.parseInt(aParts[i]);
+      int bPart = Integer.parseInt(bParts[i]);
+      if (aPart > bPart) return false;
+      if (aPart < bPart) return true;
+    }
+    return false;
   }
 
   static void verifyViewport(Page page, int width, int height) {

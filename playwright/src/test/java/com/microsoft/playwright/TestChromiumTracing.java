@@ -18,8 +18,8 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.FileReader;
@@ -28,13 +28,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Chromium-only API")
-public class TestChromiumTracing extends TestBase {
-  @Test
-  void shouldOutputATrace(@TempDir Path tempDir) {
+@EnabledOnBrowser(value = CHROMIUM, reason = "Chromium-only API")
+public class TestChromiumTracing {
+  @PlaywrightTest
+  void shouldOutputATrace(Browser browser, Server server, @TempDir Path tempDir) {
     try (Page page = browser.newPage()) {
       Path outputTraceFile = tempDir.resolve("trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
@@ -45,8 +46,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldCreateDirectoriesAsNeeded(@TempDir Path tempDir) {
+  @PlaywrightTest
+  void shouldCreateDirectoriesAsNeeded(Browser browser, Server server, @TempDir Path tempDir) {
     try (Page page = browser.newPage()) {
       Path filePath = tempDir.resolve("these/are/directories/trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
@@ -63,8 +64,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldRunWithCustomCategoriesIfProvided(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  void shouldRunWithCustomCategoriesIfProvided(Browser browser, @TempDir Path tempDir) throws IOException {
     try (Page page = browser.newPage()) {
       Path outputTraceFile = tempDir.resolve("trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
@@ -89,8 +90,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldThrowIfTracingOnTwoPages(@TempDir Path tempDir) {
+  @PlaywrightTest
+  void shouldThrowIfTracingOnTwoPages(Browser browser, @TempDir Path tempDir) {
     try (Page page = browser.newPage()) {
       Path outputTraceFile = tempDir.resolve("trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
@@ -105,8 +106,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldReturnABuffer(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  void shouldReturnABuffer(Browser browser, Server server, @TempDir Path tempDir) throws IOException {
     try (Page page = browser.newPage()) {
       Path outputTraceFile = tempDir.resolve("trace.json");
       browser.startTracing(page, new Browser.StartTracingOptions()
@@ -118,8 +119,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithoutOptions() {
+  @PlaywrightTest
+  void shouldWorkWithoutOptions(Browser browser, Server server) {
     try (Page page = browser.newPage()) {
       browser.startTracing(page);
       page.navigate(server.PREFIX + "/grid.html");
@@ -128,8 +129,8 @@ public class TestChromiumTracing extends TestBase {
     }
   }
 
-  @Test
-  void shouldSupportABufferWithoutAPath() {
+  @PlaywrightTest
+  void shouldSupportABufferWithoutAPath(Browser browser, Server server) {
     try (Page page = browser.newPage()) {
       browser.startTracing(page, new Browser.StartTracingOptions().setScreenshots(true));
       page.navigate(server.PREFIX + "/grid.html");

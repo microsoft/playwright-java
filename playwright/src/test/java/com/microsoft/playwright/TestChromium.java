@@ -18,8 +18,9 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -33,16 +34,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Chromium-specific API")
-public class TestChromium extends TestBase {
-  @Override
-  void createContextAndPage() {
-    // Do not create anything.
-  }
-
+@EnabledOnBrowser(value = CHROMIUM, reason = "Chromium-specific API")
+public class TestChromium {
   private int nextPort = 9339;
 
   private static String wsEndpointFromUrl(String urlString) throws IOException {
@@ -54,10 +51,10 @@ public class TestChromium extends TestBase {
     return json.get("webSocketDebuggerUrl").getAsString();
   }
 
-  @Test
-  void shouldConnectToAnExistingCdpSession() throws IOException {
+  @PlaywrightTest
+  void shouldConnectToAnExistingCdpSession(BrowserType browserType) throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = browserType.launch(Env.launchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port);
       List<BrowserContext> contexts = cdpBrowser.contexts();
@@ -66,10 +63,10 @@ public class TestChromium extends TestBase {
     }
   }
 
-  @Test
-  void shouldConnectToAnExistingCdpSessionTwice() throws IOException {
+  @PlaywrightTest
+  void shouldConnectToAnExistingCdpSessionTwice(BrowserType browserType, Server server) throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = browserType.launch(Env.launchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String endpointUrl = "http://localhost:" + port;
       Browser cdpBrowser1 = browserType.connectOverCDP(endpointUrl);
@@ -92,10 +89,10 @@ public class TestChromium extends TestBase {
     }
   }
 
-  @Test
-  void shouldConnectOverAWsEndpoint() throws IOException {
+  @PlaywrightTest
+  void shouldConnectOverAWsEndpoint(BrowserType browserType) throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = browserType.launch(Env.launchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");
 
@@ -111,8 +108,8 @@ public class TestChromium extends TestBase {
     }
   }
 
-  @Test
-  void shouldSendExtraHeadersWithConnectRequest() throws Exception {
+  @PlaywrightTest
+  void shouldSendExtraHeadersWithConnectRequest(BrowserType browserType) throws Exception {
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
         browserType.connectOverCDP("ws://localhost:" + webSocketServer.getPort() + "/ws",
@@ -125,10 +122,10 @@ public class TestChromium extends TestBase {
     }
   }
 
-  @Test
-  void shouldSupportTracingOverCDP(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  void shouldSupportTracingOverCDP(BrowserType browserType, Server server, @TempDir Path tempDir) throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = browserType.launch(Env.launchOptions()
       .setArgs(asList("--remote-debugging-port=" + port)))) {
       try (Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port)) {
         List<BrowserContext> contexts = cdpBrowser.contexts();

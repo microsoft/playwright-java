@@ -16,10 +16,11 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,17 +33,20 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 
-import static com.microsoft.playwright.options.KeyboardModifier.ALT;
+import static com.microsoft.playwright.Utils.chromiumVersionLessThan;
 import static com.microsoft.playwright.Utils.copy;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestDownload extends TestBase {
+public class TestDownload {
 
   @BeforeEach
-  void addRoutes() {
+  void addRoutes(Server server) {
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
@@ -73,8 +77,8 @@ public class TestDownload extends TestBase {
 
   }
 
-  @Test
-  void shouldReportDownloadWhenNavigationTurnsIntoDownload() throws IOException {
+  @PlaywrightTest
+  void shouldReportDownloadWhenNavigationTurnsIntoDownload(Browser browser, Server server, BrowserName browserName) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
 
     Response[] response = new Response[]{null};
@@ -97,13 +101,13 @@ public class TestDownload extends TestBase {
     if (!chromiumVersionLessThan(browser.version(), "140.0.0.0")) {
       assertTrue(error[0].getMessage().contains("Download is starting"));
     }
-    if (!isFirefox())
+    if (browserName != FIREFOX)
       assertEquals("about:blank", page.url());
     page.close();
   }
 
-  @Test
-  void shouldReportDownloadsWithAcceptDownloadsFalse() {
+  @PlaywrightTest
+  void shouldReportDownloadsWithAcceptDownloadsFalse(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(false))) {
       page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
       Download download = page.waitForDownload(() -> page.click("a"));
@@ -114,8 +118,8 @@ public class TestDownload extends TestBase {
       assertTrue(e.getMessage().contains("acceptDownloads: true"));
     }
   }
-  @Test
-  void shouldReportDownloadsWithAcceptDownloadsTrue() throws IOException {
+  @PlaywrightTest
+  void shouldReportDownloadsWithAcceptDownloadsTrue(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -126,8 +130,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldSaveToUserSpecifiedPath() throws IOException {
+  @PlaywrightTest
+  void shouldSaveToUserSpecifiedPath(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -140,8 +144,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldSaveToUserSpecifiedPathWithoutUpdatingOriginalPath() throws IOException {
+  @PlaywrightTest
+  void shouldSaveToUserSpecifiedPathWithoutUpdatingOriginalPath(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -163,8 +167,8 @@ public class TestDownload extends TestBase {
   }
 
 
-  @Test
-  void shouldSaveToTwoDifferentPathsWithMultipleSaveAsCalls() throws IOException {
+  @PlaywrightTest
+  void shouldSaveToTwoDifferentPathsWithMultipleSaveAsCalls(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -185,8 +189,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldSaveToOverwrittenFilepath() throws IOException {
+  @PlaywrightTest
+  void shouldSaveToOverwrittenFilepath(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -206,8 +210,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldCreateSubdirectoriesWhenSavingToNonExistentUserSpecifiedPath() throws IOException {
+  @PlaywrightTest
+  void shouldCreateSubdirectoriesWhenSavingToNonExistentUserSpecifiedPath(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -225,8 +229,8 @@ public class TestDownload extends TestBase {
     // TODO: Support connect
   }
 
-  @Test
-  void shouldErrorWhenSavingWithDownloadsDisabled() throws IOException {
+  @PlaywrightTest
+  void shouldErrorWhenSavingWithDownloadsDisabled(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(false));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -237,8 +241,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldErrorWhenSavingAfterDeletion() throws IOException {
+  @PlaywrightTest
+  void shouldErrorWhenSavingAfterDeletion(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -254,8 +258,8 @@ public class TestDownload extends TestBase {
   // TODO: Support connect
   }
 
-  @Test
-  void shouldReportNonNavigationDownloads() throws IOException {
+  @PlaywrightTest
+  void shouldReportNonNavigationDownloads(Browser browser, Server server) throws IOException {
     // Mac WebKit embedder does not download in this case, although Safari does.
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
@@ -278,8 +282,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldReportDownloadPathWithinPageOnDownloadHandlerForFiles() throws IOException {
+  @PlaywrightTest
+  void shouldReportDownloadPathWithinPageOnDownloadHandlerForFiles(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     @SuppressWarnings("unchecked")
@@ -298,8 +302,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldReportDownloadPathWithinPageOnDownloadHandlerForBlobs() throws IOException {
+  @PlaywrightTest
+  void shouldReportDownloadPathWithinPageOnDownloadHandlerForBlobs(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     @SuppressWarnings("unchecked")
     Download[] download = {null};
@@ -318,9 +322,9 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="fixme")
-  void shouldReportAltClickDownloads() throws IOException {
+  @PlaywrightTest
+  @EnabledOnBrowser(value = CHROMIUM, reason = "fixme")
+  void shouldReportAltClickDownloads(Browser browser, Server server) throws IOException {
     // Firefox does not download on alt-click by default.
     // Our WebKit embedder does not download on alt-click, although Safari does.
     server.setRoute("/download", exchange -> {
@@ -341,13 +345,9 @@ public class TestDownload extends TestBase {
   }
 
 
-  static boolean isChromiumHeaded() {
-    return isChromium() && isHeaded();
-  }
-
-  @Test
-  @DisabledIf(value="isChromiumHeaded", disabledReason="fixme")
-  void shouldReportNewWindowDownloads() throws IOException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, headed = true, reason = "fixme")
+  void shouldReportNewWindowDownloads(Browser browser, Server server) throws IOException {
     // TODO: - the test fails in headed Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
     // - WebKit doesn't close the popup page
@@ -361,8 +361,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldDeleteFile() {
+  @PlaywrightTest
+  void shouldDeleteFile(Browser browser, Server server) {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -373,8 +373,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldExposeStream() throws IOException {
+  @PlaywrightTest
+  void shouldExposeStream(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -386,8 +386,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void streamShouldSupportZeroSizeRead() throws IOException {
+  @PlaywrightTest
+  void streamShouldSupportZeroSizeRead(Browser browser, Server server) throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -399,8 +399,8 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
-  @Test
-  void shouldDeleteDownloadsOnContextDestruction() {
+  @PlaywrightTest
+  void shouldDeleteDownloadsOnContextDestruction(Browser browser, Server server) {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download1 = page.waitForDownload(() -> page.click("a"));
@@ -414,8 +414,8 @@ public class TestDownload extends TestBase {
     assertFalse(Files.exists(path2));
   }
 
-  @Test
-  void shouldDeleteDownloadsOnBrowserGone() {
+  @PlaywrightTest
+  void shouldDeleteDownloadsOnBrowserGone(BrowserType browserType, Server server) {
     Browser browser = browserType.launch();
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
@@ -431,8 +431,8 @@ public class TestDownload extends TestBase {
     assertFalse(Files.exists(path1.resolve("..")));
   }
 
-  @Test
-  void shouldBeAbleToCancelPendingDownloads() {
+  @PlaywrightTest
+  void shouldBeAbleToCancelPendingDownloads(Browser browser, Server server) {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true))) {
       page.setContent("<a href='" + server.PREFIX + "/downloadWithDelay'>download</a>");
       Download download = page.waitForDownload(() -> page.click("a"));
@@ -442,8 +442,8 @@ public class TestDownload extends TestBase {
     }
   }
 
-  @Test
-  void shouldNotFailExplicitlyToCancelADownloadEvenIfThatIsAlreadyFinished() throws IOException {
+  @PlaywrightTest
+  void shouldNotFailExplicitlyToCancelADownloadEvenIfThatIsAlreadyFinished(Browser browser, Server server) throws IOException {
     try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true))) {
       page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
       Download download = page.waitForDownload(() -> page.click("a"));

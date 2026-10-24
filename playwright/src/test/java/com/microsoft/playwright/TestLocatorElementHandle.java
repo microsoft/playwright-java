@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestLocatorElementHandle extends TestBase {
-  @Test
-  void shouldQueryExistingElement() {
+public class TestLocatorElementHandle {
+  @PlaywrightTest
+  void shouldQueryExistingElement(Page page, Server server) {
     page.navigate(server.PREFIX + "/playground.html");
     page.setContent("<html><body><div class='second'><div class='inner'>A</div></div></body></html>");
     Locator html = page.locator("html");
@@ -36,8 +36,8 @@ public class TestLocatorElementHandle extends TestBase {
     assertEquals("A", content);
   }
 
-  @Test
-  void shouldQueryExistingElements() {
+  @PlaywrightTest
+  void shouldQueryExistingElements(Page page) {
     page.setContent("<html><body><div>A</div><br/><div>B</div></body></html>");
     Locator html = page.locator("html");
     List<ElementHandle> elements = html.locator("div").elementHandles();
@@ -47,8 +47,8 @@ public class TestLocatorElementHandle extends TestBase {
     assertEquals(asList("A", "B"), texts);
   }
 
-  @Test
-  void shouldReturnEmptyArrayForNonExistingElements() {
+  @PlaywrightTest
+  void shouldReturnEmptyArrayForNonExistingElements(Page page) {
     page.setContent("<html><body><span>A</span><br/><span>B</span></body></html>");
     Locator html = page.locator("html");
     List<ElementHandle> elements = html.locator("div").elementHandles();
@@ -56,8 +56,8 @@ public class TestLocatorElementHandle extends TestBase {
   }
 
 
-  @Test
-  void xpathShouldQueryExistingElement() {
+  @PlaywrightTest
+  void xpathShouldQueryExistingElement(Page page, Server server) {
     page.navigate(server.PREFIX + "/playground.html");
     page.setContent("<html><body><div class='second'><div class='inner'>A</div></div></body></html>");
     Locator html = page.locator("html");
@@ -67,8 +67,8 @@ public class TestLocatorElementHandle extends TestBase {
     assertEquals("A", content);
   }
 
-  @Test
-  void xpathShouldReturnNullForNonExistingElement() {
+  @PlaywrightTest
+  void xpathShouldReturnNullForNonExistingElement(Page page) {
     page.setContent("<html><body><div class='second'><div class='inner'>B</div></div></body></html>");
     Locator html = page.locator("html");
     List<ElementHandle> second = html.locator("xpath=/div[contains(@class, 'third')]").elementHandles();

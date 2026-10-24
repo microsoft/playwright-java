@@ -18,13 +18,12 @@ package com.microsoft.playwright;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.MouseButton;
-
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -42,23 +41,9 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestTracing extends TestBase {
-  @Override
-  @BeforeAll
-  void launchBrowser() {
-    // The method is replaced by the method below (with temp dir as extra parameter,
-    // we cannot declare temp dir field as it would be initialized too late).
-  }
-
-  @BeforeAll
-  void launchBrowser(@TempDir Path tempDir) {
-    BrowserType.LaunchOptions options = createLaunchOptions();
-    options.setTracesDir(tempDir.resolve("trace-dir"));
-    launchBrowser(options);
-  }
-
-  @Test
-  void shouldCollectTrace1(@TempDir Path tempDir) throws Exception {
+public class TestTracing {
+  @PlaywrightTest
+  void shouldCollectTrace1(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setName("test")
       .setScreenshots(true).setSnapshots(true));
     page.navigate(server.EMPTY_PAGE);
@@ -69,7 +54,7 @@ public class TestTracing extends TestBase {
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
 
     assertTrue(Files.exists(traceFile));
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
@@ -79,8 +64,8 @@ public class TestTracing extends TestBase {
     });
   }
 
-  @Test
-  void shouldCollectTwoTraces(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldCollectTwoTraces(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setName("test1")
       .setScreenshots(true).setSnapshots(true));
     page.navigate(server.EMPTY_PAGE);
@@ -99,7 +84,7 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
     
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
@@ -107,7 +92,7 @@ public class TestTracing extends TestBase {
       });
     });
     
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile2, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Double click"),
         Pattern.compile("Close")
@@ -115,8 +100,8 @@ public class TestTracing extends TestBase {
     });
   }
 
-  @Test
-  void shouldWorkWithMultipleChunks(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldWorkWithMultipleChunks(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
     page.navigate(server.PREFIX + "/frames/frame.html");
 
@@ -134,7 +119,7 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
     
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Set content"),
         Pattern.compile("Click")
@@ -144,24 +129,24 @@ public class TestTracing extends TestBase {
       assertThat(frame.locator("button")).hasText("Click");
     });
     
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile2, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile2, traceViewer -> {
       assertThat(traceViewer.actionTitles()).containsText(new String[] {"Hover"});
       FrameLocator frame = traceViewer.snapshotFrame("Hover", 0, false);
       assertThat(frame.locator("button")).hasText("Click");
     });
   }
 
-  @Test
-  void shouldCollectSources(@TempDir Path tmpDir) throws Exception {
+  @PlaywrightTest
+  void shouldCollectSources(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tmpDir) throws Exception {
     Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") != null, "PLAYWRIGHT_JAVA_SRC must point to the directory containing this test source.");
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
-    myMethodOuter();
+    myMethodOuter(page);
     Path trace = tmpDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
-    TraceViewerPage.showTraceViewer(this.browserType, trace, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, trace, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Set content"),
@@ -182,24 +167,24 @@ public class TestTracing extends TestBase {
     });
   }
 
-  private void myMethodOuter() {
-    myMethodInner();
+  private void myMethodOuter(Page page) {
+    myMethodInner(page);
   }
 
-  private void myMethodInner() {
+  private void myMethodInner(Page page) {
     page.getByText("Click").click();
   }
 
-  @Test
-  void shouldNotFailWhenSourcesSetExplicitlyToFalse() throws IOException {
+  @PlaywrightTest
+  void shouldNotFailWhenSourcesSetExplicitlyToFalse(BrowserContext context) throws IOException {
     Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") == null, "PLAYWRIGHT_JAVA_SRC must not be set for this test");
     context.tracing().start(new Tracing.StartOptions().setSources(false));
   }
 
-  @Test
-  void shouldRespectTracesDirAndName(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldRespectTracesDirAndName(BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     Path tracesDir = tempDir.resolve("trace-dir");
-    BrowserType.LaunchOptions options = createLaunchOptions();
+    BrowserType.LaunchOptions options = Env.launchOptions();
     options.setTracesDir(tracesDir);
     try (Browser browser = browserType.launch(options)) {
       BrowserContext context = browser.newContext();
@@ -217,7 +202,7 @@ public class TestTracing extends TestBase {
       assertTrue(Files.exists(tracesDir.resolve("name2.trace")));
       assertTrue(Files.exists(tracesDir.resolve("name2.network")));
       
-      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace1.zip"), traceViewer -> {
+      TraceViewerPage.showTraceViewer(browserType, tempDir.resolve("trace1.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
           Pattern.compile("Navigate.*/one-style.html")
         });
@@ -226,7 +211,7 @@ public class TestTracing extends TestBase {
         assertThat(frame.locator("body")).hasText("hello, world!");
       });
       
-      TraceViewerPage.showTraceViewer(this.browserType, tempDir.resolve("trace2.zip"), traceViewer -> {
+      TraceViewerPage.showTraceViewer(browserType, tempDir.resolve("trace2.zip"), traceViewer -> {
         assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
           Pattern.compile("Navigate.*/har.html")
         });
@@ -237,8 +222,8 @@ public class TestTracing extends TestBase {
     }
   }
 
-  @Test
-  void canCallTracingGroupGroupEndAtAnyTimeAndAutoClose(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void canCallTracingGroupGroupEndAtAnyTimeAndAutoClose(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().group("ignored");
     context.tracing().groupEnd();
     context.tracing().group("ignored2");
@@ -254,13 +239,13 @@ public class TestTracing extends TestBase {
     context.tracing().groupEnd();
     context.tracing().groupEnd();
 
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).containsText(new Pattern[] {Pattern.compile("actual"), Pattern.compile("Navigate.*/empty.html")});
     });
   }
 
-  @Test
-  void traceGroupGroupEnd(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void traceGroupGroupEnd(Page page, BrowserContext context, BrowserType browserType, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions());
     context.tracing().group("outer group");
     page.navigate("data:text/html,<!DOCTYPE html><body><div>Hello world</div></body>");
@@ -275,7 +260,7 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       traceViewer.expandAction("inner group 1");
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("outer group"),
@@ -287,8 +272,8 @@ public class TestTracing extends TestBase {
     });
   }
 
-  @Test
-  void shouldTraceVariousAPIs(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldTraceVariousAPIs(Page page, BrowserContext context, BrowserType browserType, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions());
 
     page.clock().install();
@@ -320,7 +305,7 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Install clock"),
         Pattern.compile("Set content"),
@@ -348,8 +333,8 @@ public class TestTracing extends TestBase {
     });
   }
 
-  @Test
-  public void shouldNotRecordNetworkActions(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  public void shouldNotRecordNetworkActions(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions());
 
     page.onRequest(request -> {
@@ -363,15 +348,15 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate.*/empty.html")
       });
     });
   }
 
-  @Test
-  public void shouldShowWaitForLoadState(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  public void shouldShowWaitForLoadState(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
     // https://github.com/microsoft/playwright/issues/37297
 
     context.tracing().start(new Tracing.StartOptions());
@@ -382,7 +367,7 @@ public class TestTracing extends TestBase {
     Path traceFile1 = tempDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
-    TraceViewerPage.showTraceViewer(this.browserType, traceFile1, traceViewer -> {
+    TraceViewerPage.showTraceViewer(browserType, traceFile1, traceViewer -> {
       assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
         Pattern.compile("Navigate.*/empty.html"),
         Pattern.compile("Wait for load state \"load\""),
@@ -390,8 +375,8 @@ public class TestTracing extends TestBase {
     });
   }
 
-  @Test
-  public void shouldRecordHarWithStartHarStopHar(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  public void shouldRecordHarWithStartHarStopHar(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     Path harPath = tempDir.resolve("tracing.har");
     context.tracing().startHar(harPath, new Tracing.StartHarOptions().setMode(com.microsoft.playwright.options.HarMode.MINIMAL));
     page.navigate(server.PREFIX + "/one-style.html");
@@ -401,8 +386,8 @@ public class TestTracing extends TestBase {
     assertTrue(content.contains("/one-style.html"), content);
   }
 
-  @Test
-  void shouldRecoverTracingAfterAFailedStop(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldRecoverTracingAfterAFailedStop(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     // https://github.com/microsoft/playwright/issues/42423
     context.tracing().start();
     // Saving fails: a parent of the destination is a file, not a directory.
@@ -424,22 +409,22 @@ public class TestTracing extends TestBase {
       && "click".equals(e.get("method").getAsString())));
   }
 
-  @Test
-  void shouldCollectActionScreenshots(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldCollectActionScreenshots(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setScreenSnapshots(true));
-    checkClickArtifacts(tempDir, "screenshot", "screenshots/", ".png",
+    checkClickArtifacts(page, context, server, tempDir, "screenshot", "screenshots/", ".png",
       content -> assertTrue(content.length > 0));
   }
 
-  @Test
-  void shouldCollectAriaSnapshots(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void shouldCollectAriaSnapshots(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setAriaSnapshots(true));
-    checkClickArtifacts(tempDir, "aria-snapshot", "aria/", ".json",
+    checkClickArtifacts(page, context, server, tempDir, "aria-snapshot", "aria/", ".json",
       content -> assertTrue(new String(content, StandardCharsets.UTF_8).contains("Click target")));
   }
 
   // Clicks a button while tracing and checks that before/action/after artifacts of the given type were recorded.
-  private void checkClickArtifacts(Path tempDir, String eventType, String dir, String extension, Consumer<byte[]> checkContent) throws Exception {
+  private void checkClickArtifacts(Page page, BrowserContext context, Server server, Path tempDir, String eventType, String dir, String extension, Consumer<byte[]> checkContent) throws Exception {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     Path trace = tempDir.resolve("trace.zip");
@@ -460,8 +445,8 @@ public class TestTracing extends TestBase {
     }
   }
 
-  @Test
-  void startShouldReturnADisposableThatDiscardsTheTrace(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void startShouldReturnADisposableThatDiscardsTheTrace(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     AutoCloseable disposable = context.tracing().start();
     page.navigate(server.EMPTY_PAGE);
     disposable.close();
@@ -470,8 +455,8 @@ public class TestTracing extends TestBase {
     assertTrue(e.getMessage().contains("Must start tracing before stopping"), e.getMessage());
   }
 
-  @Test
-  void startChunkShouldReturnADisposableThatDiscardsTheChunk(@TempDir Path tempDir) throws Exception {
+  @PlaywrightTest
+  void startChunkShouldReturnADisposableThatDiscardsTheChunk(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     context.tracing().start();
     AutoCloseable disposable = context.tracing().startChunk();
     page.navigate(server.EMPTY_PAGE);

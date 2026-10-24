@@ -19,8 +19,9 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.FileInputStream;
@@ -31,15 +32,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
+import static com.microsoft.playwright.Utils.defaultSameSiteCookieValue;
 import static com.microsoft.playwright.Utils.mapOf;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestBrowserContextStorageState extends TestBase {
+public class TestBrowserContextStorageState {
 
-  @Test
-  void shouldCaptureLocalStorage() {
+  @PlaywrightTest
+  void shouldCaptureLocalStorage(Page page, BrowserContext context) {
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
     });
@@ -65,8 +69,8 @@ public class TestBrowserContextStorageState extends TestBase {
       "}]}", new Gson().fromJson(storageState, JsonObject.class));
   }
 
-  @Test
-  void shouldSetLocalStorage() {
+  @PlaywrightTest
+  void shouldSetLocalStorage(Browser browser) {
     String storageState = "{\n" +
       "  origins: [\n" +
       "    {\n" +
@@ -89,8 +93,8 @@ public class TestBrowserContextStorageState extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldRoundTripThroughTheFile(@TempDir Path tempDir) throws IOException {
+  @PlaywrightTest
+  void shouldRoundTripThroughTheFile(BrowserContext context, Browser browser, BrowserName browserName, @TempDir Path tempDir) throws IOException {
     Page page1 = context.newPage();
     page1.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
@@ -105,7 +109,7 @@ public class TestBrowserContextStorageState extends TestBase {
     context.storageState(new BrowserContext.StorageStateOptions().setPath(path));
 
     String sameSiteCamelCase = "Lax";
-    switch (defaultSameSiteCookieValue) {
+    switch (defaultSameSiteCookieValue(browserName)) {
       case STRICT:
         sameSiteCamelCase = "Strict";
         break;
@@ -151,7 +155,7 @@ public class TestBrowserContextStorageState extends TestBase {
     page2.navigate("https://www.example.com");
     Object localStorage = page2.evaluate("window.localStorage");
     assertEquals(mapOf("name1", "value1"), localStorage);
-    if (!isFirefox()) {
+    if (browserName != FIREFOX) {
       // TODO: fails on bots with expected: <username=John Doe> but was: <>
       Object cookie = page2.evaluate("document.cookie");
       assertEquals("username=John Doe", cookie);
@@ -159,8 +163,8 @@ public class TestBrowserContextStorageState extends TestBase {
     context2.close();
   }
 
-  @Test
-  void shouldSerialiseStorageStateWithLoneSurrogates() {
+  @PlaywrightTest
+  void shouldSerialiseStorageStateWithLoneSurrogates(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("chars => window.localStorage.setItem('foo', String.fromCharCode(55934))");
     String storageState = context.storageState();
@@ -175,8 +179,8 @@ public class TestBrowserContextStorageState extends TestBase {
       "}]}", new Gson().fromJson(storageState, JsonObject.class));
   }
 
-  @Test
-  void shouldSupportIndexedDB() {
+  @PlaywrightTest
+  void shouldSupportIndexedDB(Page page, Browser browser, Server server) {
     page.navigate(server.PREFIX + "/to-do-notifications/index.html");
 
     assertThat(page.locator("#notifications")).matchesAriaSnapshot(
@@ -281,17 +285,17 @@ public class TestBrowserContextStorageState extends TestBase {
       new BrowserContext.StorageStateOptions().setIndexedDB(false)));
   }
 
-  @Test
-  void setStorageStateShouldHandleMissingFile(@TempDir Path tempDir) {
+  @PlaywrightTest
+  void setStorageStateShouldHandleMissingFile(BrowserContext context, @TempDir Path tempDir) {
     Path file = tempDir.resolve("does-not-exist.json");
     PlaywrightException e = org.junit.jupiter.api.Assertions.assertThrows(
       PlaywrightException.class, () -> context.setStorageState(file));
     assertTrue(e.getMessage().contains("Failed to read storage state from file"), e.getMessage());
   }
 
-  @Test
-  void shouldRoundTripOPFS(@TempDir Path tempDir) throws IOException {
-    Assumptions.assumeFalse(isWebKit(), "OPFS is unavailable in non-persistent WebKit contexts");
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "OPFS is unavailable in non-persistent WebKit contexts")
+  void shouldRoundTripOPFS(Page page, BrowserContext context, Browser browser, Server server, @TempDir Path tempDir) throws IOException {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("async () => {\n" +
       "  const root = await navigator.storage.getDirectory();\n" +
@@ -326,7 +330,7 @@ public class TestBrowserContextStorageState extends TestBase {
     assertJsonEquals(expected, JsonParser.parseString(context.request().storageState(new APIRequestContext.StorageStateOptions().setOpfs(true))));
 
     try (BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().setStorageStatePath(path))) {
-      checkOPFSContext(context2, expected);
+      checkOPFSContext(server, context2, expected);
     }
 
     try (BrowserContext context3 = browser.newContext()) {
@@ -337,11 +341,11 @@ public class TestBrowserContextStorageState extends TestBase {
         "  await root.getFileHandle('stale.txt', { create: true });\n" +
         "}");
       context3.setStorageState(path);
-      checkOPFSContext(context3, expected);
+      checkOPFSContext(server, context3, expected);
     }
   }
 
-  private void checkOPFSContext(BrowserContext context, String expectedStorageState) {
+  private void checkOPFSContext(Server server, BrowserContext context, String expectedStorageState) {
     assertJsonEquals(expectedStorageState, JsonParser.parseString(context.storageState(new BrowserContext.StorageStateOptions().setOpfs(true))));
     Page checkPage = context.newPage();
     checkPage.navigate(server.EMPTY_PAGE);

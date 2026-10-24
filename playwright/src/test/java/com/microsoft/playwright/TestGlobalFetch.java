@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.APIRequest.NewContextOptions;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.HttpCredentials;
 import com.microsoft.playwright.options.HttpCredentialsSend;
@@ -26,7 +27,6 @@ import com.microsoft.playwright.options.RequestOptions;
 import com.microsoft.playwright.options.SameSiteAttribute;
 import com.microsoft.playwright.options.ServerAddr;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -42,11 +42,11 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestGlobalFetch extends TestBase {
+public class TestGlobalFetch {
   private static final List<String> HTTP_METHODS = asList("GET", "PUT", "POST", "OPTIONS", "HEAD", "PATCH");
 
-  @Test
-  void shouldHaveJavaInDefaultUesrAgent() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldHaveJavaInDefaultUesrAgent(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions());
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     APIResponse response = request.get(server.EMPTY_PAGE);
@@ -64,8 +64,8 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(serverRequest.get().headers.get("user-agent").get(0).contains("java/" + version));
   }
 
-  @Test
-  void fetchShouldWork() {
+  @PlaywrightTest
+  void fetchShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.fetch(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -79,8 +79,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void deleteShouldWork() {
+  @PlaywrightTest
+  void deleteShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.delete(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -94,8 +94,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void getShouldWork() {
+  @PlaywrightTest
+  void getShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -109,8 +109,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void headShouldWork() {
+  @PlaywrightTest
+  void headShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.head(server.EMPTY_PAGE);
     assertEquals(server.EMPTY_PAGE, response.url());
@@ -124,8 +124,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("", response.text());
   }
 
-  @Test
-  void patchShouldWork() {
+  @PlaywrightTest
+  void patchShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.patch(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -139,8 +139,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void postShouldWork() {
+  @PlaywrightTest
+  void postShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.post(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -154,8 +154,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void putShouldWork() {
+  @PlaywrightTest
+  void putShouldWork(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.put(server.PREFIX + "/simple.json");
     assertEquals(server.PREFIX + "/simple.json", response.url());
@@ -177,8 +177,8 @@ public class TestGlobalFetch extends TestBase {
     return request.cookies().stream().map(c -> c.value).sorted().collect(Collectors.toList());
   }
 
-  @Test
-  void addCookiesShouldAddCookiesToTheCookieJar() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void addCookiesShouldAddCookiesToTheCookieJar(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     request.addCookies(asList(
       new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
@@ -200,16 +200,16 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void addCookiesShouldValidateCookies() {
+  @PlaywrightTest
+  void addCookiesShouldValidateCookies(Playwright playwright) {
     APIRequestContext request = playwright.request().newContext();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.addCookies(asList(new Cookie("a", "b"))));
     assertTrue(e.getMessage().contains("Cookie should have a url or a domain/path pair"), e.getMessage());
     request.dispose();
   }
 
-  @Test
-  void cookiesShouldReturnCookiesFilteredByUrls() {
+  @PlaywrightTest
+  void cookiesShouldReturnCookiesFilteredByUrls(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     request.addCookies(asList(
       new Cookie("a", "b").setDomain("localhost").setPath("/"),
@@ -225,8 +225,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void clearCookiesShouldRemoveAllCookies() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void clearCookiesShouldRemoveAllCookies(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     request.addCookies(asList(
       new Cookie("a", "b").setUrl(server.EMPTY_PAGE),
@@ -239,8 +239,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void clearCookiesShouldFilterByNameDomainAndPath() {
+  @PlaywrightTest
+  void clearCookiesShouldFilterByNameDomainAndPath(Playwright playwright) {
     APIRequestContext request = playwright.request().newContext();
     request.addCookies(asList(
       new Cookie("session", "1").setDomain("one.com").setPath("/"),
@@ -259,8 +259,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldDisposeGlobalRequest() {
+  @PlaywrightTest
+  void shouldDisposeGlobalRequest(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
@@ -269,8 +269,8 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
-  @Test
-  void shouldSupportGlobalUserAgentOption() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSupportGlobalUserAgentOption(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setUserAgent("My Agent"));
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     APIResponse response = request.get(server.EMPTY_PAGE);
@@ -279,16 +279,16 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(asList("My Agent"), serverRequest.get().headers.get("user-agent"));
   }
 
-  @Test
-  void shouldSupportGlobalTimeoutOption() {
+  @PlaywrightTest
+  void shouldSupportGlobalTimeoutOption(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setTimeout(100));
     server.setRoute("/empty.html", exchange -> {});
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("Timeout 100ms exceeded"), e.getMessage());
   }
 
-  @Test
-  void shouldPropagateExtraHttpHeadersWithRedirects() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldPropagateExtraHttpHeadersWithRedirects(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setExtraHTTPHeaders(mapOf("My-Secret", "Value")));
@@ -301,8 +301,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(asList("Value"), req3.get().headers.get("my-secret"));
   }
 
-  @Test
-  void shouldSupportGlobalHttpCredentialsOption() {
+  @PlaywrightTest
+  void shouldSupportGlobalHttpCredentialsOption(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     APIRequestContext request1 = playwright.request().newContext();
     APIResponse response1 = request1.get(server.EMPTY_PAGE);
@@ -315,8 +315,8 @@ public class TestGlobalFetch extends TestBase {
     request2.dispose();
   }
 
-  @Test
-  void shouldReturnErrorWithWrongCredentials() {
+  @PlaywrightTest
+  void shouldReturnErrorWithWrongCredentials(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials("user", "wrong"));
     APIResponse response = request.get(server.EMPTY_PAGE);
@@ -329,25 +329,25 @@ public class TestGlobalFetch extends TestBase {
   void shouldPassProxyCredentials() {
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Error: socket hang up")
-  void shouldSupportGlobalIgnoreHTTPSErrorsOption() {
+  void shouldSupportGlobalIgnoreHTTPSErrorsOption(Playwright playwright, HttpsServer httpsServer) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setIgnoreHTTPSErrors(true));
     APIResponse response = request.get(httpsServer.EMPTY_PAGE);
     assertEquals(200, response.status());
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Error: socket hang up")
-  void shouldPropagateIgnoreHTTPSErrorsOnRedirects() {
+  void shouldPropagateIgnoreHTTPSErrorsOnRedirects(Playwright playwright, HttpsServer httpsServer) {
     httpsServer.setRedirect("/redir", "/empty.html");
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(httpsServer.PREFIX + "/redir", RequestOptions.create().setIgnoreHTTPSErrors(true));
     assertEquals(200, response.status());
   }
 
-  @Test
-  void shouldReturnServerAddressFromResponse() {
+  @PlaywrightTest
+  void shouldReturnServerAddressFromResponse(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.EMPTY_PAGE);
     ServerAddr address = response.serverAddr();
@@ -357,23 +357,23 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldReturnNullSecurityDetailsForHttpResponse() {
+  @PlaywrightTest
+  void shouldReturnNullSecurityDetailsForHttpResponse(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.EMPTY_PAGE);
     assertNull(response.securityDetails());
     request.dispose();
   }
 
-  @Test
-  void shouldResolveUrlRelativeToGobalBaseURLOption() {
+  @PlaywrightTest
+  void shouldResolveUrlRelativeToGobalBaseURLOption(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setBaseURL(server.PREFIX));
     APIResponse response = request.get("/empty.html");
     assertEquals(server.EMPTY_PAGE, response.url());
   }
 
-  @Test
-  void shouldSetPlaywrightAsUserAgent() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldSetPlaywrightAsUserAgent(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     request.get(server.EMPTY_PAGE);
@@ -386,8 +386,8 @@ public class TestGlobalFetch extends TestBase {
   void shouldBeAbleToConstructWithContextOptions() {
   }
 
-  @Test
-  void shouldReturnEmptyBody() {
+  @PlaywrightTest
+  void shouldReturnEmptyBody(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.EMPTY_PAGE);
     byte[] body = response.body();
@@ -398,8 +398,8 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
-  @Test
-  void shouldRemoveContentLengthFromReidrectedPostRequests() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldRemoveContentLengthFromReidrectedPostRequests(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     server.setRedirect("/redirect", "/empty.html");
     APIRequestContext request = playwright.request().newContext();
     Future<Server.Request> req1 = server.futureRequest("/redirect");
@@ -420,8 +420,8 @@ public class TestGlobalFetch extends TestBase {
     2021
   );
 
-  @Test
-  void shouldJsonStringifyTypeBodyWhenContentTypeIsApplicationJson() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldJsonStringifyTypeBodyWhenContentTypeIsApplicationJson(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     for (Object value : values) {
       Future<Server.Request> req = server.futureRequest("/empty.html");
@@ -432,8 +432,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldNotDoubleStringifyTypeBodyWhenContentTypeIsApplicationJson() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldNotDoubleStringifyTypeBodyWhenContentTypeIsApplicationJson(Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     for (Object value : values) {
       String stringifiedValue = new Gson().toJson(value);
@@ -447,8 +447,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldReturnBodyForFailingRequests() {
+  @PlaywrightTest
+  void shouldReturnBodyForFailingRequests(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     for (String method : new String[] {"head", "put", "trace"}) {
       server.setRoute("/empty.html", exchange -> {
@@ -466,8 +466,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldThrowAnErrorWhenMaxRedirectsIsExceeded() {
+  @PlaywrightTest
+  void shouldThrowAnErrorWhenMaxRedirectsIsExceeded(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
     server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
@@ -486,8 +486,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldUseMaxRedirectsFromFetchWhenProvidedOverridingNewContext() {
+  @PlaywrightTest
+  void shouldUseMaxRedirectsFromFetchWhenProvidedOverridingNewContext(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
     server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
@@ -502,8 +502,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldFollowRedirectsUpToMaxRedirectsLimitSetInNewContext() {
+  @PlaywrightTest
+  void shouldFollowRedirectsUpToMaxRedirectsLimitSetInNewContext(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/b/c/redirect3");
     server.setRedirect("/b/c/redirect3", "/b/c/redirect4");
@@ -527,8 +527,8 @@ public class TestGlobalFetch extends TestBase {
     }
   }
 
-  @Test
-  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0InNewContext() {
+  @PlaywrightTest
+  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0InNewContext(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
 
@@ -542,8 +542,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0() {
+  @PlaywrightTest
+  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
 
@@ -557,8 +557,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldThrowAnErrorWhenMaxRedirectsIsLessThan0() {
+  @PlaywrightTest
+  void shouldThrowAnErrorWhenMaxRedirectsIsLessThan0(Playwright playwright, Server server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
 
@@ -572,8 +572,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldNotModifyRequestMethodInOptions() {
+  @PlaywrightTest
+  void shouldNotModifyRequestMethodInOptions(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().set("Content-type", "text/plain");
@@ -602,8 +602,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOrigin() {
+  @PlaywrightTest
+  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOrigin(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     APIRequestContext request1 = playwright.request().newContext();
     APIResponse response1 = request1.get(server.EMPTY_PAGE);
@@ -618,8 +618,8 @@ public class TestGlobalFetch extends TestBase {
     request2.dispose();
   }
 
-  @Test
-  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOriginCaseInsensitive() {
+  @PlaywrightTest
+  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOriginCaseInsensitive(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     APIRequestContext request1 = playwright.request().newContext();
     APIResponse response1 = request1.get(server.EMPTY_PAGE);
@@ -634,8 +634,8 @@ public class TestGlobalFetch extends TestBase {
     request2.dispose();
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
@@ -644,8 +644,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(401, response.status());
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
@@ -654,8 +654,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(401, response.status());
   }
 
-  @Test
-  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort() {
+  @PlaywrightTest
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
     httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
@@ -664,8 +664,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(401, response.status());
   }
 
-  @Test
-  void shouldSupportHTTPCredentialsSendImmediately() throws InterruptedException, ExecutionException {
+  @PlaywrightTest
+  void shouldSupportHTTPCredentialsSendImmediately(Playwright playwright, Server server) throws InterruptedException, ExecutionException {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
       .setHttpCredentials(new HttpCredentials("user", "pass")
         .setOrigin(server.PREFIX.toUpperCase())
@@ -688,16 +688,16 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldSupportDisposeReason() {
+  @PlaywrightTest
+  void shouldSupportDisposeReason(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext();
     request.dispose(new APIRequestContext.DisposeOptions().setReason("My reason"));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("My reason"), e.getMessage());
   }
 
-  @Test
-  public void shouldRetryECONNRESET() {
+  @PlaywrightTest
+  public void shouldRetryECONNRESET(Playwright playwright, Server server) {
     int[] requestCount = {0};
     server.setRoute("/test", exchange -> {
       if (requestCount[0]++ < 3) {
@@ -721,8 +721,8 @@ public class TestGlobalFetch extends TestBase {
     requestContext.dispose();
   }
 
-  @Test
-  public void shouldThrowWhenFailOnStatusCodeIsSetToTrue() {
+  @PlaywrightTest
+  public void shouldThrowWhenFailOnStatusCodeIsSetToTrue(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setFailOnStatusCode(true));
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().set("Content-Length", "10");
@@ -738,8 +738,8 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(error.getMessage().contains("404 Not Found"));
   }
 
-  @Test
-  public void shouldNotThrowWhenFailOnStatusCodeIsSetToFalse() {
+  @PlaywrightTest
+  public void shouldNotThrowWhenFailOnStatusCodeIsSetToFalse(Playwright playwright, Server server) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setFailOnStatusCode(false));
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().set("Content-Length", "10");
@@ -753,8 +753,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(404, response.status());
   }
 
-  @Test
-  void shouldSupportMultipleHttpCredentials() {
+  @PlaywrightTest
+  void shouldSupportMultipleHttpCredentials(Playwright playwright, Server server) {
     server.setAuth("/empty.html", "user1", "pass1");
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
       .setHttpCredentials(asList(
@@ -768,8 +768,8 @@ public class TestGlobalFetch extends TestBase {
     request.dispose();
   }
 
-  @Test
-  void shouldSupportHTTPCredentialsSendWithMultipleHttpCredentials() throws InterruptedException, ExecutionException {
+  @PlaywrightTest
+  void shouldSupportHTTPCredentialsSendWithMultipleHttpCredentials(Playwright playwright, Server server) throws InterruptedException, ExecutionException {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
       .setHttpCredentials(asList(
         new HttpCredentials("user1", "pass1").setOrigin(server.PREFIX).setSend(HttpCredentialsSend.ALWAYS),

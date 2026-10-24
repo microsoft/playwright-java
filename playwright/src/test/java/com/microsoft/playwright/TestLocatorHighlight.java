@@ -17,17 +17,17 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BoundingBox;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestLocatorHighlight extends TestBase {
+public class TestLocatorHighlight {
   @Disabled("Requires isUnderTest to be true https://github.com/microsoft/playwright/pull/12420")
-  @Test
-  void shouldHighlightLocator() {
+  @PlaywrightTest
+  void shouldHighlightLocator(Page page) {
     page.setContent("<input type='text' />");
     page.locator("input").highlight();
     assertThat(page.locator("x-pw-tooltip")).hasText("input");
@@ -37,8 +37,8 @@ public class TestLocatorHighlight extends TestBase {
     assertEquals(new Gson().toJson(box2), new Gson().toJson(box1));
   }
 
-  @Test
-  void highlightAndHideHighlightShouldNotThrow() {
+  @PlaywrightTest
+  void highlightAndHideHighlightShouldNotThrow(Page page) {
     page.setContent("<input type='text' />");
     AutoCloseable disposable = page.locator("input").highlight(new Locator.HighlightOptions().setStyle("outline: 2px dashed red"));
     try {

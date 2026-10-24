@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
@@ -25,9 +25,9 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.Utils.relativePathOrSkipTest;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestVideo extends TestBase {
-  @Test
-  void shouldWorkWithRelativePathForRecordVideoDir(@TempDir Path tmpDir) {
+public class TestVideo {
+  @PlaywrightTest
+  void shouldWorkWithRelativePathForRecordVideoDir(Browser browser, @TempDir Path tmpDir) {
     Path relativeDir = relativePathOrSkipTest(tmpDir);
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoSize(320, 240).setRecordVideoDir(relativeDir));
@@ -38,8 +38,8 @@ public class TestVideo extends TestBase {
     assertTrue(Files.exists(videoPath), "videosPath = " + videoPath);
   }
 
-  @Test
-  void shouldRecordVideoWithTheRequestedFps(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldRecordVideoWithTheRequestedFps(Browser browser, @TempDir Path tmpDir) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(tmpDir).setRecordVideoFps(60));
     Page page = context.newPage();
@@ -50,15 +50,15 @@ public class TestVideo extends TestBase {
     assertTrue(Files.exists(videoPath), "videosPath = " + videoPath);
   }
 
-  @Test
-  void shouldThrowOnInvalidFps(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldThrowOnInvalidFps(Browser browser, @TempDir Path tmpDir) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(tmpDir).setRecordVideoFps(0)));
     assertTrue(e.getMessage().contains("\"recordVideo.fps\" must be a positive number, got 0"), e.getMessage());
   }
 
-  @Test
-  void shouldThrowWhenFpsIsSetWithoutDir() {
+  @PlaywrightTest
+  void shouldThrowWhenFpsIsSetWithoutDir(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoFps(60)));
     assertTrue(e.getMessage().contains("recordVideoFps is set but recordVideoDir is null"), e.getMessage());

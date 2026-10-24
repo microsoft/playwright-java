@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.LoadState;
-import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,9 +25,9 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestBrowserContextLocale extends TestBase {
-  @Test
-  void shouldAffectAcceptLanguageHeader() throws ExecutionException, InterruptedException {
+public class TestBrowserContextLocale {
+  @PlaywrightTest
+  void shouldAffectAcceptLanguageHeader(Browser browser, Server server) throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     Future<Server.Request> request = server.futureRequest("/empty.html");
@@ -36,8 +36,8 @@ public class TestBrowserContextLocale extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldAffectNavigatorLanguage() {
+  @PlaywrightTest
+  void shouldAffectNavigatorLanguage(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     assertEquals("fr-FR", page.evaluate("() => navigator.language"));
@@ -45,8 +45,8 @@ public class TestBrowserContextLocale extends TestBase {
   }
 
 
-  @Test
-  void shouldFormatNumber() {
+  @PlaywrightTest
+  void shouldFormatNumber(Browser browser, Server server) {
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("en-US"));
       Page page = context.newPage();
@@ -63,8 +63,8 @@ public class TestBrowserContextLocale extends TestBase {
     }
   }
 
-  @Test
-  void shouldFormatDate() {
+  @PlaywrightTest
+  void shouldFormatDate(Browser browser, Server server) {
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions()
         .setLocale("en-US").setTimezoneId("America/Los_Angeles"));
@@ -85,8 +85,8 @@ public class TestBrowserContextLocale extends TestBase {
     }
   }
 
-  @Test
-  void shouldFormatNumberInPopups() {
+  @PlaywrightTest
+  void shouldFormatNumberInPopups(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -98,8 +98,8 @@ public class TestBrowserContextLocale extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldAffectNavigatorLanguageInPopups() {
+  @PlaywrightTest
+  void shouldAffectNavigatorLanguageInPopups(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -111,8 +111,8 @@ public class TestBrowserContextLocale extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldWorkForMultiplePagesSharingSameProcess() {
+  @PlaywrightTest
+  void shouldWorkForMultiplePagesSharingSameProcess(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("ru-RU"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -123,8 +123,8 @@ public class TestBrowserContextLocale extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldBeIsolatedBetweenContexts() {
+  @PlaywrightTest
+  void shouldBeIsolatedBetweenContexts(Browser browser) {
     BrowserContext context1 = browser.newContext(new Browser.NewContextOptions().setLocale("en-US"));
     // By default firefox limits number of child web processes to 8.
     for (int i = 0; i < 8; i++)
@@ -142,8 +142,8 @@ public class TestBrowserContextLocale extends TestBase {
     context2.close();
   }
 
-  @Test
-  void shouldNotChangeDefaultLocaleInAnotherContext() {
+  @PlaywrightTest
+  void shouldNotChangeDefaultLocaleInAnotherContext(Browser browser) {
     Function<BrowserContext, String> getContextLocale = (context) -> {
       Page page = context.newPage();
       return (String) page.evaluate("(new Intl.NumberFormat()).resolvedOptions().locale");

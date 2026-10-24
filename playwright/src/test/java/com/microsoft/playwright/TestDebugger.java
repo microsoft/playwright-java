@@ -16,20 +16,20 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.DebuggerPausedDetails;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestDebugger extends TestBase {
-  @Test
-  void shouldReturnNullPausedDetailsInitially() {
+public class TestDebugger {
+  @PlaywrightTest
+  void shouldReturnNullPausedDetailsInitially(BrowserContext context) {
     Debugger dbg = context.debugger();
     assertNull(dbg.pausedDetails());
   }
 
-  @Test
-  void shouldPauseAtNextAndResume() {
+  @PlaywrightTest
+  void shouldPauseAtNextAndResume(Page page, BrowserContext context) {
     page.setContent("<div>click me</div>");
     Debugger dbg = context.debugger();
     assertNull(dbg.pausedDetails());
@@ -51,8 +51,8 @@ public class TestDebugger extends TestBase {
     assertNull(dbg.pausedDetails());
   }
 
-  @Test
-  void shouldStepWithNext() {
+  @PlaywrightTest
+  void shouldStepWithNext(Page page, BrowserContext context) {
     page.setContent("<div>click me</div>");
     Debugger dbg = context.debugger();
     assertNull(dbg.pausedDetails());
@@ -76,8 +76,8 @@ public class TestDebugger extends TestBase {
     assertNull(dbg.pausedDetails());
   }
 
-  @Test
-  void shouldPauseAtPauseCall() {
+  @PlaywrightTest
+  void shouldPauseAtPauseCall(Page page, BrowserContext context) {
     page.setContent("<div>click me</div>");
     Debugger dbg = context.debugger();
     assertNull(dbg.pausedDetails());

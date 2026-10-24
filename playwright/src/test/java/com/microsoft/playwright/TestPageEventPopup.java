@@ -16,13 +16,13 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageEventPopup extends TestBase {
-  @Test
-  void shouldWorkWithClickingTarget_blank() {
+public class TestPageEventPopup {
+  @PlaywrightTest
+  void shouldWorkWithClickingTarget_blank(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel='opener' href='/one-style.html'>yo</a>");
     Page popup = page.waitForPopup(() -> page.click("a"));

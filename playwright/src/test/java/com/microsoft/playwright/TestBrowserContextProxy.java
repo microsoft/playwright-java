@@ -16,25 +16,24 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Proxy;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.OutputStreamWriter;
 import java.util.Base64;
 import java.util.List;
 
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextProxy extends TestBase {
+public class TestBrowserContextProxy {
   void shouldThrowForBadServerValue() {
     // Enforced by compiler in Java
   }
 
-  @Test
-  void shouldUseProxy() {
+  @PlaywrightTest
+  void shouldUseProxy(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -48,8 +47,8 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldUseProxyTwice() {
+  @PlaywrightTest
+  void shouldUseProxyTwice(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -65,8 +64,8 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldUseProxyForSecondPage() {
+  @PlaywrightTest
+  void shouldUseProxyForSecondPage(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -87,8 +86,8 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldWorkWithIPPORTNotion() {
+  @PlaywrightTest
+  void shouldWorkWithIPPORTNotion(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -104,8 +103,8 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldAuthenticate() {
+  @PlaywrightTest
+  void shouldAuthenticate(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       List<String> auth = exchange.getRequestHeaders().get("proxy-authorization");
       if (auth == null) {
@@ -129,13 +128,9 @@ public class TestBrowserContextProxy extends TestBase {
     context.close();
   }
 
-  static boolean isChromiumHeaded() {
-    return isChromium() && isHeaded();
-  }
-
-  @Test
-  @DisabledIf(value="isChromiumHeaded", disabledReason="fixme")
-  void shouldExcludePatterns() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = CHROMIUM, headed = true, reason = "fixme")
+  void shouldExcludePatterns(Browser browser, Server server) {
     server.setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -188,8 +183,8 @@ public class TestBrowserContextProxy extends TestBase {
     // TODO: implement socks server
   }
 
-  @Test
-  void doesLaunchWithoutAPort() {
+  @PlaywrightTest
+  void doesLaunchWithoutAPort(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("http://localhost")));
     context.close();

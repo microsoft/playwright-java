@@ -16,7 +16,8 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.Fixture;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -27,11 +28,11 @@ import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestTap extends TestBase {
+public class TestTap {
 
-  @Override
-  BrowserContext createContext() {
-    return browser.newContext(new Browser.NewContextOptions().setHasTouch(true));
+  @Fixture
+  Browser.NewContextOptions contextOptions() {
+    return new Browser.NewContextOptions().setHasTouch(true);
   }
 
   private JSHandle trackEvents(ElementHandle target) {
@@ -46,8 +47,8 @@ public class TestTap extends TestBase {
       "}");
   }
 
-  @Test
-  void shouldSendAllOfTheCorrectEvents() {
+  @PlaywrightTest
+  void shouldSendAllOfTheCorrectEvents(Page page) {
     page.setContent("<div id='a' style='background: lightblue; width: 50px; height: 50px'>a</div>\n" +
       "<div id='b' style='background: pink; width: 50px; height: 50px'>b</div>");
     page.tap("#a");
@@ -64,8 +65,8 @@ public class TestTap extends TestBase {
       eventsHandle.jsonValue());
   }
 
-  @Test
-  void shouldNotSendMouseEventsTouchstartIsCanceled() {
+  @PlaywrightTest
+  void shouldNotSendMouseEventsTouchstartIsCanceled(Page page) {
     page.setContent("<div style='width: 50px; height: 50px; background: red'>");
     page.evaluate("() => {\n" +
       "    // touchstart is not cancelable unless passive is false\n" +
@@ -80,8 +81,8 @@ public class TestTap extends TestBase {
       eventsHandle.jsonValue());
   }
 
-  @Test
-  void shouldNotSendMouseEventsWhenTouchendIsCanceled() {
+  @PlaywrightTest
+  void shouldNotSendMouseEventsWhenTouchendIsCanceled(Page page) {
     page.setContent("<div style='width: 50px; height: 50px; background: red'>");
     page.evaluate("() => document.addEventListener('touchend', t => t.preventDefault())");
     JSHandle eventsHandle = trackEvents(page.querySelector("div"));
@@ -93,8 +94,8 @@ public class TestTap extends TestBase {
       eventsHandle.jsonValue());
   }
 
-  @Test
-  void shouldNotWaitForANavigationCausedByATap() throws InterruptedException, ExecutionException {
+  @PlaywrightTest
+  void shouldNotWaitForANavigationCausedByATap(Page page, Server server) throws InterruptedException, ExecutionException {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='/intercept-this.html'>link</a>;");
     Future<Server.Request> serverReq = server.futureRequest("/intercept-this.html");
@@ -103,8 +104,8 @@ public class TestTap extends TestBase {
     serverReq.get();
   }
 
-  @Test
-  void shouldWorkWithModifiers() {
+  @PlaywrightTest
+  void shouldWorkWithModifiers(Page page) {
     page.setContent("hello world");
     page.evaluate("() => {\n" +
       "  window.touchPromise = new Promise(resolve => {\n" +
@@ -118,8 +119,8 @@ public class TestTap extends TestBase {
     assertEquals(true, altKey);
   }
 
-  @Test
-  void shouldSendWellFormedTouchPoints() {
+  @PlaywrightTest
+  void shouldSendWellFormedTouchPoints(Page page) {
     page.evaluate("() => {\n" +
       "  window.touchStartPromise = new Promise(resolve => {\n" +
       "      document.addEventListener('touchstart', event => {\n" +

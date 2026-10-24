@@ -16,55 +16,44 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static org.junit.jupiter.api.Assertions.*;
 
-@EnabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
-public class TestFirefoxLauncher extends TestBase {
-
-  @Override
-  @BeforeAll
-  // Hide base class method to not launch browser.
-  void launchBrowser() {
-  }
-
-  @Override
-  void createContextAndPage() {
-    // Do nothing
-  }
-
-  @Test
-  void shouldPassFirefoxUserPreferences() {
+@EnabledOnBrowser(value = FIREFOX, reason = "skip")
+public class TestFirefoxLauncher {
+  @PlaywrightTest
+  void shouldPassFirefoxUserPreferences(BrowserType browserType) {
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setFirefoxUserPrefs(
       mapOf(
         "network.proxy.type", 1,
         "network.proxy.http", "127.0.0.1",
         "network.proxy.http_port", 3333));
-    launchBrowser(options);
-    Page page = browser.newPage();
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
-    assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
+    try (Browser browser = browserType.launch(options)) {
+      Page page = browser.newPage();
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
+      assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
+    }
   }
 
-  @Test
-  void shouldPassFirefoxUserPreferencesInPersistent(@TempDir Path tmpDir) {
+  @PlaywrightTest
+  void shouldPassFirefoxUserPreferencesInPersistent(BrowserType browserType, @TempDir Path tmpDir) {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions().setFirefoxUserPrefs(
       mapOf(
         "network.proxy.type", 1,
         "network.proxy.http", "127.0.0.1",
         "network.proxy.http_port", 3333));
-    initBrowserType();
-    context = browserType.launchPersistentContext(tmpDir.resolve("user-data-dir"), options);
-    assertNotNull(context);
-    Page page = context.pages().get(0);
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
-    assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
+    try (BrowserContext context = browserType.launchPersistentContext(tmpDir.resolve("user-data-dir"), options)) {
+      assertNotNull(context);
+      Page page = context.pages().get(0);
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
+      assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
+    }
   }
 }

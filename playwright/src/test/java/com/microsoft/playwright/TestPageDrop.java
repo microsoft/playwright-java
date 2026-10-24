@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.FilePayload;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.DropPayload;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.options.FilePayload;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,8 +32,8 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestPageDrop extends TestBase {
-  private void setupDropzone() {
+public class TestPageDrop {
+  private void setupDropzone(Page page) {
     page.setContent("<style>#dropzone { width: 300px; height: 200px; border: 2px dashed #888; }</style>\n" +
       "<div id=\"dropzone\"></div>\n" +
       "<script>\n" +
@@ -57,16 +57,16 @@ public class TestPageDrop extends TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  private Map<String, Object> waitForDropInfo() {
+  private Map<String, Object> waitForDropInfo(Page page) {
     page.waitForCondition(() -> page.evaluate("window.__dropInfo") != null);
     return (Map<String, Object>) page.evaluate("window.__dropInfo");
   }
 
-  @Test
-  void shouldDropFilePayload() {
-    setupDropzone();
+  @PlaywrightTest
+  void shouldDropFilePayload(Page page) {
+    setupDropzone(page);
     page.locator("#dropzone").drop(new DropPayload().setFiles(new FilePayload("note.txt", "text/plain", "hello".getBytes(StandardCharsets.UTF_8))));
-    Map<String, Object> info = waitForDropInfo();
+    Map<String, Object> info = waitForDropInfo(page);
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> files = (List<Map<String, Object>>) info.get("files");
     assertEquals(1, files.size());
@@ -75,14 +75,14 @@ public class TestPageDrop extends TestBase {
     assertEquals("hello", files.get(0).get("text"));
   }
 
-  @Test
-  void shouldDropMultipleFilePayloads() {
-    setupDropzone();
+  @PlaywrightTest
+  void shouldDropMultipleFilePayloads(Page page) {
+    setupDropzone(page);
     page.locator("#dropzone").drop(new DropPayload().setFiles(new FilePayload[] {
       new FilePayload("a.txt", "text/plain", "AAA".getBytes(StandardCharsets.UTF_8)),
       new FilePayload("b.txt", "text/plain", "BB".getBytes(StandardCharsets.UTF_8)),
     }));
-    Map<String, Object> info = waitForDropInfo();
+    Map<String, Object> info = waitForDropInfo(page);
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> files = (List<Map<String, Object>>) info.get("files");
     assertEquals(2, files.size());
@@ -92,14 +92,14 @@ public class TestPageDrop extends TestBase {
     assertEquals("BB", files.get(1).get("text"));
   }
 
-  @Test
-  void shouldDropClipboardLikeData() {
-    setupDropzone();
+  @PlaywrightTest
+  void shouldDropClipboardLikeData(Page page) {
+    setupDropzone(page);
     Map<String, String> data = new HashMap<>();
     data.put("text/plain", "hello world");
     data.put("text/uri-list", "https://example.com");
     page.locator("#dropzone").drop(new DropPayload().setData(data));
-    Map<String, Object> info = waitForDropInfo();
+    Map<String, Object> info = waitForDropInfo(page);
     @SuppressWarnings("unchecked")
     List<?> files = (List<?>) info.get("files");
     assertTrue(files.isEmpty(), "expected no files");
@@ -109,13 +109,13 @@ public class TestPageDrop extends TestBase {
     assertEquals("https://example.com", droppedData.get("text/uri-list"));
   }
 
-  @Test
-  void shouldDropFileByLocalPath(@org.junit.jupiter.api.io.TempDir Path dir) throws Exception {
-    setupDropzone();
+  @PlaywrightTest
+  void shouldDropFileByLocalPath(Page page, @org.junit.jupiter.api.io.TempDir Path dir) throws Exception {
+    setupDropzone(page);
     Path filePath = dir.resolve("hello.txt");
     Files.write(filePath, "path-content".getBytes(StandardCharsets.UTF_8));
     page.locator("#dropzone").drop(new DropPayload().setFiles(filePath));
-    Map<String, Object> info = waitForDropInfo();
+    Map<String, Object> info = waitForDropInfo(page);
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> files = (List<Map<String, Object>>) info.get("files");
     assertEquals(1, files.size());

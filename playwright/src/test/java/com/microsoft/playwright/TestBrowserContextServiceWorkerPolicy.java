@@ -16,20 +16,20 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.ServiceWorkerPolicy;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TestBrowserContextServiceWorkerPolicy extends TestBase {
-  @Test
-  void shouldAllowServiceWorkersByDefault() {
+public class TestBrowserContextServiceWorkerPolicy {
+  @PlaywrightTest
+  void shouldAllowServiceWorkersByDefault(Page page, Server server) {
     page.navigate(server.PREFIX + "/serviceworkers/empty/sw.html");
     assertNotNull(page.evaluate("() => window['registrationPromise']"));
   }
 
-  @Test
-  void blocksServiceWorkerRegistration() {
+  @PlaywrightTest
+  void blocksServiceWorkerRegistration(Browser browser, Server server) {
     try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setServiceWorkers(ServiceWorkerPolicy.BLOCK))) {
       Page page = context.newPage();
       ConsoleMessage message = page.waitForConsoleMessage(new Page.WaitForConsoleMessageOptions()

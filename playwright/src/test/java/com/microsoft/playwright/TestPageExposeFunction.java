@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BindingCallback;
-import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
@@ -26,10 +26,10 @@ import static com.microsoft.playwright.options.WaitUntilState.LOAD;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageExposeFunction extends TestBase {
+public class TestPageExposeFunction {
 
-  @Test
-  void exposeBindingShouldWork() {
+  @PlaywrightTest
+  void exposeBindingShouldWork(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     BindingCallback.Source[] bindingSource = { null };
@@ -47,8 +47,8 @@ public class TestPageExposeFunction extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
     Object result = page.evaluate("async function() {\n" +
       "  return await window['compute'](9, 4);\n" +
@@ -56,8 +56,8 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals(36, result);
   }
 
-  @Test
-  void shouldWorkWithHandlesAndComplexObjects() {
+  @PlaywrightTest
+  void shouldWorkWithHandlesAndComplexObjects(Page page) {
    JSHandle fooHandle = page.evaluateHandle("() => {\n" +
      "  window['fooValue'] = { bar: 2 };\n" +
      "  return window['fooValue'];\n" +
@@ -72,8 +72,8 @@ public class TestPageExposeFunction extends TestBase {
   }
 
 
-  @Test
-  void shouldThrowExceptionInPageContext() {
+  @PlaywrightTest
+  void shouldThrowExceptionInPageContext(Page page) {
     page.exposeFunction("woof", args -> {
       throw new RuntimeException("WOOF WOOF");
     });
@@ -94,8 +94,8 @@ public class TestPageExposeFunction extends TestBase {
   void shouldSupportThrowingNull() {
     // Throwing null would lead to NullPointerException in Java.
   }
-  @Test
-  void shouldBeCallableFromInsideAddInitScript() {
+  @PlaywrightTest
+  void shouldBeCallableFromInsideAddInitScript(Page page) {
     boolean[] called = { false };
     page.exposeFunction("woof", args -> called[0] = true);
     page.addInitScript("window['woof']()");
@@ -103,8 +103,8 @@ public class TestPageExposeFunction extends TestBase {
     assertTrue(called[0]);
   }
 
-  @Test
-  void shouldSurviveNavigation() {
+  @PlaywrightTest
+  void shouldSurviveNavigation(Page page, Server server) {
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
     Object result = page.evaluate("async function() {\n" +
       "  return await window['compute'](9, 4);\n" +
@@ -116,8 +116,8 @@ public class TestPageExposeFunction extends TestBase {
   void shouldAwaitReturnedPromise() {
     // Java callback cannot return promise.
   }
-  @Test
-  void shouldWorkOnFrames() {
+  @PlaywrightTest
+  void shouldWorkOnFrames(Page page, Server server) {
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
     page.navigate(server.PREFIX + "/frames/nested-frames.html");
     Frame frame = page.frames().get(1);
@@ -127,8 +127,8 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals(15, result);
   }
 
-  @Test
-  void shouldWorkOnFramesBeforeNavigation() {
+  @PlaywrightTest
+  void shouldWorkOnFramesBeforeNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/frames/nested-frames.html");
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
 
@@ -139,8 +139,8 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals(15, result);
   }
 
-  @Test
-  void shouldWorkAfterCrossOriginNavigation() {
+  @PlaywrightTest
+  void shouldWorkAfterCrossOriginNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
 
@@ -149,8 +149,8 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals(36, result);
   }
 
-  @Test
-  void shouldWorkWithComplexObjects() {
+  @PlaywrightTest
+  void shouldWorkWithComplexObjects(Page page) {
     page.exposeFunction("complexObject", args -> {
       @SuppressWarnings("unchecked")
       Map<String, Integer> a = (Map<String, Integer>) args[0];
@@ -164,8 +164,8 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals( 7, ((Map) result).get("x"));
   }
 
-  @Test
-  void shouldThrowForDuplicateRegistrations() {
+  @PlaywrightTest
+  void shouldThrowForDuplicateRegistrations(Page page) {
     page.exposeFunction("foo", args -> null);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.exposeFunction("foo", args -> null);
@@ -173,8 +173,8 @@ public class TestPageExposeFunction extends TestBase {
     assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
   }
 
-  @Test
-  void shouldSerializeCycles() {
+  @PlaywrightTest
+  void shouldSerializeCycles(Page page) {
     Object[] object = { null };
     page.exposeBinding("log", (source, obj) -> object[0] = obj[0]);
     page.evaluate("const a = {}; a.b = a; window.log(a)");

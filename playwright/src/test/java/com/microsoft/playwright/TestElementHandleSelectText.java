@@ -16,19 +16,22 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Test;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleSelectText extends TestBase {
+public class TestElementHandleSelectText {
 
-  @Test
-  void shouldSelectTextarea() {
+  @PlaywrightTest
+  void shouldSelectTextarea(Page page, Server server, BrowserName browserName) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("textarea => textarea.value = 'some value'");
     textarea.selectText();
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals(0, textarea.evaluate("el => el.selectionStart"));
       assertEquals(10, textarea.evaluate("el => el.selectionEnd"));
     } else {
@@ -36,13 +39,13 @@ public class TestElementHandleSelectText extends TestBase {
     }
   }
 
-  @Test
-  void shouldSelectInput() {
+  @PlaywrightTest
+  void shouldSelectInput(Page page, Server server, BrowserName browserName) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle input = page.querySelector("input");
     input.evaluate("input => input.value = 'some value'");
     input.selectText();
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals(0, input.evaluate("el => el.selectionStart"));
       assertEquals(10, input.evaluate("el => el.selectionEnd"));
     } else {
@@ -50,16 +53,16 @@ public class TestElementHandleSelectText extends TestBase {
     }
   }
 
-  @Test
-  void shouldSelectPlainDiv() {
+  @PlaywrightTest
+  void shouldSelectPlainDiv(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle div = page.querySelector("div.plain");
     div.selectText();
     assertEquals("Plain div", page.evaluate("() => window.getSelection().toString()"));
   }
 
-  @Test
-  void shouldTimeoutWaitingForInvisibleElement() {
+  @PlaywrightTest
+  void shouldTimeoutWaitingForInvisibleElement(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("e => e.style.display = 'none'");

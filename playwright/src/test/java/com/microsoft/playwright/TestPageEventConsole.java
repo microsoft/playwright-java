@@ -16,26 +16,30 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.ConsoleMessagesFilter;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.OS;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.getOS;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageEventConsole extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageEventConsole {
+  @PlaywrightTest
+  void shouldWork(Page page, BrowserName browserName) {
     ConsoleMessage[] event = {null};
     page.onConsoleMessage(m -> event[0] = m);
     ConsoleMessage message = page.waitForConsoleMessage(() -> page.evaluate("() => console.log('hello', 5, {foo: 'bar'});"));
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals("hello 5 JSHandle@object", message.text());
     } else {
       assertEquals("hello 5 {foo: bar}", message.text());
@@ -47,16 +51,16 @@ public class TestPageEventConsole extends TestBase {
     assertEquals(message, event[0]);
   }
 
-  @Test
-  void shouldEmitSameLogTwice() {
+  @PlaywrightTest
+  void shouldEmitSameLogTwice(Page page) {
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(m -> messages.add(m.text()));
     page.evaluate("() => { for (let i = 0; i < 2; ++i) console.log('hello'); }");
     assertEquals(asList("hello", "hello"), messages);
   }
 
-  @Test
-  void shouldWorkForDifferentConsoleAPICalls() {
+  @PlaywrightTest
+  void shouldWorkForDifferentConsoleAPICalls(Page page) {
     List<ConsoleMessage> messages = new ArrayList<>();
     page.onConsoleMessage(msg -> messages.add(msg));
     // All console events will be reported before "page.evaluate" is finished.
@@ -82,23 +86,19 @@ public class TestPageEventConsole extends TestBase {
       "Promise"), messages.subList(1, messages.size()).stream().map(msg -> msg.text()).collect(toList()));
   }
 
-  @Test
-  void shouldNotFailForWindowObject() {
+  @PlaywrightTest
+  void shouldNotFailForWindowObject(Page page, BrowserName browserName) {
     ConsoleMessage message = page.waitForConsoleMessage(() -> page.evaluate("console.error(window)"));
-    if (isFirefox()) {
+    if (browserName == FIREFOX) {
       assertEquals("JSHandle@object", message.text());
     } else {
       assertEquals("Window", message.text());
     }
   }
 
-  static boolean isWebKitWindows() {
-    return isWebKit() && getOS() == Utils.OS.WINDOWS;
-  }
-
-  @Test
-  @DisabledIf(value="isWebKitWindows", disabledReason="Upstream issue https://bugs.webkit.org/show_bug.cgi?id=229515")
-  void shouldTriggerCorrectLog() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.WINDOWS, reason = "Upstream issue https://bugs.webkit.org/show_bug.cgi?id=229515")
+  void shouldTriggerCorrectLog(Page page, Server server) {
     page.navigate("about:blank");
     ConsoleMessage message = page.waitForConsoleMessage(() -> {
       page.evaluate("async url => fetch(url).catch(e => {})", server.EMPTY_PAGE);
@@ -107,8 +107,8 @@ public class TestPageEventConsole extends TestBase {
     assertEquals("error", message.type());
   }
 
-  @Test
-  void shouldHaveLocationForConsoleAPICalls() {
+  @PlaywrightTest
+  void shouldHaveLocationForConsoleAPICalls(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     ConsoleMessage message = page.waitForConsoleMessage(
       new Page.WaitForConsoleMessageOptions().setPredicate(m -> "yellow".equals(m.text())),
@@ -118,8 +118,8 @@ public class TestPageEventConsole extends TestBase {
     assertTrue(message.location().startsWith(server.PREFIX + "/consolelog.html:7:"), message.location());
   }
 
-  @Test
-  void shouldSupportPredicate() {
+  @PlaywrightTest
+  void shouldSupportPredicate(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     ConsoleMessage message = page.waitForConsoleMessage(
       new Page.WaitForConsoleMessageOptions().setPredicate(m -> "info".equals(m.type())),
@@ -131,8 +131,8 @@ public class TestPageEventConsole extends TestBase {
     assertEquals("info", message.type());
   }
 
-  @Test
-  void consoleMessagesShouldWork() {
+  @PlaywrightTest
+  void consoleMessagesShouldWork(Page page) {
     page.evaluate("() => {\n" +
       "  for (let i = 0; i < 301; i++)\n" +
       "    console.log('message' + i);\n" +
@@ -150,8 +150,8 @@ public class TestPageEventConsole extends TestBase {
     }
   }
 
-  @Test
-  void shouldHaveTimestamp() {
+  @PlaywrightTest
+  void shouldHaveTimestamp(Page page) {
     double before = (double) System.currentTimeMillis() - 1;
     ConsoleMessage message = page.waitForConsoleMessage(
       () -> page.evaluate("() => console.log('timestamp test')"));
@@ -162,8 +162,8 @@ public class TestPageEventConsole extends TestBase {
       "timestamp " + message.timestamp() + " should be <= " + after);
   }
 
-  @Test
-  void shouldHaveIncreasingTimestamps() {
+  @PlaywrightTest
+  void shouldHaveIncreasingTimestamps(Page page) {
     List<ConsoleMessage> messages = new ArrayList<>();
     page.onConsoleMessage(messages::add);
     page.evaluate("() => { console.log('first'); console.log('second'); console.log('third'); }");
@@ -172,8 +172,8 @@ public class TestPageEventConsole extends TestBase {
       assertTrue(messages.get(i).timestamp() >= messages.get(i - 1).timestamp());
   }
 
-  @Test
-  void clearConsoleMessagesShouldWork() {
+  @PlaywrightTest
+  void clearConsoleMessagesShouldWork(Page page) {
     page.evaluate("() => { console.log('message1'); console.log('message2'); }");
     List<ConsoleMessage> messages = page.consoleMessages();
     assertTrue(messages.stream().anyMatch(m -> "message1".equals(m.text())));
@@ -189,8 +189,8 @@ public class TestPageEventConsole extends TestBase {
     assertEquals("message3", messages.get(0).text());
   }
 
-  @Test
-  void consoleMessagesSinceNavigationFilterShouldWork() {
+  @PlaywrightTest
+  void consoleMessagesSinceNavigationFilterShouldWork(Page page, Server server) {
     page.evaluate("() => console.log('before navigation')");
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => console.log('after navigation')");

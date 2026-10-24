@@ -16,8 +16,9 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.impl.PlaywrightImpl;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -26,19 +27,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static com.microsoft.playwright.Utils.getBrowserTypeFromEnv;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPlaywrightCreate {
-  @Test
-  void shouldSupportEnvSkipBrowserDownload(@TempDir Path browsersDir) throws IOException, NoSuchFieldException, IllegalAccessException {
+  @PlaywrightTest
+  void shouldSupportEnvSkipBrowserDownload(BrowserName browserName, @TempDir Path browsersDir) throws IOException, NoSuchFieldException, IllegalAccessException {
     Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString(),
       "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1");
     Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env);
 
     try (Playwright playwright = PlaywrightImpl.createImpl(options, true)) {
-      PlaywrightException e = assertThrows(PlaywrightException.class, () -> getBrowserTypeFromEnv(playwright).launch());
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> browserName.browserType(playwright).launch());
       assertTrue(e.getMessage().contains("Looks like Playwright Test or Playwright was just installed or updated") ||
         e.getMessage().contains("Looks like Playwright was just installed or updated."), e.getMessage());
 

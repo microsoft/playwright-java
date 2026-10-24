@@ -16,63 +16,64 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.math.BigInteger;
-import java.time.*;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.Date;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageEvaluate extends TestBase {
-  @Test
-  void shouldWork() {
+public class TestPageEvaluate {
+  @PlaywrightTest
+  void shouldWork(Page page) {
     Object result = page.evaluate("() => 7 * 3");
     assertEquals(21, result);
   }
 
-  @Test
-  void shouldTransferNaN() {
+  @PlaywrightTest
+  void shouldTransferNaN(Page page) {
     Object result = page.evaluate("a => a", Double.NaN);
     assertTrue(Double.isNaN((Double) result));
   }
 
-  @Test
-  void shouldTransfer0() {
+  @PlaywrightTest
+  void shouldTransfer0(Page page) {
     Object result = page.evaluate("a => a", -0.0);
     assertEquals(Double.NEGATIVE_INFINITY, 1 / (Double) result);
   }
 
-  @Test
-  void shouldTransferPositive0() {
+  @PlaywrightTest
+  void shouldTransferPositive0(Page page) {
     assertEquals(true, page.evaluate("a => Object.is(a, 0)", 0.0));
     Object result = page.evaluate("a => a", 0.0);
     assertEquals(Double.POSITIVE_INFINITY, 1 / ((Number) result).doubleValue());
   }
 
-  @Test
-  void shouldTransferInfinity() {
+  @PlaywrightTest
+  void shouldTransferInfinity(Page page) {
     Object result = page.evaluate("a => a", Double.POSITIVE_INFINITY);
     assertTrue(Double.POSITIVE_INFINITY == (Double) result);
   }
 
-  @Test
-  void shouldTransferNegativeInfinity() {
+  @PlaywrightTest
+  void shouldTransferNegativeInfinity(Page page) {
     Object result = page.evaluate("a => a", Double.NEGATIVE_INFINITY);
     assertTrue(Double.NEGATIVE_INFINITY == (Double) result);
   }
 
-  @Test
-  void shouldRoundtripUnserializableValues() {
+  @PlaywrightTest
+  void shouldRoundtripUnserializableValues(Page page) {
     Map<String, ?> value = mapOf(
       "infinity", Double.POSITIVE_INFINITY,
       "nInfinity", Double.NEGATIVE_INFINITY,
@@ -83,8 +84,8 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(value, result);
   }
 
-  @Test
-  void shouldRoundtripPromiseToValue() {
+  @PlaywrightTest
+  void shouldRoundtripPromiseToValue(Page page) {
     {
       Object result = page.evaluate("value => Promise.resolve(value)", null);
       assertNull(result);
@@ -99,8 +100,8 @@ public class TestPageEvaluate extends TestBase {
     }
   }
 
-  @Test
-  void shouldRoundtripPromiseToUnserializableValues() {
+  @PlaywrightTest
+  void shouldRoundtripPromiseToUnserializableValues(Page page) {
     Map<String, ?> value = mapOf(
       "infinity", Double.POSITIVE_INFINITY,
       "nInfinity", Double.NEGATIVE_INFINITY,
@@ -111,43 +112,43 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(value, result);
   }
 
-  @Test
-  void shouldTransferArrays() {
+  @PlaywrightTest
+  void shouldTransferArrays(Page page) {
     Object result = page.evaluate("a => a", asList(1, 2, 3));
     assertEquals(asList(1, 2, 3), result);
   }
 
-  @Test
-  void shouldTransferArraysAsArraysNotObjects() {
+  @PlaywrightTest
+  void shouldTransferArraysAsArraysNotObjects(Page page) {
     Object result = page.evaluate("a => Array.isArray(a)", asList(1, 2, 3));
     assertEquals(true, result);
   }
 
-  @Test
-  void shouldTransferBigint() {
+  @PlaywrightTest
+  void shouldTransferBigint(Page page) {
     assertEquals(new BigInteger("42", 10), page.evaluate("() => 42n"));
     assertEquals(new BigInteger("17", 10), page.evaluate("a => a", new BigInteger("17", 10)));
   }
 
-  //  @Test
+  //  @PlaywrightTest
   void shouldTransferMapsAsEmptyObjects() {
     // Not applicable.
   }
 
-  @Test
-  void shouldModifyGlobalEnvironment() {
+  @PlaywrightTest
+  void shouldModifyGlobalEnvironment(Page page) {
     page.evaluate("() => window['globalVar'] = 123");
     assertEquals(123, page.evaluate("globalVar"));
   }
 
-  @Test
-  void shouldEvaluateInThePageContext() {
+  @PlaywrightTest
+  void shouldEvaluateInThePageContext(Page page, Server server) {
     page.navigate(server.PREFIX + "/global-var.html");
     assertEquals(123, page.evaluate("globalVar"));
   }
 
-  @Test
-  void shouldReturnUndefinedForObjectsWithSymbols() {
+  @PlaywrightTest
+  void shouldReturnUndefinedForObjectsWithSymbols(Page page) {
     assertEquals(singletonList(null), page.evaluate("() => [Symbol('foo4')]"));
     assertEquals(emptyMap(), page.evaluate("() => {\n" +
       "  const a = {};\n" +
@@ -163,14 +164,14 @@ public class TestPageEvaluate extends TestBase {
     // Not applicable.
   }
 
-  @Test
-  void shouldWorkWithUnicodeChars() {
+  @PlaywrightTest
+  void shouldWorkWithUnicodeChars(Page page) {
     Object result = page.evaluate("a => a['中文字符']", mapOf("中文字符", 42));
     assertEquals(42, result);
   }
 
-  @Test
-  void shouldThrowWhenEvaluationTriggersReload() {
+  @PlaywrightTest
+  void shouldThrowWhenEvaluationTriggersReload(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => {\n" +
         "  location.reload();\n" +
@@ -180,14 +181,14 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains("navigation"));
   }
 
-  @Test
-  void shouldAwaitPromise() {
+  @PlaywrightTest
+  void shouldAwaitPromise(Page page) {
     Object result = page.evaluate("() => Promise.resolve(8 * 7)");
     assertEquals(56, result);
   }
 
-  @Test
-  void shouldWorkRightAfterFramenavigated() {
+  @PlaywrightTest
+  void shouldWorkRightAfterFramenavigated(Page page, Server server) {
     Object[] frameEvaluation = {null};
     page.onFrameNavigated(frame -> {
       frameEvaluation[0] = frame.evaluate("() => 6 * 7");
@@ -196,8 +197,8 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(42, frameEvaluation[0]);
   }
 
-  @Test
-  void shouldWorkRightAfterACrossOriginNavigation() {
+  @PlaywrightTest
+  void shouldWorkRightAfterACrossOriginNavigation(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Object[] frameEvaluation = {null};
     page.onFrameNavigated(frame -> {
@@ -207,8 +208,8 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(42, frameEvaluation[0]);
   }
 
-  @Test
-  void shouldWorkFromInsideAnExposedFunction() {
+  @PlaywrightTest
+  void shouldWorkFromInsideAnExposedFunction(Page page) {
     // Setup inpage callback, which calls Page.evaluate
     page.exposeFunction("callController", args -> page.evaluate("({ a, b }) => a * b",
       mapOf("a", args[0], "b", args[1])));
@@ -218,58 +219,58 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(27, result);
   }
 
-  @Test
-  void shouldRejectPromiseWithException() {
+  @PlaywrightTest
+  void shouldRejectPromiseWithException(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => not_existing_object.property"));
     assertTrue(e.getMessage().contains("not_existing_object"));
   }
 
-  @Test
-  void shouldSupportThrownStringsAsErrorMessages() {
+  @PlaywrightTest
+  void shouldSupportThrownStringsAsErrorMessages(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => { throw 'qwerty'; }"));
     assertTrue(e.getMessage().contains("qwerty"));
   }
 
-  @Test
-  void shouldSupportThrownNumbersAsErrorMessages() {
+  @PlaywrightTest
+  void shouldSupportThrownNumbersAsErrorMessages(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => { throw 100500; }"));
     assertTrue(e.getMessage().contains("100500"));
   }
 
-  @Test
-  void shouldReturnComplexObjects() {
+  @PlaywrightTest
+  void shouldReturnComplexObjects(Page page) {
     Map<String, ?> object = mapOf("foo", "bar!");
     Object result = page.evaluate("a => a", object);
     assertFalse(object == result);
     assertEquals(object, result);
   }
 
-  @Test
-  void shouldReturnNaN() {
+  @PlaywrightTest
+  void shouldReturnNaN(Page page) {
     Object result = page.evaluate("() => NaN");
     assertEquals(Double.NaN, result);
   }
 
-  @Test
-  void shouldReturn0() {
+  @PlaywrightTest
+  void shouldReturn0(Page page) {
     Object result = page.evaluate("() => -0");
     assertEquals(Double.NEGATIVE_INFINITY, 1 / (Double) result);
   }
 
-  @Test
-  void shouldReturnInfinity() {
+  @PlaywrightTest
+  void shouldReturnInfinity(Page page) {
     Object result = page.evaluate("() => Infinity");
     assertEquals(Double.POSITIVE_INFINITY, result);
   }
 
-  @Test
-  void shouldReturnNegativeInfinity() {
+  @PlaywrightTest
+  void shouldReturnNegativeInfinity(Page page) {
     Object result = page.evaluate("() => -Infinity");
     assertEquals(Double.NEGATIVE_INFINITY, result);
   }
 
-  @Test
-  void shouldWorkWithOverwrittenPromise() {
+  @PlaywrightTest
+  void shouldWorkWithOverwrittenPromise(Page page) {
     page.evaluate("() => {\n" +
       "    const originalPromise = window.Promise;\n" +
       "    class Promise2 {\n" +
@@ -322,40 +323,40 @@ public class TestPageEvaluate extends TestBase {
     // Not applicable
   }
 
-  @Test
+  @PlaywrightTest
   void shouldProperlySerializeUndefinedArguments() {
     // Not applicable
   }
 
-  @Test
-  void shouldProperlySerializeUndefinedFields() {
+  @PlaywrightTest
+  void shouldProperlySerializeUndefinedFields(Page page) {
     assertEquals(mapOf("a", null), page.evaluate("() => ({ a: undefined })"));
   }
 
-  @Test
-  void shouldReturnUndefinedProperties() {
+  @PlaywrightTest
+  void shouldReturnUndefinedProperties(Page page) {
     Object value = page.evaluate("() => ({ a: undefined })");
     assertEquals(mapOf("a", null), value);
   }
 
-  @Test
-  void shouldProperlySerializeNullArguments() {
+  @PlaywrightTest
+  void shouldProperlySerializeNullArguments(Page page) {
     assertEquals(null, page.evaluate("x => x", null));
   }
 
-  @Test
-  void shouldProperlySerializeNullFields() {
+  @PlaywrightTest
+  void shouldProperlySerializeNullFields(Page page) {
     assertEquals(mapOf("a", null), page.evaluate("() => ({ a: null })"));
   }
 
-  @Test
-  void shouldReturnUndefinedForNonSerializableObjects() {
+  @PlaywrightTest
+  void shouldReturnUndefinedForNonSerializableObjects(Page page) {
     assertEquals(null, page.evaluate("() => () => {}"));
     assertEquals("ref: <Window>", page.evaluate("() => window"));
   }
 
-  @Test
-  void shouldBeAbleToThrowATrickyError() {
+  @PlaywrightTest
+  void shouldBeAbleToThrowATrickyError(Page page) {
     String errorText = "My error";
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("errorText => {\n" +
@@ -365,34 +366,34 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains(errorText));
   }
 
-  @Test
-  void shouldAcceptAString() {
+  @PlaywrightTest
+  void shouldAcceptAString(Page page) {
     Object result = page.evaluate("1 + 2");
     assertEquals(3, result);
   }
 
-  @Test
-  void shouldAcceptAStringWithSemiColons() {
+  @PlaywrightTest
+  void shouldAcceptAStringWithSemiColons(Page page) {
     Object result = page.evaluate("1 + 5;");
     assertEquals(6, result);
   }
 
-  @Test
-  void shouldAcceptAStringWithComments() {
+  @PlaywrightTest
+  void shouldAcceptAStringWithComments(Page page) {
     Object result = page.evaluate("2 + 5;\n// do some math!");
     assertEquals(7, result);
   }
 
-  @Test
-  void shouldAcceptElementHandleAsAnArgument() {
+  @PlaywrightTest
+  void shouldAcceptElementHandleAsAnArgument(Page page) {
     page.setContent("<section>42</section>");
     ElementHandle element = page.querySelector("section");
     Object text = page.evaluate("e => e.textContent", element);
     assertEquals("42", text);
   }
 
-  @Test
-  void shouldThrowIfUnderlyingElementWasDisposed() {
+  @PlaywrightTest
+  void shouldThrowIfUnderlyingElementWasDisposed(Page page) {
     page.setContent("<section>39</section>");
     ElementHandle element = page.querySelector("section");
     assertNotNull(element);
@@ -401,8 +402,8 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains("no object with guid"), e.getMessage());
   }
 
-  @Test
-  void shouldSimulateAUserGesture() {
+  @PlaywrightTest
+  void shouldSimulateAUserGesture(Page page) {
     assertEquals(true, page.evaluate("() => {\n" +
       "  document.body.appendChild(document.createTextNode('test'));\n" +
       "  document.execCommand('selectAll');\n" +
@@ -410,8 +411,8 @@ public class TestPageEvaluate extends TestBase {
       "}"));
   }
 
-  @Test
-  void shouldThrowANiceErrorAfterANavigation() {
+  @PlaywrightTest
+  void shouldThrowANiceErrorAfterANavigation(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForNavigation(() -> {
         page.evaluate("() => {\n" +
@@ -425,8 +426,8 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains("navigation"));
   }
 
-  @Test
-  void shouldNotThrowAnErrorWhenEvaluationDoesANavigation() {
+  @PlaywrightTest
+  void shouldNotThrowAnErrorWhenEvaluationDoesANavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/one-style.html");
     Object result = page.evaluate("() => {\n" +
       "  window.location.href = '/empty.html';\n" +
@@ -435,9 +436,9 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(asList(42), result);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
-  void shouldNotThrowAnErrorWhenEvaluationDoesASynchronousNavigationAndReturnsAnObject() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "fixme")
+  void shouldNotThrowAnErrorWhenEvaluationDoesASynchronousNavigationAndReturnsAnObject(Page page) {
     // It is imporant to be on about:blank for sync reload.
     Object result = page.evaluate("() => {\n" +
       "  window.location.reload();\n" +
@@ -446,8 +447,8 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(mapOf("a", 42), result);
   }
 
-  @Test
-  void shouldNotThrowAnErrorWhenEvaluationDoesASynchronousNavigationAndReturnsUndefined() {
+  @PlaywrightTest
+  void shouldNotThrowAnErrorWhenEvaluationDoesASynchronousNavigationAndReturnsUndefined(Page page) {
     // It is imporant to be on about:blank for sync reload.
     Object result = page.evaluate("() => {\n" +
       "  window.location.reload();\n" +
@@ -456,8 +457,8 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(null, result);
   }
 
-  @Test
-  void shouldTransfer100MbOfDataFromPageToNodeJs() {
+  @PlaywrightTest
+  void shouldTransfer100MbOfDataFromPageToNodeJs(Page page) {
     // This is too slow with wire.
     Object a = page.evaluate("() => Array(100 * 1024 * 1024 + 1).join('a')");
     String str = (String) a;
@@ -469,8 +470,8 @@ public class TestPageEvaluate extends TestBase {
     }
   }
 
-  @Test
-  void shouldThrowErrorWithDetailedInformationOnExceptionInsidePromise() {
+  @PlaywrightTest
+  void shouldThrowErrorWithDetailedInformationOnExceptionInsidePromise(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => new Promise(() => {\n" +
         "  throw new Error('Error in promise');\n" +
@@ -479,15 +480,15 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains("Error in promise"));
   }
 
-  @Test
-  void shouldWorkEvenWhenJSONIsSetToNull() {
+  @PlaywrightTest
+  void shouldWorkEvenWhenJSONIsSetToNull(Page page) {
     page.evaluate("() => { window.JSON.stringify = null; window.JSON = null; }");
     Object result = page.evaluate("() => ({ abc: 123 })");
     assertEquals(mapOf("abc", 123), result);
   }
 
-  @Test
-  void shouldAwaitPromiseFromPopup() {
+  @PlaywrightTest
+  void shouldAwaitPromiseFromPopup(Page page, Server server) {
     // Something is wrong about the way Firefox waits for the chained promise
     page.navigate(server.EMPTY_PAGE);
     Object result = page.evaluate("() => {\n" +
@@ -497,23 +498,23 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(42, result);
   }
 
-  @Test
-  void shouldWorkWithNewFunctionAndCSP() {
+  @PlaywrightTest
+  void shouldWorkWithNewFunctionAndCSP(Page page, Server server) {
     server.setCSP("/empty.html", "script-src " + server.PREFIX);
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals(true, page.evaluate("() => new Function('return true')()"));
   }
 
-  @Test
-  void shouldWorkWithNonStrictExpressions() {
+  @PlaywrightTest
+  void shouldWorkWithNonStrictExpressions(Page page) {
     assertEquals(3.14, page.evaluate("() => {\n" +
       "  y = 3.14;\n" +
       "  return y;\n" +
       "}"));
   }
 
-  @Test
-  void shouldRespectUseStrictExpression() {
+  @PlaywrightTest
+  void shouldRespectUseStrictExpression(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => {\n" +
         "  'use strict';\n" +
@@ -526,26 +527,26 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(e.getMessage().contains("variableY"));
   }
 
-  @Test
-  void shouldNotLeakUtilityScript() {
+  @PlaywrightTest
+  void shouldNotLeakUtilityScript(Page page) {
     assertEquals(true, page.evaluate("() => this === window"));
   }
 
-  @Test
-  void shouldNotLeakHandles() {
+  @PlaywrightTest
+  void shouldNotLeakHandles(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("handles.length"));
     assertTrue(e.getMessage().contains(" handles"));
   }
 
-  @Test
-  void shouldWorkWithCSP() {
+  @PlaywrightTest
+  void shouldWorkWithCSP(Page page, Server server) {
     server.setCSP("/empty.html", "script-src 'self'");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(4, page.evaluate("() => 2 + 2"));
   }
 
-  @Test
-  void shouldEvaluateException() {
+  @PlaywrightTest
+  void shouldEvaluateException(Page page) {
     Exception result = (Exception) page.evaluate("() => {\n" +
       "  return (function functionOnStack() {\n" +
       "    return new Error('error message');\n" +
@@ -555,14 +556,14 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(result.getMessage().contains("functionOnStack"), result.getMessage());
   }
 
-  @Test
-  void shouldEvaluateException2() {
+  @PlaywrightTest
+  void shouldEvaluateException2(Page page) {
     Exception error = (Exception) page.evaluate("new Error('error message')");
     assertTrue(error.getMessage().contains("Error: error message"), error.getMessage());
   }
 
-  @Test
-  void shouldPassExceptionArgument() {
+  @PlaywrightTest
+  void shouldPassExceptionArgument(Page page) {
     Exception e = new Exception("error message");
     Map<String, Object> received = (Map<String, Object>) page.evaluate("e => { return { message: e.message, name: e.name, stack: e.stack }; }", e);
 
@@ -572,23 +573,23 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(received.get("stack").toString().contains("shouldPassExceptionArgument"), received.get("stack").toString());
   }
 
-  @Test
-  void shouldEvaluateDate() {
+  @PlaywrightTest
+  void shouldEvaluateDate(Page page) {
     Object result = page.evaluate("() => ({ date: new Date('2020-05-27T01:31:38.506Z') })");
     Date expected = Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant());
     assertEquals(mapOf("date", expected), result);
   }
 
-  @Test
-  void shouldRoundtripDate() {
+  @PlaywrightTest
+  void shouldRoundtripDate(Page page) {
     Date date = Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant());
     Object result = page.evaluate("date => date", date);
     assertTrue(result instanceof Date);
     assertEquals(date.toString(), result.toString());
   }
 
-  @Test
-  void shouldRoundtripRegex() {
+  @PlaywrightTest
+  void shouldRoundtripRegex(Page page) {
     Pattern regex = Pattern.compile("hello", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     Object result = page.evaluate("regex => regex", regex);
     assertTrue(result instanceof Pattern);
@@ -596,54 +597,54 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(regex.flags(), ((Pattern)result).flags());
   }
 
-  @Test
-  void shouldJsonValueDate() {
+  @PlaywrightTest
+  void shouldJsonValueDate(Page page) {
     JSHandle resultHandle = page.evaluateHandle("() => ({ date: new Date('2020-05-27T01:31:38.506Z') })");
     assertEquals(mapOf("date", Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant())), resultHandle.jsonValue());
   }
 
-  @Test
-  void shouldEvaluateUrl() throws MalformedURLException {
+  @PlaywrightTest
+  void shouldEvaluateUrl(Page page) throws MalformedURLException {
     Object result = page.evaluate("() => ({ url: new URL('https://example.com/') })");
     assertEquals(mapOf("url", new URL("https://example.com/")), result);
   }
 
-  @Test
-  void shouldRoundtripUrl() throws MalformedURLException {
+  @PlaywrightTest
+  void shouldRoundtripUrl(Page page) throws MalformedURLException {
     URL url = new URL("https://example.com/");
     Object result = page.evaluate("url => url", url);
     assertTrue(result instanceof URL);
     assertEquals(url.toString(), result.toString());
   }
 
-  @Test
-  void shouldRoundtripComplexUrl() throws MalformedURLException {
+  @PlaywrightTest
+  void shouldRoundtripComplexUrl(Page page) throws MalformedURLException {
     URL url = new URL("https://user:password@www.contoso.com:80/Home/Index.htm?q1=v1&q2=v2#FragmentName");
     Object result = page.evaluate("url => url", url);
     assertTrue(result instanceof URL);
     assertEquals(url.toString(), result.toString());
   }
 
-  @Test
-  void shouldNotUseToJSONWhenEvaluating() {
+  @PlaywrightTest
+  void shouldNotUseToJSONWhenEvaluating(Page page) {
     Object result = page.evaluate("() => ({ toJSON: () => 'string', data: 'data' })");
     assertEquals(mapOf("data", "data", "toJSON", emptyMap()), result);
   }
 
-  @Test
-  void shouldNotUseToJSONInJsonValue() {
+  @PlaywrightTest
+  void shouldNotUseToJSONInJsonValue(Page page) {
     JSHandle resultHandle = page.evaluateHandle("() => ({ toJSON: () => 'string', data: 'data' })");
     assertEquals(mapOf("data", "data", "toJSON", emptyMap()), resultHandle.jsonValue());
   }
 
-  @Test
-  void shouldAliasWindowDocumentAndNode() {
+  @PlaywrightTest
+  void shouldAliasWindowDocumentAndNode(Page page) {
     Object object = page.evaluate("[window, document, document.body]");
     assertEquals(asList("ref: <Window>", "ref: <Document>", "ref: <Node>"), object);
   }
 
-  @Test
-  void shouldWorkForCircularObject() {
+  @PlaywrightTest
+  void shouldWorkForCircularObject(Page page) {
     Object result = page.evaluate("() => {\n" +
       "    const a = {};\n" +
       "    a.b = a;\n" +
@@ -655,8 +656,8 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(map == map.get("b"));
   }
 
-  @Test
-  void shouldAcceptParameter() {
+  @PlaywrightTest
+  void shouldAcceptParameter(Page page) {
     Instant instant = Instant.now();
     LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
     Object object = page.evaluate("p => p", localDateTime);
@@ -664,13 +665,13 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(Date.from(instant), object);
   }
 
-  @Test
-  void shouldTransferMaps() {
+  @PlaywrightTest
+  void shouldTransferMaps(Page page) {
     assertEquals(mapOf(), page.evaluate("() => new Map([[1, { test: 42n }]])"));
   }
 
-  @Test
-  void shouldTransferSets() {
+  @PlaywrightTest
+  void shouldTransferSets(Page page) {
     assertEquals(mapOf(), page.evaluate("() => new Set([1, { test: 42n }])"));
   }
 }

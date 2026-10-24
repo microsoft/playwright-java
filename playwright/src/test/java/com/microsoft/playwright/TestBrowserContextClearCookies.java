@@ -16,10 +16,8 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.Cookie;
-import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,10 +28,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestBrowserContextClearCookies {
-  @Test
+  @PlaywrightTest
   void shouldClearCookies(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
@@ -45,7 +41,7 @@ public class TestBrowserContextClearCookies {
     assertEquals("", page.evaluate("document.cookie"));
   }
 
-  @Test
+  @PlaywrightTest
   void shouldIsolateCookiesWhenClearing(BrowserContext context, Browser browser, Server server) {
     BrowserContext anotherContext = browser.newContext();
     context.addCookies(asList(
@@ -66,7 +62,7 @@ public class TestBrowserContextClearCookies {
     anotherContext.close();
   }
 
-  @Test
+  @PlaywrightTest
   void shouldRemoveCookiesByName(Page page, BrowserContext context, Server server) throws MalformedURLException {
     context.addCookies(Arrays.asList(
       new Cookie("cookie1", "1").setDomain(new URL(server.PREFIX).getHost()).setPath("/"),
@@ -79,7 +75,7 @@ public class TestBrowserContextClearCookies {
     assertEquals("cookie2=2", page.evaluate("document.cookie"));
   }
 
-  @Test
+  @PlaywrightTest
   public void shouldRemoveCookiesByNameRegex(Page page, BrowserContext context, Server server) throws MalformedURLException {
     context.addCookies(Arrays.asList(
       new Cookie("cookie1", "1").setDomain(new URL(server.PREFIX).getHost()).setPath("/"),
@@ -92,7 +88,7 @@ public class TestBrowserContextClearCookies {
     assertEquals("cookie2=2", page.evaluate("document.cookie"));
   }
 
-  @Test
+  @PlaywrightTest
   public void shouldRemoveCookiesByDomain(Page page, BrowserContext context, Server server) throws MalformedURLException {
     context.addCookies(Arrays.asList(
       new Cookie("cookie1", "1").setDomain(new URL(server.PREFIX).getHost()).setPath("/"),
@@ -108,7 +104,7 @@ public class TestBrowserContextClearCookies {
     assertEquals("cookie1=1", page.evaluate("document.cookie"));
   }
 
-  @Test
+  @PlaywrightTest
   public void shouldRemoveCookiesByPath(Page page, BrowserContext context, Server server) throws MalformedURLException {
     context.addCookies(Arrays.asList(
       new Cookie("cookie1", "1").setDomain(new URL(server.PREFIX).getHost()).setPath("/api/v1"),
@@ -125,7 +121,7 @@ public class TestBrowserContextClearCookies {
     assertEquals("cookie3=3", page.evaluate("document.cookie"));
   }
 
-  @Test
+  @PlaywrightTest
   public void shouldRemoveCookiesByNameAndDomain(Page page, BrowserContext context, Server server) throws MalformedURLException {
     context.addCookies(Arrays.asList(
       new Cookie("cookie1", "1").setDomain(new URL(server.PREFIX).getHost()).setPath("/"),

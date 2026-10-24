@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.WebStorageItem;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestWebStorage extends TestBase {
+public class TestWebStorage {
   private static Map<String, String> asMap(List<WebStorageItem> items) {
     Map<String, String> map = new HashMap<>();
     for (WebStorageItem item : items) {
@@ -35,20 +35,20 @@ public class TestWebStorage extends TestBase {
     return map;
   }
 
-  @Test
-  void localStorageItemsReturnsEmptyListOnFreshOrigin() {
+  @PlaywrightTest
+  void localStorageItemsReturnsEmptyListOnFreshOrigin(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(0, page.localStorage().items().size());
   }
 
-  @Test
-  void localStorageGetItemReturnsNullForMissingKey() {
+  @PlaywrightTest
+  void localStorageGetItemReturnsNullForMissingKey(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertNull(page.localStorage().getItem("absent"));
   }
 
-  @Test
-  void localStorageSetItemPersistsAndSurfacesInItemsAndGetItem() {
+  @PlaywrightTest
+  void localStorageSetItemPersistsAndSurfacesInItemsAndGetItem(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.localStorage().setItem("alpha", "1");
     page.localStorage().setItem("beta", "2");
@@ -58,16 +58,16 @@ public class TestWebStorage extends TestBase {
     assertEquals("1", page.evaluate("() => localStorage.getItem('alpha')"));
   }
 
-  @Test
-  void localStorageSetItemOverwritesExistingValue() {
+  @PlaywrightTest
+  void localStorageSetItemOverwritesExistingValue(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.localStorage().setItem("k", "first");
     page.localStorage().setItem("k", "second");
     assertEquals("second", page.localStorage().getItem("k"));
   }
 
-  @Test
-  void localStorageRemoveItemRemovesSingleItem() {
+  @PlaywrightTest
+  void localStorageRemoveItemRemovesSingleItem(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.localStorage().setItem("a", "1");
     page.localStorage().setItem("b", "2");
@@ -76,8 +76,8 @@ public class TestWebStorage extends TestBase {
     assertEquals(mapOf("b", "2"), asMap(page.localStorage().items()));
   }
 
-  @Test
-  void localStorageClearEmptiesStorage() {
+  @PlaywrightTest
+  void localStorageClearEmptiesStorage(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.localStorage().setItem("a", "1");
     page.localStorage().setItem("b", "2");
@@ -86,8 +86,8 @@ public class TestWebStorage extends TestBase {
     assertEquals(0, page.localStorage().items().size());
   }
 
-  @Test
-  void sessionStorageRoundTrip() {
+  @PlaywrightTest
+  void sessionStorageRoundTrip(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertEquals(0, page.sessionStorage().items().size());
 
@@ -103,8 +103,8 @@ public class TestWebStorage extends TestBase {
     assertEquals(0, page.sessionStorage().items().size());
   }
 
-  @Test
-  void localStorageAndSessionStorageAreIndependent() {
+  @PlaywrightTest
+  void localStorageAndSessionStorageAreIndependent(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     page.localStorage().setItem("shared", "local");
     page.sessionStorage().setItem("shared", "session");
@@ -117,8 +117,8 @@ public class TestWebStorage extends TestBase {
     assertEquals("session", page.sessionStorage().getItem("shared"));
   }
 
-  @Test
-  void storageMethodsAreScopedToTheCurrentOrigin() {
+  @PlaywrightTest
+  void storageMethodsAreScopedToTheCurrentOrigin(Page page, Server server) {
     page.navigate(server.PREFIX + "/empty.html");
     page.localStorage().setItem("k", "origin-1");
 

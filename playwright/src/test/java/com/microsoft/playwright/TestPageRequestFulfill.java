@@ -16,14 +16,14 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestPageRequestFulfill extends TestBase {
-  @Test
-  void shouldFulfillWithGlobalFetchResult() {
+public class TestPageRequestFulfill {
+  @PlaywrightTest
+  void shouldFulfillWithGlobalFetchResult(Page page, Playwright playwright, Server server) {
     page.route("**/*", route -> {
       APIRequestContext request = playwright.request().newContext();
       APIResponse response = request.get(server.PREFIX + "/simple.json");
@@ -35,8 +35,8 @@ public class TestPageRequestFulfill extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void shouldFulfillWithFetchResult() {
+  @PlaywrightTest
+  void shouldFulfillWithFetchResult(Page page, Server server) {
     page.route("**/*", route -> {
       APIResponse response = page.request().get(server.PREFIX + "/simple.json");
       route.fulfill(new Route.FulfillOptions().setResponse(response));
@@ -47,8 +47,8 @@ public class TestPageRequestFulfill extends TestBase {
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
-  @Test
-  void shouldFulfillWithFetchResultAndOverrides() {
+  @PlaywrightTest
+  void shouldFulfillWithFetchResultAndOverrides(Page page, Server server) {
     page.route("**/*", route -> {
       APIResponse response = page.request().get(server.PREFIX + "/simple.json");
       route.fulfill(new Route.FulfillOptions().setResponse(response)

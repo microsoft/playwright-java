@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.AriaRole;
-import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,7 +25,7 @@ import java.net.URL;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLocatorFrame extends TestBase {
+public class TestLocatorFrame {
   private static void routeIframe(Page page) {
     page.route("**/empty.html", route -> route.fulfill(new Route.FulfillOptions()
       .setBody("<iframe src='iframe.html' name='frame1'></iframe>").setContentType("text/html")));
@@ -65,8 +65,8 @@ public class TestLocatorFrame extends TestBase {
     });
   }
 
-  @Test
-  void shouldWorkForIframe() {
+  @PlaywrightTest
+  void shouldWorkForIframe(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.frameLocator("iframe").locator("button");
@@ -76,8 +76,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void shouldWorkForNestedIframe() {
+  @PlaywrightTest
+  void shouldWorkForNestedIframe(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.frameLocator("iframe").frameLocator("iframe").locator("button");
@@ -87,8 +87,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void shouldWorkForAnd() {
+  @PlaywrightTest
+  void shouldWorkForAnd(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator locator = page.frameLocator("iframe").locator("button");
@@ -98,8 +98,8 @@ public class TestLocatorFrame extends TestBase {
     assertThat(spans).hasCount(2);
   }
 
-  @Test
-  void shouldWaitForFrame() {
+  @PlaywrightTest
+  void shouldWaitForFrame(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.frameLocator("iframe").locator("span").click(new Locator.ClickOptions().setTimeout(300));
@@ -107,8 +107,8 @@ public class TestLocatorFrame extends TestBase {
     assertTrue(e.getMessage().contains("waiting for locator(\"iframe\").contentFrame()"), e.getMessage());
   }
 
-  @Test
-  void shouldWaitForFrame2() {
+  @PlaywrightTest
+  void shouldWaitForFrame2(Page page, Server server) {
     routeIframe(page);
     page.evaluate("url => setTimeout(() => location.href = url, 300)", server.EMPTY_PAGE);
     page.frameLocator("iframe").locator("button").click();
@@ -117,26 +117,26 @@ public class TestLocatorFrame extends TestBase {
   void shouldWaitForFrameToGo() {
   }
 
-  @Test
-  void shouldNotWaitForFrame() {
+  @PlaywrightTest
+  void shouldNotWaitForFrame(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertThat(page.frameLocator("iframe").locator("span")).isHidden();
   }
 
-  @Test
-  void shouldNotWaitForFrame2() {
+  @PlaywrightTest
+  void shouldNotWaitForFrame2(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertThat(page.frameLocator("iframe").locator("span")).not().isVisible();
   }
 
-  @Test
-  void shouldNotWaitForFrame3() {
+  @PlaywrightTest
+  void shouldNotWaitForFrame3(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     assertThat(page.frameLocator("iframe").locator("span")).hasCount(0);
   }
 
-  @Test
-  void shouldClickInLazyIframe() {
+  @PlaywrightTest
+  void shouldClickInLazyIframe(Page page, Server server) {
     page.route("**/iframe.html", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html><button>Hello iframe</button></html>").setContentType("text/html"));
     });
@@ -157,8 +157,8 @@ public class TestLocatorFrame extends TestBase {
     assertEquals("Hello iframe", button.innerText());
   }
 
-  @Test
-  void waitForShouldSurviveFrameReattach() {
+  @PlaywrightTest
+  void waitForShouldSurviveFrameReattach(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.frameLocator("iframe").locator("button:has-text('Hello nested iframe')");
@@ -173,8 +173,8 @@ public class TestLocatorFrame extends TestBase {
     button.waitFor();
   }
 
-  @Test
-  void clickShouldSurviveFrameReattach() {
+  @PlaywrightTest
+  void clickShouldSurviveFrameReattach(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.frameLocator("iframe").locator("button:has-text('Hello nested iframe')");
@@ -190,8 +190,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void clickShouldSurviveIframeNavigation() {
+  @PlaywrightTest
+  void clickShouldSurviveIframeNavigation(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.frameLocator("iframe").locator("button:has-text('Hello nested iframe')");
@@ -201,8 +201,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void shouldNonWorkForNonFrame() {
+  @PlaywrightTest
+  void shouldNonWorkForNonFrame(Page page) {
     routeIframe(page);
     page.setContent("<div></div>");
     Locator button = page.frameLocator("div").locator("button");
@@ -211,8 +211,8 @@ public class TestLocatorFrame extends TestBase {
     assertTrue(e.getMessage().contains("<iframe> was expected"), e.getMessage());
   }
 
-  @Test
-  void locatorFrameLocatorShouldWorkForIframe() {
+  @PlaywrightTest
+  void locatorFrameLocatorShouldWorkForIframe(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.locator("body").frameLocator("iframe").locator("button");
@@ -222,8 +222,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void locatorFrameLocatorShouldThrowOnAmbiguity() {
+  @PlaywrightTest
+  void locatorFrameLocatorShouldThrowOnAmbiguity(Page page, Server server) {
     routeAmbiguous(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.locator("body").frameLocator("iframe").locator("button");
@@ -231,8 +231,8 @@ public class TestLocatorFrame extends TestBase {
     assertTrue(e.getMessage().contains("Error: strict mode violation: locator(\"body\").locator(\"iframe\") resolved to 3 elements"), e.getMessage());
   }
 
-  @Test
-  void locatorFrameLocatorShouldNotThrowOnFirstLastNth() {
+  @PlaywrightTest
+  void locatorFrameLocatorShouldNotThrowOnFirstLastNth(Page page, Server server) {
     routeAmbiguous(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button1 = page.locator("body").frameLocator("iframe").first().locator("button");
@@ -243,8 +243,8 @@ public class TestLocatorFrame extends TestBase {
     assertThat(button3).hasText("Hello from iframe-3.html");
   }
 
-  @Test
-  void getByCoverage() {
+  @PlaywrightTest
+  void getByCoverage(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button1 = page.frameLocator("iframe").getByRole(AriaRole.BUTTON);
@@ -263,8 +263,8 @@ public class TestLocatorFrame extends TestBase {
     assertThat(input4).hasValue("");
   }
 
-  @Test
-  void locatorContentFrameShouldWork() {
+  @PlaywrightTest
+  void locatorContentFrameShouldWork(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     Locator locator = page.locator("iframe");
@@ -275,8 +275,8 @@ public class TestLocatorFrame extends TestBase {
     button.click();
   }
 
-  @Test
-  void frameLocatorOwnerShouldWork() {
+  @PlaywrightTest
+  void frameLocatorOwnerShouldWork(Page page, Server server) {
     routeIframe(page);
     page.navigate(server.EMPTY_PAGE);
     FrameLocator frameLocator = page.frameLocator("iframe");

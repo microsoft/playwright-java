@@ -16,21 +16,26 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.EnabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.Utils.attachFrame;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
+import static com.microsoft.playwright.fixtures.Env.isMac;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageKeyboard extends TestBase {
+public class TestPageKeyboard {
 
-  @Test
-  void shouldTypeIntoATextarea() {
+  @PlaywrightTest
+  void shouldTypeIntoATextarea(Page page) {
     page.evaluate("() => {\n" +
       "  const textarea = document.createElement('textarea');\n" +
       "  document.body.appendChild(textarea);\n" +
@@ -41,8 +46,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals(text, page.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  void shouldMoveWithTheArrowKeys() {
+  @PlaywrightTest
+  void shouldMoveWithTheArrowKeys(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.type("textarea", "Hello World!");
     assertEquals("Hello World!", page.evaluate("() => document.querySelector('textarea').value"));
@@ -60,8 +65,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("Hello World!", page.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  void shouldSendACharacterWithElementHandlePress() {
+  @PlaywrightTest
+  void shouldSendACharacterWithElementHandlePress(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.press("a");
@@ -71,8 +76,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("a", page.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  void shouldSendACharacterWithInsertText() {
+  @PlaywrightTest
+  void shouldSendACharacterWithInsertText(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     page.keyboard().insertText("嗨");
@@ -82,8 +87,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("嗨a", page.evaluate("() => document.querySelector('textarea').value"));
   }
 
-  @Test
-  void insertTextShouldOnlyEmitInputEvent() {
+  @PlaywrightTest
+  void insertTextShouldOnlyEmitInputEvent(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     JSHandle events = page.evaluateHandle("() => {\n" +
@@ -98,10 +103,10 @@ public class TestPageKeyboard extends TestBase {
     assertEquals(asList("input"), events.jsonValue());
   }
 
-  @Test
-  void shouldReportShiftKey() {
+  @PlaywrightTest
+  void shouldReportShiftKey(Page page, Server server, BrowserName browserName) {
     // Do NOT test on MacOS Firefox
-    Assumptions.assumeFalse( isFirefox() && isMac);
+    Assumptions.assumeFalse( browserName == FIREFOX && isMac);
     page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     Map<String, Integer> codeForKey = new HashMap<>();
@@ -124,8 +129,8 @@ public class TestPageKeyboard extends TestBase {
     });
   }
 
-  @Test
-  void shouldReportMultipleModifiers() {
+  @PlaywrightTest
+  void shouldReportMultipleModifiers(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     keyboard.down("Control");
@@ -142,8 +147,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("Keyup: Alt AltLeft 18 []", page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldSendProperCodesWhileTyping() {
+  @PlaywrightTest
+  void shouldSendProperCodesWhileTyping(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().type("!");
     assertEquals(String.join("\n",
@@ -159,8 +164,8 @@ public class TestPageKeyboard extends TestBase {
       page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldSendProperCodesWhileTypingWithShift() {
+  @PlaywrightTest
+  void shouldSendProperCodesWhileTypingWithShift(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     keyboard.down("Shift");
@@ -174,8 +179,8 @@ public class TestPageKeyboard extends TestBase {
     keyboard.up("Shift");
   }
 
-  @Test
-  void shouldNotTypeCanceledEvents() {
+  @PlaywrightTest
+  void shouldNotTypeCanceledEvents(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     page.evaluate("() => {\n" +
@@ -192,8 +197,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("He Wrd!", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
-  @Test
-  void shouldPressPlus() {
+  @PlaywrightTest
+  void shouldPressPlus(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("+");
     assertEquals(String.join("\n",
@@ -203,8 +208,8 @@ public class TestPageKeyboard extends TestBase {
         page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldPressShiftPlus() {
+  @PlaywrightTest
+  void shouldPressShiftPlus(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift++");
     assertEquals(String.join("\n",
@@ -216,8 +221,8 @@ public class TestPageKeyboard extends TestBase {
       page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldSupportPlusSeparatedModifier(){
+  @PlaywrightTest
+  void shouldSupportPlusSeparatedModifier(Page page, Server server){
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift+~");
     assertEquals(String.join("\n",
@@ -229,8 +234,8 @@ public class TestPageKeyboard extends TestBase {
       page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldSupportMultiplePlusSeparatedModifier() {
+  @PlaywrightTest
+  void shouldSupportMultiplePlusSeparatedModifier(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Control+Shift+~");
     assertEquals(String.join("\n",
@@ -243,8 +248,8 @@ public class TestPageKeyboard extends TestBase {
       page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldShiftRawCodes() {
+  @PlaywrightTest
+  void shouldShiftRawCodes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift+Digit3");
     assertEquals(String.join("\n",
@@ -256,11 +261,11 @@ public class TestPageKeyboard extends TestBase {
       page.evaluate("getResult()"));
   }
 
-  @Test
-  void shouldSpecifyRepeatProperty() {
+  @PlaywrightTest
+  void shouldSpecifyRepeatProperty(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
-    JSHandle lastEvent = captureLastKeyDown();
+    JSHandle lastEvent = captureLastKeyDown(page);
     page.keyboard().down("a");
     assertEquals(false, lastEvent.evaluate("e => e.repeat"));
     page.keyboard().press("a");
@@ -274,8 +279,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals(false, lastEvent.evaluate("e => e.repeat"));
   }
 
-  @Test
-  void shouldTypeAllKindsOfCharacters() {
+  @PlaywrightTest
+  void shouldTypeAllKindsOfCharacters(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     final String text = "This text goes onto two lines.\\nThis character is 嗨.";
@@ -283,10 +288,10 @@ public class TestPageKeyboard extends TestBase {
     assertEquals(text, page.evalOnSelector("textarea", "t => t.value"));
   }
 
-  @Test
-  void shouldSpecifyLocation() {
+  @PlaywrightTest
+  void shouldSpecifyLocation(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
-    JSHandle lastEvent = captureLastKeyDown();
+    JSHandle lastEvent = captureLastKeyDown(page);
     ElementHandle textarea = page.querySelector("textarea");
     textarea.press("Digit5");
     assertEquals(0, lastEvent.evaluate("e => e.location"));
@@ -298,19 +303,19 @@ public class TestPageKeyboard extends TestBase {
     assertEquals(3, lastEvent.evaluate("e => e.location"));
   }
 
-  @Test
-  void shouldPressEnter() {
+  @PlaywrightTest
+  void shouldPressEnter(Page page) {
     page.setContent("<textarea></textarea>");
     page.focus("textarea");
-    JSHandle lastEvent = captureLastKeyDown();
-    testEnterKey(lastEvent, "Enter", "Enter", "Enter");
-    testEnterKey(lastEvent, "NumpadEnter", "Enter", "NumpadEnter");
-    testEnterKey(lastEvent, "\n", "Enter", "Enter");
-    testEnterKey(lastEvent,"\r", "Enter", "Enter");
+    JSHandle lastEvent = captureLastKeyDown(page);
+    testEnterKey(page, lastEvent, "Enter", "Enter", "Enter");
+    testEnterKey(page, lastEvent, "NumpadEnter", "Enter", "NumpadEnter");
+    testEnterKey(page, lastEvent, "\n", "Enter", "Enter");
+    testEnterKey(page, lastEvent,"\r", "Enter", "Enter");
   }
 
-  @Test
-  void shouldThrowOnUnknownKeys() {
+  @PlaywrightTest
+  void shouldThrowOnUnknownKeys(Page page) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.keyboard().press("NotARealKey"));
     assertTrue(e.getMessage().contains("Unknown key: \"NotARealKey\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"NotARealKey\"");
 
@@ -321,15 +326,15 @@ public class TestPageKeyboard extends TestBase {
     assertTrue(e.getMessage().contains("Unknown key: \"😊\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"😊\"");
   }
 
-  @Test
-  void shouldTypeEmoji() {
+  @PlaywrightTest
+  void shouldTypeEmoji(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     page.type("textarea", "👹 Tokyo street Japan 🇯🇵");
     assertEquals("👹 Tokyo street Japan 🇯🇵", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
-  @Test
-  void shouldTypeEmojiIntoAnIframe() {
+  @PlaywrightTest
+  void shouldTypeEmojiIntoAnIframe(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "emoji-test", server.PREFIX + "/input/textarea.html");
     Frame frame = page.frames().get(1);
@@ -338,8 +343,8 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("👹 Tokyo street Japan 🇯🇵", frame.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
-  @Test
-  void shouldHandleSelectAll() {
+  @PlaywrightTest
+  void shouldHandleSelectAll(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
@@ -350,8 +355,8 @@ public class TestPageKeyboard extends TestBase {
     assertTrue(((String)page.evalOnSelector("textarea", "textarea => textarea.value")).isEmpty());
   }
 
-  @Test
-  void shouldBeAbleToPreventSelectAll() {
+  @PlaywrightTest
+  void shouldBeAbleToPreventSelectAll(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
@@ -368,12 +373,12 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("some tex", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
-  @Test
-  void shouldSupportMacOSShortcuts() {
+  @PlaywrightTest
+  void shouldSupportMacOSShortcuts(Page page, Server server, BrowserName browserName) {
     // Test for MacOS only
     Assumptions.assumeTrue(isMac);
     // @see https://github.com/microsoft/playwright/issues/5721
-    Assumptions.assumeFalse(isFirefox());
+    Assumptions.assumeFalse(browserName == FIREFOX);
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
@@ -383,9 +388,9 @@ public class TestPageKeyboard extends TestBase {
     assertEquals("some ", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
-  @Test
-  void shouldPressMetaKey() {
-    JSHandle lastEvent = captureLastKeyDown();
+  @PlaywrightTest
+  void shouldPressMetaKey(Page page) {
+    JSHandle lastEvent = captureLastKeyDown(page);
     page.keyboard().press("Meta");
     LinkedHashMap eventData = (LinkedHashMap) lastEvent.jsonValue();
     assertEquals("Meta", eventData.get("key"));
@@ -393,20 +398,19 @@ public class TestPageKeyboard extends TestBase {
     assertTrue((Boolean) eventData.get("metaKey"), eventData.toString());
   }
 
-  @Test
-  void shouldWorkAfterACrossOriginNavigation() {
+  @PlaywrightTest
+  void shouldWorkAfterACrossOriginNavigation(Page page, Server server) {
     page.navigate(server.PREFIX + "/empty.html");
     page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
-    JSHandle lastEvent = captureLastKeyDown();
+    JSHandle lastEvent = captureLastKeyDown(page);
     page.keyboard().press("a");
     assertEquals("a", lastEvent.evaluate("l => l.key"));
   }
 
-  @Test
-  void shouldExposeKeyIdentifierInWebKit() {
-    // Test for webkit only
-    Assumptions.assumeTrue(isWebKit());
-    JSHandle lastEvent = captureLastKeyDown();
+  @PlaywrightTest
+  @EnabledOnBrowser(WEBKIT)
+  void shouldExposeKeyIdentifierInWebKit(Page page) {
+    JSHandle lastEvent = captureLastKeyDown(page);
     Map<String, String> keyMap = new HashMap<>();
     keyMap.put("ArrowUp", "Up");
     keyMap.put("ArrowDown", "Down");
@@ -424,8 +428,8 @@ public class TestPageKeyboard extends TestBase {
     });
   }
 
-  @Test
-  void shouldScrollWithPageDown() {
+  @PlaywrightTest
+  void shouldScrollWithPageDown(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     // A click is required for WebKit to send the event into the body.
     page.click("body");
@@ -434,7 +438,7 @@ public class TestPageKeyboard extends TestBase {
     page.waitForFunction("() => scrollY > 0");
   }
 
-  private JSHandle captureLastKeyDown() {
+  private JSHandle captureLastKeyDown(Page page) {
     JSHandle lastEvent = page.evaluateHandle("() => {\n" +
       "  const lastEvent = {\n" +
       "    repeat: false,\n" +
@@ -458,7 +462,7 @@ public class TestPageKeyboard extends TestBase {
     return lastEvent;
   }
 
-  private void testEnterKey(JSHandle lastEventHandle, String key, String expectedKey, String expectedCode) {
+  private void testEnterKey(Page page, JSHandle lastEventHandle, String key, String expectedKey, String expectedCode) {
     page.keyboard().press(key);
     LinkedHashMap lastEvent = (LinkedHashMap) lastEventHandle.jsonValue();
     assertEquals(expectedKey, lastEvent.get("key"), lastEvent.toString());

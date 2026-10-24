@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import java.util.function.Consumer;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextRoute extends TestBase {
+public class TestBrowserContextRoute {
 
-  @Test
-  void shouldIntercept() {
+  @PlaywrightTest
+  void shouldIntercept(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     boolean[] intercepted = {false};
     Page page = context.newPage();
@@ -55,8 +55,8 @@ public class TestBrowserContextRoute extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldUnroute() {
+  @PlaywrightTest
+  void shouldUnroute(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
 
@@ -94,8 +94,8 @@ public class TestBrowserContextRoute extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldYieldToPageRoute() {
+  @PlaywrightTest
+  void shouldYieldToPageRoute(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("context"));
@@ -110,8 +110,8 @@ public class TestBrowserContextRoute extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldFallBackToContextRoute() {
+  @PlaywrightTest
+  void shouldFallBackToContextRoute(Browser browser, Server server) {
     BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("context"));
@@ -126,8 +126,8 @@ public class TestBrowserContextRoute extends TestBase {
     context.close();
   }
 
-  @Test
-  void shouldSupportTheTimesParameterWithRouteMatching() {
+  @PlaywrightTest
+  void shouldSupportTheTimesParameterWithRouteMatching(Page page, BrowserContext context, Server server) {
     int[] intercepted = {0};
     context.route("**/empty.html", route -> {
       ++intercepted[0];
@@ -139,8 +139,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertEquals(2, intercepted[0]);
   }
 
-  @Test
-  void shouldOverwritePostBodyWithEmptyString() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldOverwritePostBodyWithEmptyString(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     boolean[] routeHandled = {false};
     context.route("**/empty.html", route -> {
       route.resume(new Route.ResumeOptions().setPostData(""));
@@ -163,8 +163,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertEquals(0, body.length);
   }
 
-  @Test
-  void shouldNotSwallowExceptionsInRoute() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  void shouldNotSwallowExceptionsInRoute(Page page, BrowserContext context, Server server) throws ExecutionException, InterruptedException {
     context.route("**/empty.html", route -> {
       throw new RuntimeException("My Exception");
     });
@@ -173,9 +173,9 @@ public class TestBrowserContextRoute extends TestBase {
     assertTrue(e.getMessage().contains("My Exception"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
-  void shouldNotSwallowExceptionsInFulfill() throws ExecutionException, InterruptedException {
+  void shouldNotSwallowExceptionsInFulfill(Page page, Playwright playwright, Server server) throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.EMPTY_PAGE);
     response.dispose();
@@ -187,9 +187,9 @@ public class TestBrowserContextRoute extends TestBase {
     assertTrue(e.getMessage().contains("Fetch response has been disposed"), e.getMessage());
   }
 
-  @Test
+  @PlaywrightTest
   @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
-  void shouldNotSwallowExceptionsInResume() throws ExecutionException, InterruptedException {
+  void shouldNotSwallowExceptionsInResume(Page page, Server server) throws ExecutionException, InterruptedException {
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setUrl("file:///tmp"));
     });
@@ -198,8 +198,8 @@ public class TestBrowserContextRoute extends TestBase {
   }
 
 
-  @Test
-  void shouldChainFallback() {
+  @PlaywrightTest
+  void shouldChainFallback(Page page, BrowserContext context, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/empty.html", route -> {
       intercepted.add(1);
@@ -217,8 +217,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertEquals(asList(3, 2, 1), intercepted);
   }
 
-  @Test
-  void shouldNotChainFulfill() {
+  @PlaywrightTest
+  void shouldNotChainFulfill(Page page, BrowserContext context, Server server) {
     boolean[] failed = {false};
     context.route("**/empty.html", route -> {
       failed[0] = true;
@@ -235,8 +235,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertFalse(failed[0]);
   }
 
-  @Test
-  void shouldNotChainAbort() {
+  @PlaywrightTest
+  void shouldNotChainAbort(Page page, BrowserContext context, Server server) {
     boolean[] failed = {false};
     context.route("**/empty.html", route -> {
       failed[0] = true;
@@ -252,8 +252,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertFalse(failed[0]);
   }
 
-  @Test
-  void shouldChainFallbackIntoPage() {
+  @PlaywrightTest
+  void shouldChainFallbackIntoPage(Page page, BrowserContext context, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/empty.html", route -> {
       intercepted.add(1);
@@ -283,8 +283,8 @@ public class TestBrowserContextRoute extends TestBase {
     assertEquals(asList(6, 5, 4, 3, 2, 1), intercepted);
   }
 
-  @Test
-  void shouldFallBackAsync() {
+  @PlaywrightTest
+  void shouldFallBackAsync(Page page, BrowserContext context, Server server) {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/empty.html", route -> {
       intercepted.add(1);

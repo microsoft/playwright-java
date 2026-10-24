@@ -16,9 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
 import java.io.OutputStreamWriter;
@@ -27,22 +25,20 @@ import java.io.Writer;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestAPIResponseAssertions {
-  @Test
+  @PlaywrightTest
   void passWithResponse(Page page, Server server) {
     APIResponse res = page.request().get(server.EMPTY_PAGE);
     assertThat(res).isOK();
   }
 
-  @Test
+  @PlaywrightTest
   void passWithNot(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     assertThat(res).not().isOK();
   }
 
-  @Test
+  @PlaywrightTest
   void fail(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
@@ -50,14 +46,14 @@ public class TestAPIResponseAssertions {
     assertTrue(e.getMessage().contains("← 404 Not Found"), "Actual error: " + e.toString());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldPrintResponseTextIfIdOkFails(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
     assertTrue(e.getMessage().contains("File not found"), "Actual error: " + e.toString());
   }
 
-  @Test
+  @PlaywrightTest
   void shouldOnlyPrintResponseWithTextContentTypeIfIsOkFails(Page page, Server server) {
     {
       server.setRoute("/text-content-type", exchange -> {

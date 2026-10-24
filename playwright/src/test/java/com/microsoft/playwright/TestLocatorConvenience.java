@@ -16,14 +16,14 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLocatorConvenience extends TestBase {
-  @Test
-  void shouldHaveANicePreview() {
+public class TestLocatorConvenience {
+  @PlaywrightTest
+  void shouldHaveANicePreview(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator outer = page.locator("#outer");
     Locator inner = outer.locator("#inner");
@@ -36,8 +36,8 @@ public class TestLocatorConvenience extends TestBase {
     assertEquals("Locator@#check", check.toString());
   }
 
-  @Test
-  void getAttributeShouldWork() {
+  @PlaywrightTest
+  void getAttributeShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator locator = page.locator("#outer");
     assertEquals("value", locator.getAttribute("name"));
@@ -46,8 +46,8 @@ public class TestLocatorConvenience extends TestBase {
     assertNull(page.getAttribute("#outer", "foo"));
   }
 
-  @Test
-  void inputValueShouldWork() {
+  @PlaywrightTest
+  void inputValueShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
 
     page.selectOption("#select", "foo");
@@ -70,24 +70,24 @@ public class TestLocatorConvenience extends TestBase {
     assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
   }
 
-  @Test
-  void innerHTMLShouldWork() {
+  @PlaywrightTest
+  void innerHTMLShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator locator = page.locator("#outer");
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", locator.innerHTML());
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", page.innerHTML("#outer"));
   }
 
-  @Test
-  void innerTextShouldWork() {
+  @PlaywrightTest
+  void innerTextShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator locator = page.locator("#inner");
     assertEquals("Text, more text", locator.innerText());
     assertEquals("Text, more text", page.innerText("#inner"));
   }
 
-  @Test
-  void innerTextShouldThrow() {
+  @PlaywrightTest
+  void innerTextShouldThrow(Page page) {
     page.setContent("<svg>text</svg>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.innerText("svg"));
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
@@ -97,16 +97,16 @@ public class TestLocatorConvenience extends TestBase {
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
   }
 
-  @Test
-  void textContentShouldWork() {
+  @PlaywrightTest
+  void textContentShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator locator = page.locator("#inner");
     assertEquals("Text,\nmore text", locator.textContent());
     assertEquals("Text,\nmore text", page.textContent("#inner"));
   }
 
-  @Test
-  void isVisibleAndIsHiddenShouldWork() {
+  @PlaywrightTest
+  void isVisibleAndIsHiddenShouldWork(Page page) {
     page.setContent("<div>Hi</div><span></span>");
 
     Locator div = page.locator("div");
@@ -125,8 +125,8 @@ public class TestLocatorConvenience extends TestBase {
     assertTrue(page.isHidden("no-such-element"));
   }
 
-  @Test
-  void isEnabledAndIsDisabledShouldWork() {
+  @PlaywrightTest
+  void isEnabledAndIsDisabledShouldWork(Page page) {
     page.setContent("<button disabled>button1</button>\n" +
       "<button>button2</button>\n" +
       "<div>div</div>");
@@ -147,8 +147,8 @@ public class TestLocatorConvenience extends TestBase {
     assertEquals(false, page.isDisabled(":text('button2')"));
   }
 
-  @Test
-  void isEditableShouldWork() {
+  @PlaywrightTest
+  void isEditableShouldWork(Page page) {
     page.setContent("<input id=input1 disabled><textarea></textarea><input id=input2>");
     page.evalOnSelector("textarea", "t => t.readOnly = true");
     Locator input1 = page.locator("#input1");
@@ -162,8 +162,8 @@ public class TestLocatorConvenience extends TestBase {
     assertFalse(page.isEditable("textarea"));
   }
 
-  @Test
-  void isCheckedShouldWork() {
+  @PlaywrightTest
+  void isCheckedShouldWork(Page page) {
     page.setContent("<input type='checkbox' checked><div>Not a checkbox</div>");
     Locator element = page.locator("input");
     assertTrue(element.isChecked());
@@ -175,62 +175,62 @@ public class TestLocatorConvenience extends TestBase {
     assertTrue(e.getMessage().contains("Not a checkbox or radio button"));
   }
 
-  @Test
-  void allTextContentsShouldWork() {
+  @PlaywrightTest
+  void allTextContentsShouldWork(Page page) {
     page.setContent("<div>A</div><div>B</div><div>C</div>");
     assertEquals(asList("A", "B", "C"), page.locator("div").allTextContents());
   }
 
-  @Test
-  void allInnerTextsShouldWork() {
+  @PlaywrightTest
+  void allInnerTextsShouldWork(Page page) {
     page.setContent("<div>A</div><div>B</div><div>C</div>");
     assertEquals(asList("A", "B", "C"), page.locator("div").allInnerTexts());
   }
 
-  @Test
-  void descriptionShouldReturnNullForUndescribedLocators() {
+  @PlaywrightTest
+  void descriptionShouldReturnNullForUndescribedLocators(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div");
     assertNull(locator.description());
   }
 
-  @Test
-  void descriptionShouldReturnSimpleDescription() {
+  @PlaywrightTest
+  void descriptionShouldReturnSimpleDescription(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div").describe("my div");
     assertEquals("my div", locator.description());
   }
 
-  @Test
-  void descriptionShouldHandleSpecialCharacters() {
+  @PlaywrightTest
+  void descriptionShouldHandleSpecialCharacters(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div").describe("título 😊");
     assertEquals("título 😊", locator.description());
   }
 
-  @Test
-  void descriptionShouldWorkWithChainedLocators() {
+  @PlaywrightTest
+  void descriptionShouldWorkWithChainedLocators(Page page) {
     page.setContent("<div><span>Hello</span></div>");
     Locator locator = page.locator("div").describe("container").locator("span");
     assertNull(locator.description());
   }
 
-  @Test
-  void descriptionShouldReturnLastDescriptionForMultipleCalls() {
+  @PlaywrightTest
+  void descriptionShouldReturnLastDescriptionForMultipleCalls(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div").describe("first").describe("second");
     assertEquals("second", locator.description());
   }
 
-  @Test
-  void toStringShouldReturnFormattedLocator() {
+  @PlaywrightTest
+  void toStringShouldReturnFormattedLocator(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div");
     assertTrue(locator.toString().startsWith("Locator@"));
   }
 
-  @Test
-  void toStringShouldPreferDescription() {
+  @PlaywrightTest
+  void toStringShouldPreferDescription(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div").describe("my div");
     assertEquals("my div", locator.toString());

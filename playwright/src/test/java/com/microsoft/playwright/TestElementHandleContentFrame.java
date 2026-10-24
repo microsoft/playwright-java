@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleContentFrame extends TestBase {
+public class TestElementHandleContentFrame {
 
-  @Test
-  void shouldWork() {
+  @PlaywrightTest
+  void shouldWork(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     ElementHandle elementHandle = page.querySelector("#frame1");
@@ -32,8 +32,8 @@ public class TestElementHandleContentFrame extends TestBase {
     assertEquals(page.frames().get(1), frame);
   }
 
-  @Test
-  void shouldWorkForCrossProcessIframes() {
+  @PlaywrightTest
+  void shouldWorkForCrossProcessIframes(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
     ElementHandle elementHandle = page.querySelector("#frame1");
@@ -41,8 +41,8 @@ public class TestElementHandleContentFrame extends TestBase {
     assertEquals(page.frames().get(1), frame);
   }
 
-  @Test
-  void shouldWorkForCrossFrameEvaluations() {
+  @PlaywrightTest
+  void shouldWorkForCrossFrameEvaluations(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
@@ -52,8 +52,8 @@ public class TestElementHandleContentFrame extends TestBase {
     assertEquals(frame, elementHandle.contentFrame());
   }
 
-  @Test
-  void shouldReturnNullForNonIframes() {
+  @PlaywrightTest
+  void shouldReturnNullForNonIframes(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
@@ -63,8 +63,8 @@ public class TestElementHandleContentFrame extends TestBase {
     assertNull(elementHandle.contentFrame());
   }
 
-  @Test
-  void shouldReturnNullForDocumentDocumentElement() {
+  @PlaywrightTest
+  void shouldReturnNullForDocumentDocumentElement(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);

@@ -16,23 +16,20 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.BoundingBox;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.Map;
 
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleBoundingBox extends TestBase {
+public class TestElementHandleBoundingBox {
 
-  static boolean isFirefoxHeaded() {
-    return isFirefox() && isHeaded();
-  }
-
-  @Test
-  @DisabledIf(value="isFirefoxHeaded", disabledReason="fail")
-  void shouldWork() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, headed = true, reason = "fail")
+  void shouldWork(Page page, Server server) {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     ElementHandle elementHandle = page.querySelector(".box:nth-of-type(13)");
@@ -43,8 +40,8 @@ public class TestElementHandleBoundingBox extends TestBase {
     assertEquals(50, box.height);
   }
 
-  @Test
-  void shouldHandleNestedFrames() {
+  @PlaywrightTest
+  void shouldHandleNestedFrames(Page page, Server server) {
     page.setViewportSize(616, 500);
     page.navigate(server.PREFIX + "/frames/nested-frames.html");
     Frame nestedFrame = page.frame("dos");
@@ -57,15 +54,15 @@ public class TestElementHandleBoundingBox extends TestBase {
     assertEquals(18, box.height);
   }
 
-  @Test
-  void shouldReturnNullForInvisibleElements() {
+  @PlaywrightTest
+  void shouldReturnNullForInvisibleElements(Page page) {
     page.setContent("<div style='display:none'>hi</div>");
     ElementHandle element = page.querySelector("div");
     assertNull(element.boundingBox());
   }
 
-  @Test
-  void shouldForceALayout() {
+  @PlaywrightTest
+  void shouldForceALayout(Page page) {
     page.setViewportSize(500, 500);
     page.setContent("<div style='width: 100px; height: 100px'>hello</div>");
     ElementHandle elementHandle = page.querySelector("div");
@@ -77,8 +74,8 @@ public class TestElementHandleBoundingBox extends TestBase {
     assertEquals(box.height, 200);
   }
 
-  @Test
-  void shouldWorkWithSVGNodes() {
+  @PlaywrightTest
+  void shouldWorkWithSVGNodes(Page page) {
     page.setContent("<svg xmlns='http://www.w3.org/2000/svg' width='500' height='500'>\n" +
       "<rect id='theRect' x='30' y='50' width='200' height='300'></rect>\n" +
       "</svg>");
@@ -95,9 +92,9 @@ public class TestElementHandleBoundingBox extends TestBase {
     assertEquals(webBoundingBox.get("height").doubleValue(), pwBoundingBox.height);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
-  void shouldWorkWithPageScale() {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = FIREFOX, reason = "skip")
+  void shouldWorkWithPageScale(Browser browser, Server server) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400).setIsMobile(true));
     Page page = context.newPage();
@@ -126,8 +123,8 @@ public class TestElementHandleBoundingBox extends TestBase {
     return Math.round((Double) o);
   }
 
-  @Test
-  void shouldWorkWhenInlineBoxChildIsOutsideOfViewport() {
+  @PlaywrightTest
+  void shouldWorkWhenInlineBoxChildIsOutsideOfViewport(Page page) {
     page.setContent("<style>\n" +
       "i {\n" +
       "  position: absolute;\n" +

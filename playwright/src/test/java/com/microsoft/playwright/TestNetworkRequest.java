@@ -16,9 +16,11 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HttpHeader;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.OutputStreamWriter;
 import java.util.*;
@@ -27,11 +29,14 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.*;
+import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
+import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
+import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestNetworkRequest extends TestBase {
-  @Test
-  void shouldWorkForMainFrameNavigationRequest() {
+public class TestNetworkRequest {
+  @PlaywrightTest
+  void shouldWorkForMainFrameNavigationRequest(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
     page.navigate(server.EMPTY_PAGE);
@@ -39,8 +44,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(page.mainFrame(), requests.get(0).frame());
   }
 
-  @Test
-  void shouldWorkForSubframeNavigationRequest() {
+  @PlaywrightTest
+  void shouldWorkForSubframeNavigationRequest(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
@@ -49,8 +54,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(page.frames().get(1), requests.get(0).frame());
   }
 
-  @Test
-  void shouldWorkForFetchRequests() {
+  @PlaywrightTest
+  void shouldWorkForFetchRequests(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
@@ -59,8 +64,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(page.mainFrame(), requests.get(0).frame());
   }
 
-  @Test
-  void shouldWorkForARedirect() {
+  @PlaywrightTest
+  void shouldWorkForARedirect(Page page, Server server) {
     server.setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
@@ -71,8 +76,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(server.PREFIX + "/empty.html", requests.get(1).url());
   }
 
-  @Test
-  void shouldWorkAllHeadersInsideRoute() {
+  @PlaywrightTest
+  void shouldWorkAllHeadersInsideRoute(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.route("**", route -> {
       assertTrue(route.request().allHeaders().get("accept").length() > 5);
@@ -84,8 +89,8 @@ public class TestNetworkRequest extends TestBase {
   }
 
   // https://github.com/microsoft/playwright/issues/3993
-  @Test
-  void shouldNotWorkForARedirectAndInterception() {
+  @PlaywrightTest
+  void shouldNotWorkForARedirectAndInterception(Page page, Server server) {
     server.setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
     page.route("**", route -> {
@@ -100,19 +105,15 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(server.PREFIX + "/foo.html", requests.get(0).url());
   }
 
-  @Test
-  void shouldReturnHeaders() {
+  @PlaywrightTest
+  void shouldReturnHeaders(Page page, Server server, BrowserName browserName) {
     Response response = page.navigate(server.EMPTY_PAGE);
-    if (isChromium())
+    if (browserName == CHROMIUM)
       assertTrue(response.request().headers().get("user-agent").contains("Chrome"));
-    else if (isFirefox())
+    else if (browserName == FIREFOX)
       assertTrue(response.request().headers().get("user-agent").contains("Firefox"));
-    else if (isWebKit())
+    else if (browserName == WEBKIT)
       assertTrue(response.request().headers().get("user-agent").contains("WebKit"));
-  }
-
-  static boolean isWebKitWindows() {
-    return isWebKit() && getOS() == Utils.OS.WINDOWS;
   }
 
   // HTTP server in java does not preserve headers order.
@@ -144,8 +145,8 @@ public class TestNetworkRequest extends TestBase {
     return serverHeaders;
   }
 
-  static List<HttpHeader> adjustServerHeaders(List<HttpHeader> headers) {
-    if (isFirefox()) {
+  static List<HttpHeader> adjustServerHeaders(BrowserName browserName, List<HttpHeader> headers) {
+    if (browserName == FIREFOX) {
       for (Iterator<HttpHeader> it = headers.iterator(); it.hasNext(); ) {
         if ("priority".equals(it.next().name)) {
           it.remove();
@@ -155,9 +156,9 @@ public class TestNetworkRequest extends TestBase {
     return headers;
   }
 
-  @Test
-  @DisabledIf(value="isWebKitWindows", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
-  void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, os = OS.WINDOWS, reason = "Flaky, see https://github.com/microsoft/playwright/issues/6690")
+  void shouldGetTheSameHeadersAsTheServer(Page page, Server server, BrowserName browserName) throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -167,14 +168,14 @@ public class TestNetworkRequest extends TestBase {
     });
     Response response = page.navigate(server.PREFIX + "/empty.html");
 
-    List<HttpHeader> expectedHeaders = adjustServerHeaders(normalizeServerHeaders(serverRequest.get().headers));
+    List<HttpHeader> expectedHeaders = adjustServerHeaders(browserName, normalizeServerHeaders(serverRequest.get().headers));
     List<HttpHeader> allHeaders = normalizeAllHeaders(response.request().allHeaders());
     assertJsonEquals(expectedHeaders, allHeaders);
   }
 
-  @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
-  void shouldGetTheSameHeadersAsTheServerCORP() throws ExecutionException, InterruptedException {
+  @PlaywrightTest
+  @DisabledOnBrowser(value = WEBKIT, reason = "fail")
+  void shouldGetTheSameHeadersAsTheServerCORP(Page page, Server server, BrowserName browserName) throws ExecutionException, InterruptedException {
     page.navigate(server.PREFIX + "/empty.html");
     Future<Server.Request> serverRequest = server.futureRequest("/something");
     server.setRoute("/something", exchange -> {
@@ -191,13 +192,13 @@ public class TestNetworkRequest extends TestBase {
           "}", server.CROSS_PROCESS_PREFIX + "/something");
         assertEquals("done", text);
       });
-    List<HttpHeader> expectedHeaders = adjustServerHeaders(normalizeServerHeaders(serverRequest.get().headers));
+    List<HttpHeader> expectedHeaders = adjustServerHeaders(browserName, normalizeServerHeaders(serverRequest.get().headers));
     List<HttpHeader> allHeaders = normalizeAllHeaders(response.request().allHeaders());
     assertJsonEquals(expectedHeaders, allHeaders);
   }
 
-  @Test
-  void shouldReturnPostData() {
+  @PlaywrightTest
+  void shouldReturnPostData(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -210,8 +211,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals("{\"foo\":\"bar\"}", request[0].postData());
   }
 
-  @Test
-  void shouldWorkWithBinaryPostData() {
+  @PlaywrightTest
+  void shouldWorkWithBinaryPostData(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -230,8 +231,8 @@ public class TestNetworkRequest extends TestBase {
     }
   }
 
-  @Test
-  void shouldWorkWithBinaryPostDataAndInterception() {
+  @PlaywrightTest
+  void shouldWorkWithBinaryPostDataAndInterception(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     server.setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -251,8 +252,8 @@ public class TestNetworkRequest extends TestBase {
     }
   }
 
-  @Test
-  void shouldBeUndefinedWhenThereIsNoPostData() {
+  @PlaywrightTest
+  void shouldBeUndefinedWhenThereIsNoPostData(Page page, Server server) {
     Response response = page.navigate(server.EMPTY_PAGE);
     assertNull(response.request().postData());
   }
@@ -265,8 +266,8 @@ public class TestNetworkRequest extends TestBase {
     // Not supported in Java.
   }
 
-  @Test
-  void shouldReturnEventSource() {
+  @PlaywrightTest
+  void shouldReturnEventSource(Page page, Server server) {
     // 1. Setup server-sent events on server that immediately sends a message to the client.
     server.setRoute("/sse", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/event-stream");
@@ -292,8 +293,8 @@ public class TestNetworkRequest extends TestBase {
     assertEquals("eventsource", requests.get(0).resourceType());
   }
 
-  @Test
-  void shouldReturnNavigationBit() {
+  @PlaywrightTest
+  void shouldReturnNavigationBit(Page page, Server server) {
     Map<String, Request> requests = new HashMap<>();
     page.onRequest(request -> {
       String name = request.url();
@@ -312,8 +313,8 @@ public class TestNetworkRequest extends TestBase {
     assertFalse(requests.get("style.css").isNavigationRequest());
   }
 
-  @Test
-  void shouldReturnNavigationBitWhenNavigatingToImage() {
+  @PlaywrightTest
+  void shouldReturnNavigationBitWhenNavigatingToImage(Page page, Server server) {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
     page.navigate(server.PREFIX + "/pptr.png");

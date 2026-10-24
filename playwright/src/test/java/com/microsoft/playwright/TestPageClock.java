@@ -1,9 +1,7 @@
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.FixtureTest;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -15,8 +13,6 @@ import java.util.Date;
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
-@FixtureTest
-@UsePlaywright
 public class TestPageClock {
   private ArrayList<Object> calls;
 
@@ -34,7 +30,7 @@ public class TestPageClock {
     page.clock().pauseAt(1000);
   }
 
-  @Test
+  @PlaywrightTest
   void runForTriggersImmediatelyWithoutSpecifiedDelay(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setTimeout(window.stub)");
@@ -42,7 +38,7 @@ public class TestPageClock {
     assertEquals(1, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForDoesNotTriggerWithoutSufficientDelay(Page page) {
     setupRunForTest(page);
     // Trigger the stub with a delay
@@ -51,7 +47,7 @@ public class TestPageClock {
     assertEquals(0, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void  runForTriggersAfterSufficientDelay(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setTimeout(window.stub, 100)");
@@ -59,7 +55,7 @@ public class TestPageClock {
     assertEquals(1, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void  runForTriggersSimultaneousTimers(Page page) {
     setupRunForTest(page);
     page.evaluate("() => { setTimeout(window.stub, 100);" +
@@ -68,7 +64,7 @@ public class TestPageClock {
     assertEquals(2, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void  runForTriggersMultipleSimultaneousTimers(Page page) {
     setupRunForTest(page);
     page.evaluate("() => { setTimeout(window.stub, 100);" +
@@ -79,7 +75,7 @@ public class TestPageClock {
     assertEquals(4, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void  runForWaitsAfterSetTimeoutWasCalled(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setTimeout(window.stub, 150)");
@@ -89,7 +85,7 @@ public class TestPageClock {
     assertEquals(1, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForTriggersEventWhenSomeThrow(Page page) {
     setupRunForTest(page);
     page.evaluate("() => {\n" +
@@ -100,7 +96,7 @@ public class TestPageClock {
     assertEquals(1, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForCreatesUpdatedDateWhileTicking(Page page) {
     setupRunForTest(page);
     page.clock().setSystemTime(0);
@@ -109,7 +105,7 @@ public class TestPageClock {
     assertJsonEquals("[[10],[20],[30],[40],[50],[60],[70],[80],[90],[100]]", calls);
   }
 
-  @Test
+  @PlaywrightTest
   void runForPasses8Seconds(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setInterval(window.stub, 4000)");
@@ -117,7 +113,7 @@ public class TestPageClock {
     assertEquals(2, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForPasses1Minute(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setInterval(window.stub, 6000)");
@@ -125,7 +121,7 @@ public class TestPageClock {
     assertEquals(10, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForPasses2Hours34MinutesAnd10Seconds(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setInterval(window.stub, 10000)");
@@ -133,7 +129,7 @@ public class TestPageClock {
     assertEquals(925, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForThrowsForInvalidFormat(Page page) {
     setupRunForTest(page);
     page.evaluate("() => setInterval(window.stub, 10000)");
@@ -141,7 +137,7 @@ public class TestPageClock {
     assertEquals(0, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void runForReturnsTheCurrentNowValue(Page page) {
     setupRunForTest(page);
     page.clock().setSystemTime(0);
@@ -155,7 +151,7 @@ public class TestPageClock {
     page.clock().pauseAt(1000);
   }
 
-  @Test
+  @PlaywrightTest
   void fastForwardIgnoresTimersWhichWouldntBeRun(Page page) {
     setupFastForwardTest(page);
     page.evaluate("() => setTimeout(() => { window.stub('should not be logged'); }, 1000)");
@@ -163,7 +159,7 @@ public class TestPageClock {
     assertEquals(0, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void fastForwardPushesBackExecutionTimeForSkippedTimers(Page page) {
     setupFastForwardTest(page);
     page.evaluate("() => setTimeout(() => { window.stub(Date.now()); }, 1000)");
@@ -172,7 +168,7 @@ public class TestPageClock {
     assertEquals(1000 + 2000, ((Object[])calls.get(0))[0]);
   }
 
-  @Test
+  @PlaywrightTest
   void fastForwardSupportsStringTimeArguments(Page page) {
     setupFastForwardTest(page);
     page.evaluate("() => setTimeout(() => { window.stub(Date.now()); }, 100000)");
@@ -186,14 +182,14 @@ public class TestPageClock {
     page.clock().pauseAt(1000);
   }
 
-  @Test
+  @PlaywrightTest
   void setsInitialTimestamp(Page page) {
     setupStubTimers(page);
     page.clock().setSystemTime(1400);
     assertEquals(1400, page.evaluate("() => Date.now()"));
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalSetTimeout(Page page) {
     setupStubTimers(page);
     page.evaluate("() => setTimeout(window.stub, 1000)");
@@ -201,14 +197,14 @@ public class TestPageClock {
     assertEquals(1, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void globalFakeSetTimeoutShouldReturnId(Page page) {
     setupStubTimers(page);
     Double to = (Double) page.evaluate("() => setTimeout(window.stub, 1000)");
     assertTrue(to > 0);
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalClearTimeout(Page page) {
     setupStubTimers(page);
     page.evaluate("() => { const to = setTimeout(window.stub, 1000); clearTimeout(to); }");
@@ -216,7 +212,7 @@ public class TestPageClock {
     assertEquals(0, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalSetInterval(Page page) {
     setupStubTimers(page);
     page.evaluate("() => setInterval(window.stub, 500)");
@@ -224,7 +220,7 @@ public class TestPageClock {
     assertEquals(2, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalClearInterval(Page page) {
     setupStubTimers(page);
     page.evaluate("() => { const to = setInterval(window.stub, 500); clearInterval(to); }");
@@ -232,23 +228,23 @@ public class TestPageClock {
     assertEquals(0, calls.size());
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalPerformanceNow(Page page) {
   }
 
-  @Test
+  @PlaywrightTest
   void fakesDateConstructor(Page page) {
     setupStubTimers(page);
     Integer now = (Integer) page.evaluate("() => new Date().getTime()");
     assertEquals(1000, now);
   }
 
-  @Test
+  @PlaywrightTest
   void replacesGlobalPerformanceTimeOrigin(Page page) {
   }
 
 
-  @Test
+  @PlaywrightTest
   void shouldTickAfterPopup(Page page) throws ParseException {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     Date now = new SimpleDateFormat("yyyy-MM-dd").parse("2015-09-25");
@@ -263,7 +259,7 @@ public class TestPageClock {
     assertEquals(now.getTime() + 1000, popupTimeAfter);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldTickBeforePopup(Page page) throws ParseException {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     Date now = new SimpleDateFormat("yyyy-MM-dd").parse("2015-09-25");
@@ -276,7 +272,7 @@ public class TestPageClock {
     assertEquals(now.getTime() + 1000, popupTime);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldRunTimeBeforePopup(Page page, Server server) {
     server.setRoute("/popup.html", exchange -> {
       exchange.getResponseHeaders().set("Content-type", "text/html");
@@ -295,7 +291,7 @@ public class TestPageClock {
     assertTrue(popupTime >= 2000, "popupTime = " + popupTime);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldNotRunTimeBeforePopupOnPause(Page page, Server server) {
     server.setRoute("/popup.html", exchange -> {
       exchange.getResponseHeaders().set("Content-type", "text/html");
@@ -316,14 +312,14 @@ public class TestPageClock {
     assertEquals(1000, popupTime);
   }
 
-  @Test
+  @PlaywrightTest
   void setFixedTimeDoesNotFakeMethods(Page page) {
     page.clock().setFixedTime(0);
     // Should not stall.
     page.evaluate("() => new Promise(f => setTimeout(f, 1))");
   }
 
-  @Test
+  @PlaywrightTest
   void setFixedTimeAllowsSettingTimeMultipleTimes(Page page) {
     page.clock().setFixedTime(100);
     assertEquals(100, page.evaluate("() => Date.now()"));
@@ -331,7 +327,7 @@ public class TestPageClock {
     assertEquals(200, page.evaluate("() => Date.now()"));
   }
 
-  @Test
+  @PlaywrightTest
   void setFixedTimeFixedTimeIsNotAffectedByClockManipulation(Page page) {
     page.clock().setFixedTime(100);
     assertEquals(100, page.evaluate("() => Date.now()"));
@@ -339,7 +335,7 @@ public class TestPageClock {
     assertEquals(100, page.evaluate("() => Date.now()"));
   }
 
-  @Test
+  @PlaywrightTest
   void setFixedTimeAllowsInstallingFakeTimersAfterSettingTime(Page page) {
     page.clock().setFixedTime(100);
     assertEquals(100, page.evaluate("() => Date.now()"));
@@ -350,7 +346,7 @@ public class TestPageClock {
     assertEquals(200, ((Object[]) calls.get(0))[0]);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldProgressTime(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -359,7 +355,7 @@ public class TestPageClock {
     assertTrue(now >= 1000 && now <= 2000);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldRunFor(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -368,7 +364,7 @@ public class TestPageClock {
     assertTrue(now >= 10000 && now <= 11000);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldFastForward(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -377,7 +373,7 @@ public class TestPageClock {
     assertTrue(now >= 10000 && now <= 11000);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldFastForwardTo(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -386,7 +382,7 @@ public class TestPageClock {
     assertTrue(now >= 10000 && now <= 11000);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldPause(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -397,7 +393,7 @@ public class TestPageClock {
     assertTrue(now >= 0 && now <= 1000);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldPauseAndFastForward(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -407,7 +403,7 @@ public class TestPageClock {
     assertEquals(2000, now);
   }
 
-  @Test
+  @PlaywrightTest
   void whileRunningShouldSetSystemTimeOnPause(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -416,7 +412,7 @@ public class TestPageClock {
     assertEquals(1000, now);
   }
 
-  @Test
+  @PlaywrightTest
   void whileOnPauseFastForwardShouldNotRunNestedImmediate(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -430,7 +426,7 @@ public class TestPageClock {
     assertEquals("inner", ((Object[]) calls.get(1))[0]);
   }
 
-  @Test
+  @PlaywrightTest
   void whileOnPauseRunForShouldNotRunNestedImmediate(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -444,7 +440,7 @@ public class TestPageClock {
     assertEquals("inner", ((Object[]) calls.get(1))[0]);
   }
 
-  @Test
+  @PlaywrightTest
   void whileOnPauseRunForShouldNotRunNestedImmediateFromMicrotask(Page page) {
     page.clock().install(new Clock.InstallOptions().setTime(0));
     page.navigate("data:text/html,");
@@ -458,7 +454,7 @@ public class TestPageClock {
     assertEquals("inner", ((Object[]) calls.get(1))[0]);
   }
 
-  @Test
+  @PlaywrightTest
   void shouldThrowForInvalidDate(Page page) {
     Exception exception1 = assertThrows(PlaywrightException.class, () -> page.clock().setSystemTime("invalid"));
     assertTrue(exception1.getMessage().contains("Invalid date: invalid"), exception1.getMessage());

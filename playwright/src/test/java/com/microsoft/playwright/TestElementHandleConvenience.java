@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleConvenience extends TestBase {
-  @Test
-  void shouldHaveANicePreview() {
+public class TestElementHandleConvenience {
+  @PlaywrightTest
+  void shouldHaveANicePreview(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle outer = page.querySelector("#outer");
     ElementHandle inner = page.querySelector("#inner");
@@ -37,8 +37,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("JSHandle@<input checked id=\"check\" foo=\"bar\"\" type=\"checkbox\"/>", check.toString());
   }
 
-  @Test
-  void shouldHaveANicePreviewForNonAsciiAttributesChildren() {
+  @PlaywrightTest
+  void shouldHaveANicePreviewForNonAsciiAttributesChildren(Page page, BrowserContext context, Server server) {
     page.navigate(server.EMPTY_PAGE);
     String text = String.join("", Collections.nCopies(100, "😛"));
     page.setContent("<div title='" + text + "'>" + text + "</div>");
@@ -48,8 +48,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("JSHandle@<div title=\"😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛\">😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛…</div>", handle.toString());
   }
 
-  @Test
-  void getAttributeShouldWork() {
+  @PlaywrightTest
+  void getAttributeShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#outer");
     assertEquals("value", handle.getAttribute("name"));
@@ -58,8 +58,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertNull(page.getAttribute("#outer", "foo"));
   }
 
-  @Test
-  void inputValueShouldWork() {
+  @PlaywrightTest
+  void inputValueShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
 
     page.fill("#textarea", "text value");
@@ -78,24 +78,24 @@ public class TestElementHandleConvenience extends TestBase {
     assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
   }
 
-  @Test
-  void innerHTMLShouldWork() {
+  @PlaywrightTest
+  void innerHTMLShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#outer");
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", handle.innerHTML());
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", page.innerHTML("#outer"));
   }
 
-  @Test
-  void innerTextShouldWork() {
+  @PlaywrightTest
+  void innerTextShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#inner");
     assertEquals("Text, more text", handle.innerText());
     assertEquals("Text, more text", page.innerText("#inner"));
   }
 
-  @Test
-  void innerTextShouldThrow() {
+  @PlaywrightTest
+  void innerTextShouldThrow(Page page) {
     page.setContent("<svg>text</svg>");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.innerText("svg"));
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
@@ -104,16 +104,16 @@ public class TestElementHandleConvenience extends TestBase {
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
   }
 
-  @Test
-  void textContentShouldWork() {
+  @PlaywrightTest
+  void textContentShouldWork(Page page, Server server) {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#inner");
     assertEquals("Text,\nmore text", handle.textContent());
     assertEquals("Text,\nmore text", page.textContent("#inner"));
   }
 
-  @Test
-  void textContentShouldBeAtomic() {
+  @PlaywrightTest
+  void textContentShouldBeAtomic(Page page, Playwright playwright) {
     String createDummySelector = "{\n" +
       "  query(root, selector) {\n" +
       "    const result = root.querySelector(selector);\n" +
@@ -135,8 +135,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').textContent"));
   }
 
-  @Test
-  void innerTextShouldBeAtomic() {
+  @PlaywrightTest
+  void innerTextShouldBeAtomic(Page page, Playwright playwright) {
     String createDummySelector = "{\n" +
       "  query(root, selector) {\n" +
       "    const result = root.querySelector(selector);\n" +
@@ -158,8 +158,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').innerText"));
   }
 
-  @Test
-  void innerHTMLShouldBeAtomic() {
+  @PlaywrightTest
+  void innerHTMLShouldBeAtomic(Page page, Playwright playwright) {
     String createDummySelector = "{\n" +
       "  query(root, selector) {\n" +
       "    const result = root.querySelector(selector);\n" +
@@ -181,8 +181,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').innerHTML"));
   }
 
-  @Test
-  void getAttributeShouldBeAtomic() {
+  @PlaywrightTest
+  void getAttributeShouldBeAtomic(Page page, Playwright playwright) {
     String createDummySelector = "{\n" +
       "  query(root, selector) {\n" +
       "    const result = root.querySelector(selector);\n" +
@@ -204,8 +204,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("modified", page.evaluate("() => document.querySelector('div').getAttribute('foo')"));
   }
 
-  @Test
-  void isVisibleAndIsHiddenShouldWork() {
+  @PlaywrightTest
+  void isVisibleAndIsHiddenShouldWork(Page page) {
     page.setContent("<div>Hi</div><span></span>");
     ElementHandle div = page.querySelector("div");
     assertTrue(div.isVisible());
@@ -219,8 +219,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertTrue(page.isHidden("span"));
   }
 
-  @Test
-  void isEnabledAndIsDisabledShouldWork() {
+  @PlaywrightTest
+  void isEnabledAndIsDisabledShouldWork(Page page) {
     page.setContent(" <button disabled>button1</button>\n" +
       "<button>button2</button>\n" +
       "<div>div</div>");
@@ -241,8 +241,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertFalse(page.isDisabled(":text('button2')"));
   }
 
-  @Test
-  void isEditableShouldWork() {
+  @PlaywrightTest
+  void isEditableShouldWork(Page page) {
     page.setContent("<input id=input1 disabled><textarea></textarea><input id=input2>");
     page.evalOnSelector("textarea", "t => t.readOnly = true");
     ElementHandle input1 = page.querySelector("#input1");
@@ -256,8 +256,8 @@ public class TestElementHandleConvenience extends TestBase {
     assertFalse(page.isEditable("textarea"));
   }
 
-  @Test
-  void isCheckedShouldWork() {
+  @PlaywrightTest
+  void isCheckedShouldWork(Page page) {
     page.setContent("<input type='checkbox' checked><div>Not a checkbox</div>");
     ElementHandle handle = page.querySelector("input");
     assertTrue(handle.isChecked());

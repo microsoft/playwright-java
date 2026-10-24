@@ -17,7 +17,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
-import org.junit.jupiter.api.Test;
+import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -26,9 +26,9 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestNetworkPostData extends TestBase {
-  @Test
-  void shouldReturnCorrectPostDataBufferForUtf8Body() {
+public class TestNetworkPostData {
+  @PlaywrightTest
+  void shouldReturnCorrectPostDataBufferForUtf8Body(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     String value = "baẞ";
     Request request = page.waitForRequest("**", () -> {
@@ -45,8 +45,8 @@ public class TestNetworkPostData extends TestBase {
     assertEquals(new Gson().toJson(value), request.postData());
   }
 
-  @Test
-  void shouldReturnPostDataWOContentType() {
+  @PlaywrightTest
+  void shouldReturnPostDataWOContentType(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**", () -> {
       page.evaluate("({url}) => {\n" +
@@ -65,8 +65,8 @@ public class TestNetworkPostData extends TestBase {
       // Thre is no postDataJSON() in java
   }
 
-  @Test
-  void shouldReturnPostDataForPUTRequests() {
+  @PlaywrightTest
+  void shouldReturnPostDataForPUTRequests(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**", () -> {
       page.evaluate("({url}) => {\n" +
