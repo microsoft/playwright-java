@@ -49,3 +49,6 @@ page/expect-with-snapshot           toHaveScreenshot() and toMatchSnapshot() are
 # Per test, found while porting.
 # page/page-wait-for-request
 WA-128      tests a RegExp made in another Node.js vm context; Java has no cross-context regular expressions.
+
+# library/proxy
+PR-001      Passes a number as proxy.server; the typed Java API cannot express it.

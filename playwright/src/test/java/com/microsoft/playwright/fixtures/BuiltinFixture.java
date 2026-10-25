@@ -65,11 +65,14 @@ final class BuiltinFixture<T> implements FixtureDefinition {
     worker(HttpsServer.class, resolver -> Server.createHttps(), Server::stop),
     worker(TestServer.class, resolver -> withHttpCache(TestServer.createHttp(assetsDir(), 0)), TestServer::stop),
     worker(HttpsTestServer.class, resolver -> withHttpCache(TestServer.createHttps(assetsDir(), 0)), TestServer::stop),
+    worker(ProxyServer.class, resolver -> ProxyServer.create(0), ProxyServer::stop),
+    worker(MockSocksServer.class, resolver -> MockSocksServer.create(0), MockSocksServer::close),
     // The test-scoped servers are the worker ones, reset before every test.
     test(Server.class, resolver -> reset(resolver.get(Server.class)), null),
     test(HttpsServer.class, resolver -> reset(resolver.get(HttpsServer.class)), null),
     test(TestServer.class, resolver -> reset(resolver.get(TestServer.class)), null),
     test(HttpsTestServer.class, resolver -> reset(resolver.get(HttpsTestServer.class)), null),
+    test(ProxyServer.class, resolver -> reset(resolver.get(ProxyServer.class)), null),
     test(TestInfo.class, resolver -> new TestInfo(resolver.extensionContext(), resolver.get(BrowserName.class)), TestInfo::close),
     test(Browser.NewContextOptions.class, resolver -> new Browser.NewContextOptions(), null),
     test(BrowserContext.class,
@@ -96,6 +99,11 @@ final class BuiltinFixture<T> implements FixtureDefinition {
   }
 
   private static <S extends TestServer> S reset(S server) {
+    server.reset();
+    return server;
+  }
+
+  private static ProxyServer reset(ProxyServer server) {
     server.reset();
     return server;
   }
