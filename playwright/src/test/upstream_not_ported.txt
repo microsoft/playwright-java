@@ -57,3 +57,7 @@ EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sy
 # page/page-emulate-media
 EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
 EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
+# page/page-aria-snapshot-json
+page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
+# page/page-autowaiting-basic
+AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
