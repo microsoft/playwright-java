@@ -122,3 +122,47 @@ EV-137      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainCont
 # page/expect-boolean
 EX-068      Checks the JavaScript runtime type error of expect(page).toBeOK(); Java is typed and PageAssertions has no isOK().
 EX-069      Checks the JavaScript runtime type error of expect(promise).toBeOK(); Java is typed and has no such call.
+# page/page-network-request
+NE-016      Request.postDataJSON() is not in the Java API.
+NE-017      Request.postDataJSON() is not in the Java API.
+NE-018      Request.postDataJSON() is not in the Java API.
+NE-019      Request.postDataJSON() is not in the Java API.
+# page/page-network-response
+NE-038      Response.json() is not in the Java API.
+NE-042      TODO harness: TestServer.Response.writeHead(status, statusMessage) does not take a custom status message.
+NE-043      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+NE-044      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+NE-045      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+# page/page-network-sizes
+NE-063      TODO harness: TestServer.Response does not frame the body in chunks when the route sets the Transfer-Encoding: chunked header itself.
+# page/page-network-idle
+NE-071      TODO harness: the test runs a blocking page call (goto with networkidle) while the test body makes other page calls (evaluate); the Java client is not thread safe (Connection.processOneMessage), so Utils.async plus an inline call fails with "Object doesn't exist: request@..." (Python uses sync_gather).
+NE-072      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-073      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-074      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-075      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-076      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-077      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-078      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-080      TODO harness: same as NE-071, page.setContent with networkidle runs while the test body calls page.waitForTimeout and page.evaluate.
+# page/network-post-data
+NE-108      Request.postDataJSON() is not in the Java API.
+NE-109      Request.postDataJSON() is not in the Java API.
+NE-110      Request.postDataJSON() is not in the Java API.
+NE-111      Request.postDataJSON() is not in the Java API.
+NE-113      Request.postDataJSON() is not in the Java API.
+# page/page-set-extra-http-headers
+NE-117      The Java API takes a Map<String, String>, so a header value that is not a string can not be passed.
+# page/page-event-request
+NE-095      Request.serviceWorker() is not in the Java API.
+NE-096      Request.serviceWorker() is not in the Java API.
+NE-097      Request.serviceWorker() is not in the Java API.
+NE-098      Request.serviceWorker() is not in the Java API.
+# page/page-basic
+PA-019      Iterates over the properties of the Node.js Page object with for...in and Symbol.iterator.
+# page/page-set-content
+PA-034      TODO harness: page.goto() runs with Utils.async while the test thread calls page.content(); the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: response@...".
+PA-036      TODO harness: needs toImpl(page) to tamper with console.debug in the utility world of the driver.
+PA-037      TODO harness: needs toImpl(page) to replace document.close in the utility world of the driver.
+# page/page-event-popup
+PO-005      TODO harness: page.evaluate() blocks on the alert until the dialog is dismissed, so it runs with Utils.async while the test thread dismisses the dialog; the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: dialog@..." or times out.
