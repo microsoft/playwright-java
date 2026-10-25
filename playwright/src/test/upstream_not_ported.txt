@@ -52,3 +52,8 @@ WA-128      tests a RegExp made in another Node.js vm context; Java has no cross
 
 # library/proxy
 PR-001      Passes a number as proxy.server; the typed Java API cannot express it.
+# page/elementhandle-screenshot
+EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sync.read) to compare a webp and a png screenshot.
+# page/page-emulate-media
+EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
+EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
