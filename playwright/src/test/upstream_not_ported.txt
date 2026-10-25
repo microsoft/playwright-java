@@ -166,3 +166,17 @@ PA-036      TODO harness: needs toImpl(page) to tamper with console.debug in the
 PA-037      TODO harness: needs toImpl(page) to replace document.close in the utility world of the driver.
 # page/page-event-popup
 PO-005      TODO harness: page.evaluate() blocks on the alert until the dialog is dismissed, so it runs with Utils.async while the test thread dismisses the dialog; the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: dialog@..." or times out.
+# page/page-select-option
+SO-024      passes numbers and a string index where Java is statically typed; those calls do not compile.
+# page/page-screenshot
+SS-019      TODO harness: needs utils.isLosslessWebp of the Node.js package, to tell lossless from lossy webp.
+SS-020      TODO harness: needs utils.decodeWebp of the Node.js package, to read the pixels of a webp screenshot.
+SS-055      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it is not in the Java API.
+SS-056      TODO harness: needs comparePNGs
+SS-057      TODO harness: needs comparePNGs
+SS-095      TODO harness: needs comparePNGs
+SS-066      expect(page).toHaveScreenshot() is not in the Java API.
+SS-067      expect(page).toHaveScreenshot() is not in the Java API.
+# page/page-wait-for-function
+WA-006      Passes the polling strategy mutation as a string; the polling option is a number of milliseconds in Java.
+WA-012      Passes the polling strategy unknown as a string; the polling option is a number of milliseconds in Java.
