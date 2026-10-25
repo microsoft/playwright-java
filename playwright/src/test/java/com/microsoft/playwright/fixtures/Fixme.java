@@ -32,7 +32,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Fixme {
-  /** Why the test fails, starting with {@code java:} for a client gap or {@code harness:} for a missing test utility. */
+  /**
+   * Why the test fails, starting with {@code java:} for a client gap, {@code harness:} for a
+   * missing test utility or {@code driver:} for an upstream change the bundled driver lacks.
+   */
   String value();
 
   /** Only expect the failure in these browsers; empty means all. */

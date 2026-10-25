@@ -14,10 +14,12 @@ of you, never from memory of what the test does.
 does not have, for any reason: not a browser channel, not a CI image, not an operating system,
 not flakiness. A port that fails shows a bug in the Java client, the driver, the test harness or
 the environment: first re-read the upstream test and check that the port is faithful, then
-report it with the evidence. The one allowed mark is
-`@Fixme("java: <reason>")` (or `harness: <reason>`) for a bug or gap of the Java client or of the
-harness that is not fixed yet; the test still runs, its failure is reported as skipped with the
-reason, and it fails once it starts to pass so the mark gets removed. `@Fixme(value = "...",
+report it with the evidence. The one allowed mark is `@Fixme("java: <reason>")` for a bug or gap
+of the Java client that is not fixed yet, `@Fixme("harness: <reason>")` for a missing piece of
+the test harness, or `@Fixme("driver: <reason>")` when the upstream test is newer than the driver
+this repo bundles (the upstream checkout is ahead of the driver; name the upstream commit or PR
+that the driver lacks). The test still runs, its failure is reported as skipped with the reason,
+and it fails once it starts to pass so the mark gets removed. `@Fixme(value = "...",
 browsers = WEBKIT)` limits the expectation to some browsers. A test that fails only sometimes is
 reported as flaky, not marked.
 
@@ -92,6 +94,14 @@ by type. The upstream fixtures map to:
 | `attachFrame`, `detachFrame`, `verifyViewport`, `expectedSSLError`, `chromiumVersionLessThan`, `rafraf`, `roundBox`, `unshift` | the same names in `Utils` (static import) |
 | `expect(received).toContainYaml(expected)` | `expectToContainYaml(received, expected)` (`Utils`) |
 | `expect(buffer).toMatchSnapshot('x.png')`, `comparePNGs` | `testInfo.expectToMatchSnapshot(buffer, "x.png")`; `comparePNGs` is a `TODO harness` |
+
+Upstream's `browserType.launch(options)` and `browserType.launchPersistentContext(dir, options)`
+add the project's launch options (headless, channel) to the given ones. In Java, build the
+options on `Env.launchOptions()` or `Env.launchPersistentContextOptions()`:
+`browserType.launch({ proxy: { server } })` is
+`browserType.launch(Env.launchOptions().setProxy(server))`. `launchPersistent.launch(options)`
+does this itself. Never mutate the `BrowserType.LaunchOptions` fixture: it is shared by the
+worker.
 
 `TestServer` has the methods of upstream's `TestServer`: `PREFIX`, `CROSS_PROCESS_PREFIX`,
 `EMPTY_PAGE`, `HOST`, `HOSTNAME`, `PORT`, `setRoute`, `setRedirect`, `setAuth`, `setCSP`,

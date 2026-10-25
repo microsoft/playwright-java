@@ -188,7 +188,7 @@ public class TestProxy {
 
   @PlaywrightTest
   @DisplayName("PR-007 should authenticate")
-  @Fixme(value = "java: the bundled driver 1.64.1 sends the proxy credentials to the website auth challenge (microsoft/playwright#43326, fixed after 1.64.1)", browsers = {BrowserName.CHROMIUM, BrowserName.WEBKIT})
+  @Fixme(value = "driver: 1.64.1 sends the proxy credentials to the website auth challenge, fixed by microsoft/playwright#43326", browsers = {BrowserName.CHROMIUM, BrowserName.WEBKIT})
   void shouldAuthenticate(BrowserType browserType, TestServer server, BrowserName browserName) {
     server.setRoute("/target.html", (req, res) -> {
       String auth = req.headers.get("proxy-authorization");

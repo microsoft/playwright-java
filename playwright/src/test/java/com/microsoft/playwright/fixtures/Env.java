@@ -130,4 +130,12 @@ public final class Env {
     options.channel = channel();
     return options;
   }
+
+  /** Fresh persistent context launch options honoring {@link #headed()} and {@link #channel()}. */
+  public static BrowserType.LaunchPersistentContextOptions launchPersistentContextOptions() {
+    BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions();
+    options.headless = !headed();
+    options.channel = channel();
+    return options;
+  }
 }
