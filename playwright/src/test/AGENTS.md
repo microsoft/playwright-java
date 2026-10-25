@@ -50,7 +50,10 @@ The harness (fixtures, test server, helpers) is `com.microsoft.playwright.fixtur
   Characters that cannot be in an identifier are dropped (`should work with $eval` is
   `shouldWorkWithEval`, `toHaveCount pass` is `toHaveCountPass`); a title ending in a number
   keeps it (`should throw when not a checkbox 2` is `shouldThrowWhenNotACheckbox2`). Method
-  names must be unique in their class.
+  names must be unique in their class. The `@DisplayName` is the title of the `it()` call
+  itself, with its characters as in the source (`"EH-036 should work with <select/>"`, a `"`
+  escaped as `\"`): the registry shows the same title after the describe titles and a `›`,
+  with markdown escapes, which are not part of it.
 - `test.describe('toHaveCount', () => { ... })` is a `@Nested class ToHaveCount { ... }`, named
   after the describe title in PascalCase. A skip or `test.use()` at the top of the describe goes
   on the nested class (section 3).

@@ -21,7 +21,8 @@ its identifier (for example CH-001). Each of those tests must be either:
 
 - ported under playwright/src/test/java/com/microsoft/playwright/tests/{page,library}, in
   the class named after the upstream file, as a method annotated
-  @DisplayName("<identifier> <title>"); or
+  @DisplayName("<identifier> <title>") with the title of the it() call (the registry
+  shows it after the describe titles, markdown-escaped); or
 - listed in playwright/src/test/upstream_not_ported.txt, with the reason.
 
 Usage:
@@ -59,12 +60,25 @@ def java_file(spec):
     return JAVA_DIR / Path(spec).parent / (class_name(spec) + ".java")
 
 
+def registry_title(cell):
+    """The title of the it() call: the registry cell without the describe path, the
+    "(N copies)" suffix of a loop-declared test and the markdown escapes."""
+    title = re.sub(r" \*\(\d+ copies\)\*$", "", cell)
+    title = title.rsplit(" › ", 1)[-1]
+    return re.sub(r"\\([\\`*_\[\]<>|])", r"\1", title)
+
+
+def java_string(literal):
+    """The value of a Java string literal's contents."""
+    return re.sub(r'\\(["\\])', r"\1", literal)
+
+
 def read_registry():
     tests = []
     for line in REGISTRY.read_text().splitlines():
         match = ROW.match(line)
         if match:
-            tests.append((match.group(1), match.group(2), match.group(3)))
+            tests.append((match.group(1), match.group(2), registry_title(match.group(3))))
     return tests
 
 
@@ -130,9 +144,9 @@ def main():
             for path, display in ports:
                 if path != expected_file:
                     problems.append(f"{test_id} is in {path.relative_to(ROOT)}, expected {expected_file.relative_to(ROOT)}")
-                registry_title = f"{test_id} {title}"
-                if "{" not in title and display.replace('\\"', '"') != registry_title:
-                    problems.append(f"{test_id} title is {display!r}, registry has {registry_title!r}")
+                expected_title = f"{test_id} {title}"
+                if "{" not in title and java_string(display) != expected_title:
+                    problems.append(f"{test_id} title is {java_string(display)!r}, registry has {expected_title!r}")
         elif rule:
             counts[code][1] += 1
         else:
