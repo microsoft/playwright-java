@@ -659,9 +659,11 @@ public class TestServer implements AutoCloseable {
   /** The response of a route handler, shaped like Node's {@code ServerResponse}. */
   public static final class Response {
     public int statusCode = 200;
+    /** The reason phrase of the status line; the standard one when null. */
+    public String statusMessage;
     private final Request request;
     private final Connection connection;
-    private final Map<String, String> headers = new LinkedHashMap<>();
+    private final Map<String, List<String>> headers = new LinkedHashMap<>();
     private boolean headersSent;
     private boolean chunked;
     private boolean ended;
@@ -683,13 +685,19 @@ public class TestServer implements AutoCloseable {
 
     public synchronized void setHeader(String name, String value) {
       removeHeader(name);
-      headers.put(name, value);
+      headers.put(name, Collections.singletonList(value));
+    }
+
+    /** A header sent several times, one line per value, like an array value in Node. */
+    public synchronized void setHeader(String name, List<String> values) {
+      removeHeader(name);
+      headers.put(name, new ArrayList<>(values));
     }
 
     public synchronized String getHeader(String name) {
-      for (Map.Entry<String, String> entry : headers.entrySet()) {
+      for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
         if (entry.getKey().equalsIgnoreCase(name)) {
-          return entry.getValue();
+          return String.join(", ", entry.getValue());
         }
       }
       return null;
@@ -705,6 +713,9 @@ public class TestServer implements AutoCloseable {
 
     /** Status and headers as alternating names and values: {@code writeHead(200, "Content-Type", "text/html")}. */
     public void writeHead(int status, String... nameValuePairs) {
+      if (nameValuePairs.length % 2 != 0) {
+        throw new IllegalArgumentException("Header names and values must alternate; use writeHead(status, statusMessage, headers) for a status message");
+      }
       Map<String, String> map = new LinkedHashMap<>();
       for (int i = 0; i < nameValuePairs.length; i += 2) {
         map.put(nameValuePairs[i], nameValuePairs[i + 1]);
@@ -717,6 +728,12 @@ public class TestServer implements AutoCloseable {
       for (Map.Entry<String, String> entry : headers.entrySet()) {
         setHeader(entry.getKey(), entry.getValue());
       }
+    }
+
+    /** {@code res.writeHead(status, statusMessage, headers)} of Node. */
+    public synchronized void writeHead(int status, String statusMessage, Map<String, String> headers) {
+      this.statusMessage = statusMessage;
+      writeHead(status, headers);
     }
 
     public synchronized void flushHeaders() {
@@ -791,22 +808,28 @@ public class TestServer implements AutoCloseable {
       if (getHeader("Content-Length") == null && getHeader("Transfer-Encoding") == null) {
         if (contentLength != null || !hasBody()) {
           if (hasBody() || contentLength != null && contentLength > 0) {
-            headers.put("Content-Length", String.valueOf(contentLength == null ? 0 : contentLength));
+            setHeader("Content-Length", String.valueOf(contentLength == null ? 0 : contentLength));
           }
         } else {
-          headers.put("Transfer-Encoding", "chunked");
+          setHeader("Transfer-Encoding", "chunked");
           chunked = true;
         }
+      } else if ("chunked".equalsIgnoreCase(getHeader("Transfer-Encoding")) && hasBody()) {
+        // The route asked for chunked encoding itself; frame the body for it like Node does.
+        chunked = true;
       }
       if (getHeader("Date") == null) {
-        headers.put("Date", Instant.now().toString());
+        setHeader("Date", Instant.now().toString());
       }
       if (getHeader("Connection") == null) {
-        headers.put("Connection", keepAliveRequested() ? "keep-alive" : "close");
+        setHeader("Connection", keepAliveRequested() ? "keep-alive" : "close");
       }
-      StringBuilder head = new StringBuilder("HTTP/1.1 ").append(statusCode).append(' ').append(reasonPhrase(statusCode)).append("\r\n");
-      for (Map.Entry<String, String> entry : headers.entrySet()) {
-        head.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
+      String reason = statusMessage != null ? statusMessage : reasonPhrase(statusCode);
+      StringBuilder head = new StringBuilder("HTTP/1.1 ").append(statusCode).append(' ').append(reason).append("\r\n");
+      for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+        for (String value : entry.getValue()) {
+          head.append(entry.getKey()).append(": ").append(value).append("\r\n");
+        }
       }
       head.append("\r\n");
       connection.write(head.toString().getBytes(StandardCharsets.ISO_8859_1));
