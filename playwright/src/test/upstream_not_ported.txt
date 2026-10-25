@@ -81,3 +81,44 @@ CM-003      Passes the ConsoleMessage to Node.js util.inspect, which prints it t
 CM-020      page.pageErrors({ filter }) is not in the Java API; Page.pageErrors() has no options.
 # page/page-expose-function
 EF-006      Throws null from the exposed function; a Java callback can only throw an exception object, so there is no Java form of 'throw null'.
+# page/page-evaluate
+EV-011      Typed arrays (Int8Array, Float32Array, BigInt64Array, ...) are JavaScript-only values; a Java argument cannot be one and the Java client has no typed array result.
+EV-013      Passes a JavaScript Map as an argument; Java has no way to pass a Map that is not an object.
+EV-014      Passes a JavaScript Set as an argument; Java has no way to pass a Set that is not an object.
+EV-018      Passes object method shorthands as the function to evaluate; the JavaScript client stringifies a function, Java evaluates a string.
+EV-038      Passes more than one argument to evaluate(); the Java methods take at most one argument.
+EV-050      Passes a JavaScript function as the argument; Java cannot pass a function.
+EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
+EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
+EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
+# page/page-evaluate-callback
+EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
+EV-113      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-114      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-115      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-116      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-117      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-118      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-119      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-120      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-121      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-122      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-123      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-124      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-125      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-126      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-127      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-128      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-129      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-130      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-131      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-132      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-133      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-134      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+# page/page-evaluate-no-stall
+EV-135      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+EV-136      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+EV-137      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+# page/expect-boolean
+EX-068      Checks the JavaScript runtime type error of expect(page).toBeOK(); Java is typed and PageAssertions has no isOK().
+EX-069      Checks the JavaScript runtime type error of expect(promise).toBeOK(); Java is typed and has no such call.
