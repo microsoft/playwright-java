@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.fixtures;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 /**
  * Resolves the dependencies of a fixture while it is being created.
  */
@@ -29,4 +31,7 @@ interface FixtureResolver {
 
   /** The test instance a non-static {@link Fixture} method is invoked on. */
   Object testInstance(Class<?> declaringClass);
+
+  /** The JUnit context of the test invocation; only test-scoped fixtures have one. */
+  ExtensionContext extensionContext();
 }

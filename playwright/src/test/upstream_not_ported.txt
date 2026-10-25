@@ -1,0 +1,51 @@
+# Upstream tests that the Java port does not run, with the reason.
+#
+# The registry of upstream tests is upstream_registry.md, a copy of tests/registry.md in
+# microsoft/playwright. scripts/check_test_registry.py checks that every test in it is
+# ported under java/com/microsoft/playwright/tests or matches a rule here. One rule per
+# line: a selector, then the reason. A selector is a test identifier (CH-017), a subsystem
+# code (CG), or an upstream file glob without ".spec.ts" (library/unit/*). The checker
+# fails on a rule that matches no test, and on a test that is ported and also matches a
+# rule. A reason starting with "TODO harness:" names a test utility the harness does not
+# have yet; such a test is ported once it does.
+
+# Upstream internals, not the client API.
+library/unit/*                      Unit tests of upstream internals.
+library/events/*                    Tests the EventEmitter class of the Node.js client.
+library/channels                    Checks the object tree of the Node.js client through its internals.
+library/heap                        Measures the heap of the Node.js client.
+page/page-leaks                     Counts server objects through toImpl(), which only the Node.js tests can reach.
+library/role-utils                  Calls the injected script directly.
+library/locator-parser              Tests the locator parser of the driver.
+library/component-parser            Tests the component selector parser of the driver.
+library/css-parser                  Tests the CSS selector parser of the driver.
+library/locator-generator           Tests the locator generator of the driver.
+library/selector-generator          Tests the selector generator of the driver.
+library/coverage                    Checks the API coverage of the Node.js tests.
+
+# Tools that run in the driver. The Java client only starts them.
+library/inspector/*                 Codegen and the Inspector run in the driver.
+library/trace-viewer                The trace viewer runs in the driver.
+library/snapshot-renderer           The trace viewer runs in the driver.
+library/debug-controller            Internal protocol of the VS Code extension.
+
+# Node.js packaging.
+library/browsers-path               Tests importing the Node.js package on an unsupported platform.
+library/playwright-client           Tests the @playwright/client package.
+
+# API that the Java API does not have.
+library/chromium/js-coverage        page.coverage is not in the Java API.
+library/chromium/css-coverage       page.coverage is not in the Java API.
+library/logger                      The logger option is not in the Java API.
+library/browsertype-launch-server   browserType.launchServer() is not in the Java API.
+page/page-listeners                 removeAllListeners() is not in the Java API.
+
+# Features of the @playwright/test runner.
+page/expect-builtins                Generic matchers of @playwright/test, such as toBe().
+page/matchers.misc                  Generic matchers of @playwright/test.
+page/expect-matcher-result          The matcher result objects of @playwright/test.
+page/expect-with-snapshot           toHaveScreenshot() and toMatchSnapshot() are not in the Java API.
+
+# Per test, found while porting.
+# page/page-wait-for-request
+WA-128      tests a RegExp made in another Node.js vm context; Java has no cross-context regular expressions.

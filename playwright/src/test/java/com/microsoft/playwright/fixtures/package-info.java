@@ -35,7 +35,16 @@
  *       or {@link com.microsoft.playwright.fixtures.EnabledOnBrowser}; dynamic conditions use JUnit assumptions.</li>
  *   <li>Tests generated in a {@code for} loop are a {@code @Nested @ParameterizedClass} whose
  *       {@code @Parameter} field is read by a {@code @Fixture} method.</li>
+ *   <li>The test server ({@code tests/config/testserver}) is {@link com.microsoft.playwright.fixtures.TestServer}
+ *       and {@link com.microsoft.playwright.fixtures.HttpsTestServer}, serving {@code src/test/assets};
+ *       {@code testInfo} is {@link com.microsoft.playwright.fixtures.TestInfo}; the function fixtures
+ *       {@code contextFactory}, {@code launchPersistent}, {@code createUserDataDir} and {@code pageWithHar}
+ *       are the classes of those names; {@code tests/config/utils.ts} is {@link com.microsoft.playwright.fixtures.Utils}.</li>
+ *   <li>A port that fails because of a known gap of the Java client carries
+ *       {@link com.microsoft.playwright.fixtures.Fixme}, a strict expected failure.</li>
  * </ul>
+ *
+ * <p>The rules for porting the upstream tests with these fixtures are in {@code src/test/AGENTS.md}.
  *
  * <h2>Threading</h2>
  * Playwright objects are not thread-safe, so every worker is used by a single test at a time and tests

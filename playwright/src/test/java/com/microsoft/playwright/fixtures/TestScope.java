@@ -99,7 +99,7 @@ final class TestScope implements AutoCloseable {
       // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
       // browser or the Playwright instance in an unknown state.
       boolean discard = teardown.failed()
-        || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException)).isPresent();
+        || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException) || e instanceof ExpectedFailure).isPresent();
       teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
       worker = null;
     }
@@ -142,6 +142,14 @@ final class TestScope implements AutoCloseable {
       }
       return context.getRequiredTestInstances().findInstance(declaringClass)
         .orElseThrow(() -> new IllegalStateException("No test instance of " + declaringClass.getName() + " to invoke " + from.describe()));
+    }
+
+    @Override
+    public ExtensionContext extensionContext() {
+      if (from.scope() == Scope.WORKER) {
+        throw new IllegalStateException("Worker-scoped " + from.describe() + " cannot depend on the test context");
+      }
+      return context;
     }
   }
 }

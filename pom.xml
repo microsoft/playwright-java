@@ -185,6 +185,11 @@
                 junit.jupiter.execution.parallel.config.dynamic.factor=0.5
               </configurationParameters>
             </properties>
+            <!-- Report the JUnit display names, so a test case is named after the upstream test
+                 it ports ("CH-001 should check the box[chromium]") rather than "shouldCheckTheBox(Page)[1]". -->
+            <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+              <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+            </statelessTestsetReporter>
             <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
             <failIfNoTests>false</failIfNoTests>
             <rerunFailingTestsCount>${env.PW_MAX_RETRIES}</rerunFailingTestsCount>

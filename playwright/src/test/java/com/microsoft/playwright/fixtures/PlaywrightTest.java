@@ -44,7 +44,9 @@ import java.lang.annotation.Target;
  * {@link com.microsoft.playwright.BrowserType}, {@link com.microsoft.playwright.BrowserType.LaunchOptions},
  * {@link com.microsoft.playwright.Browser}, {@link com.microsoft.playwright.Browser.NewContextOptions},
  * {@link com.microsoft.playwright.BrowserContext}, {@link com.microsoft.playwright.Page},
- * {@link com.microsoft.playwright.Server} and {@link com.microsoft.playwright.HttpsServer}.
+ * {@link TestServer}, {@link HttpsTestServer}, {@link TestInfo}, {@link ContextFactory},
+ * {@link LaunchPersistent}, {@link CreateUserDataDir} and {@link PageWithHar}
+ * (and, for the older tests, {@link com.microsoft.playwright.Server} and {@link com.microsoft.playwright.HttpsServer}).
  * Worker-scoped fixtures (Playwright, Browser, servers) are reused by the tests that run
  * sequentially on the same thread; test-scoped ones (context, page) are created for every test
  * that asks for them and closed afterwards. A test class overrides or adds fixtures with

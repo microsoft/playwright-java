@@ -20,15 +20,20 @@ import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.io.TempDir;
+import org.opentest4j.AssertionFailedError;
+import org.opentest4j.TestAbortedException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +43,7 @@ import java.util.List;
  * One invocation of a {@link PlaywrightTest}: binds the browser, resolves fixture parameters and
  * applies the {@link EnabledOnBrowser}/{@link DisabledOnBrowser} conditions.
  */
-final class BrowserInvocation implements TestTemplateInvocationContext, ParameterResolver, ExecutionCondition {
+final class BrowserInvocation implements TestTemplateInvocationContext, ParameterResolver, ExecutionCondition, InvocationInterceptor {
   private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(BrowserInvocation.class);
 
   private final BrowserName browserName;
@@ -94,6 +99,23 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
 
   private static String reason(String reason) {
     return reason.isEmpty() ? "" : ": " + reason;
+  }
+
+  @Override
+  public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+    Fixme fixme = invocationContext.getExecutable().getAnnotation(Fixme.class);
+    if (fixme == null || fixme.browsers().length > 0 && !Arrays.asList(fixme.browsers()).contains(browserName)) {
+      invocation.proceed();
+      return;
+    }
+    try {
+      invocation.proceed();
+    } catch (TestAbortedException e) {
+      throw e;
+    } catch (Throwable e) {
+      throw new ExpectedFailure(fixme.value(), e);
+    }
+    throw new AssertionFailedError("Test marked @Fixme passed, remove the annotation: " + fixme.value());
   }
 
   @Override
