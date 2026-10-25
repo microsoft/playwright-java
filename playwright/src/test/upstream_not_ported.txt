@@ -180,3 +180,40 @@ SS-067      expect(page).toHaveScreenshot() is not in the Java API.
 # page/page-wait-for-function
 WA-006      Passes the polling strategy mutation as a string; the polling option is a number of milliseconds in Java.
 WA-012      Passes the polling strategy unknown as a string; the polling option is a number of milliseconds in Java.
+# page/frame-evaluate
+FR-003      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
+FR-004      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
+# page/page-fill
+FI-019      Passes a number to fill(); the Java API is typed and only accepts a String.
+# page/page-filechooser
+FC-003      page.prependListener() is a Node.js EventEmitter method; the Java event API has only onX() and offX().
+FC-006      page.addListener() and page.removeListener() are Node.js EventEmitter aliases of on() and off(); the Java event API has only onX() and offX() (covered by FC-005).
+FC-015      The signal (AbortSignal) option of waitForEvent is JavaScript-only; it is not in the Java API.
+FC-018      TODO harness: needs formidable (a multipart/form-data parser for the /upload route of the test server).
+# page/expect-timeout
+EX-253      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-254      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-255      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-256      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-257      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-258      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+# page/expect-to-have-accessible
+EX-273      Passes a RegExp to toHaveRole() and checks the runtime type error '"role" argument in toHaveRole must be a string'; the Java hasRole() only accepts an AriaRole.
+# page/expect-to-have-text
+EX-291      Passes an array that mixes a string and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
+EX-298      Passes an array that mixes strings and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
+EX-300      Passes an array that mixes a string and a RegExp to toContainText(); the Java containsText() overloads take only String[] or Pattern[].
+# page/expect-misc
+EX-205      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
+EX-206      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
+EX-207      Passes a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
+EX-210      Passes an array with a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
+EX-216      Passes {} to toHaveURL() and checks the runtime type error; the Java hasURL() only accepts a String or a Pattern.
+EX-217      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-218      expect(page).not.toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-219      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-220      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-222      expect(page).toHaveURL(URLPattern) is not in the Java API; URLPattern is JavaScript-only.
+EX-226      toHaveAttribute(name) without a value is not in the Java API; hasAttribute() requires a value.
+EX-227      toHaveAttribute(name, { timeout }) without a value is not in the Java API; hasAttribute() requires a value.
+EX-235      Checks error.stack, the Node.js stack of the matcher error, for the test file name.
