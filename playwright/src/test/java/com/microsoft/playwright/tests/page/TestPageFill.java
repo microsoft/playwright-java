@@ -295,7 +295,7 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisplayName("FI-018 should throw nice error without injected script stack when element is not an \<input\>")
+  @DisplayName("FI-018 should throw nice error without injected script stack when element is not an <input>")
   @Fixme("java: the message is \"Error {\\n  message='Error: Element is not an <input>, <textarea> or [contenteditable] element\\n  name='Error\\n  stack=...\" with an injected script stack, without the \"page.fill: \" prefix and the call log")
   void shouldThrowNiceErrorWithoutInjectedScriptStackWhenElementIsNotAnInput(Page page, TestServer server) {
     page.setContent("<select><option>value1</option></select>");
@@ -401,7 +401,7 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisplayName("FI-026 should be able to fill the input\[type=number\]")
+  @DisplayName("FI-026 should be able to fill the input[type=number]")
   void shouldBeAbleToFillTheInputTypeNumber(Page page) {
     page.setContent("<input id=\"input\" type=\"number\"></input>");
     page.fill("input", "42");
@@ -409,7 +409,7 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisplayName("FI-027 should be able to fill exponent into the input\[type=number\]")
+  @DisplayName("FI-027 should be able to fill exponent into the input[type=number]")
   void shouldBeAbleToFillExponentIntoTheInputTypeNumber(Page page) {
     page.setContent("<input id=\"input\" type=\"number\"></input>");
     page.fill("input", "-10e5");
@@ -417,7 +417,7 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisplayName("FI-028 should be able to fill input\[type=number\] with empty string")
+  @DisplayName("FI-028 should be able to fill input[type=number] with empty string")
   void shouldBeAbleToFillInputTypeNumberWithEmptyString(Page page) {
     page.setContent("<input id=\"input\" type=\"number\" value=\"123\"></input>");
     page.fill("input", "");
@@ -425,7 +425,7 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisplayName("FI-029 should not be able to fill text into the input\[type=number\]")
+  @DisplayName("FI-029 should not be able to fill text into the input[type=number]")
   void shouldNotBeAbleToFillTextIntoTheInputTypeNumber(Page page) {
     page.setContent("<input id=\"input\" type=\"number\"></input>");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
