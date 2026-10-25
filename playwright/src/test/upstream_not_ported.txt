@@ -61,3 +61,23 @@ EM-005      The colorScheme option is an enum in the Java API; the invalid value
 page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
 # page/page-autowaiting-basic
 AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
+# page/page-click
+CL-067      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-068      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-069      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-090      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-091      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-092      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-093      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+page/page-click-during-navigation   Passes the server-side __testHookAfterStable function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-1
+CL-110      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-3
+CL-116      Passes the server-side __testHookBeforeHitTarget function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-4
+CL-121      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
+# page/page-event-console
+CM-003      Passes the ConsoleMessage to Node.js util.inspect, which prints it through the custom inspect function of the Node.js client.
+CM-020      page.pageErrors({ filter }) is not in the Java API; Page.pageErrors() has no options.
+# page/page-expose-function
+EF-006      Throws null from the exposed function; a Java callback can only throw an exception object, so there is no Java form of 'throw null'.
