@@ -129,12 +129,7 @@ NE-018      Request.postDataJSON() is not in the Java API.
 NE-019      Request.postDataJSON() is not in the Java API.
 # page/page-network-response
 NE-038      Response.json() is not in the Java API.
-NE-042      TODO harness: TestServer.Response.writeHead(status, statusMessage) does not take a custom status message.
-NE-043      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
-NE-044      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
-NE-045      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
 # page/page-network-sizes
-NE-063      TODO harness: TestServer.Response does not frame the body in chunks when the route sets the Transfer-Encoding: chunked header itself.
 # page/page-network-idle
 NE-071      TODO harness: the test runs a blocking page call (goto with networkidle) while the test body makes other page calls (evaluate); the Java client is not thread safe (Connection.processOneMessage), so Utils.async plus an inline call fails with "Object doesn't exist: request@..." (Python uses sync_gather).
 NE-072      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
@@ -172,9 +167,6 @@ SO-024      passes numbers and a string index where Java is statically typed; th
 SS-019      TODO harness: needs utils.isLosslessWebp of the Node.js package, to tell lossless from lossy webp.
 SS-020      TODO harness: needs utils.decodeWebp of the Node.js package, to read the pixels of a webp screenshot.
 SS-055      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it is not in the Java API.
-SS-056      TODO harness: needs comparePNGs
-SS-057      TODO harness: needs comparePNGs
-SS-095      TODO harness: needs comparePNGs
 SS-066      expect(page).toHaveScreenshot() is not in the Java API.
 SS-067      expect(page).toHaveScreenshot() is not in the Java API.
 # page/page-wait-for-function

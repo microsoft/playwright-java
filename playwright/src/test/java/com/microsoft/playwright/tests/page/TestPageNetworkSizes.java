@@ -23,6 +23,7 @@ import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.Sizes;
@@ -34,6 +35,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
@@ -42,6 +44,7 @@ import static com.microsoft.playwright.fixtures.Utils.asset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/page/page-network-sizes.spec.ts. */
 public class TestPageNetworkSizes {
@@ -107,6 +110,35 @@ public class TestPageNetworkSizes {
     Response response = page.navigate(server.PREFIX + "/simplezip.json");
     Sizes sizes = response.request().sizes();
     assertEquals(Files.size(asset("simplezip.json")), sizes.responseBodySize);
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-063 should have the correct responseBodySize for chunked request")
+  @DisabledOnBrowser(value = BrowserName.FIREFOX, reason = "fixme")
+  void shouldHaveTheCorrectResponseBodySizeForChunkedRequest(Page page, TestServer server, BrowserName browserName) throws Exception {
+    assumeFalse(browserName == BrowserName.WEBKIT && !"darwin".equals(Env.platform()), "fixme");
+    byte[] content = Files.readAllBytes(asset("simplezip.json"));
+    int AMOUNT_OF_CHUNKS = 10;
+    int CHUNK_SIZE = (int) Math.ceil(content.length / (double) AMOUNT_OF_CHUNKS);
+    server.setRoute("/chunked-simplezip.json", (req, resp) -> {
+      resp.writeHead(200, "Content-Type", "text/html; charset=utf-8", "Transfer-Encoding", "chunked");
+      for (int start = 0; start < content.length; start += CHUNK_SIZE) {
+        int end = Math.min(start + CHUNK_SIZE, content.length);
+        // Wait for each chunk to be flushed, otherwise Node 26 merges synchronous writes into a single chunk.
+        // Java: write() sends the chunk right away.
+        resp.write(Arrays.copyOfRange(content, start, end));
+      }
+      resp.end();
+    });
+    Response response = page.navigate(server.PREFIX + "/chunked-simplezip.json");
+    Sizes sizes = response.request().sizes();
+    // The actual file size is 5100 bytes. The extra 75 bytes are coming from the chunked encoding headers and end bytes.
+    if (browserName == BrowserName.WEBKIT)
+      // WebKit on macOS reports 5173 with the legacy CFNetwork loader (builds <= 2346) and the
+      // correct 5175 with NWLoader. TODO: expect 5175 once the NWLoader-based build ships.
+      assertTrue(Arrays.asList(5173, 5175).contains(sizes.responseBodySize));
+    else
+      assertEquals(5175, sizes.responseBodySize);
   }
 
   @PlaywrightTest

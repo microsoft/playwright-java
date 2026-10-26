@@ -30,6 +30,7 @@ import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.Fixme;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
+import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.OS;
 
@@ -237,6 +238,126 @@ public class TestPageNetworkResponse {
     byte[] body = response.body();
     assertEquals(true, Arrays.equals(body, buffer));
     assertTrue(Arrays.equals(bytes, (byte[]) bytesReceived[0]));
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-042 should return status text")
+  void shouldReturnStatusText(Page page, TestServer server) {
+    server.setRoute("/cool", (req, res) -> {
+      res.writeHead(200, "cool!", Collections.<String, String>emptyMap());
+      res.end();
+    });
+    Response response = page.navigate(server.PREFIX + "/cool");
+    assertEquals("cool!", response.statusText());
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-043 should report all headers")
+  @DisabledOnBrowser(value = BrowserName.WEBKIT, os = OS.WINDOWS, reason = "libcurl does not support non-set-cookie multivalue headers")
+  void shouldReportAllHeaders(Page page, TestServer server) {
+    Map<String, List<String>> expectedHeaders = new LinkedHashMap<>();
+    expectedHeaders.put("header-a", Arrays.asList("value-a", "value-a-1", "value-a-2"));
+    expectedHeaders.put("header-b", Arrays.asList("value-b"));
+    server.setRoute("/headers", (req, res) -> {
+      res.writeHead(200);
+      // Java: writeHead() takes no array values, set them one by one.
+      for (Map.Entry<String, List<String>> header : expectedHeaders.entrySet())
+        res.setHeader(header.getKey(), header.getValue());
+      // Java: Node's writeHead() sends the headers at once, so end() adds no Content-Length.
+      res.flushHeaders();
+      res.end();
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    Response response = page.waitForResponse("**/*", () -> {
+      page.evaluate("() => fetch('/headers')");
+    });
+    List<HttpHeader> headers = response.headersArray();
+    Map<String, List<String>> actualHeaders = new LinkedHashMap<>();
+    for (HttpHeader header : headers) {
+      if (!actualHeaders.containsKey(header.name))
+        actualHeaders.put(header.name, new ArrayList<>());
+      actualHeaders.get(header.name).add(header.value);
+    }
+    actualHeaders.remove("Keep-Alive");
+    actualHeaders.remove("keep-alive");
+    actualHeaders.remove("Connection");
+    actualHeaders.remove("connection");
+    actualHeaders.remove("Date");
+    actualHeaders.remove("date");
+    actualHeaders.remove("Transfer-Encoding");
+    actualHeaders.remove("transfer-encoding");
+    assertEquals(expectedHeaders, actualHeaders);
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-044 should report multiple set-cookie headers")
+  void shouldReportMultipleSetCookieHeaders(Page page, TestServer server) {
+    server.setRoute("/headers", (req, res) -> {
+      res.writeHead(200);
+      // Java: writeHead() takes no array values, set them one by one.
+      res.setHeader("Set-Cookie", Arrays.asList("a=b", "c=d"));
+      res.write("\r\n");
+      res.end();
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    Response response = page.waitForResponse("**/*", () -> {
+      page.evaluate("() => fetch('/headers')");
+    });
+    List<HttpHeader> headers = response.headersArray();
+    List<String> cookies = new ArrayList<>();
+    for (HttpHeader header : headers) {
+      if (header.name.toLowerCase().equals("set-cookie"))
+        cookies.add(header.value);
+    }
+    assertEquals(Arrays.asList("a=b", "c=d"), cookies);
+    assertNull(response.headerValue("not-there"));
+    assertEquals("a=b\nc=d", response.headerValue("set-cookie"));
+    assertEquals(Arrays.asList("a=b", "c=d"), response.headerValues("set-cookie"));
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-045 should behave the same way for headers and allHeaders")
+  @DisabledOnBrowser(value = BrowserName.WEBKIT, os = OS.WINDOWS, reason = "libcurl does not support non-set-cookie multivalue headers")
+  void shouldBehaveTheSameWayForHeadersAndAllHeaders(Page page, TestServer server, BrowserName browserName) {
+    server.setRoute("/headers", (req, res) -> {
+      Map<String, List<String>> headers = new LinkedHashMap<>();
+      headers.put("Set-Cookie", Arrays.asList("a=b", "c=d"));
+      headers.put("header-a", Arrays.asList("a=b", "c=d"));
+      headers.put("Name-A", Arrays.asList("v1"));
+      headers.put("name-b", Arrays.asList("v4"));
+      headers.put("Name-a", Arrays.asList("v2"));
+      headers.put("name-A", Arrays.asList("v3"));
+      // Chromium does not report set-cookie headers immediately, so they are missing from .headers()
+      if (browserName == BrowserName.CHROMIUM)
+        headers.remove("Set-Cookie");
+
+      // Java: TestServer.Response.setHeader() replaces a header of the same name in any case, but Node sends
+      // 'Name-A', 'Name-a' and 'name-A' as three fields, so the response goes to the socket.
+      TestServer.Connection conn = res.socket();
+      conn.write("HTTP/1.1 200 OK\r\n");
+      for (Map.Entry<String, List<String>> header : headers.entrySet()) {
+        for (String value : header.getValue())
+          conn.write(header.getKey() + ": " + value + "\r\n");
+      }
+      conn.write("Transfer-Encoding: chunked\r\n");
+      conn.write("\r\n");
+      conn.write("2\r\n\r\n\r\n");
+      conn.write("0\r\n\r\n");
+      conn.uncork();
+      conn.end();
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    Response response = page.waitForResponse("**/*", () -> {
+      page.evaluate("() => fetch('/headers')");
+    });
+    Map<String, String> allHeaders = response.allHeaders();
+    assertEquals(allHeaders, response.headers());
+    assertEquals("a=b, c=d", allHeaders.get("header-a"));
+    assertEquals("v1, v2, v3", allHeaders.get("name-a"));
+    assertEquals("v4", allHeaders.get("name-b"));
   }
 
   @PlaywrightTest

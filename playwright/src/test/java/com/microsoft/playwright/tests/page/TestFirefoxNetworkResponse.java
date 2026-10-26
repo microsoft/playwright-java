@@ -116,7 +116,6 @@ public class TestFirefoxNetworkResponse {
 
     @PlaywrightTest
     @DisplayName("FF-005 should preserve original response header fields for ${status} responses")
-    @Fixme("harness: TestServer.Response.writeHead keeps one value per header name, so repeated header fields (X-Identical, Set-Cookie, ...) cannot be sent; first assertion that fails: expected [[X-Identical, same], [X-Identical, same]] but was [[X-Identical, same]]")
     void shouldPreserveOriginalResponseHeaderFieldsForStatusResponses(Page page, TestServer server) {
       List<List<String>> headers = Arrays.asList(
         header("Date", "Wed, 21 Oct 2037 07:28:00 GMT"),
@@ -132,16 +131,23 @@ public class TestFirefoxNetworkResponse {
         header("Proxy-Authenticate", "Basic realm=\"five, six\""),
         header("Proxy-Authenticate", "Basic realm=\"five, six\""));
       server.setRoute("/headers", (request, response) -> {
-        List<String> pairs = new ArrayList<>(Arrays.asList("Content-Type", "text/html"));
+        // Java: TestServer.Response.setHeader() replaces a header of the same name in any case, but Node sends
+        // 'X-Repeat' and 'x-repeat' as two fields, so the response goes to the socket.
+        TestServer.Connection conn = response.socket();
+        conn.write("HTTP/1.1 " + status + (status == 302 ? " Found" : " OK") + "\r\n");
+        conn.write("Content-Type: text/html\r\n");
         if (status == 302) {
-          pairs.addAll(Arrays.asList("Location", "/empty.html"));
+          conn.write("Location: /empty.html\r\n");
         }
         for (List<String> header : headers) {
-          pairs.add(header.get(0));
-          pairs.add(header.get(1));
+          conn.write(header.get(0) + ": " + header.get(1) + "\r\n");
         }
-        response.writeHead(status, pairs.toArray(new String[0]));
-        response.end("body");
+        conn.write("Transfer-Encoding: chunked\r\n");
+        conn.write("\r\n");
+        conn.write("4\r\nbody\r\n");
+        conn.write("0\r\n\r\n");
+        conn.uncork();
+        conn.end();
       });
       Response finalResponse = page.navigate(server.PREFIX + "/headers");
       Response response = status == 302 ? finalResponse.request().redirectedFrom().response() : finalResponse;
@@ -179,39 +185,30 @@ public class TestFirefoxNetworkResponse {
 
   @PlaywrightTest
   @DisplayName("FF-007 should report current effective fields after cache revalidation")
-  @Fixme("harness: TestServer.Response.writeHead keeps one value per header name, so repeated header fields (X-Keep, X-Change, Set-Cookie, ...) cannot be sent; first assertion that fails: expected <old, literal, old-second> but was <old-second>")
+  @Fixme("java: Response.headerValues() returns null instead of an empty list for a header that the response does not have (RawHeaders.getAll); first assertion that fails: expected: <[]> but was: <null>")
   void shouldReportCurrentEffectiveFieldsAfterCacheRevalidation(Page page, TestServer server) {
     List<String> validators = new ArrayList<>();
     server.setRoute("/cached-headers", (request, response) -> {
       validators.add(request.headers.get("if-none-match"));
       if (validators.size() == 1) {
-        response.writeHead(200,
-          "Content-Type", "text/plain",
-          "ETag", "\"v1\"",
-          "Cache-Control", "max-age=0, must-revalidate",
-          "X-Keep", "first, literal",
-          "X-Keep", "second",
-          "X-Change", "old, literal",
-          "X-Change", "old-second",
-          "Set-Cookie", "old=value; Expires=Wed, 21 Oct 2037 07:28:00 GMT",
-          "Set-Cookie", "old2=value; Path=/",
-          "WWW-Authenticate", "Basic realm=\"old, realm\"",
-          "WWW-Authenticate", "Basic realm=\"old-second\"",
-          "Proxy-Authenticate", "Basic realm=\"old, proxy\"",
-          "Proxy-Authenticate", "Basic realm=\"old-proxy-second\"");
+        response.writeHead(200);
+        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("ETag", "\"v1\"");
+        response.setHeader("Cache-Control", "max-age=0, must-revalidate");
+        response.setHeader("X-Keep", Arrays.asList("first, literal", "second"));
+        response.setHeader("X-Change", Arrays.asList("old, literal", "old-second"));
+        response.setHeader("Set-Cookie", Arrays.asList("old=value; Expires=Wed, 21 Oct 2037 07:28:00 GMT", "old2=value; Path=/"));
+        response.setHeader("WWW-Authenticate", Arrays.asList("Basic realm=\"old, realm\"", "Basic realm=\"old-second\""));
+        response.setHeader("Proxy-Authenticate", Arrays.asList("Basic realm=\"old, proxy\"", "Basic realm=\"old-proxy-second\""));
         response.end("cached-body");
         return;
       }
-      response.writeHead(304,
-        "Cache-Control", "max-age=3600",
-        "X-Change", "new, literal",
-        "X-Change", "new-second",
-        "Set-Cookie", "new=value; Expires=Wed, 21 Oct 2037 07:28:00 GMT",
-        "Set-Cookie", "new2=value; Path=/",
-        "WWW-Authenticate", "Basic realm=\"new, realm\"",
-        "WWW-Authenticate", "Basic realm=\"new-second\"",
-        "Proxy-Authenticate", "Basic realm=\"new, proxy\"",
-        "Proxy-Authenticate", "Basic realm=\"new-proxy-second\"");
+      response.writeHead(304);
+      response.setHeader("Cache-Control", "max-age=3600");
+      response.setHeader("X-Change", Arrays.asList("new, literal", "new-second"));
+      response.setHeader("Set-Cookie", Arrays.asList("new=value; Expires=Wed, 21 Oct 2037 07:28:00 GMT", "new2=value; Path=/"));
+      response.setHeader("WWW-Authenticate", Arrays.asList("Basic realm=\"new, realm\"", "Basic realm=\"new-second\""));
+      response.setHeader("Proxy-Authenticate", Arrays.asList("Basic realm=\"new, proxy\"", "Basic realm=\"new-proxy-second\""));
       response.end();
     });
 
