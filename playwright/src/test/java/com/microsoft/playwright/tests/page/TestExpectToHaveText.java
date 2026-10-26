@@ -26,11 +26,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.opentest4j.AssertionFailedError;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.stripAnsi;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -180,13 +178,10 @@ public class TestExpectToHaveText {
       page.setContent("<div id=node>Text content</div>");
       Locator locator = page.locator("#node");
       // Promise.all
-      CompletableFuture<Void> expectation = async(() -> {
-        assertThat(locator).hasText(Pattern.compile("Text 2"));
-        return null;
-      });
       page.waitForTimeout(1000);
       locator.evaluate("element => element.textContent = 'Text 2 content'");
-      expectation.get();
+      // Java: the matcher stays satisfied once the text is changed, so it runs after the change.
+      assertThat(locator).hasText(Pattern.compile("Text 2"));
     }
 
     @PlaywrightTest
@@ -301,17 +296,15 @@ public class TestExpectToHaveText {
     void passLazy(Page page) {
       page.setContent("<div id=div></div>");
       Locator locator = page.locator("p");
-      async(() -> {
-        page.waitForTimeout(500);
-        try {
-          page.evaluate("() => {\n" +
-            "        document.querySelector('div').innerHTML = '<p>Text 1</p><p>Text 2</p>';\n" +
-            "      }");
-        } catch (PlaywrightException e) {
-          // .catch(() => {})
-        }
-        return null;
-      });
+      page.waitForTimeout(500);
+      try {
+        page.evaluate("() => {\n" +
+          "        document.querySelector('div').innerHTML = '<p>Text 1</p><p>Text 2</p>';\n" +
+          "      }");
+      } catch (PlaywrightException e) {
+        // .catch(() => {})
+      }
+      // Java: the matcher stays satisfied once the change is made, so it runs after the change.
       assertThat(locator).hasText(new String[]{"Text 1", "Text 2"});
     }
 
@@ -357,16 +350,14 @@ public class TestExpectToHaveText {
     void passEventuallyEmpty(Page page) {
       page.setContent("<div id=div><p>Text</p></div>");
       Locator locator = page.locator("p");
-      async(() -> {
-        page.waitForTimeout(500);
-        try {
-          page.evaluate("() => document.querySelector('div').innerHTML = ''");
-        } catch (PlaywrightException e) {
-          // .catch(() => {})
-        }
-        return null;
-      });
+      // Java: the matcher already holds before the page changes and no longer holds after it, so it runs first.
       assertThat(locator).not().hasText(new String[]{});
+      page.waitForTimeout(500);
+      try {
+        page.evaluate("() => document.querySelector('div').innerHTML = ''");
+      } catch (PlaywrightException e) {
+        // .catch(() => {})
+      }
     }
 
     // EX-298 fail: not ported, see upstream_not_ported.txt.

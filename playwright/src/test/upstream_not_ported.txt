@@ -142,8 +142,13 @@ EV-135      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainCont
 EV-136      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
 EV-137      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
 # page/expect-boolean
+EX-049      java: concurrent: page.setContent while expect(locator).toBeVisible is pending
+EX-050      java: concurrent: page.setContent while expect(locator).toBeVisible is pending
+EX-051      java: concurrent: page.goto while expect(locator).toBeVisible is pending
 EX-068      Checks the JavaScript runtime type error of expect(page).toBeOK(); Java is typed and PageAssertions has no isOK().
 EX-069      Checks the JavaScript runtime type error of expect(promise).toBeOK(); Java is typed and has no such call.
+EX-085      java: concurrent: page.setContent while expect(locator).toBeAttached is pending
+EX-086      java: concurrent: page.goto while expect(locator).toBeAttached is pending
 # page/page-network-request
 NE-016      Request.postDataJSON() is not in the Java API.
 NE-017      Request.postDataJSON() is not in the Java API.
@@ -214,6 +219,8 @@ FC-006      page.addListener() and page.removeListener() are Node.js EventEmitte
 FC-015      The signal (AbortSignal) option of waitForEvent is JavaScript-only; it is not in the Java API.
 FC-018      TODO harness: needs formidable (a multipart/form-data parser for the /upload route of the test server).
 # page/expect-timeout
+EX-249      java: concurrent: page.goto while expect(locator).toHaveText is pending
+EX-250      java: concurrent: page.goto while expect(locator).toHaveText is pending
 EX-253      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
 EX-254      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
 EX-255      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
@@ -227,6 +234,7 @@ EX-291      Passes an array that mixes a string and a RegExp to toHaveText(); th
 EX-298      Passes an array that mixes strings and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
 EX-300      Passes an array that mixes a string and a RegExp to toContainText(); the Java containsText() overloads take only String[] or Pattern[].
 # page/expect-misc
+EX-181      java: concurrent: page.setContent while expect(locator).toHaveCount is pending
 EX-205      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
 EX-206      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
 EX-207      Passes a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
@@ -240,6 +248,8 @@ EX-222      expect(page).toHaveURL(URLPattern) is not in the Java API; URLPatter
 EX-226      toHaveAttribute(name) without a value is not in the Java API; hasAttribute() requires a value.
 EX-227      toHaveAttribute(name, { timeout }) without a value is not in the Java API; hasAttribute() requires a value.
 EX-235      Checks error.stack, the Node.js stack of the matcher error, for the test file name.
+EX-242      java: concurrent: page.close while expect(locator).toHaveText is pending
+EX-243      java: concurrent: page.close while expect(locator).toHaveText is pending
 # page/locator-query
 LO-177      locator.within() (since v1.64) is not in the Java API yet.
 # page/locator-wait-for-function
@@ -343,6 +353,17 @@ EH-106      java: concurrent: elementHandle.evaluate while elementHandle.selectT
 DE-008      java: concurrent: page.evaluate while page.dispatchEvent is pending
 # page/page-aria-snapshot
 AR-037      java: concurrent: page.setContent while locator.ariaSnapshot is pending
+# page/locator-frame
+LO-093      java: concurrent: page.goto while locator.click is pending
+LO-098      java: concurrent: page.evaluate while locator.click is pending
+LO-100      java: concurrent: page.evaluate while locator.click is pending
+LO-101      java: concurrent: page.evaluate while locator.click is pending
+LO-112      java: concurrent: page.evaluate while locator.click is pending
+# page/selectors-frame
+SE-116      java: concurrent: page.evaluate while locator.click is pending
+SE-120      java: concurrent: page.evaluate while locator.click is pending
+SE-121      java: concurrent: page.evaluate while locator.click is pending
+SE-122      java: concurrent: page.goto while page.click is pending
 # library/browsercontext-credentials
 AU-002      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
 AU-003      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
