@@ -377,6 +377,7 @@ public class TestBrowsercontextCookiesThirdParty {
 
   @PlaywrightTest
   @DisplayName("CO-054 third party 'Partitioned;' cookies")
+  @Fixme(value = "driver: the Firefox build of the bundled driver partitions the third-party cookie, upstream expects the Juggler build not to", browsers = BrowserName.FIREFOX)
   void thirdPartyPartitionedCookies(Page page, BrowserName browserName, HttpsTestServer httpsServer, WebkitPartitions webkitPartitions, TestUrls urls) {
     runPartitionedTest(page, httpsServer, browserName, Env.isMac, webkitPartitions.value, Env.isBidi(), urls);
   }
