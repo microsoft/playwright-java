@@ -472,7 +472,6 @@ public class TestPageScreenshot {
 
     @PlaywrightTest
     @DisplayName("SS-032 path option should throw for unsupported mime type")
-    @Fixme("java: screenshot() with the path file.txt does not throw, the error 'path: unsupported mime type \"text/plain\"' is not reported")
     void pathOptionShouldThrowForUnsupportedMimeType(Page page) {
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("file.txt"))));

@@ -1270,7 +1270,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ScreenshotOptions();
     }
-    if (options.path != null) {
+    if (options.type == null && options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
