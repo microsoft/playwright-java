@@ -382,7 +382,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         options = new CloseOptions();
       }
       closeReason = options.reason;
-      request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
+      try {
+        request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
+      } catch (TargetClosedError e) {
+        // The request context was disposed by the user already.
+      }
       try {
         tracing.exportAllHars();
       } catch (RuntimeException e) {
@@ -934,7 +938,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       contentPolicy = HarContentPolicy.OMIT;
     }
     if (contentPolicy == null) {
-      contentPolicy = options.recordHarPath.endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+      contentPolicy = options.recordHarPath.toString().endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
     }
     RouteFromHAROptions routeFromHAROptions = new RouteFromHAROptions();
 
