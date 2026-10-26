@@ -169,7 +169,10 @@ public class TestServer implements AutoCloseable {
     });
   }
 
-  /** Completes with the next request for {@code path} (path and query), or fails at {@link #reset()}. */
+  /**
+   * Completes with the next request for {@code path} (path and query) once its route handler has
+   * returned, or fails at {@link #reset()}.
+   */
   public CompletableFuture<Request> waitForRequest(String path) {
     synchronized (requestSubscribers) {
       return requestSubscribers.computeIfAbsent(path, k -> new CompletableFuture<>());
@@ -407,9 +410,6 @@ public class TestServer implements AutoCloseable {
     synchronized (requestSubscribers) {
       subscriber = requestSubscribers.remove(pathWithSearch);
     }
-    if (subscriber != null) {
-      subscriber.complete(request);
-    }
     RouteHandler handler = routes.get(pathWithSearch);
     try {
       if (handler != null) {
@@ -421,6 +421,12 @@ public class TestServer implements AutoCloseable {
       System.err.println("TestServer: route handler for " + pathWithSearch + " failed");
       e.printStackTrace();
       request.socket().destroy();
+    } finally {
+      // The route handler has run when waitForRequest() completes, as in the Node.js server where the
+      // handler is synchronous and the awaiting test code resumes after it.
+      if (subscriber != null) {
+        subscriber.complete(request);
+      }
     }
   }
 

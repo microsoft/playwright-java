@@ -118,7 +118,9 @@ names), `req.rawHeaders`, `req.postBody()`, `req.socket().destroy()`; `res.write
 `res.statusCode = 404`, `res.write`, `res.end`, `res.flushHeaders()`, `res.socket()`. A handler
 that upstream writes as `() => {}` (never answers) is `(req, res) -> {}`.
 `await server.waitForRequest('/x')` is `server.waitForRequest("/x").get()`; create the future
-before the action that triggers the request, like upstream. A server WebSocket (`ws` of
+before the action that triggers the request, like upstream. The future completes after the route
+handler of the request has returned, as in the Node.js server, so a response stored by the handler
+(`(req, res) -> serverResponse[0] = res`) is set when `get()` returns. A server WebSocket (`ws` of
 `onceWebSocketConnection`) has `send`, `close(code, reason)`, `onMessage(message -> ...)`
 (`message.text()`, `message.data`, `message.isBinary`), `onClose((code, reason) -> ...)`,
 `waitForMessage()`, `waitForClose()`.
