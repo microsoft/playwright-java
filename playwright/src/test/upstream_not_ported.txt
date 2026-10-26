@@ -542,3 +542,28 @@ SS-080      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript 
 SS-086      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
 SS-087      Uses the __testHookAfterScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
 SS-089      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+# library/geolocation
+GE-004      Calls setGeolocation({ longitude: 10 }) without latitude and checks the runtime type error; the Java Geolocation constructor requires both coordinates, so the call can not be written.
+GE-006      Passes geolocation: { latitude: 10 } without longitude and checks the runtime type error; the Java Geolocation constructor requires both coordinates, so the call can not be written.
+# library/browsercontext-fetch-happy-eyeballs
+FE-185      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+FE-186      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+FE-187      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+# library/browsercontext-fetch
+FE-099      Passes the params option as a URLSearchParams; the Java RequestOptions has setQueryParam(name, value) only, which sets one value per name.
+FE-100      Passes the params option as a string; the Java RequestOptions has setQueryParam(name, value) only.
+FE-101      Passes the params option as a string and as a URLSearchParams; the Java RequestOptions has setQueryParam(name, value) only.
+FE-119      browserContext.setHTTPCredentials() is JavaScript-only (docs langs: js); it is not in the Java API.
+FE-120      browserContext.setHTTPCredentials() is JavaScript-only (docs langs: js); it is not in the Java API.
+FE-158      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-159      TODO harness: needs a multipart/form-data parser (the test parses the request body with Node's Request.formData()).
+FE-160      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-161      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-164      Passes a function as the data option and checks the runtime type error; the Java setData() takes a String, a byte[] or an Object that is serialized to JSON, so there is no unsupported type.
+FE-168      TODO harness: needs the TestServer to notice that a client closed the connection while a route handler is still pending (the 'close' event of req.socket); the test hangs forever now.
+# library/har
+HA-047      TODO harness: needs createHttp2Server (an HTTP/2 server over TLS, taken from the utils of the Node.js server).
+HA-066      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.StartHarOptions has no resourcesDir.
+HA-067      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.StartHarOptions has no resourcesDir.
+# library/firefox/launcher
+FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1.64.1 when the firefoxUserPrefs layout.css.devPixelsPerPx is 1.1 (the fix of https://github.com/microsoft/playwright/issues/43028 is newer than the driver), so the test would hang the whole run instead of failing.
