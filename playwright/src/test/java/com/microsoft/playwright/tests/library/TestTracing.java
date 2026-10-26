@@ -888,7 +888,6 @@ public class TestTracing {
 
   @PlaywrightTest
   @DisplayName("TR-041 should not emit after w/o before")
-  @Fixme("java: the client sends no title with a wait, so the trace has no title for it")
   void shouldNotEmitAfterWOBefore(BrowserType browserType, TestInfo testInfo) {
     Path tracesDir = testInfo.outputPath("traces");
     Browser browser = browserType.launch(Env.launchOptions().setTracesDir(tracesDir));
