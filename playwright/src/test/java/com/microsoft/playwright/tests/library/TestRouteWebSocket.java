@@ -685,6 +685,23 @@ public class TestRouteWebSocket {
   }
 
   @PlaywrightTest
+  @DisplayName("WS-033 should not throw after page closure")
+  void shouldNotThrowAfterPageClosure(Page page, TestServer server) throws Exception {
+    CompletableFuture<WebSocketRoute> promise = new CompletableFuture<>();
+    page.routeWebSocket(Pattern.compile(".*"), ws -> {
+      ws.connectToServer();
+      promise.complete(ws);
+    });
+
+    setupWS(page, server, "blob");
+
+    WebSocketRoute route = waitFor(page, promise);
+    // Java: the close and the send run one after the other.
+    page.close();
+    route.send("hello");
+  }
+
+  @PlaywrightTest
   @DisplayName("WS-034 should not throw with empty handler")
   void shouldNotThrowWithEmptyHandler(Page page, TestServer server) {
     page.routeWebSocket(Pattern.compile(".*"), ws -> {});

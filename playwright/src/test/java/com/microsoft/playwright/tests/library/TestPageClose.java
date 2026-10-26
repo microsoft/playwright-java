@@ -183,7 +183,24 @@ public class TestPageClose {
 
   // PA-054 should reject response.finished if page closes: not ported, see upstream_not_ported.txt.
 
-  // PA-055 should not throw when continuing while page is closing: not ported, see upstream_not_ported.txt.
+  @PlaywrightTest
+  @DisplayName("PA-055 should not throw when continuing while page is closing")
+  void shouldNotThrowWhenContinuingWhilePageIsClosing(Page page, TestServer server) {
+    // Java: route.resume() does not wait for the browser, so the close that follows it is in flight with the
+    // continue, as with upstream's Promise.all.
+    boolean[] done = {false};
+    page.route("**/*", route -> {
+      route.resume();
+      page.close();
+      done[0] = true;
+    });
+    try {
+      page.navigate(server.EMPTY_PAGE);
+    } catch (PlaywrightException e) {
+      // .catch(e => e)
+    }
+    assertTrue(done[0]);
+  }
 
   @PlaywrightTest
   @DisplayName("PA-056 should not throw when continuing after page is closed")

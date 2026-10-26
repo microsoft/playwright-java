@@ -188,7 +188,35 @@ handler of the request has returned, as in the Node.js server, so a response sto
      come after the call, from the `server.waitForRequest` future. A handler may sleep or wait on
      a `CompletableFuture` that the test completes, as long as the test does not need Playwright
      for that.
-  4. Otherwise the test needs a Playwright call while another one is pending (an assertion on
+     A `goto` that upstream leaves pending while it waits for `domcontentloaded` with another
+     call is a `navigate` with `setWaitUntil(DOMCONTENTLOADED)`, inside the outer wait when
+     there is one (`page.waitForNavigation(load, () -> { page.waitForNavigation(domcontentloaded,
+     () -> page.navigate(url, domcontentloaded)); ...; release.complete(null); })`); a `goto` that
+     must not resolve (`expect(done).toBe(false)` after a while) is a `navigate` with a short
+     timeout that is expected to throw `TimeoutError`.
+  4. A call that upstream does not await (`page.evaluate(...).catch(() => {})`, `void
+     page.evaluate(...)`) and that only starts work in the page: the page function starts the
+     work without returning its promise (`fetch(url).catch(() => {})` instead of `return
+     fetch(url)`), and keeps the promise on `window` when the result is needed later
+     (`window.__status = fetch(url).then(r => r.status)`, read with a second
+     `page.evaluate("() => window.__status")`, which awaits it). A step that upstream takes
+     while the call is pending and that is itself page work (a `pushState`, a reload, a sync
+     XHR) is scheduled from the same function with `setTimeout`. A route that the handler
+     keeps pending (`page.route(url, route -> routes[0] = route)`) is awaited with
+     `page.waitForCondition(() -> routes[0] != null)`; an event without a callback wait
+     (`requestfailed`) is a handler that stores it, awaited the same way.
+  5. A wait that upstream rejects by closing (`page.waitForEvent('download')` pending, then
+     `browser.close()` or `remoteServer.close()`): the close goes in the callback of the wait,
+     which then throws (`assertThrows(..., () -> page.waitForDownload(() -> browser.close()))`);
+     two such waits nest, with the close in the innermost callback. A close while a route
+     handler holds the request (`page.goto` pending, the handler called, then `page.close()`):
+     the close goes inside the handler (`page.route(p, route -> { page.close(); route.resume();
+     })`), which runs on the test thread inside the navigation. A navigation that upstream starts
+     without awaiting, to do something while it is stalled (`page.goto(stall).catch(() => {})`,
+     then `page.click('body')`): the navigation is started from the page
+     (`page.evaluate("url => { window.location.href = url; }", url)`) and the stall is timed in
+     the route handler (`Thread.sleep(1000); req.socket().destroy();`).
+  6. Otherwise the test needs a Playwright call while another one is pending (an assertion on
      the pending state such as `expect(done).toBe(false)` while a click waits, an `evaluate` while
      a `goto` is stalled, a `close` racing a call), which the synchronous API can not do: the test
      is not ported. Delete it and add it to `upstream_not_ported.txt` with the reason

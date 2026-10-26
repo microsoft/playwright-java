@@ -27,6 +27,7 @@ import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.regex.Pattern;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -52,6 +53,24 @@ public class TestPageWaitForUrl {
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500)));
     assertTrue(error.getMessage().contains("page.waitForURL: Timeout 2500ms exceeded."));
+  }
+
+  @PlaywrightTest
+  @DisplayName("WA-112 should work with both domcontentloaded and load")
+  void shouldWorkWithBothDomcontentloadedAndLoad(Page page, TestServer server) {
+    // Java: the stylesheet is held by the route until the test releases it, so the navigation returns on
+    // domcontentloaded first; "load has not fired yet" is checked on the document.
+    CompletableFuture<Void> response = new CompletableFuture<>();
+    server.setRoute("/one-style.css", (req, res) -> {
+      response.get();
+      res.end();
+    });
+    page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
+    page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
+    assertEquals("interactive", page.evaluate("document.readyState"));
+    response.complete(null);
+    page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.LOAD));
+    assertEquals("complete", page.evaluate("document.readyState"));
   }
 
   @PlaywrightTest

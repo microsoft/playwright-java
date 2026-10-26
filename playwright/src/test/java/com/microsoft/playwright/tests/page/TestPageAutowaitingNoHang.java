@@ -18,12 +18,14 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.fixtures.HttpsTestServer;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,9 +92,47 @@ public class TestPageAutowaitingNoHang {
     page.waitForPopup(() -> page.evaluate("() => window.open(window.location.href) && 1"));
   }
 
-  // AW-020 clicking in the middle of navigation that aborts: not ported, see upstream_not_ported.txt.
+  @PlaywrightTest
+  @DisplayName("AW-020 clicking in the middle of navigation that aborts")
+  void clickingInTheMiddleOfNavigationThatAborts(Page page, TestServer server) throws Exception {
+    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
 
-  // AW-021 clicking in the middle of navigation that commits: not ported, see upstream_not_ported.txt.
+    // Java: the route stalls for the second that upstream waits with the click pending, then aborts.
+    server.setRoute("/stall.html", (req, res) -> {
+      stallPromise.complete(null);
+      Thread.sleep(1000);
+      req.socket().destroy();
+    });
+
+    page.navigate(server.PREFIX + "/one-style.html");
+    // Java: page.goto() blocks until the navigation ends, so the navigation is started from the page.
+    page.evaluate("url => { window.location.href = url; }", server.PREFIX + "/stall.html");
+    stallPromise.get();
+
+    page.click("body");
+  }
+
+  @PlaywrightTest
+  @DisplayName("AW-021 clicking in the middle of navigation that commits")
+  void clickingInTheMiddleOfNavigationThatCommits(Page page, TestServer server) throws Exception {
+    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
+
+    // Java: the route stalls for the second that upstream waits with the click pending, then commits.
+    server.setRoute("/stall.html", (req, res) -> {
+      stallPromise.complete(null);
+      Thread.sleep(1000);
+      res.writeHead(200, "Content-Type", "text/html");
+      res.end("hello world");
+    });
+
+    page.navigate(server.PREFIX + "/one-style.html");
+    // Java: page.goto() blocks until the navigation ends, so the navigation is started from the page.
+    page.evaluate("url => { window.location.href = url; }", server.PREFIX + "/stall.html");
+    stallPromise.get();
+
+    page.click("body");
+    assertThat(page.locator("body")).containsText("hello world");
+  }
 
   @PlaywrightTest
   @DisplayName("AW-022 clicking a link intercepted by the Navigation API same-document")
@@ -127,5 +167,28 @@ public class TestPageAutowaitingNoHang {
     assertEquals("/other", URI.create(page.url()).getPath());
   }
 
-  // AW-023 goBack in the middle of navigation that commits: not ported, see upstream_not_ported.txt.
+  @PlaywrightTest
+  @DisplayName("AW-023 goBack in the middle of navigation that commits")
+  void goBackInTheMiddleOfNavigationThatCommits(Page page, TestServer server) throws Exception {
+    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
+
+    // Java: the route stalls for the second that upstream waits with goBack pending, then commits.
+    server.setRoute("/stall.html", (req, res) -> {
+      stallPromise.complete(null);
+      Thread.sleep(1000);
+      res.writeHead(200, "Content-Type", "text/html");
+      res.end("hello world");
+    });
+
+    page.navigate(server.PREFIX + "/one-style.html");
+    // Java: page.goto() blocks until the navigation ends, so the navigation is started from the page.
+    page.evaluate("url => { window.location.href = url; }", server.PREFIX + "/stall.html");
+    stallPromise.get();
+
+    try {
+      page.goBack();
+    } catch (PlaywrightException e) {
+      // .catch(() => {})
+    }
+  }
 }

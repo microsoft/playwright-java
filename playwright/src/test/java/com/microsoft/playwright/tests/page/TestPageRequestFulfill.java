@@ -136,6 +136,29 @@ public class TestPageRequestFulfill {
   }
 
   @PlaywrightTest
+  @DisplayName("RO-100 should not throw if request was cancelled by the page")
+  void shouldNotThrowIfRequestWasCancelledByThePage(Page page, TestServer server) {
+    // it.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/28490' });
+    Route[] interceptedRoute = {null};
+    page.route("**/data.json", route -> interceptedRoute[0] = route);
+    page.navigate(server.EMPTY_PAGE);
+    // Java: upstream does not await the evaluate; the fetch is started in the page without returning
+    // its promise, so that evaluate returns while the route is pending.
+    page.evaluate("url => {\n" +
+      "  globalThis.controller = new AbortController();\n" +
+      "  fetch(url, { signal: globalThis.controller.signal }).catch(() => {});\n" +
+      "}", server.PREFIX + "/data.json");
+    page.waitForCondition(() -> interceptedRoute[0] != null);
+    Request[] cancelledRequest = {null};
+    page.onRequestFailed(request -> cancelledRequest[0] = request);
+    page.evaluate("() => globalThis.controller.abort()");
+    page.waitForCondition(() -> cancelledRequest[0] != null);
+    assertNotNull(cancelledRequest[0].failure());
+    assertTrue(Pattern.compile("cancelled|aborted", Pattern.CASE_INSENSITIVE).matcher(cancelledRequest[0].failure()).find(), cancelledRequest[0].failure());
+    interceptedRoute[0].fulfill(new Route.FulfillOptions().setStatus(200)); // Should not throw.
+  }
+
+  @PlaywrightTest
   @DisplayName("RO-101 should allow mocking binary responses")
   @DisabledOnBrowser(value = BrowserName.FIREFOX, headed = true, reason = "Firefox headed produces a different image.")
   void shouldAllowMockingBinaryResponses(Page page, TestServer server, BrowserName browserName, TestInfo testInfo) {

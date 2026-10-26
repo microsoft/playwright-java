@@ -69,6 +69,26 @@ public class TestPageWaitForNavigation {
   }
 
   @PlaywrightTest
+  @DisplayName("WA-097 should work with both domcontentloaded and load")
+  void shouldWorkWithBothDomcontentloadedAndLoad(Page page, TestServer server) {
+    // Java: the stylesheet is held by the route until the test releases it; the waits nest around the navigation,
+    // which returns on domcontentloaded, and "load has not fired yet" is checked on the document.
+    CompletableFuture<Void> response = new CompletableFuture<>();
+    server.setRoute("/one-style.css", (req, res) -> {
+      response.get();
+      res.end();
+    });
+    page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(WaitUntilState.LOAD), () -> {
+      page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED), () -> {
+        page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
+      });
+      assertEquals("interactive", page.evaluate("document.readyState"));
+      response.complete(null);
+    });
+    assertEquals("complete", page.evaluate("document.readyState"));
+  }
+
+  @PlaywrightTest
   @DisplayName("WA-098 should work with commit")
   void shouldWorkWithCommit(Page page, TestServer server) {
     server.setRoute("/script.js", (req, res) -> {});

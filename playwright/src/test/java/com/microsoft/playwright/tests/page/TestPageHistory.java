@@ -194,6 +194,37 @@ public class TestPageHistory {
   }
 
   @PlaywrightTest
+  @DisplayName("NA-078 page.reload should not resolve with same-document navigation")
+  void pageReloadShouldNotResolveWithSameDocumentNavigation(Page page, TestServer server) {
+    page.navigate(server.EMPTY_PAGE);
+    // 1. Make sure execution contexts are ready for fast evaluate.
+    page.evaluate("1");
+
+    // 2. Stall the reload request.
+    // Java: the request is served from the route after a while, as the reload blocks until it is served.
+    server.setRoute("/empty.html", (req, res) -> {
+      Thread.sleep(1000);
+      // 5. Serve the request, it should resolve the reload.
+      res.end("hello");
+    });
+
+    // 3. Trigger push state that could resolve the reload.
+    // 5. Trigger push state again, for the good measure :)
+    // Java: upstream does not await the evaluates; the second push state is scheduled from the page
+    // to run while the reload is pending.
+    page.evaluate("() => {\n" +
+      "  window.history.pushState({}, '');\n" +
+      "  setTimeout(() => window.history.pushState({}, ''), 100);\n" +
+      "}");
+
+    // 4. Trigger the reload, it should not resolve.
+    Response gotResponse = page.reload();
+
+    // 6. Check the reload response.
+    assertEquals("hello", gotResponse.text());
+  }
+
+  @PlaywrightTest
   @DisplayName("NA-079 page.reload should work with same origin redirect")
   void pageReloadShouldWorkWithSameOriginRedirect(Page page, TestServer server) {
     page.navigate(server.EMPTY_PAGE);

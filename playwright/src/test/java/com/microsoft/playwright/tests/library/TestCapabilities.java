@@ -183,6 +183,27 @@ public class TestCapabilities {
   }
 
   @PlaywrightTest
+  @DisplayName("CA-011 should not crash on showDirectoryPicker")
+  @EnabledOnBrowser(value = BrowserName.CHROMIUM, reason = "showDirectoryPicker is only available in Chromium")
+  void shouldNotCrashOnShowDirectoryPicker(Page page, TestServer server) {
+    // it.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/7339' });
+    page.navigate(server.EMPTY_PAGE);
+    // "User activation is required to show a file picker." - so we click first.
+    page.locator("body").click();
+    // Java: upstream does not await the evaluate; the picker is opened from the page without returning its promise.
+    page.evaluate("() => {\n" +
+      "  window.__picker = (async () => {\n" +
+      "    const dir = await window.showDirectoryPicker();\n" +
+      "    return dir.name;\n" +
+      "    // In headless it throws (aborted), in headed it stalls (Test ended) and waits for the picker to be accepted.\n" +
+      "  })().catch(e => e.message);\n" +
+      "}");
+    // The dialog will not be accepted, so we just wait for some time to
+    // to give the browser a chance to crash.
+    page.waitForTimeout(3_000);
+  }
+
+  @PlaywrightTest
   @DisplayName("CA-012 should not crash on storage.getDirectory()")
   void shouldNotCrashOnStorageGetDirectory(Page page, TestServer server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);

@@ -280,6 +280,19 @@ public class TestPopup {
   }
 
   @PlaywrightTest
+  @DisplayName("PO-027 should not throttle rAF in the opener page")
+  void shouldNotThrottleRAFInTheOpenerPage(Page page, TestServer server) {
+    // it.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/14557' });
+    page.navigate(server.EMPTY_PAGE);
+    Page popup = page.waitForPopup(() -> {
+      page.evaluate("() => { window.open('about:blank'); }");
+    });
+    // Java: the two waits run one after the other; the opener is throttled, or not, while the popup is open either way.
+    waitForRafs(page, 30);
+    waitForRafs(popup, 30);
+  }
+
+  @PlaywrightTest
   @DisplayName("PO-028 should not throw when click closes popup")
   @DisabledOnBrowser(value = BrowserName.FIREFOX, reason = "fixme: locator.click: Target page, context or browser has been closed")
   void shouldNotThrowWhenClickClosesPopup(BrowserName browserName, Page page, TestServer server) {

@@ -65,9 +65,6 @@ page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnap
 # page/page-autowaiting-basic
 AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
 # page/page-autowaiting-no-hang
-AW-020      java: concurrent: page.click while page.goto is pending
-AW-021      java: concurrent: page.click while page.goto is pending
-AW-023      java: concurrent: page.goBack while page.goto is pending
 # page/page-click
 CL-003      java: concurrent: page.click while page.click is pending
 CL-020      java: concurrent: page.evaluate while page.click is pending
@@ -115,7 +112,6 @@ EV-050      Passes a JavaScript function as the argument; Java cannot pass a fun
 EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
 EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
 EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
-EV-063      java: concurrent: page.evaluate while page.evaluate is pending
 EV-093      java: concurrent: page.evaluate while frame.evaluate is pending
 # page/page-evaluate-callback
 EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
@@ -270,16 +266,12 @@ NA-044      Checks the 'warning' event of the Node.js process (EventEmitter list
 NA-045      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
 NA-046      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
 NA-056      java: concurrent: page.goto while page.goto is pending
-NA-062      java: concurrent: page.waitForTimeout while page.goto is pending
 NA-063      java: concurrent: page.goto while page.goto is pending
 
 # page/page-route
-RO-012      java: concurrent: page.waitForTimeout while page.evaluate is pending
-RO-013      java: concurrent: page.waitForTimeout while page.evaluate is pending
 RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).
 
 # page/page-request-fulfill
-RO-100      java: concurrent: page.evaluate while page.evaluate is pending
 RO-112      TODO harness: needs a test server response with several values for one header (res.setHeader('Set-Cookie', ['a=b', 'c=d'])); TestServer.Response.setHeader() takes a single String.
 RO-116      The json option of route.fulfill() is not in the Java API (docs langs: js, python, csharp).
 
@@ -352,7 +344,6 @@ SS-056      TODO harness: needs comparePNGs
 SS-057      TODO harness: needs comparePNGs
 SS-095      TODO harness: needs comparePNGs
 # page/page-drag
-DD-019      java: concurrent: page.hover while page.evaluate is pending
 
 # page/elementhandle-scroll-into-view
 EH-095      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
@@ -579,15 +570,9 @@ RO-185      Routes on a URLPattern, a JavaScript-only class (BrowserContext.rout
 RO-186      java: concurrent: context.unroute while page.goto is pending
 RO-188      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
 RO-189      Uses unrouteAll({ behavior: 'ignoreErrors' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
-RO-190      java: concurrent: page.close while page.goto is pending
-RO-191      java: concurrent: context.close while page.goto is pending
 RO-192      java: concurrent: page.unroute while page.goto is pending
 RO-194      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
 RO-195      Uses unrouteAll({ behavior: 'ignoreErrors' }); Page.unrouteAll() of the Java API has no behavior option.
-RO-196      java: concurrent: page.close while page.goto is pending
-RO-197      java: concurrent: page.close while page.goto is pending
-RO-198      java: concurrent: page.close while page.goto is pending
-RO-199      java: concurrent: page.close while page.goto is pending
 RO-200      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
 RO-201      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
 # library/screencast
@@ -680,10 +665,7 @@ FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1
 BT-052      passes __testHookBeforeCreateBrowser, a JavaScript function that the Node.js client calls during connect; the Java connect() has no such hook.
 BT-056      java: concurrent: browser.close while page.goto is pending
 BT-057      java: concurrent: browser.close while page.waitForSelector is pending
-BT-059      java: concurrent: browser.close while page.waitForRequest is pending
-BT-061      java: concurrent: browser.on(disconnected) while page.waitForEvent is pending
 BT-070      java: concurrent: page.waitForNavigation while page.goto is pending
-BT-090      java: concurrent: page.waitForNavigation while page.goto is pending
 BT-096      starts an in-process remote.PlaywrightServer of the Node.js package and reads its internal _dontReuseBrowsers.
 # library/browsercontext-add-init-script
 IS-031      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
@@ -720,14 +702,11 @@ NE-130      Calls utils.httpRequest() of the Node.js driver code, which the Java
 OO-010      playwright.devices is not in the Java API (docs: langs: js, python, csharp).
 
 # page/page-wait-for-url
-WA-112      java: concurrent: page.waitForURL while page.goto is pending
 
 # page/page-wait-for-navigation
-WA-097      java: concurrent: page.waitForNavigation while page.goto is pending
 WA-104      java: concurrent: frame.evaluate while page.goto is pending
 
 # page/page-history
-NA-078      java: concurrent: page.evaluate while page.reload is pending
 
 # page/frame-goto
 FR-021      java: concurrent: page.$eval while frame.goto is pending
@@ -738,11 +717,8 @@ NE-127      java: concurrent: context.close while response.finished is pending
 # library/webmcp
 WM-010      java: concurrent: webMCP.tools while webMCP.callTool is pending
 # library/popup
-PO-027      java: concurrent: page.evaluate while page.evaluate is pending
 # library/route-web-socket
-WS-033      java: concurrent: webSocketRoute.send while page.close is pending
 # library/capabilities
-CA-011      java: concurrent: page.waitForTimeout while page.evaluate is pending
 # library/screencast-actions
 SC-016      java: concurrent: expect(locator).toBeVisible while page.click is pending
 SC-017      java: concurrent: page.locator.boundingBox while page.click is pending
@@ -757,6 +733,5 @@ PA-046      java: concurrent: page.close while page.close is pending
 PA-050      java: concurrent: page.mouse.click while page.close is pending
 PA-051      java: concurrent: page.close while request.response is pending
 PA-054      java: concurrent: page.close while response.finished is pending
-PA-055      java: concurrent: page.close while route.continue is pending
 # library/tap
 TA-008      java: concurrent: elementHandle.evaluate while elementHandle.tap is pending

@@ -936,6 +936,24 @@ public class TestPageGoto {
   }
 
   @PlaywrightTest
+  @DisplayName("NA-062 should not resolve goto upon window.stop()")
+  @DisabledOnBrowser(value = BrowserName.FIREFOX, reason = "fixme: load/domcontentloaded events are flaky")
+  void shouldNotResolveGotoUponWindowStop(Page page, TestServer server) {
+    assumeFalse("frozen".equals(System.getenv("PW_CLOCK")));
+
+    // Java: the module is served from the route after a while; the navigation must still not return,
+    // so it is expected to time out.
+    server.setRoute("/module.js", (req, res) -> {
+      res.writeHead(200, "Content-Type", "text/javascript");
+      Thread.sleep(1000);  // give it some time to erroneously resolve
+      res.end("");
+    });
+    assertThrows(TimeoutError.class, () -> page.navigate(server.PREFIX + "/window-stop.html", new Page.NavigateOptions().setTimeout(3000)));
+  }
+
+  // NA-063 should return from goto if new navigation is started: not ported, see upstream_not_ported.txt.
+
+  @PlaywrightTest
   @DisplayName("NA-064 should return when navigation is committed if commit is specified")
   void shouldReturnWhenNavigationIsCommittedIfCommitIsSpecified(Page page, TestServer server) {
     server.setRoute("/script.js", (req, res) -> {});

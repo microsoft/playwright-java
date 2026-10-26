@@ -564,7 +564,46 @@ public class TestPageDrag {
     return eventsHandle;
   }
 
-  // DD-019 should handle custom dataTransfer: not ported, see upstream_not_ported.txt.
+  @PlaywrightTest
+  @DisplayName("DD-019 should handle custom dataTransfer")
+  void shouldHandleCustomDataTransfer(Page page, BrowserName browserName) {
+    // it.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/18013' });
+    assumeFalse(browserName == BrowserName.WEBKIT && OS.WINDOWS.isCurrentOs(), "fixme");
+    page.setContent("<button draggable=\"true\">Draggable</button>");
+
+    // Java: the promise is kept on window and awaited after the drag, so that the evaluate returns at once.
+    page.evaluate("() => {\n" +
+      "  window.__result = new Promise(resolve => {\n" +
+      "    document.addEventListener('dragstart', event => {\n" +
+      "      event.dataTransfer.setData('custom-type', 'Hello World');\n" +
+      "    }, false);\n" +
+      "\n" +
+      "    document.addEventListener('dragenter', event => {\n" +
+      "      event.preventDefault();\n" +
+      "    }, false);\n" +
+      "    document.addEventListener('dragover', event => {\n" +
+      "      event.preventDefault();\n" +
+      "    }, false);\n" +
+      "\n" +
+      "    document.addEventListener('drop', event => {\n" +
+      "      event.preventDefault();\n" +
+      "      resolve({\n" +
+      "        types: event.dataTransfer.types,\n" +
+      "        data: event.dataTransfer.getData('custom-type'),\n" +
+      "      });\n" +
+      "    }, false);\n" +
+      "  });\n" +
+      "}");
+
+    page.hover("[draggable=\"true\"]");
+    page.mouse().down();
+    page.mouse().move(100, 100);
+    page.mouse().up();
+
+    assertEquals(mapOf(
+      "types", Arrays.asList("custom-type"),
+      "data", "Hello World"), page.evaluate("() => window.__result"));
+  }
 
   @PlaywrightTest
   @DisplayName("DD-020 what happens when dragging element is destroyed")

@@ -629,7 +629,20 @@ public class TestPageEvaluate {
     assertEquals(true, result);
   }
 
-  // EV-063 should throw a nice error after a navigation: not ported, see upstream_not_ported.txt.
+  @PlaywrightTest
+  @DisplayName("EV-063 should throw a nice error after a navigation")
+  void shouldThrowANiceErrorAfterANavigation(Page page) {
+    // Java: the first evaluate blocks, so the reload that upstream triggers with a second evaluate
+    // is scheduled from the page before the promise is returned.
+    PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.evaluate("() => {\n" +
+      "  setTimeout(() => {\n" +
+      "    window.location.reload();\n" +
+      "    setTimeout(() => window['__resolve'](42), 1000);\n" +
+      "  }, 0);\n" +
+      "  return new Promise(f => window['__resolve'] = f);\n" +
+      "}"));
+    assertTrue(error.getMessage().contains("navigation"), error.getMessage());
+  }
 
   @PlaywrightTest
   @DisplayName("EV-064 should not throw an error when evaluation does a navigation")
