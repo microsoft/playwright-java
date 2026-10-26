@@ -22,6 +22,8 @@ import com.microsoft.playwright.fixtures.EnabledOnBrowser;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.Tag;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -43,6 +45,21 @@ public class TestBrowser1 {
     assertEquals(1, browser.contexts().size());
 
     page2.close();
+    assertEquals(0, browser.contexts().size());
+  }
+
+  @PlaywrightTest
+  void shouldListContextsInCreationOrder(Browser browser) {
+    List<BrowserContext> contexts = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      contexts.add(browser.newContext());
+    }
+    assertEquals(contexts, browser.contexts());
+    contexts.remove(2).close();
+    assertEquals(contexts, browser.contexts());
+    for (BrowserContext context : contexts) {
+      context.close();
+    }
     assertEquals(0, browser.contexts().size());
   }
 

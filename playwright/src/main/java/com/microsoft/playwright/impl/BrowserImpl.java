@@ -33,7 +33,8 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
 
 class BrowserImpl extends ChannelOwner implements Browser {
-  final Set<BrowserContextImpl> contexts = new HashSet<>();
+  // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.
+  final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
