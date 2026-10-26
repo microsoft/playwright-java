@@ -234,4 +234,8 @@ reorder. A mark is not a deviation: the test still does what upstream does.
 From `playwright/`: `mvn -o -q test -Dtest=TestPageCheck` runs the class in the three browsers
 (`BROWSER=chromium,firefox` to pick some). The reports are in `target/surefire-reports`,
 `TEST-*.xml` names each test case after the upstream title. `mvn -o -q test-compile` only
-compiles.
+compiles. The tests that launch a headed browser (`TestHeadful` and the `headed = true`
+projects) run under a virtual display on Linux, as upstream does on CI:
+`xvfb-run -a --server-args="-screen 0 1280x960x24" mvn -o test ...`; on the real display of a
+desktop session the headed WebKit tests hang. Put a `timeout` in front of a long run so that a
+hang does not stall it.

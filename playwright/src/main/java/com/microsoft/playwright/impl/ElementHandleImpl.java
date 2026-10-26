@@ -267,7 +267,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScreenshotOptions();
     }
-    if (options.type == null && options.path != null) {
+    if (options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
