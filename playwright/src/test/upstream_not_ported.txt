@@ -112,7 +112,7 @@ EV-050      Passes a JavaScript function as the argument; Java cannot pass a fun
 EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
 EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
 EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
-EV-093      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
+EV-093      java: concurrent: page.evaluate while frame.evaluate is pending
 # page/page-evaluate-callback
 EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
 EV-113      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
@@ -380,12 +380,12 @@ BC-059      Listens to process.on('warning') for the Node.js MaxListenersExceede
 # library/browsercontext-reuse
 library/browsercontext-reuse        Uses the private context-reuse mode of the Node.js client (browser._newContextForReuse(), browser._disconnectFromReusedContext() and browserType._instrumentation), which the Java API does not have.
 # library/browser
-BR-005      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
+BR-005      java: concurrent: browser.close while page.evaluate is pending
 BR-007      Passes __testHookBeforeSetStorageState, a JS function, as a context option and reads toImpl(browser).contexts(); the Java API has neither.
 # library/browser-server
 BR-009      TODO harness: needs a per-test PWTEST_SERVER_REGISTRY environment variable for the driver process, to read the descriptor files that browser.bind() writes.
 # library/browsertype-launch
-BT-004      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
+BT-004      java: concurrent: page.evaluate while browser.close is pending
 BT-005      launch({ userDataDir }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no userDataDir.
 BT-007      launch({ port }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no port.
 BT-008      launchPersistentContext({ port }) is an untyped option that only the Node.js client checks; the Java LaunchPersistentContextOptions has no port.
@@ -463,7 +463,7 @@ CD-038      Passes the timeout and signal (AbortController) options to cdpSessio
 CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.
 CD-041      page.coverage (startJSCoverage/stopJSCoverage) is JavaScript-only; it is not in the Java API.
 CD-043      Checks error.stack, the Node.js stack of the error, for the calling function name.
-CD-048      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
+CD-048      java: concurrent: page.close while cdpSession.send is pending
 # library/chromium/extensions
 CR-036      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 CR-037      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
@@ -728,7 +728,7 @@ SC-025      java: concurrent: expect(locator).toBeVisible while page.click is pe
 SC-027      java: concurrent: expect(locator).toBeVisible while page.click is pending
 # library/page-close
 PA-040      java: concurrent: page.close while expect(locator).toHaveText is pending
-PA-042      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
+PA-042      java: concurrent: page.close while page.evaluate is pending
 PA-046      java: concurrent: page.close while page.close is pending
 PA-050      java: concurrent: page.mouse.click while page.close is pending
 PA-051      java: concurrent: page.close while request.response is pending
