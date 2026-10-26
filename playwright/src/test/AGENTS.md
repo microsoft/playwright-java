@@ -20,8 +20,9 @@ the test harness, or `@Fixme("driver: <reason>")` when the upstream test is newe
 this repo bundles (the upstream checkout is ahead of the driver; name the upstream commit or PR
 that the driver lacks). The test still runs, its failure is reported as skipped with the reason,
 and it fails once it starts to pass so the mark gets removed. `@Fixme(value = "...",
-browsers = WEBKIT)` limits the expectation to some browsers. A test that fails only sometimes is
-reported as flaky, not marked.
+browsers = WEBKIT)` limits the expectation to some browsers; in a `@ParameterizedClass`,
+`parameters = {"type=null,"}` limits it to the invocations whose display name contains a
+fragment. A test that fails only sometimes is reported as flaky, not marked.
 
 The harness (fixtures, test server, helpers) is `com.microsoft.playwright.fixtures`, see its
 `package-info.java`.

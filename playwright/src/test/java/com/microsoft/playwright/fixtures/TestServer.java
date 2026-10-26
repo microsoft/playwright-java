@@ -25,8 +25,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -244,7 +246,7 @@ public class TestServer implements AutoCloseable {
       if (connection.socket instanceof SSLSocket) {
         ((SSLSocket) connection.socket).startHandshake();
       }
-      InputStream in = new BufferedInputStream(connection.socket.getInputStream());
+      PushbackInputStream in = new PushbackInputStream(new BufferedInputStream(connection.socket.getInputStream()));
       while (!connection.isClosed()) {
         Request request = readRequest(in, connection);
         if (request == null) {
@@ -256,7 +258,7 @@ public class TestServer implements AutoCloseable {
         }
         Response response = new Response(request, connection);
         onRequest(request, response);
-        response.awaitEnd();
+        awaitEndOrDisconnect(response, connection, in);
         if (!response.keepAlive()) {
           break;
         }
@@ -268,6 +270,42 @@ public class TestServer implements AutoCloseable {
       connection.destroy();
       connections.remove(connection);
     }
+  }
+
+  /**
+   * Waits for the handler to end the response. Meanwhile it peeks at the socket, so that a browser
+   * closing the connection while a route never answers is noticed and reported to
+   * {@link Connection#onClose}, as Node's socket 'close' event is.
+   */
+  private static void awaitEndOrDisconnect(Response response, Connection connection, PushbackInputStream in) throws IOException {
+    Socket socket = connection.socket;
+    int previousTimeout = socket.getSoTimeout();
+    try {
+      socket.setSoTimeout(50);
+      while (!response.writableEnded() && !connection.isClosed()) {
+        int b;
+        try {
+          b = in.read();
+        } catch (SocketTimeoutException e) {
+          continue;
+        } catch (IOException e) {
+          connection.destroy();
+          return;
+        }
+        if (b == -1) {
+          connection.destroy();
+          return;
+        }
+        // The next request arrived early; leave it for the loop and wait for this response to end.
+        in.unread(b);
+        break;
+      }
+    } finally {
+      if (!connection.isClosed()) {
+        socket.setSoTimeout(previousTimeout);
+      }
+    }
+    response.awaitEnd();
   }
 
   private static Request readRequest(InputStream in, Connection connection) throws IOException {
