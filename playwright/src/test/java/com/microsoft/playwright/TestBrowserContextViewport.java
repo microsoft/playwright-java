@@ -20,6 +20,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import java.util.Map;
 
+import static com.microsoft.playwright.Utils.mapOf;
 import static com.microsoft.playwright.Utils.verifyViewport;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -128,5 +129,16 @@ public class TestBrowserContextViewport {
     Page page = context.newPage();
     assertNull(page.viewportSize());
     context.close();
+  }
+
+  @PlaywrightTest
+  void shouldSetBothScreenAndViewportOptions(Browser browser) {
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setScreenSize(1280, 720)
+      .setViewportSize(1000, 600))) {
+      Page page = context.newPage();
+      assertEquals(mapOf("w", 1280, "h", 720), page.evaluate("() => ({ w: screen.width, h: screen.height })"));
+      assertEquals(mapOf("w", 1000, "h", 600), page.evaluate("() => ({ w: window.innerWidth, h: window.innerHeight })"));
+    }
   }
 }
