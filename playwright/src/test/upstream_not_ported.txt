@@ -324,3 +324,45 @@ CC-036      TODO harness: needs an HTTP/2 server with client certificates (creat
 CC-037      TODO harness: needs an HTTP/2 server with allowHTTP1 (createHttp2Server) that reports the ALPN protocol of its TLS socket; TestServer.Connection does not expose the SSLSocket.
 CC-038      TODO harness: needs an HTTP/2 server with client certificates (createHttp2Server).
 CC-039      TODO harness: needs an HTTP/2 server with client certificates (createHttp2Server).
+
+# library/browsercontext-user-agent
+UA-003      playwright.devices (the device descriptors) is not in the Java API.
+UA-006      playwright.devices (the Pixel 7 descriptor) is not in the Java API.
+# library/browsercontext-viewport
+VP-004      Reads the deviceDescriptors of the server; playwright.devices is not in the Java API.
+VP-017      playwright.devices (the iPhone 14 descriptor) is not in the Java API.
+# library/tracing
+TR-001      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-002      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-011      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-012      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-013      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-018      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-024      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-030      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-033      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-034      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
+TR-035      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
+TR-019      Reads context.tracing._stacksId, an internal of the Node.js client.
+TR-021      Sets browserType._playwright._defaultTracesDir, an internal of the Node.js client.
+TR-039      TODO harness: reads the .trace file in the traces folder of the test runner (testInfo.project.outputDir and artifactsFolderName); the harness has no such folder.
+# library/video
+VI-002      Passes recordVideo: {} (recording without a dir); the Java options are flattened and recordVideoDir is what turns recording on.
+VI-022      playwright.devices (the iPhone 6 descriptor) is not in the Java API.
+VI-024      Kills the browser with browser._channel.killForTests(), an internal of the Node.js client.
+VI-003      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-004      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-005      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-012      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-013      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-014      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-015      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-016      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-017      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-018      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-020      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-021      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-025      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-028      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-029      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-030      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
