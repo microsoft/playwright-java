@@ -32,12 +32,8 @@ import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,9 +41,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/page/page-fill.spec.ts. */
 public class TestPageFill {
-  private static void giveItAChanceToFill(Page page) {
-    rafraf(page, 5);
-  }
 
   @PlaywrightTest
   @DisplayName("FI-001 should fill textarea @smoke")
@@ -305,68 +298,11 @@ public class TestPageFill {
 
   // FI-019 should throw if passed a non-string value: not ported, see upstream_not_ported.txt.
 
-  @PlaywrightTest
-  @DisplayName("FI-020 should retry on disabled element")
-  void shouldRetryOnDisabledElement(Page page, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/input/textarea.html");
-    page.evalOnSelector("input", "i => i.disabled = true");
-    AtomicBoolean done = new AtomicBoolean(false);
+  // FI-020 should retry on disabled element: not ported, see upstream_not_ported.txt.
 
-    CompletableFuture<Void> promise = async(() -> {
-      page.fill("input", "some value");
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToFill(page);
-    assertEquals(false, done.get());
-    assertEquals("", page.evaluate("() => window['result']"));
+  // FI-021 should retry on readonly element: not ported, see upstream_not_ported.txt.
 
-    page.evalOnSelector("input", "i => i.disabled = false");
-    promise.get();
-    assertEquals("some value", page.evaluate("() => window['result']"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("FI-021 should retry on readonly element")
-  void shouldRetryOnReadonlyElement(Page page, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/input/textarea.html");
-    page.evalOnSelector("textarea", "i => i.readOnly = true");
-    AtomicBoolean done = new AtomicBoolean(false);
-
-    CompletableFuture<Void> promise = async(() -> {
-      page.fill("textarea", "some value");
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToFill(page);
-    assertEquals(false, done.get());
-    assertEquals("", page.evaluate("() => window['result']"));
-
-    page.evalOnSelector("textarea", "i => i.readOnly = false");
-    promise.get();
-    assertEquals("some value", page.evaluate("() => window['result']"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("FI-022 should retry on invisible element")
-  void shouldRetryOnInvisibleElement(Page page, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/input/textarea.html");
-    page.evalOnSelector("input", "i => i.style.display = 'none'");
-    AtomicBoolean done = new AtomicBoolean(false);
-
-    CompletableFuture<Void> promise = async(() -> {
-      page.fill("input", "some value");
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToFill(page);
-    assertEquals(false, done.get());
-    assertEquals("", page.evaluate("() => window['result']"));
-
-    page.evalOnSelector("input", "i => i.style.display = 'inline'");
-    promise.get();
-    assertEquals("some value", page.evaluate("() => window['result']"));
-  }
+  // FI-022 should retry on invisible element: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("FI-023 should be able to fill the body")
@@ -481,64 +417,9 @@ public class TestPageFill {
     assertEquals("some value", page.locator("div[contenteditable]").textContent());
   }
 
-  @PlaywrightTest
-  @DisplayName("FI-034 should retry on inert element")
-  @Fixme("driver: the driver (1.64.1) predates the upstream fix of issue 42967: page.fill does not wait for the inert element, it returns before the inert attribute is removed")
-  void shouldRetryOnInertElement(Page page) throws Exception {
-    page.setContent("\n" +
-      "    <div inert id=container>\n" +
-      "      <input id=target>\n" +
-      "    </div>\n" +
-      "    <input id=outside>\n" +
-      "  ");
-    page.focus("#outside");
-    AtomicBoolean done = new AtomicBoolean(false);
+  // FI-034 should retry on inert element: not ported, see upstream_not_ported.txt.
 
-    CompletableFuture<Void> promise = async(() -> {
-      page.fill("#target", "some value");
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToFill(page);
-    assertEquals(false, done.get());
-    assertEquals("", page.evalOnSelector("#target", "i => i.value"));
-    assertEquals("", page.evalOnSelector("#outside", "i => i.value"));
-
-    page.evalOnSelector("#container", "e => e.removeAttribute('inert')");
-    promise.get();
-    assertEquals("some value", page.evalOnSelector("#target", "i => i.value"));
-    assertEquals("", page.evalOnSelector("#outside", "i => i.value"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("FI-035 should retry on element outside of a modal dialog")
-  @Fixme("driver: the driver (1.64.1) predates the upstream fix of issue 42967: page.fill does not wait for an element outside of a modal dialog")
-  void shouldRetryOnElementOutsideOfAModalDialog(Page page) throws Exception {
-    page.setContent("\n" +
-      "    <input id=target>\n" +
-      "    <dialog id=dialog><input id=inside></dialog>\n" +
-      "    <script>\n" +
-      "      document.getElementById('dialog').showModal();\n" +
-      "    </script>\n" +
-      "  ");
-    AtomicBoolean done = new AtomicBoolean(false);
-
-    page.fill("#inside", "inside value");
-    assertEquals("inside value", page.evalOnSelector("#inside", "i => i.value"));
-
-    CompletableFuture<Void> promise = async(() -> {
-      page.fill("#target", "some value");
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToFill(page);
-    assertEquals(false, done.get());
-    assertEquals("", page.evalOnSelector("#target", "i => i.value"));
-
-    page.evalOnSelector("#dialog", "e => e.close()");
-    promise.get();
-    assertEquals("some value", page.evalOnSelector("#target", "i => i.value"));
-  }
+  // FI-035 should retry on element outside of a modal dialog: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("FI-036 should fail with a nice error on inert element")

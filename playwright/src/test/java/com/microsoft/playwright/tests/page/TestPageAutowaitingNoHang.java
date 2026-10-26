@@ -18,17 +18,14 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.fixtures.HttpsTestServer;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
 import java.net.URI;
-import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Port of tests/page/page-autowaiting-no-hang.spec.ts. */
@@ -93,73 +90,9 @@ public class TestPageAutowaitingNoHang {
     page.waitForPopup(() -> page.evaluate("() => window.open(window.location.href) && 1"));
   }
 
-  @PlaywrightTest
-  @DisplayName("AW-020 clicking in the middle of navigation that aborts")
-  void clickingInTheMiddleOfNavigationThatAborts(Page page, TestServer server) throws Exception {
-    CompletableFuture<Void> abortPromise = new CompletableFuture<>();
+  // AW-020 clicking in the middle of navigation that aborts: not ported, see upstream_not_ported.txt.
 
-    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
-
-    server.setRoute("/stall.html", (req, res) -> {
-      stallPromise.complete(null);
-      abortPromise.get();
-      req.socket().destroy();
-    });
-
-    page.navigate(server.PREFIX + "/one-style.html");
-    async(() -> {
-      try {
-        return page.navigate(server.PREFIX + "/stall.html");
-      } catch (PlaywrightException e) {
-        return null;
-      }
-    });
-    stallPromise.get();
-
-    CompletableFuture<Object> clickPromise = async(() -> {
-      page.click("body");
-      return null;
-    });
-    page.waitForTimeout(1000);
-    abortPromise.complete(null);
-
-    clickPromise.get();
-  }
-
-  @PlaywrightTest
-  @DisplayName("AW-021 clicking in the middle of navigation that commits")
-  void clickingInTheMiddleOfNavigationThatCommits(Page page, TestServer server) throws Exception {
-    CompletableFuture<Void> abortPromise = new CompletableFuture<>();
-
-    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
-
-    server.setRoute("/stall.html", (req, res) -> {
-      stallPromise.complete(null);
-      abortPromise.get();
-      res.writeHead(200, "Content-Type", "text/html");
-      res.end("hello world");
-    });
-
-    page.navigate(server.PREFIX + "/one-style.html");
-    async(() -> {
-      try {
-        return page.navigate(server.PREFIX + "/stall.html");
-      } catch (PlaywrightException e) {
-        return null;
-      }
-    });
-    stallPromise.get();
-
-    CompletableFuture<Object> clickPromise = async(() -> {
-      page.click("body");
-      return null;
-    });
-    page.waitForTimeout(1000);
-    abortPromise.complete(null);
-
-    clickPromise.get();
-    assertThat(page.locator("body")).containsText("hello world");
-  }
+  // AW-021 clicking in the middle of navigation that commits: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("AW-022 clicking a link intercepted by the Navigation API same-document")
@@ -194,40 +127,5 @@ public class TestPageAutowaitingNoHang {
     assertEquals("/other", URI.create(page.url()).getPath());
   }
 
-  @PlaywrightTest
-  @DisplayName("AW-023 goBack in the middle of navigation that commits")
-  void goBackInTheMiddleOfNavigationThatCommits(Page page, TestServer server) throws Exception {
-    CompletableFuture<Void> commitPromise = new CompletableFuture<>();
-
-    CompletableFuture<Void> stallPromise = new CompletableFuture<>();
-
-    server.setRoute("/stall.html", (req, res) -> {
-      stallPromise.complete(null);
-      commitPromise.get();
-      res.writeHead(200, "Content-Type", "text/html");
-      res.end("hello world");
-    });
-
-    page.navigate(server.PREFIX + "/one-style.html");
-    async(() -> {
-      try {
-        return page.navigate(server.PREFIX + "/stall.html");
-      } catch (PlaywrightException e) {
-        return null;
-      }
-    });
-    stallPromise.get();
-
-    CompletableFuture<Object> goBackPromise = async(() -> {
-      try {
-        return page.goBack();
-      } catch (PlaywrightException e) {
-        return null;
-      }
-    });
-    page.waitForTimeout(1000);
-    commitPromise.complete(null);
-
-    goBackPromise.get();
-  }
+  // AW-023 goBack in the middle of navigation that commits: not ported, see upstream_not_ported.txt.
 }

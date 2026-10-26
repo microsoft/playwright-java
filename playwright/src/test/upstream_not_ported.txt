@@ -62,7 +62,28 @@ EM-006      java: concurrent: page.emulateMedia while page.goto is pending
 page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
 # page/page-autowaiting-basic
 AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
+# page/page-autowaiting-no-hang
+AW-020      java: concurrent: page.click while page.goto is pending
+AW-021      java: concurrent: page.click while page.goto is pending
+AW-023      java: concurrent: page.goBack while page.goto is pending
 # page/page-click
+CL-003      java: concurrent: page.click while page.click is pending
+CL-020      java: concurrent: page.evaluate while page.click is pending
+CL-021      java: concurrent: page.evaluate while page.click is pending
+CL-022      java: concurrent: page.evaluate while page.click is pending
+CL-043      java: concurrent: page.evaluate while page.click is pending
+CL-044      java: concurrent: page.evaluate while page.click is pending
+CL-049      java: concurrent: page.evaluate while page.click is pending
+CL-050      java: concurrent: page.evaluate while page.click is pending
+CL-051      java: concurrent: page.evaluate while page.click is pending
+CL-052      java: concurrent: page.evaluate while page.click is pending
+CL-053      java: concurrent: page.evaluate while page.click is pending
+CL-055      java: concurrent: page.evaluate while page.click is pending
+CL-056      java: concurrent: page.evaluate while page.click is pending
+CL-060      java: concurrent: page.evaluate while elementHandle.click is pending
+CL-061      java: concurrent: page.evaluate while page.click is pending
+CL-062      java: concurrent: elementHandle.evaluate while elementHandle.click is pending
+CL-063      java: concurrent: elementHandle.evaluate while elementHandle.click is pending
 CL-067      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
 CL-068      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
 CL-069      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
@@ -178,6 +199,11 @@ FR-003      TODO harness: needs the toImpl fixture (reads the driver internals _
 FR-004      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
 # page/page-fill
 FI-019      Passes a number to fill(); the Java API is typed and only accepts a String.
+FI-020      java: concurrent: page.evaluate while page.fill is pending
+FI-021      java: concurrent: page.evaluate while page.fill is pending
+FI-022      java: concurrent: page.evaluate while page.fill is pending
+FI-034      java: concurrent: page.evaluate while page.fill is pending
+FI-035      java: concurrent: page.evaluate while page.fill is pending
 # page/page-filechooser
 FC-003      page.prependListener() is a Node.js EventEmitter method; the Java event API has only onX() and offX().
 FC-006      page.addListener() and page.removeListener() are Node.js EventEmitter aliases of on() and off(); the Java event API has only onX() and offX() (covered by FC-005).
@@ -267,6 +293,10 @@ IF-017      TODO harness: needs formidable, a multipart/form-data parser for the
 # page/page-wait-for-selector-1
 WA-027      page.waitForSelector({ waitFor }) is an undocumented JS-client option; the Java API has no waitFor option.
 WA-028      page.waitForSelector({ waitFor: 'visible' }) is an undocumented JS-client option; the Java API has no waitFor option.
+WA-033      java: concurrent: page.goto while elementHandle.waitForSelector is pending
+WA-036      java: concurrent: frame.evaluate while frame.waitForSelector is pending
+WA-037      java: concurrent: frame.evaluate while frame.waitForSelector is pending
+WA-043      java: concurrent: page.evaluate while frame.waitForSelector is pending
 # page/page-wait-for-selector-2
 WA-058      passes the invalid state 'foo'; state is the WaitForSelectorState enum in Java.
 WA-059      page.waitForSelector({ visibility }) is an undocumented JS-client option; the Java API has no visibility option.
