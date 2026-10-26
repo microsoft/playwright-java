@@ -48,7 +48,6 @@ import com.microsoft.playwright.fixtures.TestInfo;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.impl.PlaywrightImpl;
 import com.microsoft.playwright.impl.TargetClosedError;
-import com.microsoft.playwright.options.WaitForSelectorState;
 import com.sun.net.httpserver.HttpServer;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
@@ -79,7 +78,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -89,9 +87,7 @@ import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
@@ -521,17 +517,19 @@ public class TestBrowsertypeConnect {
     @PlaywrightTest
     @DisplayName("BT-047 should send extra headers with connect request in object form")
     void shouldSendExtraHeadersWithConnectRequestInObjectForm(BrowserType browserType, TestServer server) throws Exception {
-      CompletableFuture<TestServer.Request> requestPromise = server.waitForWebSocketConnectionRequest();
-      // Java: the object form {wsEndpoint, ...options} is the endpoint and the options.
-      async(() -> {
-        try {
-          return browserType.connect("ws://localhost:" + server.PORT + "/ws", new BrowserType.ConnectOptions()
-            .setHeaders(headers("User-Agent", "Playwright", "foo", "bar"))
-            .setTimeout(3000));
-        } catch (PlaywrightException e) {
-          return null;
-        }
+      // Java: the server closes the websocket after the handshake so that connect() returns, upstream never awaits it.
+      CompletableFuture<TestServer.Request> requestPromise = new CompletableFuture<>();
+      server.onceWebSocketConnection((ws, request) -> {
+        requestPromise.complete(request);
+        ws.close();
       });
+      // Java: the object form {wsEndpoint, ...options} is the endpoint and the options.
+      try {
+        browserType.connect("ws://localhost:" + server.PORT + "/ws", new BrowserType.ConnectOptions()
+          .setHeaders(headers("User-Agent", "Playwright", "foo", "bar"))
+          .setTimeout(3000));
+      } catch (PlaywrightException e) {
+      }
       TestServer.Request request = requestPromise.get();
       assertEquals("Playwright", request.headers.get("user-agent"));
       assertEquals("bar", request.headers.get("foo"));
@@ -657,36 +655,9 @@ public class TestBrowsertypeConnect {
       assertTrue(error.getMessage().contains(kTargetClosedErrorMessage));
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-056 should reject navigation when browser closes")
-    void shouldRejectNavigationWhenBrowserCloses(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-      server.setRoute("/one-style.css", (req, res) -> {});
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page page = browser.newPage();
-      CompletableFuture<Response> navigationPromise = async(() -> page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000)));
-      server.waitForRequest("/one-style.css").get();
-      browser.close();
-      Throwable error = cause(navigationPromise);
-      assertTrue(error.getMessage().contains("has been closed"));
-    }
+    // BT-056 should reject navigation when browser closes: not ported, see upstream_not_ported.txt.
 
-    @PlaywrightTest
-    @DisplayName("BT-057 should reject waitForSelector when browser closes")
-    void shouldRejectWaitForSelectorWhenBrowserCloses(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-      server.setRoute("/empty.html", (req, res) -> {});
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page page = browser.newPage();
-      CompletableFuture<ElementHandle> watchdog = async(() -> page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED).setTimeout(60000)));
-
-      // Make sure the previous waitForSelector has time to make it to the browser before we disconnect.
-      page.waitForSelector("body", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
-
-      browser.close();
-      Throwable error = cause(watchdog);
-      assertTrue(error.getMessage().contains("has been closed"));
-    }
+    // BT-057 should reject waitForSelector when browser closes: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("BT-058 should emit close events on pages and contexts")
@@ -704,23 +675,7 @@ public class TestBrowsertypeConnect {
       assertTrue(pageClosed.get());
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-059 should terminate network waiters")
-    @Fixme(value = "java: the error message is 'Browser closed' or 'Browser has been closed', not the target closed message", browsers = BrowserName.FIREFOX)
-    void shouldTerminateNetworkWaiters(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page newPage = browser.newPage();
-      CompletableFuture<Request> waitForRequest = async(() -> newPage.waitForRequest(server.EMPTY_PAGE, () -> {}));
-      CompletableFuture<Response> waitForResponse = async(() -> newPage.waitForResponse(server.EMPTY_PAGE, () -> {}));
-      remoteServer.close();
-      List<Throwable> results = asList(cause(waitForRequest), cause(waitForResponse));
-      for (int i = 0; i < 2; i++) {
-        String message = results.get(i).getMessage();
-        assertTrue(message.contains(kTargetClosedErrorMessage));
-        assertFalse(message.contains("Timeout"));
-      }
-    }
+    // BT-059 should terminate network waiters: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("BT-060 should reject waitForEvent before browser.close finishes")
@@ -729,39 +684,16 @@ public class TestBrowsertypeConnect {
       Browser browser = connect.connect(remoteServer.wsEndpoint());
       Page newPage = browser.newPage();
       AtomicBoolean rejected = new AtomicBoolean(false);
-      CompletableFuture<Boolean> promise = async(() -> {
-        try {
-          newPage.waitForDownload(() -> {});
-        } catch (PlaywrightException e) {
-          rejected.set(true);
-        }
-        return true;
-      });
-      browser.close();
+      // Java: browser.close() goes in the callback of the wait.
+      try {
+        newPage.waitForDownload(() -> browser.close());
+      } catch (PlaywrightException e) {
+        rejected.set(true);
+      }
       assertEquals(true, rejected.get());
-      promise.get();
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-061 should reject waitForEvent before browser.onDisconnect fires")
-    void shouldRejectWaitForEventBeforeBrowserOnDisconnectFires(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page newPage = browser.newPage();
-      List<String> log = new CopyOnWriteArrayList<>();
-      CompletableFuture<Boolean> promise = async(() -> {
-        try {
-          newPage.waitForDownload(() -> {});
-        } catch (PlaywrightException e) {
-          log.add("rejected");
-        }
-        return true;
-      });
-      browser.onDisconnected(b -> log.add("disconnected"));
-      remoteServer.close();
-      promise.get();
-      expectPoll(() -> log, asList("rejected", "disconnected"), newPage);
-    }
+    // BT-061 should reject waitForEvent before browser.onDisconnect fires: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("BT-062 should respect selectors")
@@ -966,31 +898,7 @@ public class TestBrowsertypeConnect {
       browser.close();
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-070 should properly disconnect when connection closes from the client side")
-    @Fixme("java: the error message is 'Browser closed' or 'Browser has been closed', not the target closed message")
-    void shouldProperlyDisconnectWhenConnectionClosesFromTheClientSide(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      server.setRoute("/one-style.css", (req, res) -> {});
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page page = browser.newPage();
-      CompletableFuture<Response> navigationPromise = async(() -> page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000)));
-      CompletableFuture<Response> waitForNavigationPromise = async(() -> page.waitForNavigation(() -> {}));
-
-      CompletableFuture<Browser> disconnectedPromise = new CompletableFuture<>();
-      browser.onDisconnected(disconnectedPromise::complete);
-      // This closes the websocket.
-      // Java: _connection is an internal field of the client object.
-      closeConnection(browser);
-      disconnectedPromise.get();
-      assertEquals(false, browser.isConnected());
-
-      Throwable navError = cause(navigationPromise);
-      assertTrue(navError.getMessage().contains(kTargetClosedErrorMessage));
-      assertTrue(cause(waitForNavigationPromise).getMessage().contains(kTargetClosedErrorMessage));
-      assertTrue(assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE)).getMessage().contains("has been closed"));
-      assertTrue(assertThrows(PlaywrightException.class, () -> page.waitForNavigation(() -> {})).getMessage().contains(kTargetClosedErrorMessage));
-    }
+    // BT-070 should properly disconnect when connection closes from the client side: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("BT-071 should be able to connect when the wsEndpoint is passed as an option")
@@ -1485,32 +1393,7 @@ public class TestBrowsertypeConnect {
       assertEquals(3, page.evaluate("1 + 2"));
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-090 should properly disconnect when connection closes from the server side")
-    @Fixme("java: the error message is 'Browser closed' or 'Browser has been closed', not the target closed message")
-    void shouldProperlyDisconnectWhenConnectionClosesFromTheServerSide(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
-      assumeFalse("win32".equals(Env.platform()), "Cannot send signals");
-
-      server.setRoute("/one-style.css", (req, res) -> {});
-      RemoteServer remoteServer = (RemoteServer) startRemoteServer.start("launchServer", new RemoteServerOptions().setDisconnectOnSIGHUP(true));
-      Browser browser = connect.connect(remoteServer.wsEndpoint());
-      Page page = browser.newPage();
-      CompletableFuture<Response> navigationPromise = async(() -> page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000)));
-      CompletableFuture<Response> waitForNavigationPromise = async(() -> page.waitForNavigation(() -> {}));
-
-      CompletableFuture<Browser> disconnectedPromise = new CompletableFuture<>();
-      browser.onDisconnected(disconnectedPromise::complete);
-      // This closes the websocket server.
-      // Java: there is no process.kill(); the kill command sends the signal.
-      new ProcessBuilder("kill", "-HUP", String.valueOf(remoteServer.child().pid())).start().waitFor();
-      disconnectedPromise.get();
-      assertEquals(false, browser.isConnected());
-
-      assertTrue(cause(navigationPromise).getMessage().contains("has been closed"));
-      assertTrue(cause(waitForNavigationPromise).getMessage().contains(kTargetClosedErrorMessage));
-      assertTrue(assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE)).getMessage().contains("has been closed"));
-      assertTrue(assertThrows(PlaywrightException.class, () -> page.waitForNavigation(() -> {})).getMessage().contains(kTargetClosedErrorMessage));
-    }
+    // BT-090 should properly disconnect when connection closes from the server side: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("BT-091 should be able to reconnect to a browser 12 times without warnings")

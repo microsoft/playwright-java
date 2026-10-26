@@ -379,7 +379,10 @@ SE-122      java: concurrent: page.goto while page.click is pending
 AU-002      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
 AU-003      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
 # library/browsercontext-basic
+BC-003      java: concurrent: browserContext.newPage while browserContext.newPage is pending
+BC-022      java: concurrent: locator.evaluate while locator.click is pending
 BC-030      Calls browser._channel.defaultUserAgentForTest(), a private protocol command of the Node.js client that the Java API does not expose.
+BC-031      java: concurrent: browserContext.newPage while browserContext.newPage is pending
 # library/browsercontext-pages
 BC-055      Uses playwright.devices['iPhone 6']; Playwright.devices is not in the Java API.
 BC-059      Listens to process.on('warning') for the Node.js MaxListenersExceededWarning of the Node.js client.
@@ -477,6 +480,9 @@ CR-038      browserContext.serviceWorkers() and the 'serviceworker' event are no
 CR-039      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 CR-041      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 # library/debugger
+DB-001      java: concurrent: debugger.pausedDetails while page.click is pending
+DB-002      java: concurrent: debugger.resume while page.pause is pending
+DB-003      java: concurrent: debugger.runTo while page.click is pending
 DB-004      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
 DB-005      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
 DB-006      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
@@ -570,10 +576,18 @@ PR-046      Needs a TLS proxy server that negotiates ALPN (Node.js https.createS
 # library/browsercontext-route
 RO-185      Routes on a URLPattern, a JavaScript-only class (BrowserContext.route() takes a String, a Pattern or a Predicate), so there is no ignoreCase option to test.
 # library/unroute-behavior
+RO-186      java: concurrent: context.unroute while page.goto is pending
 RO-188      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
 RO-189      Uses unrouteAll({ behavior: 'ignoreErrors' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+RO-190      java: concurrent: page.close while page.goto is pending
+RO-191      java: concurrent: context.close while page.goto is pending
+RO-192      java: concurrent: page.unroute while page.goto is pending
 RO-194      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
 RO-195      Uses unrouteAll({ behavior: 'ignoreErrors' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-196      java: concurrent: page.close while page.goto is pending
+RO-197      java: concurrent: page.close while page.goto is pending
+RO-198      java: concurrent: page.close while page.goto is pending
+RO-199      java: concurrent: page.close while page.goto is pending
 RO-200      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
 RO-201      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
 # library/screencast
@@ -664,6 +678,12 @@ HA-067      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.S
 FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1.64.1 when the firefoxUserPrefs layout.css.devPixelsPerPx is 1.1 (the fix of https://github.com/microsoft/playwright/issues/43028 is newer than the driver), so the test would hang the whole run instead of failing.
 # library/browsertype-connect
 BT-052      passes __testHookBeforeCreateBrowser, a JavaScript function that the Node.js client calls during connect; the Java connect() has no such hook.
+BT-056      java: concurrent: browser.close while page.goto is pending
+BT-057      java: concurrent: browser.close while page.waitForSelector is pending
+BT-059      java: concurrent: browser.close while page.waitForRequest is pending
+BT-061      java: concurrent: browser.on(disconnected) while page.waitForEvent is pending
+BT-070      java: concurrent: page.waitForNavigation while page.goto is pending
+BT-090      java: concurrent: page.waitForNavigation while page.goto is pending
 BT-096      starts an in-process remote.PlaywrightServer of the Node.js package and reads its internal _dontReuseBrowsers.
 # library/browsercontext-add-init-script
 IS-031      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
@@ -730,3 +750,13 @@ SC-018      java: concurrent: expect(locator).toBeVisible while page.click is pe
 SC-020      java: concurrent: expect(locator).toBeVisible while page.fill is pending
 SC-025      java: concurrent: expect(locator).toBeVisible while page.click is pending
 SC-027      java: concurrent: expect(locator).toBeVisible while page.click is pending
+# library/page-close
+PA-040      java: concurrent: page.close while expect(locator).toHaveText is pending
+PA-042      java: concurrent: page.close while page.evaluate is pending
+PA-046      java: concurrent: page.close while page.close is pending
+PA-050      java: concurrent: page.mouse.click while page.close is pending
+PA-051      java: concurrent: page.close while request.response is pending
+PA-054      java: concurrent: page.close while response.finished is pending
+PA-055      java: concurrent: page.close while route.continue is pending
+# library/tap
+TA-008      java: concurrent: elementHandle.evaluate while elementHandle.tap is pending

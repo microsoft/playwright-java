@@ -34,7 +34,6 @@ import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.WebErrorLocation;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static com.microsoft.playwright.fixtures.Utils.async;
@@ -130,39 +129,42 @@ public class TestBrowsercontextEvents {
   @PlaywrightTest
   @DisplayName("BC-037 dialog event should work @smoke")
   void dialogEventShouldWork(Page page) throws Exception {
-    // Java: waitForEvent('dialog') of the context and of the page are handlers registered before the evaluate runs in async().
+    // Java: waitForEvent('dialog') of the context and of the page are handlers registered before the evaluate;
+    // the context handler accepts the dialog, the evaluate returns after that.
     Dialog[] dialog1 = {null};
     Dialog[] dialog2 = {null};
-    page.context().onDialog(dialog -> dialog1[0] = dialog);
+    page.context().onDialog(dialog -> {
+      dialog1[0] = dialog;
+      dialog.accept("hello");
+    });
     page.onDialog(dialog -> dialog2[0] = dialog);
-    CompletableFuture<Object> promise = async(() -> page.evaluate("() => prompt('hey?')"));
+    Object result = page.evaluate("() => prompt('hey?')");
     page.waitForCondition(() -> dialog1[0] != null && dialog2[0] != null);
 
     assertEquals(dialog2[0], dialog1[0]);
     assertEquals("hey?", dialog1[0].message());
     assertEquals(page, dialog1[0].page());
-    dialog1[0].accept("hello");
-    assertEquals("hello", promise.get());
+    assertEquals("hello", result);
   }
 
   @PlaywrightTest
   @DisplayName("BC-038 dialogclosed event should work")
   void dialogclosedEventShouldWork(Page page) throws Exception {
+    // Java: the dialog is accepted in the handler, the handlers for dialogclosed are registered before the evaluate.
     Dialog[] opened = {null};
-    page.context().onDialog(dialog -> opened[0] = dialog);
-    CompletableFuture<Object> promise = async(() -> page.evaluate("() => prompt('hey?')"));
-    page.waitForCondition(() -> opened[0] != null);
-    Dialog dialog = opened[0];
-    // Java: waitForEvent('dialogclosed') of the context and of the page are handlers registered before the dialog is accepted.
     Dialog[] closed1 = {null};
     Dialog[] closed2 = {null};
+    page.context().onDialog(d -> {
+      opened[0] = d;
+      d.accept("hello");
+    });
     page.context().onDialogClosed(d -> closed1[0] = d);
     page.onDialogClosed(d -> closed2[0] = d);
-    dialog.accept("hello");
+    Object result = page.evaluate("() => prompt('hey?')");
     page.waitForCondition(() -> closed1[0] != null && closed2[0] != null);
-    assertEquals(dialog, closed1[0]);
-    assertEquals(dialog, closed2[0]);
-    assertEquals("hello", promise.get());
+    assertEquals(opened[0], closed1[0]);
+    assertEquals(opened[0], closed2[0]);
+    assertEquals("hello", result);
   }
 
   @PlaywrightTest
@@ -170,19 +172,22 @@ public class TestBrowsercontextEvents {
   void dialogEventShouldWorkInPopup(Page page) throws Exception {
     Dialog[] dialog = {null};
     Page[] popup = {null};
-    page.context().onDialog(d -> dialog[0] = d);
+    // Java: the dialog is accepted in the handler, the evaluate returns after that.
+    page.context().onDialog(d -> {
+      dialog[0] = d;
+      d.accept("hello");
+    });
     page.onPopup(p -> popup[0] = p);
-    CompletableFuture<Object> promise = async(() -> page.evaluate("() => {\n" +
+    Object result = page.evaluate("() => {\n" +
       "  const win = window.open('');\n" +
       "  return win.prompt('hey?');\n" +
-      "}"));
+      "}");
 
     page.waitForCondition(() -> dialog[0] != null && popup[0] != null);
 
     assertEquals("hey?", dialog[0].message());
     assertEquals(popup[0], dialog[0].page());
-    dialog[0].accept("hello");
-    assertEquals("hello", promise.get());
+    assertEquals("hello", result);
   }
 
   @PlaywrightTest
@@ -190,17 +195,19 @@ public class TestBrowsercontextEvents {
   @DisabledOnBrowser(value = BrowserName.FIREFOX, reason = "fixme: dialog from javascript: url is not reported at all")
   void dialogEventShouldWorkInPopup2(Page page) throws Exception {
     Dialog[] dialog = {null};
-    page.context().onDialog(d -> dialog[0] = d);
-    CompletableFuture<Object> promise = async(() -> page.evaluate("async () => {\n" +
+    // Java: the dialog is accepted in the handler.
+    page.context().onDialog(d -> {
+      dialog[0] = d;
+      d.accept("hello");
+    });
+    page.evaluate("async () => {\n" +
       "  window.open('javascript:prompt(\"hey?\")');\n" +
-      "}"));
+      "}");
 
     page.waitForCondition(() -> dialog[0] != null);
 
     assertEquals("hey?", dialog[0].message());
     assertNull(dialog[0].page());
-    dialog[0].accept("hello");
-    promise.get();
   }
 
   @PlaywrightTest
@@ -208,21 +215,24 @@ public class TestBrowsercontextEvents {
   void dialogEventShouldWorkInImmediatelyClosedPopup(Page page) throws Exception {
     Dialog[] dialog = {null};
     Page[] popup = {null};
-    page.context().onDialog(d -> dialog[0] = d);
+    // Java: the dialog is accepted in the handler, the evaluate returns after that.
+    page.context().onDialog(d -> {
+      dialog[0] = d;
+      d.accept("hello");
+    });
     page.onPopup(p -> popup[0] = p);
-    CompletableFuture<Object> promise = async(() -> page.evaluate("async () => {\n" +
+    Object result = page.evaluate("async () => {\n" +
       "  const win = window.open();\n" +
       "  const result = win.prompt('hey?');\n" +
       "  win.close();\n" +
       "  return result;\n" +
-      "}"));
+      "}");
 
     page.waitForCondition(() -> dialog[0] != null && popup[0] != null);
 
     assertEquals("hey?", dialog[0].message());
     assertEquals(popup[0], dialog[0].page());
-    dialog[0].accept("hello");
-    assertEquals("hello", promise.get());
+    assertEquals("hello", result);
   }
 
   @PlaywrightTest
@@ -238,18 +248,17 @@ public class TestBrowsercontextEvents {
 
     Dialog[] dialog = {null};
     Page[] popup = {null};
-    page.context().onDialog(d -> dialog[0] = d);
-    page.context().onPage(p -> popup[0] = p);
-    CompletableFuture<Void> promise = async(() -> {
-      page.click("a");
-      return null;
+    // Java: the dialog is accepted in the handler.
+    page.context().onDialog(d -> {
+      dialog[0] = d;
+      d.accept("hello");
     });
+    page.context().onPage(p -> popup[0] = p);
+    page.click("a");
     page.waitForCondition(() -> dialog[0] != null && popup[0] != null);
 
     assertEquals("hey?", dialog[0].message());
     assertEquals(popup[0], dialog[0].page());
-    dialog[0].accept("hello");
-    promise.get();
     expectPollToBe(popup[0], () -> popup[0].evaluate("window.result"), "hello");
   }
 

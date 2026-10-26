@@ -37,14 +37,11 @@ import com.microsoft.playwright.options.ColorScheme;
 import com.microsoft.playwright.options.ViewportSize;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
@@ -57,15 +54,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/browsercontext-basic.spec.ts. */
 public class TestBrowsercontextBasic {
-  // Java: stands for Promise.all(promises) of several async calls.
-  private static <T> List<T> promiseAll(List<CompletableFuture<T>> promises) throws Exception {
-    List<T> results = new ArrayList<>();
-    for (CompletableFuture<T> promise : promises) {
-      results.add(promise.get());
-    }
-    return results;
-  }
-
   // Java: expect.poll(() => value).toEqual(expected); waitForCondition() dispatches the events while waiting.
   private static <T> void expectPollToEqual(Page page, Supplier<T> value, T expected) {
     try {
@@ -120,13 +108,9 @@ public class TestBrowsercontextBasic {
     Page page2 = createPage(browser);
 
     int CLICK_COUNT = 20;
-    // Java: Promise.all of two independent actions, one runs in async().
-    CompletableFuture<Void> clicks1 = async(() -> {
-      clickInPage(page1, CLICK_COUNT);
-      return null;
-    });
+    // Java: Promise.all of two independent actions, they run one after the other.
+    clickInPage(page1, CLICK_COUNT);
     clickInPage(page2, CLICK_COUNT);
-    clicks1.get();
     assertEquals(CLICK_COUNT, getClicks(page1));
     assertEquals(CLICK_COUNT, getClicks(page2));
 
@@ -134,57 +118,7 @@ public class TestBrowsercontextBasic {
     page2.close();
   }
 
-  @PlaywrightTest
-  @DisplayName("BC-003 should be able to hover across browser contexts in parallel")
-  @DisabledOnBrowser(value = BrowserName.FIREFOX, headed = true, reason = "fixme: Hover is flaky in headed Firefox")
-  void shouldBeAbleToHoverAcrossBrowserContextsInParallel(Browser browser) throws Exception {
-    String html = "\n" +
-      "    <style>\n" +
-      "      [role=\"tooltip\"] { display: none; }\n" +
-      "      [role=\"tooltip\"].visible { display: block; }\n" +
-      "    </style>\n" +
-      "    <button>Hover me</button>\n" +
-      "    <div role=\"tooltip\">Tooltip content</div>\n" +
-      "    <script>\n" +
-      "      const button = document.querySelector('button');\n" +
-      "      const tooltip = document.querySelector('[role=\"tooltip\"]');\n" +
-      "      button.addEventListener('pointerenter', () => tooltip.classList.add('visible'));\n" +
-      "      button.addEventListener('pointerleave', () => tooltip.classList.remove('visible'));\n" +
-      "    </script>\n" +
-      "  ";
-
-    List<CompletableFuture<Page>> pagePromises = new ArrayList<>();
-    for (int i = 1; i <= 5; i++) {
-      pagePromises.add(async(() -> {
-        BrowserContext context = browser.newContext();
-        Page page = context.newPage();
-        page.setContent(html);
-        return page;
-      }));
-    }
-    List<Page> pages = promiseAll(pagePromises);
-
-    List<CompletableFuture<Void>> hoverPromises = new ArrayList<>();
-    for (int i = 0; i < pages.size(); i++) {
-      Page page = pages.get(i);
-      hoverPromises.add(async(() -> {
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Hover me")).hover();
-        // Tooltip for page ${index + 1} should be visible
-        assertThat(page.getByRole(AriaRole.TOOLTIP)).isVisible();
-        return null;
-      }));
-    }
-    promiseAll(hoverPromises);
-
-    List<CompletableFuture<Void>> closePromises = new ArrayList<>();
-    for (Page page : pages) {
-      closePromises.add(async(() -> {
-        page.context().close();
-        return null;
-      }));
-    }
-    promiseAll(closePromises);
-  }
+  // BC-003 should be able to hover across browser contexts in parallel: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("BC-004 window.open should use parent tab context")
@@ -237,13 +171,9 @@ public class TestBrowsercontextBasic {
     assertEquals("name=page2", page2.evaluate("() => document.cookie"));
 
     // Cleanup contexts.
-    // Java: Promise.all of two independent actions, one runs in async().
-    CompletableFuture<Void> close1 = async(() -> {
-      context1.close();
-      return null;
-    });
+    // Java: Promise.all of two independent actions, they run one after the other.
+    context1.close();
     context2.close();
-    close1.get();
     assertEquals(0, browser.contexts().size());
   }
 
@@ -423,29 +353,7 @@ public class TestBrowsercontextBasic {
     assertThat(page.locator("h1")).hasText("Hello");
   }
 
-  @PlaywrightTest
-  @DisplayName("BC-022 should retry click after disabling javascript")
-  void shouldRetryClickAfterDisablingJavascript(ContextFactory contextFactory) throws Exception {
-    BrowserContext context = contextFactory.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
-    Page page = context.newPage();
-    page.setContent("\n" +
-      "    <details><summary>Continue</summary>Details</details>\n" +
-      "    <div id=\"cover\" style=\"position: fixed; inset: 0;\"></div>\n" +
-      "  ");
-    boolean[] clicked = {false};
-    // Java: the pending click promise runs in async().
-    CompletableFuture<Void> clickPromise = async(() -> {
-      page.locator("summary").click();
-      clicked[0] = true;
-      return null;
-    });
-    // Give it enough time to go through a few retries while the button is covered.
-    page.waitForTimeout(2000);
-    assertEquals(false, clicked[0]);
-    page.locator("#cover").evaluate("e => e.remove()");
-    clickPromise.get();
-    assertThat(page.locator("details")).hasAttribute("open", "");
-  }
+  // BC-022 should retry click after disabling javascript: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("BC-023 should work with offline option")
@@ -601,23 +509,5 @@ public class TestBrowsercontextBasic {
     page.close();
   }
 
-  @PlaywrightTest
-  @DisplayName("BC-031 should create two pages in parallel in various contexts")
-  void shouldCreateTwoPagesInParallelInVariousContexts(Browser browser) throws Exception {
-    BrowserContext context1 = browser.newContext();
-    BrowserContext context2 = browser.newContext();
-    // Java: Promise.all of four independent actions, each runs in async().
-    promiseAll(Arrays.asList(
-      async(() -> context1.newPage()),
-      async(() -> context1.newPage()),
-      async(() -> context2.newPage()),
-      async(() -> context2.newPage())));
-    context1.close();
-    context2.close();
-    BrowserContext context3 = browser.newContext();
-    promiseAll(Arrays.asList(
-      async(() -> context3.newPage()),
-      async(() -> context3.newPage())));
-    context3.close();
-  }
+  // BC-031 should create two pages in parallel in various contexts: not ported, see upstream_not_ported.txt.
 }

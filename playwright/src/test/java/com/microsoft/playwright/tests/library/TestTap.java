@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Nested;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -123,23 +122,21 @@ public class TestTap {
   @DisplayName("TA-006 should work with modifiers")
   void shouldWorkWithModifiers(Page page) throws Exception {
     page.setContent("hello world");
-    // Java: concurrent
-    CompletableFuture<Object> altKeyPromise = async(() -> page.evaluate("() => new Promise(resolve => {\n" +
+    // Java: the promise stays in the page, evaluate() awaits it after the tap.
+    page.evaluate("() => { window.altKeyPromise = new Promise(resolve => {\n" +
       "  document.addEventListener('touchstart', event => {\n" +
       "    resolve(event.altKey);\n" +
       "  }, { passive: false });\n" +
-      "})"));
-    // make sure the evals hit the page
-    page.evaluate("() => void 0");
+      "}); }");
     page.tap("body", new Page.TapOptions().setModifiers(asList(KeyboardModifier.ALT)));
-    assertEquals(true, altKeyPromise.get());
+    assertEquals(true, page.evaluate("() => window.altKeyPromise"));
   }
 
   @PlaywrightTest
   @DisplayName("TA-007 should send well formed touch points")
   void shouldSendWellFormedTouchPoints(Page page) throws Exception {
-    // Java: concurrent
-    CompletableFuture<Object> touchstartPromise = async(() -> page.evaluate("() => new Promise(resolve => {\n" +
+    // Java: the promise stays in the page, evaluate() awaits it after the tap.
+    page.evaluate("() => { window.touchstartPromise = new Promise(resolve => {\n" +
       "  document.addEventListener('touchstart', event => {\n" +
       "    resolve([...event.touches].map(t => ({\n" +
       "      identifier: t.identifier,\n" +
@@ -153,9 +150,9 @@ public class TestTap {
       "      force: 'force' in t ? t.force : t['webkitForce'],\n" +
       "    })));\n" +
       "  }, false);\n" +
-      "})"));
-    // Java: concurrent
-    CompletableFuture<Object> touchendPromise = async(() -> page.evaluate("() => new Promise(resolve => {\n" +
+      "}); }");
+    // Java: the promise stays in the page, evaluate() awaits it after the tap.
+    page.evaluate("() => { window.touchendPromise = new Promise(resolve => {\n" +
       "  document.addEventListener('touchend', event => {\n" +
       "    resolve([...event.touches].map(t => ({\n" +
       "      identifier: t.identifier,\n" +
@@ -169,12 +166,10 @@ public class TestTap {
       "      force: 'force' in t ? t.force : t['webkitForce'],\n" +
       "    })));\n" +
       "  }, false);\n" +
-      "})"));
-    // make sure the evals hit the page
-    page.evaluate("() => void 0");
+      "}); }");
     page.touchscreen().tap(40, 60);
-    Object touchstart = touchstartPromise.get();
-    Object touchend = touchendPromise.get();
+    Object touchstart = page.evaluate("() => window.touchstartPromise");
+    Object touchend = page.evaluate("() => window.touchendPromise");
 
     assertEquals(asList(mapOf(
       "clientX", 40,
@@ -189,26 +184,7 @@ public class TestTap {
     assertEquals(asList(), touchend);
   }
 
-  @PlaywrightTest
-  @DisplayName("TA-008 should wait until an element is visible to tap it")
-  void shouldWaitUntilAnElementIsVisibleToTapIt(Page page) throws Exception {
-    ElementHandle div = page.evaluateHandle("() => {\n" +
-      "  const button = document.createElement('button');\n" +
-      "  button.textContent = 'not clicked';\n" +
-      "  document.body.appendChild(button);\n" +
-      "  button.style.display = 'none';\n" +
-      "  return button;\n" +
-      "}").asElement();
-    // Java: concurrent
-    CompletableFuture<Void> tapPromise = async(() -> {
-      div.tap();
-      return null;
-    });
-    div.evaluate("div => div.onclick = () => div.textContent = 'clicked'");
-    div.evaluate("div => div.style.display = 'block'");
-    tapPromise.get();
-    assertEquals("clicked", div.textContent());
-  }
+  // TA-008 should wait until an element is visible to tap it: not ported, see upstream_not_ported.txt.
 
   private static JSHandle trackEvents(ElementHandle target) {
     JSHandle eventsHandle = target.evaluateHandle("target => {\n" +
