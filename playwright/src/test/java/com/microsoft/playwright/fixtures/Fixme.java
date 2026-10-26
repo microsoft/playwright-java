@@ -47,4 +47,10 @@ public @interface Fixme {
    * means all.
    */
   String[] parameters() default {};
+
+  /**
+   * The expected failure is a hang: the test runs on a thread of its own and is reported as the
+   * expected failure when it has not finished after this many milliseconds; 0 means no limit.
+   */
+  long timeoutMillis() default 0;
 }

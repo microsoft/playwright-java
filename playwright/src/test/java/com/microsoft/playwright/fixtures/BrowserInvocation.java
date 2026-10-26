@@ -123,13 +123,39 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
       return;
     }
     try {
-      invocation.proceed();
+      if (fixme.timeoutMillis() > 0) {
+        proceedWithTimeout(invocation, fixme.timeoutMillis());
+      } else {
+        invocation.proceed();
+      }
     } catch (TestAbortedException e) {
       throw e;
     } catch (Throwable e) {
       throw new ExpectedFailure(fixme.value(), e);
     }
     throw new AssertionFailedError("Test marked @Fixme passed, remove the annotation: " + fixme.value());
+  }
+
+  /** Runs the test on a thread of its own and gives up on it after the timeout, like JUnit's separate-thread timeout. */
+  private static void proceedWithTimeout(Invocation<Void> invocation, long timeoutMillis) throws Throwable {
+    java.util.concurrent.CompletableFuture<Void> done = new java.util.concurrent.CompletableFuture<>();
+    Thread thread = new Thread(() -> {
+      try {
+        invocation.proceed();
+        done.complete(null);
+      } catch (Throwable e) {
+        done.completeExceptionally(e);
+      }
+    }, "fixme test");
+    thread.setDaemon(true);
+    thread.start();
+    try {
+      done.get(timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
+    } catch (java.util.concurrent.ExecutionException e) {
+      throw e.getCause();
+    } catch (java.util.concurrent.TimeoutException e) {
+      throw new java.util.concurrent.TimeoutException("Test did not finish within " + timeoutMillis + " ms");
+    }
   }
 
   @Override

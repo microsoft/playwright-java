@@ -493,20 +493,18 @@ public class TestBrowsertypeConnect {
       assertTrue(e.getMessage().contains("browserType.connect: Timeout 1000ms exceeded"));
     }
 
-    @Timeout(value = 60, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     @PlaywrightTest
     @DisplayName("BT-045 should timeout in connect while connecting")
-    @Fixme("java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization; the test is stopped by @Timeout")
+    @Fixme(value = "java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization", timeoutMillis = 15000)
     void shouldTimeoutInConnectWhileConnecting(Connect connect, TestServer server) {
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> connect.connect("ws://localhost:" + server.PORT + "/ws",
         new BrowserType.ConnectOptions().setTimeout(100)));
       assertTrue(e.getMessage().contains("browserType.connect: Timeout 100ms exceeded"));
     }
 
-    @Timeout(value = 60, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     @PlaywrightTest
     @DisplayName("BT-046 should send extra headers with connect request")
-    @Fixme("java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization; the test is stopped by @Timeout")
+    @Fixme(value = "java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization", timeoutMillis = 15000)
     void shouldSendExtraHeadersWithConnectRequest(Connect connect, TestServer server) throws Exception {
       CompletableFuture<TestServer.Request> requestPromise = server.waitForWebSocketConnectionRequest();
       try {
@@ -539,10 +537,9 @@ public class TestBrowsertypeConnect {
       assertEquals("bar", request.headers.get("foo"));
     }
 
-    @Timeout(value = 60, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     @PlaywrightTest
     @DisplayName("BT-048 should send default User-Agent and X-Playwright-Browser headers with connect request")
-    @Fixme("java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization; the test is stopped by @Timeout")
+    @Fixme(value = "java: connect() has no timeout once the websocket is open, it waits forever for the Playwright initialization", timeoutMillis = 15000)
     void shouldSendDefaultUserAgentAndXPlaywrightBrowserHeadersWithConnectRequest(Connect connect, BrowserName browserName, TestServer server, Playwright playwright) throws Exception {
       // Java: getUserAgent() is a function of the driver; global fetch sends the same User-Agent.
       CompletableFuture<TestServer.Request> userAgentRequest = server.waitForRequest("/empty.html");
@@ -709,7 +706,7 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-059 should terminate network waiters")
-    @Fixme("java: the error message is 'Browser closed' or 'Browser has been closed', not the target closed message")
+    @Fixme(value = "java: the error message is 'Browser closed' or 'Browser has been closed', not the target closed message", browsers = BrowserName.FIREFOX)
     void shouldTerminateNetworkWaiters(Connect connect, StartRemoteServer startRemoteServer, TestServer server) throws Exception {
       PlaywrightServer remoteServer = startRemoteServer.start(kind);
       Browser browser = connect.connect(remoteServer.wsEndpoint());
