@@ -352,4 +352,29 @@ public class TestPageScreenshot {
     Path path = Paths.get("src/test/resources/expectations");
     return Files.readAllBytes(path.resolve(name + "-" + browserType.name() + ".png"));
   }
+
+  @PlaywrightTest
+  void pathOptionShouldDetectJpeg(Page page, @TempDir Path tmpDir) throws IOException {
+    Path outputPath = tmpDir.resolve("screenshot.jpg");
+    byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setPath(outputPath));
+    assertEquals(asList(0xFF, 0xD8, 0xFF), asList(buffer[0] & 0xFF, buffer[1] & 0xFF, buffer[2] & 0xFF));
+    assertArrayEquals(buffer, Files.readAllBytes(outputPath));
+  }
+
+  @PlaywrightTest
+  void shouldPreferTypeOverPathExtension(Page page, @TempDir Path tmpDir) {
+    Path outputPath = tmpDir.resolve("screenshot.png");
+    byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setPath(outputPath).setType(ScreenshotType.JPEG));
+    assertEquals(asList(0xFF, 0xD8, 0xFF), asList(buffer[0] & 0xFF, buffer[1] & 0xFF, buffer[2] & 0xFF));
+  }
+
+  @PlaywrightTest
+  void pathOptionShouldThrowForUnsupportedExtension(Page page, @TempDir Path tmpDir) {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.screenshot(new Page.ScreenshotOptions().setPath(tmpDir.resolve("screenshot.txt"))));
+    assertTrue(e.getMessage().contains("path: unsupported mime type \"text/plain\""), e.getMessage());
+    e = assertThrows(PlaywrightException.class,
+      () -> page.locator("body").screenshot(new Locator.ScreenshotOptions().setPath(tmpDir.resolve("screenshot.txt"))));
+    assertTrue(e.getMessage().contains("path: unsupported mime type \"text/plain\""), e.getMessage());
+  }
 }

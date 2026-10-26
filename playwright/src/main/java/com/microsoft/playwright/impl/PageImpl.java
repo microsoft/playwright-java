@@ -33,9 +33,6 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.parseError;
 import static com.microsoft.playwright.impl.Utils.*;
-import static com.microsoft.playwright.options.ScreenshotType.JPEG;
-import static com.microsoft.playwright.options.ScreenshotType.PNG;
-import static com.microsoft.playwright.options.ScreenshotType.WEBP;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -1273,20 +1270,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ScreenshotOptions();
     }
-    if (options.type == null) {
-      options.type = PNG;
-      if (options.path != null) {
-        String fileName = options.path.getFileName().toString();
-        int extStart = fileName.lastIndexOf('.');
-        if (extStart != -1) {
-          String extension = fileName.substring(extStart).toLowerCase();
-          if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
-            options.type = JPEG;
-          } else if (".webp".equals(extension)) {
-            options.type = WEBP;
-          }
-        }
-      }
+    if (options.type == null && options.path != null) {
+      options.type = Utils.screenshotTypeForPath(options.path);
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("path");

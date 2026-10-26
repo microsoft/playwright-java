@@ -36,9 +36,6 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.impl.Utils.addFilePathUploadParams;
-import static com.microsoft.playwright.options.ScreenshotType.JPEG;
-import static com.microsoft.playwright.options.ScreenshotType.PNG;
-import static com.microsoft.playwright.options.ScreenshotType.WEBP;
 
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   private final FrameImpl frame;
@@ -270,20 +267,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScreenshotOptions();
     }
-    if (options.type == null) {
-      options.type = PNG;
-      if (options.path != null) {
-        String fileName = options.path.getFileName().toString();
-        int extStart = fileName.lastIndexOf('.');
-        if (extStart != -1) {
-          String extension = fileName.substring(extStart).toLowerCase();
-          if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
-            options.type = JPEG;
-          } else if (".webp".equals(extension)) {
-            options.type = WEBP;
-          }
-        }
-      }
+    if (options.type == null && options.path != null) {
+      options.type = Utils.screenshotTypeForPath(options.path);
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("path");
