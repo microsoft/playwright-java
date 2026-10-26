@@ -23,6 +23,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
+import com.microsoft.playwright.options.ScreenshotType;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -243,6 +245,21 @@ public class Utils {
           throw new PlaywrightException("Failed to create parent directory: " + dir, e);
         }
       }
+    }
+  }
+
+  /** The screenshot type for a path, from its extension, like the Node.js client: a path overrides the type option. */
+  static ScreenshotType screenshotTypeForPath(Path path) {
+    String fileName = path.getFileName().toString();
+    int extStart = fileName.lastIndexOf('.');
+    String extension = extStart == -1 ? "" : fileName.substring(extStart + 1).toLowerCase();
+    switch (extension) {
+      case "png": return ScreenshotType.PNG;
+      case "jpg":
+      case "jpeg": return ScreenshotType.JPEG;
+      case "webp": return ScreenshotType.WEBP;
+      default:
+        throw new PlaywrightException("path: unsupported mime type \"" + URLConnection.guessContentTypeFromName(fileName) + "\"");
     }
   }
 
