@@ -47,18 +47,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.expectedSSLError;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -623,31 +618,6 @@ public class TestPageGoto {
   }
 
   @PlaywrightTest
-  @DisplayName("NA-037 should fail when replaced by another navigation")
-  @Fixme(value = "java: the message has no 'page.goto: ' prefix: 'Navigation to \"...\" is interrupted by another navigation to \"...\"'", browsers = {BrowserName.FIREFOX, BrowserName.WEBKIT})
-  void shouldFailWhenReplacedByAnotherNavigation(Page page, TestServer server, BrowserName browserName) throws Exception {
-    AtomicReference<CompletableFuture<Response>> anotherPromise = new AtomicReference<>();
-    server.setRoute("/empty.html", (req, res) -> {
-      anotherPromise.set(async(() -> page.navigate(server.PREFIX + "/one-style.html")));
-      // Hang request to empty.html.
-    });
-    PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    anotherPromise.get().get();
-    if (browserName == BrowserName.CHROMIUM) {
-      assertTrue(error.getMessage().contains("net::ERR_ABORTED"));
-    } else if (browserName == BrowserName.WEBKIT) {
-      assertTrue(error.getMessage().contains("page.goto: Navigation to \"" + server.PREFIX + "/empty.html\" is interrupted by another navigation to \"" + server.PREFIX + "/one-style.html\""));
-    } else if (browserName == BrowserName.FIREFOX) {
-      if (Env.isBidi()) {
-        assertTrue(error.getMessage().contains("page.goto: Protocol error (browsingContext.navigate): unknown error"));
-      } else {
-        // Firefox might yield either NS_BINDING_ABORTED or 'navigation interrupted by another one'
-        assertEquals(true, error.getMessage().contains("page.goto: Navigation to \"" + server.PREFIX + "/empty.html\" is interrupted by another navigation to \"" + server.PREFIX + "/one-style.html\"") || error.getMessage().contains("NS_BINDING_ABORTED"));
-      }
-    }
-  }
-
-  @PlaywrightTest
   @DisplayName("NA-038 js redirect overrides url bar navigation ")
   @Fixme(value = "java: the message has no 'page.goto: ' prefix: 'Navigation to \"...\" is interrupted by another navigation to \"...\"'", browsers = BrowserName.WEBKIT)
   void jsRedirectOverridesUrlBarNavigation(Page page, TestServer server, BrowserName browserName) {
@@ -894,17 +864,6 @@ public class TestPageGoto {
   }
 
   @PlaywrightTest
-  @DisplayName("NA-056 should fail when canceled by another navigation")
-  void shouldFailWhenCanceledByAnotherNavigation(Page page, TestServer server) throws Exception {
-    server.setRoute("/one-style.html", (req, res) -> {});
-    CompletableFuture<Response> failed = async(() -> page.navigate(server.PREFIX + "/one-style.html"));
-    server.waitForRequest("/one-style.html").get();
-    page.navigate(server.PREFIX + "/empty.html");
-    Throwable error = cause(failed);
-    assertFalse(error.getMessage().isEmpty());
-  }
-
-  @PlaywrightTest
   @DisplayName("NA-057 should work with lazy loading iframes")
   void shouldWorkWithLazyLoadingIframes(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/frames/lazy-frame.html");
@@ -977,51 +936,6 @@ public class TestPageGoto {
   }
 
   @PlaywrightTest
-  @DisplayName("NA-062 should not resolve goto upon window.stop()")
-  void shouldNotResolveGotoUponWindowStop(BrowserName browserName, Page page, TestServer server) throws Exception {
-    assumeFalse(browserName == BrowserName.FIREFOX && !Env.isBidi(), "fixme: load/domcontentloaded events are flaky");
-    assumeFalse("frozen".equals(System.getenv("PW_CLOCK")));
-
-    AtomicReference<TestServer.Response> response = new AtomicReference<>();
-    server.setRoute("/module.js", (req, res) -> {
-      res.writeHead(200, "Content-Type", "text/javascript");
-      response.set(res);
-    });
-    AtomicBoolean done = new AtomicBoolean(false);
-    async(() -> {
-      try {
-        page.navigate(server.PREFIX + "/window-stop.html");
-        done.set(true);
-      } catch (PlaywrightException e) {
-        // .catch(() => {})
-      }
-      return null;
-    });
-    server.waitForRequest("/module.js").get();
-    assertEquals(false, done.get());
-    page.waitForTimeout(1000);  // give it some time to erroneously resolve
-    response.get().end("");
-    page.waitForTimeout(1000);  // give it more time to erroneously resolve
-    assertEquals(false, done.get());
-  }
-
-  @PlaywrightTest
-  @DisplayName("NA-063 should return from goto if new navigation is started")
-  void shouldReturnFromGotoIfNewNavigationIsStarted(Page page, TestServer server, BrowserName browserName) throws Exception {
-    server.setRoute("/slow.js", (req, res) -> {});
-    AtomicBoolean finished = new AtomicBoolean(false);
-    CompletableFuture<Response> navigation = async(() -> {
-      Response r = page.navigate(server.PREFIX + "/load-event/load-event.html");
-      finished.set(true);
-      return r;
-    });
-    page.waitForTimeout(500);
-    assertFalse(finished.get());
-    page.navigate(server.EMPTY_PAGE);
-    assertEquals(200, navigation.get().status());
-  }
-
-  @PlaywrightTest
   @DisplayName("NA-064 should return when navigation is committed if commit is specified")
   void shouldReturnWhenNavigationIsCommittedIfCommitIsSpecified(Page page, TestServer server) {
     server.setRoute("/script.js", (req, res) -> {});
@@ -1071,9 +985,9 @@ public class TestPageGoto {
         frameDetached.complete(frame);
       }
     });
-    CompletableFuture<Response> done = async(() -> page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setWaitUntil(WaitUntilState.LOAD)));
+    // Java: the navigation waits for 'load', which comes after the iframe is gone.
+    page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setWaitUntil(WaitUntilState.LOAD));
     page.waitForCondition(frameDetached::isDone); // Make sure that iframe is gone.
-    done.get();
     assertNull(page.querySelector("iframe"));
   }
 

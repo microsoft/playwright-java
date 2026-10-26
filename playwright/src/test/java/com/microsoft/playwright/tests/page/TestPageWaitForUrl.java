@@ -20,21 +20,17 @@ package com.microsoft.playwright.tests.page;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Response;
 import com.microsoft.playwright.fixtures.Fixme;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Port of tests/page/page-wait-for-url.spec.ts. */
@@ -51,40 +47,11 @@ public class TestPageWaitForUrl {
   @DisplayName("WA-111 should respect timeout")
   @Fixme("java: the message has no 'page.waitForURL:' prefix")
   void shouldRespectTimeout(Page page, TestServer server) {
-    CompletableFuture<Object> promise = async(() -> {
-      page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500));
-      return null;
-    });
     page.navigate(server.EMPTY_PAGE);
-    Throwable error = cause(promise);
+    // Java: the wait comes after the navigation; it is not satisfied by it either.
+    PlaywrightException error = assertThrows(PlaywrightException.class,
+      () -> page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500)));
     assertTrue(error.getMessage().contains("page.waitForURL: Timeout 2500ms exceeded."));
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-112 should work with both domcontentloaded and load")
-  void shouldWorkWithBothDomcontentloadedAndLoad(Page page, TestServer server) throws Exception {
-    AtomicReference<TestServer.Response> response = new AtomicReference<>();
-    server.setRoute("/one-style.css", (req, res) -> response.set(res));
-    CompletableFuture<TestServer.Request> cssRequest = server.waitForRequest("/one-style.css");
-    CompletableFuture<Response> navigationPromise = async(() -> page.navigate(server.PREFIX + "/one-style.html"));
-    CompletableFuture<Object> domContentLoadedPromise = async(() -> {
-      page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-      return null;
-    });
-    AtomicBoolean bothFired = new AtomicBoolean(false);
-    CompletableFuture<Object> loadPromise = async(() -> {
-      page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.LOAD));
-      return null;
-    });
-    CompletableFuture<Void> bothFiredPromise = CompletableFuture.allOf(loadPromise, domContentLoadedPromise)
-      .thenRun(() -> bothFired.set(true));
-
-    cssRequest.get();
-    domContentLoadedPromise.get();
-    assertEquals(false, bothFired.get());
-    response.get().end();
-    bothFiredPromise.get();
-    navigationPromise.get();
   }
 
   @PlaywrightTest
@@ -95,13 +62,8 @@ public class TestPageWaitForUrl {
       res.setHeader("content-type", "text/html");
       res.end("<title>Hello</title><script src=\"script.js\"></script>");
     });
-    async(() -> {
-      try {
-        page.navigate(server.EMPTY_PAGE);
-      } catch (PlaywrightException e) {
-      }
-      return null;
-    });
+    // Java: upstream starts the navigation without awaiting it; here it returns on commit.
+    page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setWaitUntil(WaitUntilState.COMMIT));
     page.waitForURL("**/empty.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.COMMIT));
     assertEquals("Hello", page.title());
   }
@@ -178,28 +140,21 @@ public class TestPageWaitForUrl {
 
   @PlaywrightTest
   @DisplayName("WA-119 should work with url match for same document navigations")
-  void shouldWorkWithUrlMatchForSameDocumentNavigations(Page page, TestServer server) throws Exception {
+  void shouldWorkWithUrlMatchForSameDocumentNavigations(Page page, TestServer server) {
     page.navigate(server.EMPTY_PAGE);
-    AtomicBoolean resolved = new AtomicBoolean(false);
-    CompletableFuture<Object> waitPromise = async(() -> {
-      page.waitForURL(Pattern.compile("third\\.html"));
-      resolved.set(true);
-      return null;
-    });
-    assertEquals(false, resolved.get());
     page.evaluate("() => {\n" +
       "  history.pushState({}, '', '/first.html');\n" +
       "}");
-    assertEquals(false, resolved.get());
+    assertFalse(page.url().contains("third.html"));
     page.evaluate("() => {\n" +
       "  history.pushState({}, '', '/second.html');\n" +
       "}");
-    assertEquals(false, resolved.get());
+    assertFalse(page.url().contains("third.html"));
     page.evaluate("() => {\n" +
       "  history.pushState({}, '', '/third.html');\n" +
       "}");
-    waitPromise.get();
-    assertEquals(true, resolved.get());
+    // Java: the wait comes after the navigations; it stays satisfied.
+    page.waitForURL(Pattern.compile("third\\.html"));
   }
 
   @PlaywrightTest

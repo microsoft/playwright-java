@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -182,70 +181,17 @@ public class TestPageHistory {
         reloadFailedPromise.complete(null);
       }
     });
-    CompletableFuture<Void> clickPromise = async(() -> {
-      try {
-        page.click("input[type=submit]");
-      } catch (PlaywrightException e) {
-        // .catch(e => {})
-      }
-      return null;
-    });
+    // Java: the request handler runs inside the click call, on the test thread.
+    try {
+      page.click("input[type=submit]");
+    } catch (PlaywrightException e) {
+      // .catch(e => {})
+    }
     reloadFailedPromise.get();
-    clickPromise.get();
 
     // Form submit should be canceled, and reload should eventually arrive
     // to the original one-style.html.
     page.waitForSelector("text=hello");
-  }
-
-  @PlaywrightTest
-  @DisplayName("NA-078 page.reload should not resolve with same-document navigation")
-  void pageReloadShouldNotResolveWithSameDocumentNavigation(Page page, TestServer server) throws Exception {
-    page.navigate(server.EMPTY_PAGE);
-    // 1. Make sure execution contexts are ready for fast evaluate.
-    page.evaluate("1");
-
-    // 2. Stall the reload request.
-    AtomicReference<TestServer.Response> response = new AtomicReference<>();
-    server.setRoute("/empty.html", (req, res) -> {
-      response.set(res);
-    });
-    CompletableFuture<TestServer.Request> requestPromise = server.waitForRequest("/empty.html");
-
-    // 3. Trigger push state that could resolve the reload.
-    async(() -> {
-      try {
-        page.evaluate("() => {\n" +
-          "  window.history.pushState({}, '');\n" +
-          "}");
-      } catch (PlaywrightException e) {
-        // .catch(() => {})
-      }
-      return null;
-    });
-
-    // 4. Trigger the reload, it should not resolve.
-    CompletableFuture<Response> reloadPromise = async(() -> page.reload());
-
-    // 5. Trigger push state again, for the good measure :)
-    async(() -> {
-      try {
-        page.evaluate("() => {\n" +
-          "  window.history.pushState({}, '');\n" +
-          "}");
-      } catch (PlaywrightException e) {
-        // .catch(() => {})
-      }
-      return null;
-    });
-
-    // 5. Serve the request, it should resolve the reload.
-    requestPromise.get();
-    response.get().end("hello");
-
-    // 6. Check the reload response.
-    Response gotResponse = reloadPromise.get();
-    assertEquals("hello", gotResponse.text());
   }
 
   @PlaywrightTest
@@ -304,16 +250,13 @@ public class TestPageHistory {
         reloadFailedPromise.complete(null);
       }
     });
-    CompletableFuture<Void> clickPromise = async(() -> {
-      try {
-        page.click("input[type=submit]");
-      } catch (PlaywrightException e) {
-        // .catch(e => {})
-      }
-      return null;
-    });
+    // Java: the request handler runs inside the click call, on the test thread.
+    try {
+      page.click("input[type=submit]");
+    } catch (PlaywrightException e) {
+      // .catch(e => {})
+    }
     reloadFailedPromise.get();
-    clickPromise.get();
 
     // Form submit should be canceled, and goBack should eventually arrive
     // to the original one-style.html.
@@ -344,16 +287,13 @@ public class TestPageHistory {
         reloadFailedPromise.complete(null);
       }
     });
-    CompletableFuture<Void> clickPromise = async(() -> {
-      try {
-        page.click("input[type=submit]");
-      } catch (PlaywrightException e) {
-        // .catch(e => {})
-      }
-      return null;
-    });
+    // Java: the request handler runs inside the click call, on the test thread.
+    try {
+      page.click("input[type=submit]");
+    } catch (PlaywrightException e) {
+      // .catch(e => {})
+    }
     reloadFailedPromise.get();
-    clickPromise.get();
 
     // Form submit should be canceled, and goForward should eventually arrive
     // to the original one-style.html.

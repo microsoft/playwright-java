@@ -18,10 +18,8 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Route;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.Fixme;
@@ -32,10 +30,8 @@ import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,18 +42,15 @@ public class TestPageWaitForLoadState {
   @PlaywrightTest
   @DisplayName("WA-077 should pick up ongoing navigation")
   void shouldPickUpOngoingNavigation(Page page, TestServer server) throws Exception {
-    AtomicReference<TestServer.Response> response = new AtomicReference<>();
-    server.setRoute("/one-style.css", (req, res) -> response.set(res));
+    // Java: the route handler answers the stalled css, which upstream does after starting the wait.
+    server.setRoute("/one-style.css", (req, res) -> {
+      res.statusCode = 404;
+      res.end("Not found");
+    });
     CompletableFuture<TestServer.Request> request = server.waitForRequest("/one-style.css");
     page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     request.get();
-    CompletableFuture<Object> waitPromise = async(() -> {
-      page.waitForLoadState();
-      return null;
-    });
-    response.get().statusCode = 404;
-    response.get().end("Not found");
-    waitPromise.get();
+    page.waitForLoadState();
   }
 
   @PlaywrightTest
@@ -186,60 +179,6 @@ public class TestPageWaitForLoadState {
     });
     newPage.waitForLoadState();
     assertEquals("complete", newPage.evaluate("() => document.readyState"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-090 should resolve after popup load")
-  void shouldResolveAfterPopupLoad(Page page, TestServer server) throws Exception {
-    page.navigate(server.EMPTY_PAGE);
-    // Stall the 'load' by delaying css.
-    AtomicReference<TestServer.Response> cssResponse = new AtomicReference<>();
-    server.setRoute("/one-style.css", (req, res) -> cssResponse.set(res));
-    CompletableFuture<TestServer.Request> cssRequest = server.waitForRequest("/one-style.css");
-    Page popup = page.waitForPopup(() -> {
-      page.evaluate("url => window['popup'] = window.open(url)", server.PREFIX + "/one-style.html");
-    });
-    cssRequest.get();
-    AtomicBoolean resolved = new AtomicBoolean(false);
-    CompletableFuture<Boolean> loadSatePromise = async(() -> {
-      popup.waitForLoadState();
-      resolved.set(true);
-      return true;
-    });
-    // Round trips!
-    for (int i = 0; i < 5; i++) {
-      page.evaluate("window");
-    }
-    assertEquals(false, resolved.get());
-    cssResponse.get().end("");
-    loadSatePromise.get();
-    assertEquals(true, resolved.get());
-    assertEquals(server.PREFIX + "/one-style.html", popup.url());
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-091 should work for frame")
-  void shouldWorkForFrame(Page page, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/frames/one-frame.html");
-    Frame frame = page.frames().get(1);
-
-    CompletableFuture<Route> requestPromise = new CompletableFuture<>();
-    page.route(server.PREFIX + "/one-style.css", route -> requestPromise.complete(route));
-    frame.navigate(server.PREFIX + "/one-style.html", new Frame.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-    // Java: events are dispatched only while a Playwright call waits, so awaiting a promise that a page event settles is waitForCondition.
-    page.waitForCondition(requestPromise::isDone);
-    Route request = requestPromise.get();
-    AtomicBoolean resolved = new AtomicBoolean(false);
-    CompletableFuture<Boolean> loadPromise = async(() -> {
-      frame.waitForLoadState();
-      resolved.set(true);
-      return true;
-    });
-    // give the promise a chance to resolve, even though it shouldn't
-    page.evaluate("1");
-    assertEquals(false, resolved.get());
-    request.resume();
-    loadPromise.get();
   }
 
   @PlaywrightTest

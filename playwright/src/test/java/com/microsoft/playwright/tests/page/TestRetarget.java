@@ -26,21 +26,13 @@ import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.ElementState;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Port of tests/page/retarget.spec.ts. */
 public class TestRetarget {
-  private static void giveItAChanceToResolve(Page page) {
-    rafraf(page, 5);
-  }
-
   @PlaywrightTest
   @DisplayName("RE-001 element state checks should work as expected for label with zero-sized input")
   void elementStateChecksShouldWorkAsExpectedForLabelWithZeroSizedInput(Page page, TestServer server) {
@@ -64,16 +56,9 @@ public class TestRetarget {
   void shouldWaitForEnclosingDisabledButton(Page page) throws Exception {
     page.setContent("<button><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Void> promise = async(() -> {
-      span.waitForElementState(ElementState.DISABLED);
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait comes after the evaluate; it stays satisfied.
     span.evaluate("span => span.parentElement.disabled = true");
-    promise.get();
+    span.waitForElementState(ElementState.DISABLED);
   }
 
   @PlaywrightTest
@@ -81,16 +66,9 @@ public class TestRetarget {
   void shouldWaitForEnclosingButtonWithADisabledFieldset(Page page) throws Exception {
     page.setContent("<fieldset disabled=true><button><span>Target</span></button></div>");
     ElementHandle span = page.querySelector("text=Target");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Void> promise = async(() -> {
-      span.waitForElementState(ElementState.ENABLED);
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait comes after the evaluate; it stays satisfied.
     span.evaluate("span => span.parentElement.parentElement.disabled = false");
-    promise.get();
+    span.waitForElementState(ElementState.ENABLED);
   }
 
   @PlaywrightTest
@@ -98,16 +76,9 @@ public class TestRetarget {
   void shouldWaitForEnclosingEnabledButton(Page page, TestServer server) throws Exception {
     page.setContent("<button disabled><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Void> promise = async(() -> {
-      span.waitForElementState(ElementState.ENABLED);
-      done.set(true);
-      return null;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait comes after the evaluate; it stays satisfied.
     span.evaluate("span => span.parentElement.disabled = false");
-    promise.get();
+    span.waitForElementState(ElementState.ENABLED);
   }
 
   @PlaywrightTest

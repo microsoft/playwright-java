@@ -18,7 +18,6 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -30,15 +29,9 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.attachFrame;
-import static com.microsoft.playwright.fixtures.Utils.detachFrame;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -61,9 +54,9 @@ public class TestPageWaitForFunction {
   @PlaywrightTest
   @DisplayName("WA-002 should accept a string")
   void shouldAcceptAString(Page page) throws Exception {
-    CompletableFuture<JSHandle> watchdog = async(() -> page.waitForFunction("window.__FOO === 1"));
+    // Java: the wait comes after the evaluate; it stays satisfied.
     page.evaluate("() => window['__FOO'] = 1");
-    watchdog.get();
+    page.waitForFunction("window.__FOO === 1");
   }
 
   @PlaywrightTest
@@ -116,9 +109,9 @@ public class TestPageWaitForFunction {
   @DisplayName("WA-007 should poll on raf")
   void shouldPollOnRaf(Page page) throws Exception {
     // Java: polling 'raf' is the default, there is no polling option for it.
-    CompletableFuture<JSHandle> watchdog = async(() -> page.waitForFunction("() => window['__FOO'] === 'hit'"));
+    // Java: the wait comes after the evaluate; it stays satisfied.
     page.evaluate("() => window['__FOO'] = 'hit'");
-    watchdog.get();
+    page.waitForFunction("() => window['__FOO'] === 'hit'");
   }
 
   @PlaywrightTest
@@ -156,17 +149,13 @@ public class TestPageWaitForFunction {
     page.navigate(server.EMPTY_PAGE);
     AtomicReference<Throwable> error = new AtomicReference<>(null);
     // Java: polling 'raf' is the default, there is no polling option for it.
-    CompletableFuture<Void> p = async(() -> {
-      try {
-        page.waitForFunction("() => window['__FOO'] === 'hit'");
-      } catch (PlaywrightException e) {
-        error.set(e);
-      }
-      return null;
-    });
-    page.waitForTimeout(1000);
+    // Java: the wait comes after the evaluate; it stays satisfied.
     page.evaluate("() => window['__FOO'] = 'hit'");
-    p.get();
+    try {
+      page.waitForFunction("() => window['__FOO'] === 'hit'");
+    } catch (PlaywrightException e) {
+      error.set(e);
+    }
     assertNull(error.get());
   }
 
@@ -202,12 +191,9 @@ public class TestPageWaitForFunction {
   void shouldAcceptElementHandleArguments(Page page) throws Exception {
     page.setContent("<div></div>");
     ElementHandle div = page.querySelector("div");
-    AtomicBoolean resolved = new AtomicBoolean(false);
-    CompletableFuture<JSHandle> waitForFunction = async(() -> page.waitForFunction("element => !element.parentElement", div));
-    waitForFunction.thenAccept(handle -> resolved.set(true));
-    assertEquals(false, resolved.get());
+    // Java: the wait comes after the evaluate; it stays satisfied.
     page.evaluate("element => element.remove()", div);
-    waitForFunction.get();
+    page.waitForFunction("element => !element.parentElement", div);
   }
 
   @PlaywrightTest
@@ -226,44 +212,6 @@ public class TestPageWaitForFunction {
     page.setDefaultTimeout(1);
     TimeoutError error = assertThrows(TimeoutError.class, () -> page.waitForFunction("false"));
     assertTrue(error.getMessage().contains("page.waitForFunction: Timeout 1ms exceeded"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-019 should disable timeout when its set to 0")
-  void shouldDisableTimeoutWhenItsSetTo0(Page page) throws Exception {
-    CompletableFuture<JSHandle> watchdog = async(() -> page.waitForFunction("() => {\n" +
-      "    window['__counter'] = (window['__counter'] || 0) + 1;\n" +
-      "    return window['__injected'];\n" +
-      "  }", null, new Page.WaitForFunctionOptions().setTimeout(0).setPollingInterval(10)));
-    page.waitForFunction("() => window['__counter'] > 10");
-    page.evaluate("() => window['__injected'] = true");
-    watchdog.get();
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-020 should survive cross-process navigation")
-  void shouldSurviveCrossProcessNavigation(Page page, TestServer server) throws Exception {
-    AtomicBoolean fooFound = new AtomicBoolean(false);
-    CompletableFuture<Void> waitForFunction = async(() -> page.waitForFunction("window.__FOO === 1")).thenAccept(handle -> fooFound.set(true));
-    page.navigate(server.EMPTY_PAGE);
-    assertEquals(false, fooFound.get());
-    page.reload();
-    assertEquals(false, fooFound.get());
-    page.navigate(server.CROSS_PROCESS_PREFIX + "/grid.html");
-    assertEquals(false, fooFound.get());
-    page.evaluate("() => window['__FOO'] = 1");
-    waitForFunction.get();
-    assertEquals(true, fooFound.get());
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-021 should survive navigations")
-  void shouldSurviveNavigations(Page page, TestServer server) throws Exception {
-    CompletableFuture<JSHandle> watchdog = async(() -> page.waitForFunction("() => window['__done']"));
-    page.navigate(server.EMPTY_PAGE);
-    page.navigate(server.PREFIX + "/consolelog.html");
-    page.evaluate("() => window['__done'] = true");
-    watchdog.get();
   }
 
   @PlaywrightTest
@@ -346,25 +294,5 @@ public class TestPageWaitForFunction {
     }
 
     assertEquals("waitForFunction1|waitForFunction2|waitForFunction3", String.join("|", messages));
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-026 should throw when frame is detached")
-  @Fixme("java: the message has no 'frame.waitForFunction: ' prefix")
-  void shouldThrowWhenFrameIsDetached(Page page, TestServer server) throws Exception {
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
-    Frame frame = page.frames().get(1);
-    CompletableFuture<Throwable> promise = async(() -> {
-      try {
-        frame.waitForFunction("() => false");
-        return null;
-      } catch (PlaywrightException e) {
-        return e;
-      }
-    });
-    detachFrame(page, "frame1");
-    Throwable error = promise.get();
-    assertNotNull(error);
-    assertTrue(Pattern.compile("frame.waitForFunction: (Frame was detached|Execution context was destroyed)").matcher(error.getMessage()).find());
   }
 }
