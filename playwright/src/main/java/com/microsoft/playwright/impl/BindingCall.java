@@ -71,7 +71,8 @@ class BindingCall extends ChannelOwner {
       params.add("error", gson().toJsonTree(serializeError(exception)));
       method = "reject";
     }
-    sendMessage(method, params, NO_TIMEOUT);
+    // Like the Node client, do not fail when the page was closed before the result arrived.
+    sendMessageAsync(method, params);
   }
 
   private Object invoke(BindingCallback binding) {

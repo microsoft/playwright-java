@@ -92,4 +92,24 @@ public class TestBrowserContextExposeFunction {
     assertEquals(asList("context", "page"), actualArgs);
   }
 
+  @PlaywrightTest
+  void shouldNotDispatchBindingOnAClosedPage(Browser browser, Server server) {
+    try (BrowserContext context = browser.newContext()) {
+      Boolean[] wasClosed = new Boolean[1];
+      context.exposeBinding("add", (source, args) -> {
+        wasClosed[0] = source.page().isClosed();
+        return ((Number) args[0]).intValue() + ((Number) args[1]).intValue();
+      });
+      Page page = context.newPage();
+      page.navigate(server.EMPTY_PAGE);
+      page.waitForPopup(() -> page.evaluate("async () => {\n" +
+        "  const win = window.open('about:blank');\n" +
+        "  win['add'](9, 4);\n" +
+        "  win.close();\n" +
+        "}"));
+      // Give it a chance to dispatch the binding on the closed page.
+      page.waitForTimeout(1000);
+      assertFalse(Boolean.TRUE.equals(wasClosed[0]));
+    }
+  }
 }
