@@ -129,7 +129,6 @@ NE-018      Request.postDataJSON() is not in the Java API.
 NE-019      Request.postDataJSON() is not in the Java API.
 # page/page-network-response
 NE-038      Response.json() is not in the Java API.
-# page/page-network-sizes
 # page/page-network-idle
 NE-071      TODO harness: the test runs a blocking page call (goto with networkidle) while the test body makes other page calls (evaluate); the Java client is not thread safe (Connection.processOneMessage), so Utils.async plus an inline call fails with "Object doesn't exist: request@..." (Python uses sync_gather).
 NE-072      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
@@ -277,173 +276,17 @@ WA-080      passes the invalid state 'bad'; state is the LoadState enum in Java.
 # page/workers
 WO-003      TODO harness: needs an async() that is safe against the Java client race; the in-flight worker.evaluate in async() while page.close() runs hangs the test run forever (jstack: stuck in Connection.processOneMessage), so it can not be marked @Fixme.
 
-# library/proxy
-PR-001      Passes a number as proxy.server; the typed Java API cannot express it.
-# page/elementhandle-screenshot
-EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sync.read) to compare a webp and a png screenshot.
-# page/page-emulate-media
-EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
-EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
-# page/page-aria-snapshot-json
-page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
-# page/page-autowaiting-basic
-AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
-# page/page-click
-CL-067      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
-CL-068      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
-CL-069      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
-CL-090      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
-CL-091      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
-CL-092      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
-CL-093      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
-page/page-click-during-navigation   Passes the server-side __testHookAfterStable function as a click option; the Java API and the protocol have no such parameter.
-# page/page-click-timeout-1
-CL-110      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
-# page/page-click-timeout-3
-CL-116      Passes the server-side __testHookBeforeHitTarget function as a click option; the Java API and the protocol have no such parameter.
-# page/page-click-timeout-4
-CL-121      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
-# page/page-event-console
-CM-003      Passes the ConsoleMessage to Node.js util.inspect, which prints it through the custom inspect function of the Node.js client.
-CM-020      page.pageErrors({ filter }) is not in the Java API; Page.pageErrors() has no options.
-# page/page-expose-function
-EF-006      Throws null from the exposed function; a Java callback can only throw an exception object, so there is no Java form of 'throw null'.
-# page/page-evaluate
-EV-011      Typed arrays (Int8Array, Float32Array, BigInt64Array, ...) are JavaScript-only values; a Java argument cannot be one and the Java client has no typed array result.
-EV-013      Passes a JavaScript Map as an argument; Java has no way to pass a Map that is not an object.
-EV-014      Passes a JavaScript Set as an argument; Java has no way to pass a Set that is not an object.
-EV-018      Passes object method shorthands as the function to evaluate; the JavaScript client stringifies a function, Java evaluates a string.
-EV-038      Passes more than one argument to evaluate(); the Java methods take at most one argument.
-EV-050      Passes a JavaScript function as the argument; Java cannot pass a function.
-EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
-EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
-EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
-# page/page-evaluate-callback
-EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
-EV-113      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-114      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-115      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-116      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-117      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-118      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-119      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-120      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-121      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-122      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-123      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-124      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-125      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-126      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-127      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-128      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-129      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-130      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-131      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-132      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-133      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-EV-134      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
-# page/page-evaluate-no-stall
-EV-135      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
-EV-136      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
-EV-137      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
-# page/expect-boolean
-EX-068      Checks the JavaScript runtime type error of expect(page).toBeOK(); Java is typed and PageAssertions has no isOK().
-EX-069      Checks the JavaScript runtime type error of expect(promise).toBeOK(); Java is typed and has no such call.
-# page/page-network-request
-NE-016      Request.postDataJSON() is not in the Java API.
-NE-017      Request.postDataJSON() is not in the Java API.
-NE-018      Request.postDataJSON() is not in the Java API.
-NE-019      Request.postDataJSON() is not in the Java API.
 # page/page-network-response
-NE-038      Response.json() is not in the Java API.
 NE-042      TODO harness: TestServer.Response.writeHead(status, statusMessage) does not take a custom status message.
 NE-043      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
 NE-044      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
 NE-045      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
 # page/page-network-sizes
 NE-063      TODO harness: TestServer.Response does not frame the body in chunks when the route sets the Transfer-Encoding: chunked header itself.
-# page/page-network-idle
-NE-071      TODO harness: the test runs a blocking page call (goto with networkidle) while the test body makes other page calls (evaluate); the Java client is not thread safe (Connection.processOneMessage), so Utils.async plus an inline call fails with "Object doesn't exist: request@..." (Python uses sync_gather).
-NE-072      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-073      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-074      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-075      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-076      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-077      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-078      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
-NE-080      TODO harness: same as NE-071, page.setContent with networkidle runs while the test body calls page.waitForTimeout and page.evaluate.
-# page/network-post-data
-NE-108      Request.postDataJSON() is not in the Java API.
-NE-109      Request.postDataJSON() is not in the Java API.
-NE-110      Request.postDataJSON() is not in the Java API.
-NE-111      Request.postDataJSON() is not in the Java API.
-NE-113      Request.postDataJSON() is not in the Java API.
-# page/page-set-extra-http-headers
-NE-117      The Java API takes a Map<String, String>, so a header value that is not a string can not be passed.
-# page/page-event-request
-NE-095      Request.serviceWorker() is not in the Java API.
-NE-096      Request.serviceWorker() is not in the Java API.
-NE-097      Request.serviceWorker() is not in the Java API.
-NE-098      Request.serviceWorker() is not in the Java API.
-# page/page-basic
-PA-019      Iterates over the properties of the Node.js Page object with for...in and Symbol.iterator.
-# page/page-set-content
-PA-034      TODO harness: page.goto() runs with Utils.async while the test thread calls page.content(); the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: response@...".
-PA-036      TODO harness: needs toImpl(page) to tamper with console.debug in the utility world of the driver.
-PA-037      TODO harness: needs toImpl(page) to replace document.close in the utility world of the driver.
-# page/page-event-popup
-PO-005      TODO harness: page.evaluate() blocks on the alert until the dialog is dismissed, so it runs with Utils.async while the test thread dismisses the dialog; the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: dialog@..." or times out.
-# page/page-select-option
-SO-024      passes numbers and a string index where Java is statically typed; those calls do not compile.
 # page/page-screenshot
-SS-019      TODO harness: needs utils.isLosslessWebp of the Node.js package, to tell lossless from lossy webp.
-SS-020      TODO harness: needs utils.decodeWebp of the Node.js package, to read the pixels of a webp screenshot.
-SS-055      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it is not in the Java API.
 SS-056      TODO harness: needs comparePNGs
 SS-057      TODO harness: needs comparePNGs
 SS-095      TODO harness: needs comparePNGs
-SS-066      expect(page).toHaveScreenshot() is not in the Java API.
-SS-067      expect(page).toHaveScreenshot() is not in the Java API.
-# page/page-wait-for-function
-WA-006      Passes the polling strategy mutation as a string; the polling option is a number of milliseconds in Java.
-WA-012      Passes the polling strategy unknown as a string; the polling option is a number of milliseconds in Java.
-# page/frame-evaluate
-FR-003      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
-FR-004      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
-# page/page-fill
-FI-019      Passes a number to fill(); the Java API is typed and only accepts a String.
-# page/page-filechooser
-FC-003      page.prependListener() is a Node.js EventEmitter method; the Java event API has only onX() and offX().
-FC-006      page.addListener() and page.removeListener() are Node.js EventEmitter aliases of on() and off(); the Java event API has only onX() and offX() (covered by FC-005).
-FC-015      The signal (AbortSignal) option of waitForEvent is JavaScript-only; it is not in the Java API.
-FC-018      TODO harness: needs formidable (a multipart/form-data parser for the /upload route of the test server).
-# page/expect-timeout
-EX-253      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-EX-254      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-EX-255      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-EX-256      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-EX-257      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-EX-258      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
-# page/expect-to-have-accessible
-EX-273      Passes a RegExp to toHaveRole() and checks the runtime type error '"role" argument in toHaveRole must be a string'; the Java hasRole() only accepts an AriaRole.
-# page/expect-to-have-text
-EX-291      Passes an array that mixes a string and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
-EX-298      Passes an array that mixes strings and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
-EX-300      Passes an array that mixes a string and a RegExp to toContainText(); the Java containsText() overloads take only String[] or Pattern[].
-# page/expect-misc
-EX-205      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
-EX-206      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
-EX-207      Passes a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
-EX-210      Passes an array with a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
-EX-216      Passes {} to toHaveURL() and checks the runtime type error; the Java hasURL() only accepts a String or a Pattern.
-EX-217      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
-EX-218      expect(page).not.toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
-EX-219      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
-EX-220      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
-EX-222      expect(page).toHaveURL(URLPattern) is not in the Java API; URLPattern is JavaScript-only.
-EX-226      toHaveAttribute(name) without a value is not in the Java API; hasAttribute() requires a value.
-EX-227      toHaveAttribute(name, { timeout }) without a value is not in the Java API; hasAttribute() requires a value.
-EX-235      Checks error.stack, the Node.js stack of the matcher error, for the test file name.
 
 # library/browsercontext-credentials
 AU-002      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
