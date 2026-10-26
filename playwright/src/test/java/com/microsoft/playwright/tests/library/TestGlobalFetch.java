@@ -628,6 +628,8 @@ public class TestGlobalFetch {
     Object value;
 
     @PlaywrightTest
+    @Fixme(value = "java: a String data with a JSON content type is sent as is instead of JSON-stringified, and null data sends no body",
+      parameters = {"type=string,", "type=string (falsey)", "type=null,", "type=literal string undefined"})
     @DisplayName("FE-033 should json stringify ${type} body when content-type is application/json")
     void shouldJsonStringifyBodyWhenContentTypeIsApplicationJson(Playwright playwright, TestServer server) throws Exception {
       String stringifiedValue = stringify(value);

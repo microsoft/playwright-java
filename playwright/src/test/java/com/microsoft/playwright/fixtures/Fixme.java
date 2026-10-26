@@ -40,4 +40,11 @@ public @interface Fixme {
 
   /** Only expect the failure in these browsers; empty means all. */
   BrowserName[] browsers() default {};
+
+  /**
+   * In a {@code @ParameterizedClass}, only expect the failure for the invocations whose display
+   * name (for example {@code [3] type=null, value=null}) contains one of these fragments; empty
+   * means all.
+   */
+  String[] parameters() default {};
 }

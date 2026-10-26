@@ -199,7 +199,6 @@ public class TestDownload {
 
     @PlaywrightTest
     @DisplayName("DO-005 should report proper download url when download is from download attribute")
-    @Fixme(value = "harness: the asset chromium-linux.zip is missing from src/test/assets, the server answers 404 and Firefox does not report a download (Timeout 30000ms exceeded)", browsers = BrowserName.FIREFOX)
     void shouldReportProperDownloadUrlWhenDownloadIsFromDownloadAttribute(Browser browser, TestServer server, BrowserName browserName) {
       Page page = browser.newPage();
       page.navigate(server.PREFIX + "/empty.html");
@@ -211,7 +210,6 @@ public class TestDownload {
 
     @PlaywrightTest
     @DisplayName("DO-006 should report downloads for download attribute")
-    @Fixme("harness: the asset chromium-linux.zip is missing from src/test/assets, the server answers 404 and download.path() fails with 'canceled' (chromium), 'Not Found' (webkit), Timeout 30000ms exceeded (firefox)")
     void shouldReportDownloadsForDownloadAttribute(Browser browser, TestServer server) {
       Page page = browser.newPage();
       page.navigate(server.PREFIX + "/empty.html");
@@ -732,7 +730,6 @@ public class TestDownload {
 
   @PlaywrightTest
   @DisplayName("DO-038 should download successfully when routing")
-  @Fixme("harness: the asset chromium-linux.zip is missing from src/test/assets, the server answers 404: download.failure() is 'canceled' (chromium), 'Not Found' (webkit) instead of null, Timeout 30000ms exceeded (firefox)")
   void shouldDownloadSuccessfullyWhenRouting(Browser browser, TestServer server) {
     Page page = browser.newPage();
     page.context().route("**/*", route -> route.resume());

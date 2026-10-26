@@ -85,6 +85,19 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
     return ConditionEvaluationResult.enabled("Running in " + browserName);
   }
 
+  /** True when an enclosing context, such as a parameterized class invocation, has one of the fragments in its display name. */
+  private static boolean matchesParameters(ExtensionContext context, String[] fragments) {
+    for (ExtensionContext current = context; current != null; current = current.getParent().orElse(null)) {
+      String name = current.getDisplayName();
+      for (String fragment : fragments) {
+        if (name.contains(fragment)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private static boolean matchesOs(OS[] os) {
     if (os.length == 0) {
       return true;
@@ -104,7 +117,8 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
   @Override
   public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
     Fixme fixme = invocationContext.getExecutable().getAnnotation(Fixme.class);
-    if (fixme == null || fixme.browsers().length > 0 && !Arrays.asList(fixme.browsers()).contains(browserName)) {
+    if (fixme == null || fixme.browsers().length > 0 && !Arrays.asList(fixme.browsers()).contains(browserName)
+      || fixme.parameters().length > 0 && !matchesParameters(extensionContext, fixme.parameters())) {
       invocation.proceed();
       return;
     }
