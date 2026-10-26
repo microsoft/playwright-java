@@ -86,7 +86,11 @@ final class BuiltinFixture<T> implements FixtureDefinition {
     test(LaunchPersistent.class,
       resolver -> new LaunchPersistent(resolver.get(BrowserType.class), resolver.get(CreateUserDataDir.class)),
       LaunchPersistent::close),
-    test(PageWithHar.class, resolver -> new PageWithHar(resolver.get(ContextFactory.class), resolver.get(TestInfo.class)), null)));
+    test(PageWithHar.class, resolver -> new PageWithHar(resolver.get(ContextFactory.class), resolver.get(TestInfo.class)), null),
+    test(ChildProcessFactory.class, resolver -> new ChildProcessFactory(resolver.extensionContext()), ChildProcessFactory::close),
+    test(StartRemoteServer.class,
+      resolver -> new StartRemoteServer(resolver.get(BrowserType.class), resolver.get(ChildProcessFactory.class), resolver.get(BrowserType.LaunchOptions.class)),
+      StartRemoteServer::close)));
 
   private final Class<T> type;
   private final Scope scope;

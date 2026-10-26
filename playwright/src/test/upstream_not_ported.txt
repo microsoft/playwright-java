@@ -567,3 +567,7 @@ HA-066      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.S
 HA-067      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.StartHarOptions has no resourcesDir.
 # library/firefox/launcher
 FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1.64.1 when the firefoxUserPrefs layout.css.devPixelsPerPx is 1.1 (the fix of https://github.com/microsoft/playwright/issues/43028 is newer than the driver), so the test would hang the whole run instead of failing.
+||||||| parent of a2b4957f (test(fixtures): add the remote server and child process utilities of the upstream harness)
+# library/browsertype-connect
+BT-052      passes __testHookBeforeCreateBrowser, a JavaScript function that the Node.js client calls during connect; the Java connect() has no such hook.
+BT-096      starts an in-process remote.PlaywrightServer of the Node.js package and reads its internal _dontReuseBrowsers.
