@@ -366,3 +366,61 @@ VI-025      TODO harness: needs videoPlayer (./videoPlayer) to read the frames o
 VI-028      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
 VI-029      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
 VI-030      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+# library/chromium/launcher
+CR-033      Calls browserType.launchServer(), which is not in the Java API.
+CR-034      Calls browserType.launchServer(), which is not in the Java API.
+# library/chromium/connect-to-worker
+CR-043      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
+CR-044      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
+# library/chromium/session
+CD-038      Passes the timeout and signal (AbortController) options to cdpSession.send(), which the Java CDPSession.send() does not have.
+CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.
+CD-041      page.coverage (startJSCoverage/stopJSCoverage) is JavaScript-only; it is not in the Java API.
+CD-043      Checks error.stack, the Node.js stack of the error, for the calling function name.
+# library/chromium/extensions
+CR-036      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-037      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-038      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-039      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-041      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+# library/debugger
+DB-004      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-005      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-006      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-007      Calls page._wrapApiCall(..., { internal: true }), private to the Node.js client; the Java client has no such method.
+DB-008      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-009      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-010      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+# library/page-clock
+CK-048      Calls clock.runFor(0.5); the Java Clock.runFor() takes a long or a String, so a fractional tick count cannot be passed.
+# library/chromium/connect-over-cdp
+CD-005      TODO harness: needs toImpl (reads toImpl(cdpBrowser).options.artifactsDir, a server internal).
+CD-006      Calls browserType.launchServer() and browserServer.kill(); launchServer is not in the Java API.
+CD-007      TODO harness: needs toImpl (reads toImpl(cdpBrowser).options.artifactsDir and tracesDir, server internals).
+CD-011      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CD-016      Compares the User-Agent header with getUserAgent() of the playwright-core Node.js bundle.
+CD-030      TODO harness: needs toImpl (reads toImpl(cdpBrowser)._isBrowserCollocatedWithServer, a server internal).
+CD-032      TODO harness: needs toImpl (calls toImpl(frame).evaluateExpression() in the utility world, a server internal).
+CD-036      connectOverCDP(transport) takes a server ConnectionTransport object (WebSocketTransport), which only the in-process Node.js client can pass.
+# library/chromium/chromium
+CR-001      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-002      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-003      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-004      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-005      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-006      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-008      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-010      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-011      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-014      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-015      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-016      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-017      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-018      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-019      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-020      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-021      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-024      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python); it also sets process.env of the driver dynamically.
+CR-025      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-026      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-032      TODO harness: needs toImpl (reads toImpl(browser)._connection._sessions, a server internal); it also uses the 'serviceworker' event, which is not in the Java API.
