@@ -570,3 +570,36 @@ FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1
 # library/browsertype-connect
 BT-052      passes __testHookBeforeCreateBrowser, a JavaScript function that the Node.js client calls during connect; the Java connect() has no such hook.
 BT-096      starts an in-process remote.PlaywrightServer of the Node.js package and reads its internal _dontReuseBrowsers.
+# library/browsercontext-add-init-script
+IS-031      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-032      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-033      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-034      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+# library/locator-highlight
+LO-194      locator.highlight({ style }) with an object style is JavaScript-only; the Java HighlightOptions.setStyle() takes a CSS string only.
+# library/multiclient
+MC-001      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-002      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-003      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-004      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-005      page.coverage is not in the Java API.
+MC-006      page.coverage is not in the Java API.
+MC-007      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-008      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-009      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-010      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-011      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-012      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-013      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-014      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-015      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-016      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-017      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-018      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-019      Calls the internal context._startRecording() / _stopRecording() with JavaScript recorder callbacks.
+# library/network-timeout
+NE-128      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+NE-129      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+NE-130      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+# library/chromium/oopif
+OO-010      playwright.devices is not in the Java API (docs: langs: js, python, csharp).
