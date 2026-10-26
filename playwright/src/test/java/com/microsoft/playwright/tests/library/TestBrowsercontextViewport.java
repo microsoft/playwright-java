@@ -187,7 +187,6 @@ public class TestBrowsercontextViewport {
 
   @PlaywrightTest
   @DisplayName("VP-012 should set both screen and viewport options")
-  @Fixme("java: newContext() sends the screenSize option under the key 'screenSize' while the protocol expects 'screen', so the option is ignored (screen is 1000x600 in chromium and webkit, 1366x768 in firefox instead of 1280x720)")
   void shouldSetBothScreenAndViewportOptions(ContextFactory contextFactory, BrowserName browserName) {
     BrowserContext context = contextFactory.newContext(new Browser.NewContextOptions()
       .setScreenSize(1280, 720)
