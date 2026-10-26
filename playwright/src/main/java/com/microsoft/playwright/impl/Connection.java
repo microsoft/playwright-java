@@ -131,6 +131,10 @@ public class Connection {
     }
   }
 
+  String title() {
+    return title;
+  }
+
   String setTitle(String newTitle) {
     String previous = title;
     titleReported = false;

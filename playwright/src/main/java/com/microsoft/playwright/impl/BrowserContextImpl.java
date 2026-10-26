@@ -342,7 +342,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public Page waitForPage(WaitForPageOptions options, Runnable code) {
-    return withWaitLogging("BrowserContext.close", logger -> waitForPageImpl(options, code));
+    return withWaitLogging("BrowserContext.waitForPage", "page", logger -> waitForPageImpl(options, code));
   }
 
   private Page waitForPageImpl(WaitForPageOptions options, Runnable code) {
@@ -706,7 +706,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("BrowserContext.waitForConsoleMessage", logger -> waitForConsoleMessageImpl(options, code));
+    return withWaitLogging("BrowserContext.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
   }
 
   private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {

@@ -469,7 +469,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForClose", logger -> waitForCloseImpl(options, code));
+    return withWaitLogging("Page.waitForClose", "close", logger -> waitForCloseImpl(options, code));
   }
 
   private Page waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
@@ -481,7 +481,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForConsoleMessage", logger -> waitForConsoleMessageImpl(options, code));
+    return withWaitLogging("Page.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
   }
 
   private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
@@ -493,7 +493,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForDownload", logger -> waitForDownloadImpl(options, code));
+    return withWaitLogging("Page.waitForDownload", "download", logger -> waitForDownloadImpl(options, code));
   }
 
   private Download waitForDownloadImpl(WaitForDownloadOptions options, Runnable code) {
@@ -505,7 +505,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForFileChooser", logger -> waitForFileChooserImpl(options, code));
+    return withWaitLogging("Page.waitForFileChooser", "filechooser", logger -> waitForFileChooserImpl(options, code));
   }
 
   private FileChooser waitForFileChooserImpl(WaitForFileChooserOptions options, Runnable code) {
@@ -518,7 +518,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForPopup", logger -> waitForPopupImpl(options, code));
+    return withWaitLogging("Page.waitForPopup", "popup", logger -> waitForPopupImpl(options, code));
   }
 
   private Page waitForPopupImpl(WaitForPopupOptions options, Runnable code) {
@@ -530,7 +530,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWebSocket", logger -> waitForWebSocketImpl(options, code));
+    return withWaitLogging("Page.waitForWebSocket", "websocket", logger -> waitForWebSocketImpl(options, code));
   }
 
   private WebSocket waitForWebSocketImpl(WaitForWebSocketOptions options, Runnable code) {
@@ -542,7 +542,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWorker", logger -> waitForWorkerImpl(options, code));
+    return withWaitLogging("Page.waitForWorker", "worker", logger -> waitForWorkerImpl(options, code));
   }
 
   private Worker waitForWorkerImpl(WaitForWorkerOptions options, Runnable code) {
@@ -1477,7 +1477,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForNavigation", logger -> waitForNavigationImpl(logger, code, options));
+    return withWaitLoggingTitled("Page.waitForNavigation", "Wait for navigation", logger -> waitForNavigationImpl(logger, code, options));
   }
 
   private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
@@ -1554,7 +1554,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequest", logger -> {
+    return withWaitLogging("Page.waitForRequest", "request", logger -> {
       logger.log("waiting for request " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
       Predicate<Request> requestPredicate = predicate;
       if (requestPredicate == null) {
@@ -1573,7 +1573,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequestFinished", logger -> waitForRequestFinishedImpl(options, code));
+    return withWaitLogging("Page.waitForRequestFinished", "requestfinished", logger -> waitForRequestFinishedImpl(options, code));
   }
 
   private Request waitForRequestFinishedImpl(WaitForRequestFinishedOptions options, Runnable code) {
@@ -1599,7 +1599,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForResponse", logger -> {
+    return withWaitLogging("Page.waitForResponse", "response", logger -> {
       logger.log("waiting for response " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
       Predicate<Response> responsePredicate = predicate;
       if (responsePredicate == null) {
