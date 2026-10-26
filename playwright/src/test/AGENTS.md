@@ -1,8 +1,9 @@
 # How to port the upstream tests to Java
 
 These rules say how to write `playwright/src/test/java/com/microsoft/playwright/tests/{page,library}`
-from `tests/page` and `tests/library` in `microsoft/playwright` (the checkout in `../playwright`,
-at the commit of the driver this repo uses). Use them for every new or changed upstream test.
+from `tests/page` and `tests/library` in `microsoft/playwright` (the checkout in `../playwright`;
+the commit the port is based on is in `upstream_base.txt`, together with the commands that list
+the upstream changes still to port). Use them for every new or changed upstream test.
 
 The port is line by line, with **zero deviations**. A reviewer reads the `.spec.ts` file and
 the `.java` file side by side. Each upstream statement maps to one Java statement, or to one of
@@ -38,7 +39,7 @@ The harness (fixtures, test server, helpers) is `com.microsoft.playwright.fixtur
   license header is the one of the upstream file. The tests keep the upstream order.
 - Every upstream test has an identifier, the first token of its title
   (`it('CH-001 should check the box', ...)`). `playwright/src/test/upstream_registry.md` is a
-  copy of upstream's `tests/registry.md` and lists them all. The port is a `@PlaywrightTest`
+  copy of upstream's `tests/registry.md` at the commit in `upstream_base.txt` and lists them all. The port is a `@PlaywrightTest`
   method with `@DisplayName` holding the upstream title verbatim, identifier and `@smoke` tag
   included, and a method name that is the title in camelCase without the identifier and tags:
 

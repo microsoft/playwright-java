@@ -16,7 +16,7 @@
 """Checks the ported tests against the upstream test registry.
 
 playwright/src/test/upstream_registry.md is a copy of tests/registry.md in
-microsoft/playwright. It lists every upstream test in tests/page and tests/library with
+microsoft/playwright at the commit named in playwright/src/test/upstream_base.txt. It lists every upstream test in tests/page and tests/library with
 its identifier (for example CH-001). Each of those tests must be either:
 
 - ported under playwright/src/test/java/com/microsoft/playwright/tests/{page,library}, in
