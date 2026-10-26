@@ -28,11 +28,15 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
   private final ChannelOwner channel;
   private final String waitId;
   private final String apiName;
+  private final String event;
+  private final String title;
 
-  WaitForEventLogger(ChannelOwner channelOwner, String apiName, Function<Logger, T> supplier) {
+  WaitForEventLogger(ChannelOwner channelOwner, String apiName, String event, String title, Function<Logger, T> supplier) {
     this.supplier = supplier;
     this.channel = channelOwner;
     this.apiName = apiName;
+    this.event = event;
+    this.title = title;
     this.waitId = createGuid();
   }
 
@@ -41,8 +45,8 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
     {
       JsonObject info = new JsonObject();
       info.addProperty("phase", "before");
-      info.addProperty("event", "");
-      sendWaitInfo(info);
+      info.addProperty("event", event == null ? "" : event);
+      sendWaitInfo(info, title);
     }
     JsonObject info = new JsonObject();
     info.addProperty("phase", "after");
@@ -66,11 +70,27 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
   }
 
   private void sendWaitInfo(JsonObject info) {
+    sendWaitInfo(info, null);
+  }
+
+  // The title goes with the first message of the wait, as in the Node.js client, where it is the
+  // title of the api zone; an outer call that has a title of its own keeps it. It is set for that
+  // message only, so that the calls made from the callback of the wait are not hidden as internal.
+  private void sendWaitInfo(JsonObject info, String title) {
     info.addProperty("waitId", waitId);
+    Connection connection = channel.connection;
+    boolean setTitle = title != null && connection.title() == null;
+    if (setTitle) {
+      connection.setTitle(title);
+    }
     try {
       channel.sendMessageNoReply("__waitInfo__", info);
     } catch (RuntimeException e) {
       // Fire-and-forget: never throw to the caller.
+    } finally {
+      if (setTitle) {
+        connection.setTitle(null);
+      }
     }
   }
 }

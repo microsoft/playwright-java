@@ -961,7 +961,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withWaitLogging("Frame.waitForNavigation", logger -> waitForNavigationImpl(logger, code, options, null));
+    return withWaitLoggingTitled("Frame.waitForNavigation", "Wait for navigation", logger -> waitForNavigationImpl(logger, code, options, null));
   }
 
   Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {

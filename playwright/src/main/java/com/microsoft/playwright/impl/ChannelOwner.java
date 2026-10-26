@@ -81,7 +81,16 @@ class ChannelOwner extends LoggingSupport {
   }
 
   <T> T withWaitLogging(String apiName, Function<Logger, T> code) {
-    return new WaitForEventLogger<>(this, apiName, code).get();
+    return new WaitForEventLogger<>(this, apiName, null, null, code).get();
+  }
+
+  /** A wait for the event, titled {@code Wait for event "<event>"} in the trace like the Node.js client's waitForEvent. */
+  <T> T withWaitLogging(String apiName, String event, Function<Logger, T> code) {
+    return new WaitForEventLogger<>(this, apiName, event, "Wait for event \"" + event + "\"", code).get();
+  }
+
+  <T> T withWaitLoggingTitled(String apiName, String title, Function<Logger, T> code) {
+    return new WaitForEventLogger<>(this, apiName, null, title, code).get();
   }
 
 
