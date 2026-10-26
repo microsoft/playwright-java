@@ -262,3 +262,18 @@ IF-009      TODO harness: needs formidable, a multipart/form-data parser for the
 IF-011      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
 IF-016      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
 IF-017      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+# page/page-wait-for-selector-1
+WA-027      page.waitForSelector({ waitFor }) is an undocumented JS-client option; the Java API has no waitFor option.
+WA-028      page.waitForSelector({ waitFor: 'visible' }) is an undocumented JS-client option; the Java API has no waitFor option.
+# page/page-wait-for-selector-2
+WA-058      passes the invalid state 'foo'; state is the WaitForSelectorState enum in Java.
+WA-059      page.waitForSelector({ visibility }) is an undocumented JS-client option; the Java API has no visibility option.
+WA-060      passes the invalid state true; state is the WaitForSelectorState enum in Java.
+WA-061      passes the invalid state false; state is the WaitForSelectorState enum in Java.
+WA-072      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
+WA-073      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
+# page/page-wait-for-load-state
+WA-080      passes the invalid state 'bad'; state is the LoadState enum in Java.
+# page/workers
+WO-003      TODO harness: needs an async() that is safe against the Java client race; the in-flight worker.evaluate in async() while page.close() runs hangs the test run forever (jstack: stuck in Connection.processOneMessage), so it can not be marked @Fixme.
+WA-128    tests a RegExp made in another Node.js vm context; Java has no cross-context regular expressions.
