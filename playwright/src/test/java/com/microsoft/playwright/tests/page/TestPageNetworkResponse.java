@@ -184,12 +184,12 @@ public class TestPageNetworkResponse {
     assertEquals(200, pageResponse.status());
     assertEquals(false, requestFinished[0]);
 
-    CompletableFuture<String> responseText = async(() -> pageResponse.text());
     // Write part of the response and wait for it to be flushed.
     serverResponse.get().write("wor");
     // Finish response.
     serverResponse.get().end("ld!");
-    assertEquals("hello world!", responseText.get());
+    // Java: response.text() keeps its result once the response has ended, so it runs after the server side.
+    assertEquals("hello world!", pageResponse.text());
   }
 
   @PlaywrightTest

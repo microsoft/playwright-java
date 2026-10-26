@@ -57,6 +57,7 @@ EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sy
 # page/page-emulate-media
 EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
 EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
+EM-006      java: concurrent: page.emulateMedia while page.goto is pending
 # page/page-aria-snapshot-json
 page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
 # page/page-autowaiting-basic
@@ -153,6 +154,7 @@ NE-096      Request.serviceWorker() is not in the Java API.
 NE-097      Request.serviceWorker() is not in the Java API.
 NE-098      Request.serviceWorker() is not in the Java API.
 # page/page-basic
+PA-010      java: concurrent: page.title while page.goto is pending
 PA-019      Iterates over the properties of the Node.js Page object with for...in and Symbol.iterator.
 # page/page-set-content
 PA-034      TODO harness: page.goto() runs with Utils.async while the test thread calls page.content(); the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: response@...".
@@ -224,6 +226,7 @@ NA-046      Checks the 'warning' event of the Node.js process (EventEmitter list
 RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).
 
 # page/page-request-fulfill
+RO-100      java: concurrent: page.evaluate while page.evaluate is pending
 RO-112      TODO harness: needs a test server response with several values for one header (res.setHeader('Set-Cookie', ['a=b', 'c=d'])); TestServer.Response.setHeader() takes a single String.
 RO-116      The json option of route.fulfill() is not in the Java API (docs langs: js, python, csharp).
 
@@ -288,6 +291,16 @@ SS-056      TODO harness: needs comparePNGs
 SS-057      TODO harness: needs comparePNGs
 SS-095      TODO harness: needs comparePNGs
 
+# page/elementhandle-scroll-into-view
+EH-095      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+EH-099      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+EH-100      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+# page/elementhandle-select-text
+EH-106      java: concurrent: elementHandle.evaluate while elementHandle.selectText is pending
+# page/page-dispatchevent
+DE-008      java: concurrent: page.evaluate while page.dispatchEvent is pending
+# page/page-aria-snapshot
+AR-037      java: concurrent: page.setContent while locator.ariaSnapshot is pending
 # library/browsercontext-credentials
 AU-002      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
 AU-003      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.

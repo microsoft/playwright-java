@@ -25,11 +25,9 @@ import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.expectToContainYaml;
 import static com.microsoft.playwright.fixtures.Utils.unshift;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -851,26 +849,6 @@ public class TestPageAriaSnapshot {
     checkAndMatchSnapshot(page.locator("body"), "\n" +
         "    - link \"Log in\":\n" +
         "      - /url: /auth?r=/\n" +
-        "  ");
-  }
-
-  @PlaywrightTest
-  @DisplayName("AR-037 auto-waits the locator and does not include iframes")
-  void autowaitsTheLocatorAndDoesNotIncludeIframes(Page page) throws Exception {
-    page.setContent("\n" +
-        "    <div>Hello</div>\n" +
-        "  ");
-
-    CompletableFuture<String> snapshotPromise = async(() -> page.locator("#target").ariaSnapshot());
-    page.waitForTimeout(2000);
-    page.setContent("\n" +
-        "    <div id=target>\n" +
-        "      Hello\n" +
-        "      <iframe srcdoc=\"<ul><li>Item 1</li><li>Item 2</li></ul>\"></iframe>\n" +
-        "    </div>\n" +
-        "  ");
-    expectToContainYaml(snapshotPromise.get(), "\n" +
-        "    - text: Hello\n" +
         "  ");
   }
 

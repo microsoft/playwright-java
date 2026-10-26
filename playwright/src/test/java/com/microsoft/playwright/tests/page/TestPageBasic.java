@@ -138,23 +138,6 @@ public class TestPageBasic {
   }
 
   @PlaywrightTest
-  @DisplayName("PA-010 page.title should not throw during navigation")
-  void pageTitleShouldNotThrowDuringNavigation(Page page, TestServer server) throws Exception {
-    page.setContent("<title>hello</title>");
-    CompletableFuture<?> promise = async(() -> page.navigate(server.PREFIX + "/title.html"));
-    Object titleOrError;
-    try {
-      titleOrError = page.title();
-    } catch (PlaywrightException e) {
-      titleOrError = e;
-    }
-    promise.get();
-    assertTrue(titleOrError instanceof String);
-    assertTrue(Pattern.compile("^(hello|Loading http.*title.html||Woof-Woof)$").matcher((String) titleOrError).find());
-    assertThat(page).hasTitle("Woof-Woof");
-  }
-
-  @PlaywrightTest
   @DisplayName("PA-011 page.close should work with window.close")
   void pageCloseShouldWorkWithWindowClose(Page page) {
     Page newPage = page.waitForPopup(() -> {

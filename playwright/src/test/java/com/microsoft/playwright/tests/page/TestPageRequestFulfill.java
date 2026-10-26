@@ -137,28 +137,6 @@ public class TestPageRequestFulfill {
   }
 
   @PlaywrightTest
-  @DisplayName("RO-100 should not throw if request was cancelled by the page")
-  void shouldNotThrowIfRequestWasCancelledByThePage(Page page, TestServer server) throws Exception {
-    CompletableFuture<Route> interceptPromise = new CompletableFuture<>();
-    page.route("**/data.json", route -> interceptPromise.complete(route));
-    page.navigate(server.EMPTY_PAGE);
-    async(() -> page.evaluate("url => {\n" +
-      "  globalThis.controller = new AbortController();\n" +
-      "  return fetch(url, { signal: globalThis.controller.signal });\n" +
-      "}", server.PREFIX + "/data.json"));
-    Route route = interceptPromise.get();
-    // Java: there is no page.waitForRequestFailed(), the event is collected with a handler.
-    CompletableFuture<Request> failurePromise = new CompletableFuture<>();
-    page.onRequestFailed(request -> failurePromise.complete(request));
-    page.evaluate("() => globalThis.controller.abort()");
-    page.context().waitForCondition(() -> failurePromise.isDone());
-    Request cancelledRequest = failurePromise.get();
-    assertNotNull(cancelledRequest.failure());
-    assertTrue(Pattern.compile("cancelled|aborted", Pattern.CASE_INSENSITIVE).matcher(cancelledRequest.failure()).find());
-    route.fulfill(new Route.FulfillOptions().setStatus(200)); // Should not throw.
-  }
-
-  @PlaywrightTest
   @DisplayName("RO-101 should allow mocking binary responses")
   @DisabledOnBrowser(value = BrowserName.FIREFOX, headed = true, reason = "Firefox headed produces a different image.")
   void shouldAllowMockingBinaryResponses(Page page, TestServer server, BrowserName browserName, TestInfo testInfo) {

@@ -167,10 +167,11 @@ public class TestPageNetworkRequest {
     assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("win32") && !"webkit-wsl".equals(Env.channel()),
       "fail: Curl does not show accept-encoding and accept-language");
 
-    AtomicReference<CompletableFuture<Map<String, String>>> requestHeadersPromise = new AtomicReference<>();
-    page.onRequest(request -> requestHeadersPromise.set(async(() -> request.allHeaders())));
-    AtomicReference<CompletableFuture<Map<String, String>>> responseHeadersPromise = new AtomicReference<>();
-    page.onResponse(response -> responseHeadersPromise.set(async(() -> response.allHeaders())));
+    // Java: the handlers call allHeaders() inline, they run while page.navigate() is pending.
+    AtomicReference<Map<String, String>> requestHeadersRef = new AtomicReference<>();
+    page.onRequest(request -> requestHeadersRef.set(request.allHeaders()));
+    AtomicReference<Map<String, String>> responseHeadersRef = new AtomicReference<>();
+    page.onResponse(response -> responseHeadersRef.set(response.allHeaders()));
 
     AtomicReference<TestServer.Request> serverRequest = new AtomicReference<>();
     server.setRoute("/empty.html", (request, response) -> {
@@ -181,10 +182,10 @@ public class TestPageNetworkRequest {
     });
 
     page.navigate(server.PREFIX + "/empty.html");
-    Map<String, String> requestHeaders = requestHeadersPromise.get().get();
+    Map<String, String> requestHeaders = requestHeadersRef.get();
     assertEquals(adjustServerHeaders(serverRequest.get().headers, browserName), requestHeaders);
 
-    Map<String, String> responseHeaders = responseHeadersPromise.get().get();
+    Map<String, String> responseHeaders = responseHeadersRef.get();
     assertEquals("bar", responseHeaders.get("foo"));
   }
 

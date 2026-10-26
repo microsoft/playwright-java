@@ -28,10 +28,8 @@ import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -118,19 +116,17 @@ public class TestPageSetContent {
   @DisplayName("PA-028 should await resources to load")
   void shouldAwaitResourcesToLoad(Page page, TestServer server) throws Exception {
     String imgPath = "/img.png";
-    CompletableFuture<TestServer.Response> imgResponse = new CompletableFuture<>();
-    server.setRoute(imgPath, (req, res) -> imgResponse.complete(res));
     AtomicBoolean loaded = new AtomicBoolean(false);
-    CompletableFuture<TestServer.Request> imgRequest = server.waitForRequest(imgPath);
-    CompletableFuture<Void> contentPromise = async(() -> {
-      page.setContent("<img src=\"" + server.PREFIX + imgPath + "\"></img>");
-      loaded.set(true);
-      return null;
+    AtomicBoolean loadedWhenRequested = new AtomicBoolean(true);
+    // Java: upstream ends the response after setContent has started; the route handler runs on the
+    // thread of the server, so it ends the response and setContent is called inline.
+    server.setRoute(imgPath, (req, res) -> {
+      loadedWhenRequested.set(loaded.get());
+      res.end();
     });
-    imgRequest.get();
-    assertEquals(false, loaded.get());
-    imgResponse.get().end();
-    contentPromise.get();
+    page.setContent("<img src=\"" + server.PREFIX + imgPath + "\"></img>");
+    loaded.set(true);
+    assertEquals(false, loadedWhenRequested.get());
   }
 
   @PlaywrightTest

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static com.microsoft.playwright.fixtures.Utils.async;
@@ -327,10 +326,9 @@ public class TestPageExposeFunction {
   @PlaywrightTest
   @DisplayName("EF-021 exposeBinding should work in parallel")
   void exposeBindingShouldWorkInParallel(Page page) throws Exception {
-    CompletableFuture<AutoCloseable> foo = async(() -> page.exposeBinding("foo", (source, args) -> 42));
-    CompletableFuture<AutoCloseable> bar = async(() -> page.exposeBinding("bar", (source, args) -> 42));
-    foo.get();
-    bar.get();
+    // Java: Promise.all of the two calls, one after the other.
+    page.exposeBinding("foo", (source, args) -> 42);
+    page.exposeBinding("bar", (source, args) -> 42);
     page.evaluate("() => {\n" +
       "  window.foo();\n" +
       "  window.bar();\n" +

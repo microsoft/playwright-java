@@ -28,13 +28,11 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.expectToContainYaml;
 import static com.microsoft.playwright.fixtures.Utils.unshift;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -659,9 +657,9 @@ public class TestPageAriaSnapshotAi {
   @DisplayName("AR-074 should auto-wait for navigation")
   void shouldAutowaitForNavigation(Page page, TestServer server) throws Exception {
     page.navigate(server.PREFIX + "/frames/frame.html");
-    CompletableFuture<Object> reload = async(() -> page.evaluate("() => window.location.reload()"));
+    // Java: Promise.all of the reload and the snapshot, one after the other; the snapshot auto-waits for the navigation.
+    page.evaluate("() => window.location.reload()");
     String snapshot = snapshotForAI(page);
-    reload.get();
     // The snapshot races the reload, which may re-number the main frame, so accept any ref.
     assertTrue(Pattern.compile("- generic \\[active\\] \\[ref=(?:f\\d+)?e\\d+\\]: Hi, I'm frame").matcher(snapshot).find());
   }

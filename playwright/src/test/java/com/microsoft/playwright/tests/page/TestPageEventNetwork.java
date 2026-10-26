@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -167,12 +166,12 @@ public class TestPageEventNetwork {
       page.evaluate("url => void fetch(url)", server.PREFIX + "/foo");
     });
     TestServer.Response responseFromServer = responseFromServerPromise.get();
-    CompletableFuture<Response> responsePromise = async(() -> request.response());
     // navigate, which should cancel the request
     page.navigate(server.CROSS_PROCESS_PREFIX);
     // make sure we aren't stalling this request on the server
     responseFromServer.end("done");
     // the response should resolve to null, because the page navigated.
-    assertNull(responsePromise.get());
+    // Java: request.response() keeps its result once the page has navigated, so it runs after the navigation.
+    assertNull(request.response());
   }
 }

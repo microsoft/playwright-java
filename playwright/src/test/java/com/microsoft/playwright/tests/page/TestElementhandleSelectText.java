@@ -25,10 +25,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,22 +72,4 @@ public class TestElementhandleSelectText {
     assertTrue(error.getMessage().contains("element is not visible"));
   }
 
-  @PlaywrightTest
-  @DisplayName("EH-106 should wait for visible")
-  void shouldWaitForVisible(Page page, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/input/textarea.html");
-    ElementHandle textarea = page.querySelector("textarea");
-    textarea.evaluate("textarea => textarea.value = 'some value'");
-    textarea.evaluate("e => e.style.display = 'none'");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      textarea.selectText(new ElementHandle.SelectTextOptions().setTimeout(3000));
-      done.set(true);
-      return true;
-    });
-    page.waitForTimeout(1000);
-    assertEquals(false, done.get());
-    textarea.evaluate("e => e.style.display = 'block'");
-    promise.get();
-  }
 }

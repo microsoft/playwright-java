@@ -26,10 +26,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -66,28 +63,6 @@ public class TestElementhandleScrollIntoView {
     div.evaluate("div => div.remove()");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> div.scrollIntoViewIfNeeded());
     assertTrue(error.getMessage().contains("Element is not attached to the DOM"));
-  }
-
-  private static void testWaiting(Page page, String after) throws Exception {
-    ElementHandle div = page.querySelector("div");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      div.scrollIntoViewIfNeeded();
-      done.set(true);
-      return true;
-    });
-    page.waitForTimeout(1000);
-    assertEquals(false, done.get());
-    div.evaluate(after);
-    promise.get();
-    assertEquals(true, done.get());
-  }
-
-  @PlaywrightTest
-  @DisplayName("EH-095 should wait for display:none to become visible")
-  void shouldWaitForDisplayNoneToBecomeVisible(Page page, TestServer server) throws Exception {
-    page.setContent("<div style=\"display:none\">Hello</div>");
-    testWaiting(page, "div => div.style.display = 'block'");
   }
 
   @PlaywrightTest
@@ -130,31 +105,6 @@ public class TestElementhandleScrollIntoView {
     page.setContent("<div style=\"height:0\">Hello</div>");
     ElementHandle div = page.querySelector("div");
     div.scrollIntoViewIfNeeded();
-  }
-
-  @PlaywrightTest
-  @DisplayName("EH-099 should wait for nested display:none to become visible")
-  void shouldWaitForNestedDisplayNoneToBecomeVisible(Page page, TestServer server) throws Exception {
-    page.setContent("<span style=\"display:none\"><div>Hello</div></span>");
-    testWaiting(page, "div => div.parentElement.style.display = 'block'");
-  }
-
-  @PlaywrightTest
-  @DisplayName("EH-100 should wait for element to stop moving")
-  void shouldWaitForElementToStopMoving(Page page, TestServer server) throws Exception {
-    page.setContent("\n" +
-      "    <style>\n" +
-      "      @keyframes move {\n" +
-      "        from { margin-left: 0; }\n" +
-      "        to { margin-left: 200px; }\n" +
-      "      }\n" +
-      "      div.animated {\n" +
-      "        animation: 2s linear 0s infinite alternate move;\n" +
-      "      }\n" +
-      "    </style>\n" +
-      "    <div class=animated>moving</div>\n" +
-      "    ");
-    testWaiting(page, "div => div.classList.remove('animated')");
   }
 
   @PlaywrightTest

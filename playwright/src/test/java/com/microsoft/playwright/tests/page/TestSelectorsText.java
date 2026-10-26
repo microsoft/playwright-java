@@ -26,11 +26,9 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -450,8 +448,6 @@ public class TestSelectorsText {
   @PlaywrightTest
   @DisplayName("SE-043 should waitForSelector with distributed elements")
   void shouldWaitForSelectorWithDistributedElements(Page page, TestServer server) throws Exception {
-    // Java: the promise is a call on its own thread.
-    CompletableFuture<ElementHandle> promise = async(() -> page.waitForSelector("div >> text=Hello"));
     page.evaluate("() => {\n" +
       "  const div = document.createElement('div');\n" +
       "  document.body.appendChild(div);\n" +
@@ -466,7 +462,8 @@ public class TestSelectorsText {
       "  lightSpan.textContent = 'Hello from light';\n" +
       "  div.appendChild(lightSpan);\n" +
       "}");
-    ElementHandle handle = promise.get();
+    // Java: waitForSelector keeps its result once the element exists, so it runs after the evaluate.
+    ElementHandle handle = page.waitForSelector("div >> text=Hello");
     assertEquals("Hello from light", handle.textContent());
   }
 

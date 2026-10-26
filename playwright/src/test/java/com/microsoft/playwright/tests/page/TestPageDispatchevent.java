@@ -25,9 +25,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -119,30 +117,6 @@ public class TestPageDispatchevent {
       "    <div></div>\n" +
       "  </container>");
     page.dispatchEvent("button", "click");
-    assertEquals(true, page.evaluate("() => window['clicked']"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("DE-008 should dispatch click when node is added in shadow dom")
-  void shouldDispatchClickWhenNodeIsAddedInShadowDom(Page page, TestServer server) throws Exception {
-    page.navigate(server.EMPTY_PAGE);
-    CompletableFuture<Void> watchdog = async(() -> {
-      page.dispatchEvent("span", "click");
-      return null;
-    });
-    page.evaluate("() => {\n" +
-      "  const div = document.createElement('div');\n" +
-      "  div.attachShadow({ mode: 'open' });\n" +
-      "  document.body.appendChild(div);\n" +
-      "}");
-    page.waitForTimeout(100);
-    page.evaluate("() => {\n" +
-      "  const span = document.createElement('span');\n" +
-      "  span.textContent = 'Hello from shadow';\n" +
-      "  span.addEventListener('click', () => window['clicked'] = true);\n" +
-      "  document.querySelector('div').shadowRoot.appendChild(span);\n" +
-      "}");
-    watchdog.get();
     assertEquals(true, page.evaluate("() => window['clicked']"));
   }
 

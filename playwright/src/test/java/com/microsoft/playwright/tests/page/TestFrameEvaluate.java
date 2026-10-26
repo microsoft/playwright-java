@@ -30,9 +30,7 @@ import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.detachFrame;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
@@ -141,13 +139,11 @@ public class TestFrameEvaluate {
     assertTrue(frame1 != frame2);
 
     // Promise.all
-    CompletableFuture<Object> set1 = async(() -> frame1.evaluate("() => window['a'] = 1"));
+    frame1.evaluate("() => window['a'] = 1");
     frame2.evaluate("() => window['a'] = 2");
-    set1.get();
     // Promise.all
-    CompletableFuture<Object> get1 = async(() -> frame1.evaluate("() => window['a']"));
+    Object a1 = frame1.evaluate("() => window['a']");
     Object a2 = frame2.evaluate("() => window['a']");
-    Object a1 = get1.get();
     assertEquals(1, a1);
     assertEquals(2, a2);
   }

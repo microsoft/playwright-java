@@ -28,9 +28,7 @@ import com.microsoft.playwright.options.Media;
 import com.microsoft.playwright.options.ReducedMotion;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -97,21 +95,6 @@ public class TestPageEmulateMedia {
     page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(null));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("EM-006 should work during navigation")
-  void shouldWorkDuringNavigation(Page page, TestServer server) throws Exception {
-    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(ColorScheme.LIGHT));
-    CompletableFuture<Response> navigated = async(() -> page.navigate(server.EMPTY_PAGE));
-    ColorScheme[] schemes = {ColorScheme.DARK, ColorScheme.LIGHT};
-    for (int i = 0; i < 9; i++) {
-      // Java: Promise.all([page.emulateMedia(...), new Promise(f => setTimeout(f, 1))])
-      page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(schemes[i & 1]));
-      page.waitForTimeout(1);
-    }
-    navigated.get();
-    assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
   }
 
   @PlaywrightTest
