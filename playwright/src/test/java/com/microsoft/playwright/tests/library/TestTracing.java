@@ -865,6 +865,81 @@ public class TestTracing {
     return null;
   }
 
+  private static List<JsonObject> sanitizeAll(List<JsonObject> events, AtomicInteger minCallId) {
+    List<JsonObject> sanitized = new ArrayList<>();
+    for (JsonObject e : events) {
+      JsonObject s = sanitize(e, minCallId);
+      if (s != null)
+        sanitized.add(s);
+    }
+    return sanitized;
+  }
+
+  private static List<String> types(List<JsonObject> events) {
+    List<String> types = new ArrayList<>();
+    for (JsonObject e : events)
+      types.add(str(e, "type"));
+    return types;
+  }
+
+  private static int callId(JsonObject e) {
+    return e.get("callId").getAsInt();
+  }
+
+  @PlaywrightTest
+  @DisplayName("TR-041 should not emit after w/o before")
+  @Fixme("java: the client sends no title with a wait, so the trace has no title for it")
+  void shouldNotEmitAfterWOBefore(BrowserType browserType, TestInfo testInfo) {
+    Path tracesDir = testInfo.outputPath("traces");
+    Browser browser = browserType.launch(Env.launchOptions().setTracesDir(tracesDir));
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+
+    context.tracing().start(new Tracing.StartOptions().setName("name1").setSnapshots(true));
+    // The wait spans the chunks: its "before" is in the first chunk, and its "after" must not get into the second one.
+    // Java: the calls that the wait spans go in its callback.
+    page.waitForConsoleMessage(() -> {
+      page.evaluate("() => 1");
+      context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(testInfo.outputPath("trace1.zip")));
+      assertTrue(Files.exists(tracesDir.resolve("name1.trace")));
+
+      context.tracing().startChunk(new Tracing.StartChunkOptions().setName("name2"));
+      page.evaluate("() => console.log('started')");
+    });
+    context.tracing().stop(new Tracing.StopOptions().setPath(testInfo.outputPath("trace2.zip")));
+    assertTrue(Files.exists(tracesDir.resolve("name2.trace")));
+
+    browser.close();
+    AtomicInteger minCallId = new AtomicInteger(100000);
+
+    int call1;
+    {
+      Trace trace = parseTraceRaw(testInfo.outputPath("trace1.zip"));
+      List<JsonObject> sanitized = sanitizeAll(trace.events, minCallId);
+      assertEquals(Arrays.asList("before", "before", "after"), types(sanitized));
+      assertEquals("Wait for event \"console\"", str(sanitized.get(0), "title"));
+      assertNull(str(sanitized.get(1), "title"));
+      assertNull(str(sanitized.get(2), "title"));
+      assertTrue(callId(sanitized.get(1)) > callId(sanitized.get(0)));
+      assertEquals(callId(sanitized.get(1)), callId(sanitized.get(2)));
+      call1 = callId(sanitized.get(1));
+    }
+
+    int call2before;
+    int call2after;
+    {
+      Trace trace = parseTraceRaw(testInfo.outputPath("trace2.zip"));
+      List<JsonObject> sanitized = sanitizeAll(trace.events, minCallId);
+      assertEquals(Arrays.asList("before", "after"), types(sanitized));
+      assertNull(str(sanitized.get(0), "title"));
+      assertNull(str(sanitized.get(1), "title"));
+      call2before = callId(sanitized.get(0));
+      call2after = callId(sanitized.get(1));
+    }
+    assertTrue(call2before > call1);
+    assertEquals(call2before, call2after);
+  }
+
   @PlaywrightTest
   @DisplayName("TR-042 should save trace while a WebSocket keeps streaming frames")
   void shouldSaveTraceWhileAWebSocketKeepsStreamingFrames(BrowserContext context, Page page, TestServer server, TestInfo testInfo) throws Exception {

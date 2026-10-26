@@ -431,7 +431,6 @@ TR-035      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the acti
 TR-019      Reads context.tracing._stacksId, an internal of the Node.js client.
 TR-021      Sets browserType._playwright._defaultTracesDir, an internal of the Node.js client.
 TR-039      TODO harness: reads the .trace file in the traces folder of the test runner (testInfo.project.outputDir and artifactsFolderName); the harness has no such folder.
-TR-041      upstream: evaluate promise awaited later, waits for the rewrite in upstream_rewrites/pending_evaluate_promise.md
 # library/video
 VI-002      Passes recordVideo: {} (recording without a dir); the Java options are flattened and recordVideoDir is what turns recording on.
 VI-022      playwright.devices (the iPhone 6 descriptor) is not in the Java API.

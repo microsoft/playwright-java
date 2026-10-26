@@ -42,6 +42,9 @@ change the other tests in these files.
 
 ### TR-041 `tests/library/tracing.spec.ts`, "should not emit after w/o before"
 
+Status: rewritten as below in the local `../playwright` checkout on Oct 26 2026 (uncommitted, to be
+sent upstream) and ported to Java with a `java:` fixme for the missing title of the wait.
+
 The test checks that a call whose `before` event is in one chunk does not get its `after`
 event into the next chunk. The spanning call is
 `page.evaluate(() => { console.log('started'); return new Promise(f => window.callback = f); })`,
