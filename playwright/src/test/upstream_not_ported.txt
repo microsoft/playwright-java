@@ -217,3 +217,14 @@ EX-222      expect(page).toHaveURL(URLPattern) is not in the Java API; URLPatter
 EX-226      toHaveAttribute(name) without a value is not in the Java API; hasAttribute() requires a value.
 EX-227      toHaveAttribute(name, { timeout }) without a value is not in the Java API; hasAttribute() requires a value.
 EX-235      Checks error.stack, the Node.js stack of the matcher error, for the test file name.
+# page/locator-query
+LO-177      locator.within() (since v1.64) is not in the Java API yet.
+# page/locator-wait-for-function
+LO-191      locator.waitForFunction({ signal }) takes an AbortSignal; the signal option is JavaScript-only.
+LO-192      locator.waitForFunction({ signal }) takes an AbortSignal; the signal option is JavaScript-only.
+# page/page-goto
+NA-027      waitUntil: 'networkidle0' is an undocumented alias that only the Node.js client maps; WaitUntilState is an enum in Java and can not hold it.
+NA-028      waitUntil: 'networkidle2' is an invalid string value; WaitUntilState is an enum in Java and can not hold it.
+NA-044      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+NA-045      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+NA-046      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
