@@ -222,6 +222,12 @@ handler of the request has returned, as in the Node.js server, so a response sto
      is not ported. Delete it and add it to `upstream_not_ported.txt` with the reason
      `java: concurrent: <call> while <call> is pending`, for example
      `CL-022    java: concurrent: page.$eval while page.click is pending`.
+     When the pending call is an `evaluate` whose promise upstream awaits later (`const p =
+     page.evaluate(() => new Promise(...)); ...; await p`), the test waits for a rewrite
+     upstream instead: the reason is `upstream: evaluate promise awaited later, waits for the
+     rewrite in upstream_rewrites/pending_evaluate_promise.md`, and the test is added to that
+     file, the prompt for rewriting it upstream so that the promise is kept on `window` and
+     awaited by a second `evaluate`.
 - A promise settled by an event handler (`new Promise(f => page.once('load', f))`, awaited
   later) is a `CompletableFuture` that the `onLoad` handler completes, awaited with
   `page.waitForCondition(future::isDone)`: the Java client only delivers events while the test
