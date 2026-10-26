@@ -247,3 +247,26 @@ RO-153      Tests globToRegexPattern() and urlMatches() of the Node.js client; t
 RO-154      Tests globToRegexPattern() of the Node.js client; the Java client converts globs in the driver (LocalUtils.globToRegex), there is no public function to call.
 RO-160      Creates the RegExp in another Node.js vm context (vm.runInContext) to test the JS client's cross-realm RegExp detection; Java has no vm contexts.
 RO-161      Tests the JavaScript RegExp g flag (its lastIndex state makes RegExp.test() stateful); a java.util.regex.Pattern has no global flag, so the client can not send such a regex.
+# page/page-add-init-script
+IS-004      Passes an options object without path or content ({ foo: 'bar' }); the Java addInitScript() takes a String or a Path.
+# page/page-add-init-script-callback
+IS-012      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-013      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-014      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-015      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-016      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-017      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-018      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-019      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-020      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-021      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-022      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-023      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+# page/page-add-locator-handler
+LH-005      The never-settling handler (new Promise(() => {})) has no Java equivalent: handlers run on the thread that dispatches client messages, so a handler that never returns hangs the client for good (a handler waiting in page.waitForTimeout(9999999) hangs the run).
+LH-008      Uses expect(page).toHaveScreenshot(); it is not in the Java API.
+# page/page-set-input-files
+IF-009      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-011      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-016      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-017      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
