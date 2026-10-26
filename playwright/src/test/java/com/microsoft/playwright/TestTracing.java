@@ -376,6 +376,28 @@ public class TestTracing {
   }
 
   @PlaywrightTest
+  public void shouldShowWaitForEventAndNavigation(Page page, BrowserContext context, BrowserType browserType, Server server, @TempDir Path tempDir) throws Exception {
+    context.tracing().start(new Tracing.StartOptions());
+
+    page.navigate(server.EMPTY_PAGE);
+    page.waitForConsoleMessage(() -> page.evaluate("() => console.log('hello')"));
+    page.waitForNavigation(() -> page.evaluate("() => window.location.href = '/one-style.html'"));
+
+    Path traceFile = tempDir.resolve("trace.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
+
+    TraceViewerPage.showTraceViewer(browserType, traceFile, traceViewer -> {
+      assertThat(traceViewer.actionTitles()).hasText(new Pattern[] {
+        Pattern.compile("Navigate.*/empty.html"),
+        Pattern.compile("Wait for event \"console\""),
+        Pattern.compile("Evaluate"),
+        Pattern.compile("Wait for navigation"),
+        Pattern.compile("Evaluate"),
+      });
+    });
+  }
+
+  @PlaywrightTest
   public void shouldRecordHarWithStartHarStopHar(Page page, BrowserContext context, Server server, @TempDir Path tempDir) throws Exception {
     Path harPath = tempDir.resolve("tracing.har");
     context.tracing().startHar(harPath, new Tracing.StartHarOptions().setMode(com.microsoft.playwright.options.HarMode.MINIMAL));
