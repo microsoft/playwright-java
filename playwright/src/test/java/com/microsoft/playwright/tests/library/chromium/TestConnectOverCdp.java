@@ -58,7 +58,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -133,16 +132,13 @@ public class TestConnectOverCdp {
       healthyPage1.navigate(server.PREFIX + "/title.html");
       Page crashedPage1 = context1.newPage();
       crashedPage1.navigate(server.EMPTY_PAGE);
-      // Java: the crash event is awaited with a future that the handler completes; goto() runs on a thread of its own.
+      // Java: the crash event is awaited with a future that the handler completes; the navigation fails when the page crashes.
       CompletableFuture<Page> crash = new CompletableFuture<>();
       crashedPage1.onCrash(crash::complete);
-      async(() -> {
-        try {
-          return crashedPage1.navigate("chrome://crash");
-        } catch (PlaywrightException e) {
-          return null;
-        }
-      });
+      try {
+        crashedPage1.navigate("chrome://crash");
+      } catch (PlaywrightException e) {
+      }
       context1.waitForCondition(crash::isDone);
       cdpBrowser1.close();
 
@@ -172,16 +168,13 @@ public class TestConnectOverCdp {
       crashedPage1.navigate(server.EMPTY_PAGE);
       Page popup1 = crashedPage1.waitForPopup(() -> crashedPage1.evaluate("url => { window.open(url); }", server.CROSS_PROCESS_PREFIX + "/title.html"));
       popup1.waitForLoadState();
-      // Java: the crash event is awaited with a future that the handler completes; goto() runs on a thread of its own.
+      // Java: the crash event is awaited with a future that the handler completes; the navigation fails when the page crashes.
       CompletableFuture<Page> crash = new CompletableFuture<>();
       crashedPage1.onCrash(crash::complete);
-      async(() -> {
-        try {
-          return crashedPage1.navigate("chrome://crash");
-        } catch (PlaywrightException e) {
-          return null;
-        }
-      });
+      try {
+        crashedPage1.navigate("chrome://crash");
+      } catch (PlaywrightException e) {
+      }
       cdpBrowser1.contexts().get(0).waitForCondition(crash::isDone);
       cdpBrowser1.close();
 

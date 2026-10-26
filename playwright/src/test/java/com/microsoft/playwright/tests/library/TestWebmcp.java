@@ -37,10 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -253,26 +251,6 @@ public class TestWebmcp {
       names.add(tool.name);
     }
     assertEquals(asList("add", "late"), names);
-  }
-
-  @PlaywrightTest
-  @DisplayName("WM-010 should list tools while a tool is running")
-  void shouldListToolsWhileAToolIsRunning(Page page, TestServer server) throws Exception {
-    serve(server, "/", registerScript(kAdd + "\n" +
-      "    modelContext.registerTool({\n" +
-      "      name: 'gated',\n" +
-      "      description: 'Resolves when released',\n" +
-      "      execute() { return new Promise(resolve => window.release = () => resolve({ content: [{ type: 'text', text: 'released' }] })); },\n" +
-      "    });\n" +
-      "  "));
-    page.navigate(server.PREFIX + "/");
-
-    // Java: the tool call blocks until the tool is released, so it runs in another thread.
-    CompletableFuture<Object> result = async(() -> page.webmcp().callTool("gated"));
-    page.waitForFunction("() => !!window.release");
-    assertEquals(2, page.webmcp().tools().size());
-    page.evaluate("() => window.release()");
-    assertEquals(textResult("released"), result.get());
   }
 
   @PlaywrightTest

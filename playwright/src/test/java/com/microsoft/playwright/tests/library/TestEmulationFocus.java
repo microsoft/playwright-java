@@ -36,28 +36,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/emulation-focus.spec.ts. */
 public class TestEmulationFocus {
-  // Java: Promise.all([a, b, ...]) runs all calls but the last one with async(), the last one inline, and returns the results in order.
+  // Java: Promise.all([a, b, ...]) runs the calls one after the other and returns the results in order.
   @SafeVarargs
   private static List<Object> promiseAll(Callable<Object>... calls) throws Exception {
-    List<CompletableFuture<Object>> futures = new ArrayList<>();
-    for (int i = 0; i < calls.length - 1; i++) {
-      futures.add(async(calls[i]));
-    }
-    Object last = calls[calls.length - 1].call();
     List<Object> results = new ArrayList<>();
-    for (CompletableFuture<Object> future : futures) {
-      results.add(future.get());
+    for (Callable<Object> call : calls) {
+      results.add(call.call());
     }
-    results.add(last);
     return results;
   }
 

@@ -29,11 +29,8 @@ import org.junit.jupiter.api.DisplayName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -81,21 +78,6 @@ public class TestBrowser {
     } else {
       assertTrue(Pattern.compile("^\\d+\\.\\d+").matcher(version).find());
     }
-  }
-
-  @PlaywrightTest
-  @DisplayName("BR-005 should dispatch page.on(close) upon browser.close and reject evaluate")
-  void shouldDispatchPageOnCloseUponBrowserCloseAndRejectEvaluate(BrowserType browserType) {
-    Browser browser = browserType.launch(Env.launchOptions());
-    Page page = browser.newPage();
-    boolean[] closed = {false};
-    page.onClose(p -> closed[0] = true);
-    // Java: the pending evaluate runs in async().
-    CompletableFuture<Object> promise = async(() -> page.evaluate("() => new Promise(() => {})"));
-    browser.close();
-    assertEquals(true, closed[0]);
-    Throwable error = cause(promise);
-    assertTrue(error.getMessage().contains(kTargetClosedErrorMessage));
   }
 
   @PlaywrightTest

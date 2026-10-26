@@ -56,7 +56,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -427,16 +426,16 @@ public class TestHarWebsocket {
 
     String wsUrl = "ws://" + server.HOST + "/ws-handshake-fail";
     CompletableFuture<TestServer.UpgradeActions> upgradePromise = server.waitForUpgrade();
-    // Java: the page waits for the close of the WebSocket while the test answers the upgrade, so the evaluate() runs in async().
-    CompletableFuture<Object> wsClose = async(() -> harSession.page.evaluate("url => new Promise(resolve => {\n" +
+    // Java: the server answers the upgrade in a callback that runs on its own thread while the evaluate() waits for the close of the WebSocket.
+    upgradePromise.thenAccept(upgrade -> {
+      upgrade.socket.write("HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n");
+      upgrade.socket.destroy();
+    });
+    harSession.page.evaluate("url => new Promise(resolve => {\n" +
       "    const ws = new WebSocket(url);\n" +
       "    ws.addEventListener('close', () => resolve());\n" +
       "    ws.addEventListener('error', () => resolve());\n" +
-      "  })", wsUrl));
-    TestServer.Connection socket = upgradePromise.get().socket;
-    socket.write("HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n");
-    socket.destroy();
-    wsClose.get();
+      "  })", wsUrl);
     JsonObject log = harSession.getLog();
 
     JsonObject wsEntry = findEntry(log, wsUrl);

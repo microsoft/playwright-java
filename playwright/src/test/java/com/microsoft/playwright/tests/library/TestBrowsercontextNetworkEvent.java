@@ -31,10 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -183,26 +180,4 @@ public class TestBrowsercontextNetworkEvent {
     assertFalse(events.stream().anyMatch(e -> e.contains(hashedFaviconUrl)));
   }
 
-  @PlaywrightTest
-  @DisplayName("NE-127 should reject response.finished if context closes")
-  void shouldRejectResponseFinishedIfContextCloses(Page page, TestServer server) {
-    page.navigate(server.EMPTY_PAGE);
-    server.setRoute("/get", (req, res) -> {
-      // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
-      // from server.
-      res.setHeader("Content-Type", "text/plain; charset=utf-8");
-      res.write("hello ");
-    });
-    // send request and wait for server response
-    // Java: there is no page.waitForEvent('response') without a predicate.
-    Response pageResponse = page.waitForResponse(r -> true, () -> {
-      page.evaluate("() => fetch('./get', { method: 'GET' })");
-    });
-
-    // Java: the pending promise is an async call.
-    CompletableFuture<String> finishPromise = async(() -> pageResponse.finished());
-    page.context().close();
-    Throwable error = cause(finishPromise);
-    assertTrue(error.getMessage().contains("closed"));
-  }
 }

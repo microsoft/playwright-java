@@ -49,7 +49,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -449,18 +448,6 @@ public class TestOopif {
       frame.click("button");
     });
     assertEquals("clicked", message.text());
-  }
-
-  @PlaywrightTest
-  @DisplayName("OO-025 should not throw on exposeFunction when oopif detaches")
-  void shouldNotThrowOnExposeFunctionWhenOopifDetaches(Page page, Browser browser, TestServer server) throws Exception {
-    page.navigate(server.PREFIX + "/dynamic-oopif.html");
-    assertOOPIFCount(browser, 1);
-    // Java: page.exposeFunction() runs in async, page.evaluate() inline.
-    CompletableFuture<AutoCloseable> exposed = async(() -> page.exposeFunction("myFunc", args -> 2022));
-    page.evaluate("() => document.querySelector('iframe').remove()");
-    exposed.get();
-    assertEquals(2022, page.evaluate("() => window.myFunc()"));
   }
 
   @PlaywrightTest

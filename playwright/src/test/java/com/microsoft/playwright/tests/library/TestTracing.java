@@ -65,7 +65,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.parseZip;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -697,23 +696,6 @@ public class TestTracing {
   // TR-030 needs the titles of the actions of the trace: TODO harness.
 
   @PlaywrightTest
-  @DisplayName("TR-031 should export trace concurrently to second navigation")
-  void shouldExportTraceConcurrentlyToSecondNavigation(BrowserContext context, Page page, TestServer server, TestInfo testInfo) throws Exception {
-    for (int timeout = 0; timeout < 200; timeout += 20) {
-      context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
-      page.navigate(server.PREFIX + "/grid.html");
-
-      // Navigate to the same page to produce the same trace resources
-      // that might be concurrently exported.
-      // Java: the navigation runs in another thread while the test thread stops the tracing.
-      CompletableFuture<com.microsoft.playwright.Response> promise = async(() -> page.navigate(server.PREFIX + "/grid.html"));
-      page.waitForTimeout(timeout);
-      context.tracing().stop(new Tracing.StopOptions().setPath(testInfo.outputPath("trace.zip")));
-      promise.get();
-    }
-  }
-
-  @PlaywrightTest
   @DisplayName("TR-032 should not hang for clicks that open dialogs")
   void shouldNotHangForClicksThatOpenDialogs(BrowserContext context, Page page) {
     context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
@@ -881,82 +863,6 @@ public class TestTracing {
       return result;
     }
     return null;
-  }
-
-  @PlaywrightTest
-  @DisplayName("TR-041 should not emit after w/o before")
-  @Fixme("java: the client does not send waitForEventInfo, so the 'before' event of page.waitForEvent has no title (expected: <Wait for event \"console\"> but was: <null>)")
-  void shouldNotEmitAfterWOBefore(BrowserType browserType, TestInfo testInfo) throws Exception {
-    Path tracesDir = testInfo.outputPath("traces");
-    Browser browser = browserType.launch(Env.launchOptions().setTracesDir(tracesDir));
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
-
-    context.tracing().start(new Tracing.StartOptions().setName("name1").setSnapshots(true));
-    // Java: the evaluate blocks until the callback is called, so it runs in another thread.
-    CompletableFuture<Object> evaluatePromise = async(() -> {
-      try {
-        return page.evaluate("() => {\n" +
-          "    console.log('started');\n" +
-          "    return new Promise(f => window.callback = f);\n" +
-          "  }");
-      } catch (PlaywrightException e) {
-        return null;
-      }
-    });
-    page.waitForConsoleMessage(() -> {});
-    context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(testInfo.outputPath("trace1.zip")));
-    assertEquals(true, Files.exists(tracesDir.resolve("name1.trace")));
-
-    context.tracing().startChunk(new Tracing.StartChunkOptions().setName("name2"));
-    page.evaluateHandle("() => window.callback()");
-    evaluatePromise.get();
-    context.tracing().stop(new Tracing.StopOptions().setPath(testInfo.outputPath("trace2.zip")));
-    assertEquals(true, Files.exists(tracesDir.resolve("name2.trace")));
-
-    browser.close();
-    AtomicInteger minCallId = new AtomicInteger(100000);
-
-    int call1;
-    {
-      Trace trace = parseTraceRaw(testInfo.outputPath("trace1.zip"));
-      List<JsonObject> sanitized = new ArrayList<>();
-      for (JsonObject e : trace.events) {
-        JsonObject s = sanitize(e, minCallId);
-        if (s != null)
-          sanitized.add(s);
-      }
-      assertEquals(3, sanitized.size());
-      assertEquals("before", str(sanitized.get(0), "type"));
-      assertNull(str(sanitized.get(0), "title"));
-      assertEquals("before", str(sanitized.get(1), "type"));
-      assertEquals("Wait for event \"console\"", str(sanitized.get(1), "title"));
-      assertEquals("after", str(sanitized.get(2), "type"));
-      assertNull(str(sanitized.get(2), "title"));
-      call1 = sanitized.get(0).get("callId").getAsInt();
-      assertEquals(sanitized.get(1).get("callId").getAsInt(), sanitized.get(2).get("callId").getAsInt());
-    }
-
-    int call2before;
-    int call2after;
-    {
-      Trace trace = parseTraceRaw(testInfo.outputPath("trace2.zip"));
-      List<JsonObject> sanitized = new ArrayList<>();
-      for (JsonObject e : trace.events) {
-        JsonObject s = sanitize(e, minCallId);
-        if (s != null)
-          sanitized.add(s);
-      }
-      assertEquals(2, sanitized.size());
-      assertEquals("before", str(sanitized.get(0), "type"));
-      assertNull(str(sanitized.get(0), "title"));
-      assertEquals("after", str(sanitized.get(1), "type"));
-      assertNull(str(sanitized.get(1), "title"));
-      call2before = sanitized.get(0).get("callId").getAsInt();
-      call2after = sanitized.get(1).get("callId").getAsInt();
-    }
-    assertTrue(call2before > call1);
-    assertEquals(call2before, call2after);
   }
 
   @PlaywrightTest

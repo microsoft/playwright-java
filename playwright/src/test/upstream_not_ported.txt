@@ -375,16 +375,19 @@ BC-059      Listens to process.on('warning') for the Node.js MaxListenersExceede
 # library/browsercontext-reuse
 library/browsercontext-reuse        Uses the private context-reuse mode of the Node.js client (browser._newContextForReuse(), browser._disconnectFromReusedContext() and browserType._instrumentation), which the Java API does not have.
 # library/browser
+BR-005      java: concurrent: browser.close while page.evaluate is pending
 BR-007      Passes __testHookBeforeSetStorageState, a JS function, as a context option and reads toImpl(browser).contexts(); the Java API has neither.
 # library/browser-server
 BR-009      TODO harness: needs a per-test PWTEST_SERVER_REGISTRY environment variable for the driver process, to read the descriptor files that browser.bind() writes.
 # library/browsertype-launch
+BT-004      java: concurrent: page.evaluate while browser.close is pending
 BT-005      launch({ userDataDir }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no userDataDir.
 BT-007      launch({ port }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no port.
 BT-008      launchPersistentContext({ port }) is an untyped option that only the Node.js client checks; the Java LaunchPersistentContextOptions has no port.
 BT-012      Passes __testHookBeforeCreateBrowser, a JS function, as a launch option; only an in-process server can receive it.
 BT-013      Passes __testHookBeforeCreateBrowser, a JS function, as a launch option; only an in-process server can receive it.
 BT-014      launch({ process }) passes an untyped Node.js object as an option; the Java LaunchOptions takes only its documented options.
+BT-016      java: concurrent: browser.close while browser.close is pending
 # library/launcher
 BT-018      playwright.errors is JavaScript-only (docs: langs: js); it is not in the Java API.
 BT-019      playwright.devices is not in the Java API.
@@ -416,12 +419,14 @@ TR-013      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the acti
 TR-018      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
 TR-024      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
 TR-030      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-031      java: concurrent: tracing.stop while page.goto is pending
 TR-033      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
 TR-034      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
 TR-035      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
 TR-019      Reads context.tracing._stacksId, an internal of the Node.js client.
 TR-021      Sets browserType._playwright._defaultTracesDir, an internal of the Node.js client.
 TR-039      TODO harness: reads the .trace file in the traces folder of the test runner (testInfo.project.outputDir and artifactsFolderName); the harness has no such folder.
+TR-041      java: concurrent: tracing.stopChunk while page.evaluate is pending
 # library/video
 VI-002      Passes recordVideo: {} (recording without a dir); the Java options are flattened and recordVideoDir is what turns recording on.
 VI-022      playwright.devices (the iPhone 6 descriptor) is not in the Java API.
@@ -453,6 +458,7 @@ CD-038      Passes the timeout and signal (AbortController) options to cdpSessio
 CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.
 CD-041      page.coverage (startJSCoverage/stopJSCoverage) is JavaScript-only; it is not in the Java API.
 CD-043      Checks error.stack, the Node.js stack of the error, for the calling function name.
+CD-048      java: concurrent: page.close while cdpSession.send is pending
 # library/chromium/extensions
 CR-036      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 CR-037      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
@@ -508,6 +514,8 @@ DC-034      page.coverage is JavaScript-only (docs langs: js), it is not in the 
 DC-036      Passes __testHookOnConnectToBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
 DC-038      Calls browser._channel.defaultUserAgentForTest(), an internal of the Node.js client.
 # library/download
+DO-023      java: concurrent: context.close while download.path is pending
+DO-024      java: concurrent: context.close while download.path is pending
 DO-025      Calls browser._channel.killForTests(), an internal of the Node.js client; there is no way to kill the browser process from the Java API.
 # library/browsercontext-device
 DV-001      playwright.devices is not in the Java API.
@@ -693,3 +701,21 @@ NA-078      java: concurrent: page.evaluate while page.reload is pending
 # page/frame-goto
 FR-021      java: concurrent: page.$eval while frame.goto is pending
 FR-023      java: concurrent: frame.goto while frame.goto is pending
+OO-025      java: concurrent: page.evaluate while page.exposeFunction is pending
+# library/browsercontext-network-event
+NE-127      java: concurrent: context.close while response.finished is pending
+# library/webmcp
+WM-010      java: concurrent: webMCP.tools while webMCP.callTool is pending
+# library/popup
+PO-027      java: concurrent: page.evaluate while page.evaluate is pending
+# library/route-web-socket
+WS-033      java: concurrent: webSocketRoute.send while page.close is pending
+# library/capabilities
+CA-011      java: concurrent: page.waitForTimeout while page.evaluate is pending
+# library/screencast-actions
+SC-016      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-017      java: concurrent: page.locator.boundingBox while page.click is pending
+SC-018      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-020      java: concurrent: expect(locator).toBeVisible while page.fill is pending
+SC-025      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-027      java: concurrent: expect(locator).toBeVisible while page.click is pending

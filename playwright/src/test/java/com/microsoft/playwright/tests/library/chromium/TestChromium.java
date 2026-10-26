@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -224,21 +223,21 @@ public class TestChromium {
     // Establish the CDP session up front: creating one while a dialog is blocking the page hangs.
     CDPSession client = page.context().newCDPSession(page);
     client.send("Page.enable");
-    // Java: the dialog promises are futures that the handlers complete; the handler leaves the dialog open.
+    // Java: the dialog promises are futures that the handlers complete; the handler leaves the dialog open
+    // and handles it out of band, similar to the user closing it in the headed browser, while the evaluate is blocked by it.
     CompletableFuture<Dialog> dialogPromise = new CompletableFuture<>();
-    page.onDialog(dialogPromise::complete);
+    page.onDialog(dialog -> {
+      dialogPromise.complete(dialog);
+      JsonObject params = new JsonObject();
+      params.addProperty("accept", true);
+      client.send("Page.handleJavaScriptDialog", params);
+    });
     CompletableFuture<Dialog> closedPromise = new CompletableFuture<>();
     page.onDialogClosed(closedPromise::complete);
-    // Java: the evaluate runs on a thread of its own, it is blocked by the dialog.
-    CompletableFuture<Object> evaluatePromise = async(() -> page.evaluate("() => alert('yo')"));
+    page.evaluate("() => alert('yo')");
     page.waitForCondition(dialogPromise::isDone);
     Dialog dialog = dialogPromise.get();
-    // Handle the dialog out of band, similar to the user closing it in the headed browser.
-    JsonObject params = new JsonObject();
-    params.addProperty("accept", true);
-    client.send("Page.handleJavaScriptDialog", params);
     page.waitForCondition(closedPromise::isDone);
     assertSame(dialog, closedPromise.get());
-    evaluatePromise.get();
   }
 }

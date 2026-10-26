@@ -34,11 +34,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -100,17 +98,13 @@ public class TestVideo {
       .setRecordVideoSize(size[0], size[1])
       .setViewportSize(size[0], size[1]));
     Page page = context.newPage();
-    // Java: video.delete() waits for the video to be written, so it runs in another thread.
-    CompletableFuture<Void> deletePromise = async(() -> {
-      page.video().delete();
-      return null;
-    });
     page.evaluate("() => document.body.style.backgroundColor = 'red'");
     ensureSomeFrames(page);
     context.close();
 
     Path videoPath = page.video().path();
-    deletePromise.get();
+    // Java: video.delete() waits for the video to be written, so it runs after the context is closed.
+    page.video().delete();
     assertFalse(Files.exists(videoPath));
   }
 

@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -278,23 +277,6 @@ public class TestPopup {
     page.waitForTimeout(1000);
     context.close();
     assertFalse(Boolean.TRUE.equals(wasClosed[0]));
-  }
-
-  @PlaywrightTest
-  @DisplayName("PO-027 should not throttle rAF in the opener page")
-  void shouldNotThrottleRAFInTheOpenerPage(Page page, TestServer server) throws Exception {
-    // issue: https://github.com/microsoft/playwright/issues/14557
-    page.navigate(server.EMPTY_PAGE);
-    Page popup = page.waitForPopup(() -> {
-      page.evaluate("() => { window.open('about:blank'); }");
-    });
-    // Java: the popup's waitForRafs runs in async, the page's inline.
-    CompletableFuture<Void> popupRafs = async(() -> {
-      waitForRafs(popup, 30);
-      return null;
-    });
-    waitForRafs(page, 30);
-    popupRafs.get();
   }
 
   @PlaywrightTest

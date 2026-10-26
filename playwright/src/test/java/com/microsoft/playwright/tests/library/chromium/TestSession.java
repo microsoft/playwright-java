@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -147,23 +145,6 @@ public class TestSession {
       error = e;
     }
     assertNotNull(error);
-    context.close();
-  }
-
-  @PlaywrightTest
-  @DisplayName("CD-048 should reject protocol calls when page closes")
-  void shouldRejectProtocolCallsWhenPageCloses(Browser browser) throws Exception {
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
-    CDPSession session = context.newCDPSession(page);
-    // Java: the promise is a send() on a thread of its own.
-    CompletableFuture<JsonObject> promise = async(() -> session.send("Runtime.evaluate", json("expression", "new Promise(() => {})", "awaitPromise", true)));
-    page.close();
-    Throwable error1 = cause(promise);
-    assertTrue(error1.getMessage().contains(kTargetClosedErrorMessage));
-    PlaywrightException error2 = assertThrows(PlaywrightException.class,
-      () -> session.send("Runtime.evaluate", json("expression", "new Promise(() => {})", "awaitPromise", true)));
-    assertTrue(error2.getMessage().contains("Target page, context or browser has been closed"));
     context.close();
   }
 

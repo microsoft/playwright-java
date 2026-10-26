@@ -30,12 +30,9 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,20 +42,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/browsertype-launch.spec.ts. */
 public class TestBrowsertypeLaunch {
-  @PlaywrightTest
-  @DisplayName("BT-004 should reject all promises when browser is closed")
-  void shouldRejectAllPromisesWhenBrowserIsClosed(BrowserType browserType) {
-    Browser browser = browserType.launch(Env.launchOptions());
-    Page page = browser.newContext().newPage();
-    // Java: the pending evaluate runs in async().
-    CompletableFuture<Object> neverResolves = async(() -> page.evaluate("() => new Promise(r => {})"));
-    page.evaluate("() => new Promise(f => window.builtins.setTimeout(f, 0))");
-    browser.close();
-    Throwable error = cause(neverResolves);
-    // WebKit under task-set -c 1 is giving browser, rest are giving target.
-    assertTrue(error.getMessage().contains(" closed"));
-  }
-
   @PlaywrightTest
   @DisplayName("BT-006 should throw if userDataDir is passed as an argument")
   @Fixme("java: the driver words the error for Java: \"Pass userDataDir parameter to 'BrowserType.launchPersistentContext(userDataDir, options)' instead of specifying '--user-data-dir' argument\", not 'browserType.launchPersistentContext")
@@ -108,20 +91,6 @@ public class TestBrowsertypeLaunch {
     context.onClose(c -> closed[0] = true);
     browser.close();
     assertEquals(true, closed[0]);
-  }
-
-  @PlaywrightTest
-  @DisplayName("BT-016 should be callable twice")
-  void shouldBeCallableTwice(BrowserType browserType) throws Exception {
-    Browser browser = browserType.launch(Env.launchOptions());
-    // Java: Promise.all of two independent actions, one runs in async().
-    CompletableFuture<Void> close1 = async(() -> {
-      browser.close();
-      return null;
-    });
-    browser.close();
-    close1.get();
-    browser.close();
   }
 
   @PlaywrightTest

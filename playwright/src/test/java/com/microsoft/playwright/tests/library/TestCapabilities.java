@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -181,31 +180,6 @@ public class TestCapabilities {
     assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("win32"), "fixme: https://github.com/microsoft/playwright/issues/11009, times out in setContent");
     page.setContent("<video><source src=\"" + server.PREFIX + "/movie.mp4\"/></video>");
     page.waitForTimeout(1000);
-  }
-
-  @PlaywrightTest
-  @DisplayName("CA-011 should not crash on showDirectoryPicker")
-  @EnabledOnBrowser(value = BrowserName.CHROMIUM, reason = "showDirectoryPicker is only available in Chromium")
-  void shouldNotCrashOnShowDirectoryPicker(Page page, TestServer server) {
-    page.navigate(server.EMPTY_PAGE);
-    // "User activation is required to show a file picker." - so we click first.
-    page.locator("body").click();
-    // Java: the evaluate promise that nobody awaits runs in async().
-    async(() -> {
-      try {
-        return page.evaluate("async () => {\n" +
-          "  const dir = await window.showDirectoryPicker();\n" +
-          "  return dir.name;\n" +
-          "  // In headless it throws (aborted), in headed it stalls (Test ended) and waits for the picker to be accepted.\n" +
-          "}");
-      } catch (PlaywrightException e) {
-        assertTrue(Pattern.compile("((DOMException|AbortError): .*The user aborted a request|Test ended)").matcher(e.getMessage()).find());
-        return null;
-      }
-    });
-    // The dialog will not be accepted, so we just wait for some time to
-    // to give the browser a chance to crash.
-    page.waitForTimeout(3000);
   }
 
   @PlaywrightTest

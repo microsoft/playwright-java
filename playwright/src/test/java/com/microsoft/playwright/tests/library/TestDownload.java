@@ -52,10 +52,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -462,69 +460,6 @@ public class TestDownload {
       browser.close();
       // User-provided artifactsDir should not be cleaned up.
       assertTrue(Files.exists(artifactsDir));
-    }
-
-    @PlaywrightTest
-    @DisplayName("DO-023 should close the context without awaiting the failed download")
-    @EnabledOnBrowser(BrowserName.CHROMIUM)
-    @Fixme("java: a driver error message is the serialized error \"Error {message='canceled name='Error stack=...\" without the 'download.path: ' prefix")
-    void shouldCloseTheContextWithoutAwaitingTheFailedDownload(Browser browser, TestServer server, HttpsTestServer httpsServer, TestInfo testInfo) {
-      Page page = browser.newPage();
-      page.navigate(server.EMPTY_PAGE);
-      page.setContent("<a href=\"" + httpsServer.PREFIX + "/downloadWithFilename\" download=\"file.txt\">click me</a>");
-      // Use alt-click to force the download. Otherwise browsers might try to navigate first,
-      // probably because of http -> https link.
-      Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().setModifiers(Arrays.asList(KeyboardModifier.ALT))));
-      // Java: the Promise.all of three calls runs the first two in async.
-      CompletableFuture<Path> downloadPromise = async(() -> download.path());
-      CompletableFuture<Void> savePromise = async(() -> {
-        download.saveAs(testInfo.outputPath("download.txt"));
-        return null;
-      });
-      page.context().close();
-      Throwable downloadError = cause(downloadPromise);
-      Throwable saveError = cause(savePromise);
-      assertEquals("download.path: canceled", downloadError.getMessage());
-      assertTrue(Arrays.asList(
-        "download.saveAs: File not found on disk. Check download.failure() for details.",
-        "download.saveAs: canceled").contains(saveError.getMessage()));
-    }
-
-    @PlaywrightTest
-    @DisplayName("DO-024 should close the context without awaiting the download")
-    @Fixme("java: a driver error message is the serialized error without the 'download.path: ' / 'download.saveAs: ' prefix")
-    void shouldCloseTheContextWithoutAwaitingTheDownload(Browser browser, TestServer server, BrowserName browserName, TestInfo testInfo) {
-      assumeFalse(browserName == BrowserName.WEBKIT && (Env.platform().equals("linux") || "webkit-wsl".equals(Env.channel())), "WebKit on linux does not convert to the download immediately upon receiving headers");
-
-      server.setRoute("/downloadStall", (req, res) -> {
-        res.setHeader("Content-Type", "application/octet-stream");
-        res.setHeader("Content-Disposition", "attachment; filename=file.txt");
-        res.writeHead(200);
-        res.flushHeaders();
-        res.write("Hello world");
-      });
-
-      Page page = browser.newPage();
-      page.navigate(server.EMPTY_PAGE);
-      page.setContent("<a href=\"" + server.PREFIX + "/downloadStall\" download=\"file.txt\">click me</a>");
-      Download download = page.waitForDownload(() -> page.click("a"));
-      // Java: the Promise.all of three calls runs the first two in async.
-      CompletableFuture<Path> downloadPromise = async(() -> download.path());
-      CompletableFuture<Void> savePromise = async(() -> {
-        download.saveAs(testInfo.outputPath("download.txt"));
-        return null;
-      });
-      page.context().close();
-      Throwable downloadError = cause(downloadPromise);
-      Throwable saveError = cause(savePromise);
-      // The exact error message is racy, because sometimes browser is fast enough
-      // to cancel the download.
-      assertTrue(Arrays.asList(
-        "download.path: canceled",
-        "download.path: " + kTargetClosedErrorMessage).contains(downloadError.getMessage()));
-      assertTrue(Arrays.asList(
-        "download.saveAs: canceled",
-        "download.saveAs: " + kTargetClosedErrorMessage).contains(saveError.getMessage()));
     }
 
     @PlaywrightTest
