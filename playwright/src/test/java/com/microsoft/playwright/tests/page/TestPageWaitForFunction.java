@@ -244,8 +244,7 @@ public class TestPageWaitForFunction {
   @DisplayName("WA-020 should survive cross-process navigation")
   void shouldSurviveCrossProcessNavigation(Page page, TestServer server) throws Exception {
     AtomicBoolean fooFound = new AtomicBoolean(false);
-    CompletableFuture<JSHandle> waitForFunction = async(() -> page.waitForFunction("window.__FOO === 1"));
-    waitForFunction.thenAccept(handle -> fooFound.set(true));
+    CompletableFuture<Void> waitForFunction = async(() -> page.waitForFunction("window.__FOO === 1")).thenAccept(handle -> fooFound.set(true));
     page.navigate(server.EMPTY_PAGE);
     assertEquals(false, fooFound.get());
     page.reload();

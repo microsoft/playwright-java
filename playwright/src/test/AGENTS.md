@@ -166,15 +166,32 @@ before the action that triggers the request, like upstream. A server WebSocket (
   `waitForEvent('x', predicate)` (`page.waitForX(predicate, () -> ...)`). The promises after the
   first go in the callback, in order. `page.on('x', ...)` is `page.onX(...)`, `page.off` is
   `page.offX`; `page.once('x', h)` is an `onX` handler that calls `offX` on itself first.
-- A promise that is created before and awaited later, where the action can not go in a callback
-  (`const promise = frame.goto(url); await server.waitForRequest(...); await promise`), is
-  `CompletableFuture<Response> promise = async(() -> frame.navigate(url))` (`Utils.async`) and
-  `promise.get()`; the error of a failed one is `cause(promise)`. Two independent actions in one
-  `Promise.all` run the same way: one in `async`, the other inline. The client dispatches the
-  driver's messages in order when several threads call it (a fair lock in `Connection`), but
-  Playwright objects are not otherwise thread-safe: use `async` only when no callback form
-  exists, mark the statement `// Java:`, and report every test that fails with
-  `Object doesn't exist: ...` as "concurrent"; do not mark it `@Fixme`.
+- The Java API is synchronous and a Playwright instance is used from one thread only: the
+  test never calls it from another thread (no `Thread`, `CompletableFuture.supplyAsync`,
+  executor or `Utils.async`). A promise that is created before and awaited later is ported in
+  the first of these ways that applies:
+  1. The callback form of the wait (previous bullet), when everything up to the `await` can go
+     in the callback.
+  2. A wait on a state that stays satisfied once reached (`waitForSelector`, `waitForFunction`,
+     `locator.waitFor`, `waitForElementState`, `waitForLoadState`, `waitForURL`, an
+     `expect(locator)` matcher, `response.finished()`, `download.path()`, `page.waitForTimeout`):
+     the actions first, the wait after them. `const w = page.waitForSelector('div'); await
+     page.setContent('<div>'); await w` is `page.setContent("<div>"); page.waitForSelector("div")`.
+     A `Promise.all` of such calls, or of one blocking call and others that do not block, runs
+     them one after the other.
+  3. A call that waits only for the test server (`const p = page.goto(url); const req = await
+     server.waitForRequest(path); ...; res.end(); await p`): the server side goes in the route
+     handler, which the server runs on a thread of its own (`server.setRoute(path, (req, res) ->
+     { ...; res.end(); })`), and the call is made inline afterwards; the checks on the request
+     come after the call, from the `server.waitForRequest` future. A handler may sleep or wait on
+     a `CompletableFuture` that the test completes, as long as the test does not need Playwright
+     for that.
+  4. Otherwise the test needs a Playwright call while another one is pending (an assertion on
+     the pending state such as `expect(done).toBe(false)` while a click waits, an `evaluate` while
+     a `goto` is stalled, a `close` racing a call), which the synchronous API can not do: the test
+     is not ported. Delete it and add it to `upstream_not_ported.txt` with the reason
+     `java: concurrent: <call> while <call> is pending`, for example
+     `CL-022    java: concurrent: page.$eval while page.click is pending`.
 - A promise settled by an event handler (`new Promise(f => page.once('load', f))`, awaited
   later) is a `CompletableFuture` that the `onLoad` handler completes, awaited with
   `page.waitForCondition(future::isDone)`: the Java client only delivers events while the test
@@ -210,7 +227,7 @@ before the action that triggers the request, like upstream. A server WebSocket (
 The port has one mark of its own, `// Java:`, on the line before a statement whose form the
 rules above change in a way that is not obvious: a value that Java can not express as upstream
 does, a helper that stands for a JavaScript construct. Do not mark a plain rename or a plain
-`async`. A mark is not a deviation: the test still does what upstream does.
+reorder. A mark is not a deviation: the test still does what upstream does.
 
 ## 6. Running
 
