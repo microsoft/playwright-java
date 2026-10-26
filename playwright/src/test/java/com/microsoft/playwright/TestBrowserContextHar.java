@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.options.HarMode;
@@ -534,5 +536,23 @@ public class TestBrowserContextHar {
       APIResponse replayed = page2.request().get(server.PREFIX + "/api/data");
       assertEquals("{\"hello\": \"fresh\"}", replayed.text());
     }
+  }
+
+  @PlaywrightTest
+  void shouldAttachContentWhenRecordingHarZip(Browser browser, Server server, @TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("har.zip");
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setRecordHarPath(harPath)
+      .setRecordHarMode(HarMode.MINIMAL))) {
+      Page page = context.newPage();
+      page.navigate(server.PREFIX + "/one-style.html");
+    }
+    Path harDir = tmpDir.resolve("har");
+    extractZip(harPath, harDir);
+    String har = new String(Files.readAllBytes(harDir.resolve("har.har")), StandardCharsets.UTF_8);
+    JsonObject content = JsonParser.parseString(har).getAsJsonObject().getAsJsonObject("log")
+      .getAsJsonArray("entries").get(0).getAsJsonObject().getAsJsonObject("response").getAsJsonObject("content");
+    assertTrue(content.has("_file"), har);
+    assertTrue(Files.exists(harDir.resolve(content.get("_file").getAsString())));
   }
 }

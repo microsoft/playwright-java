@@ -986,4 +986,11 @@ public class TestBrowserContextFetch {
       assertEquals(401, response2.status());
     }
   }
+
+  @PlaywrightTest
+  void shouldCloseContextAfterRequestDispose(Browser browser) {
+    BrowserContext context = browser.newContext();
+    context.request().dispose();
+    context.close();
+  }
 }
