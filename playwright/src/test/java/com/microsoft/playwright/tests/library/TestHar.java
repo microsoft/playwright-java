@@ -451,7 +451,6 @@ public class TestHar {
 
   @PlaywrightTest
   @DisplayName("HA-022 should use attach mode for zip extension")
-  @Fixme("java: BrowserContextImpl chooses the default HAR content with Path.endsWith(\".zip\"), which never matches test.har.zip, so the content is embedded instead of attached")
   void shouldUseAttachModeForZipExtension(PageWithHar pageWithHar, TestServer server) {
     PageWithHar.Result harSession = pageWithHar.create(new PageWithHar.Options().setOutputPath("test.har.zip"));
     harSession.page.navigate(server.PREFIX + "/har.html");
