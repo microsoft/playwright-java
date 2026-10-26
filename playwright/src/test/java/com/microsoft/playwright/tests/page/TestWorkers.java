@@ -47,11 +47,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -46,7 +46,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;

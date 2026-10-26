@@ -68,9 +68,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

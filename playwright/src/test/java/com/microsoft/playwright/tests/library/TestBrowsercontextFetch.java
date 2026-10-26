@@ -77,7 +77,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;

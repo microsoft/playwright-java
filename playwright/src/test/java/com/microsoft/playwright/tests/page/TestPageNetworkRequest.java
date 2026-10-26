@@ -48,7 +48,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;

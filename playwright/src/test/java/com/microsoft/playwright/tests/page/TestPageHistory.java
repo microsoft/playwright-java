@@ -35,7 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
