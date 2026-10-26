@@ -183,6 +183,8 @@
                 junit.jupiter.execution.parallel.mode.classes.default = concurrent
                 junit.jupiter.execution.parallel.config.strategy=dynamic
                 junit.jupiter.execution.parallel.config.dynamic.factor=0.5
+                junit.jupiter.execution.timeout.testable.method.default = 120 s
+                junit.jupiter.execution.timeout.thread.mode.default = separate_thread
               </configurationParameters>
             </properties>
             <!-- Report the JUnit display names, so a test case is named after the upstream test
