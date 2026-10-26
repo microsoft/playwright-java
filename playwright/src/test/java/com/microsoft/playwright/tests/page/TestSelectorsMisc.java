@@ -28,10 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,9 +77,9 @@ public class TestSelectorsMisc {
       () -> page.waitForSelector("div:visible", new Page.WaitForSelectorOptions().setTimeout(1000)));
     assertTrue(error.getMessage().contains("1000ms"));
 
-    CompletableFuture<ElementHandle> promise = async(() -> page.waitForSelector("div:visible", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("#target2", "div => div.textContent = 'Now visible'");
-    ElementHandle element = promise.get();
+    ElementHandle element = page.waitForSelector("div:visible", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     assertEquals("target2", element.evaluate("e => e.id"));
 
     assertEquals("target2", page.evalOnSelector("div:visible", "div => div.id"));
@@ -102,9 +100,9 @@ public class TestSelectorsMisc {
       () -> page.waitForSelector("div >> visible=true", new Page.WaitForSelectorOptions().setTimeout(1000)));
     assertTrue(error.getMessage().contains("1000ms"));
 
-    CompletableFuture<ElementHandle> promise = async(() -> page.waitForSelector("div >> visible=true", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("#target2", "div => div.textContent = 'Now visible'");
-    ElementHandle element = promise.get();
+    ElementHandle element = page.waitForSelector("div >> visible=true", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     assertEquals("target2", element.evaluate("e => e.id"));
 
     assertEquals("target2", page.evalOnSelector("div >> visible=true", "div => div.id"));
@@ -151,13 +149,13 @@ public class TestSelectorsMisc {
     error = assertThrows(PlaywrightException.class, () -> page.querySelector(":nth-match(div, bar, foo)"));
     assertTrue(error.getMessage().contains("\"nth-match\" engine expects a one-based index as the last argument"));
 
-    CompletableFuture<ElementHandle> promise = async(() -> page.waitForSelector(":nth-match(div, 3)", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("section", "section => {\n" +
       "    const div = document.createElement('div');\n" +
       "    div.setAttribute('id', 'target3');\n" +
       "    section.appendChild(div);\n" +
       "  }");
-    ElementHandle element = promise.get();
+    ElementHandle element = page.waitForSelector(":nth-match(div, 3)", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     assertEquals("target3", element.evaluate("e => e.id"));
   }
 
@@ -177,13 +175,13 @@ public class TestSelectorsMisc {
     assertEquals("target1", page.evalOnSelector("section, div >> nth=1", "e => e.id"));
     assertEquals("target2", page.evalOnSelector("div, section >> nth=2", "e => e.id"));
 
-    CompletableFuture<ElementHandle> promise = async(() -> page.waitForSelector("div >> nth=2", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("section", "section => {\n" +
       "    const div = document.createElement('div');\n" +
       "    div.setAttribute('id', 'target3');\n" +
       "    section.appendChild(div);\n" +
       "  }");
-    ElementHandle element = promise.get();
+    ElementHandle element = page.waitForSelector("div >> nth=2", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     assertEquals("target3", element.evaluate("e => e.id"));
 
     page.setContent("\n" +

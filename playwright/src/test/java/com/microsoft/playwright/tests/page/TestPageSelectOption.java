@@ -28,12 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,10 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Port of tests/page/page-select-option.spec.ts. */
 public class TestPageSelectOption {
-  private static void giveItAChanceToResolve(Page page) {
-    rafraf(page, 5);
-  }
-
   @PlaywrightTest
   @DisplayName("SO-001 should select single option @smoke")
   void shouldSelectSingleOption(Page page, TestServer server) {
@@ -281,60 +273,48 @@ public class TestPageSelectOption {
 
   @PlaywrightTest
   @DisplayName("SO-026 should wait for option to be present")
-  void shouldWaitForOptionToBePresent(Page page, TestServer server) throws Exception {
+  void shouldWaitForOptionToBePresent(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/select.html");
-    CompletableFuture<List<String>> selectPromise = async(() -> page.selectOption("select", "scarlet"));
-    AtomicBoolean didSelect = new AtomicBoolean(false);
-    selectPromise.thenAccept(result -> didSelect.set(true));
-    giveItAChanceToResolve(page);
-    assertEquals(false, didSelect.get());
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("select", "select => {\n" +
       "    const option = document.createElement('option');\n" +
       "    option.value = 'scarlet';\n" +
       "    option.textContent = 'Scarlet';\n" +
       "    select.appendChild(option);\n" +
       "  }");
-    List<String> items = selectPromise.get();
+    List<String> items = page.selectOption("select", "scarlet");
     assertEquals(asList("scarlet"), items);
   }
 
   @PlaywrightTest
   @DisplayName("SO-027 should wait for option index to be present")
-  void shouldWaitForOptionIndexToBePresent(Page page, TestServer server) throws Exception {
+  void shouldWaitForOptionIndexToBePresent(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/select.html");
     int len = (Integer) page.evalOnSelector("select", "select => select.options.length");
-    CompletableFuture<List<String>> selectPromise = async(() -> page.selectOption("select", new SelectOption().setIndex(len)));
-    AtomicBoolean didSelect = new AtomicBoolean(false);
-    selectPromise.thenAccept(result -> didSelect.set(true));
-    giveItAChanceToResolve(page);
-    assertEquals(false, didSelect.get());
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("select", "select => {\n" +
       "    const option = document.createElement('option');\n" +
       "    option.value = 'scarlet';\n" +
       "    option.textContent = 'Scarlet';\n" +
       "    select.appendChild(option);\n" +
       "  }");
-    List<String> items = selectPromise.get();
+    List<String> items = page.selectOption("select", new SelectOption().setIndex(len));
     assertEquals(asList("scarlet"), items);
   }
 
   @PlaywrightTest
   @DisplayName("SO-028 should wait for multiple options to be present")
-  void shouldWaitForMultipleOptionsToBePresent(Page page, TestServer server) throws Exception {
+  void shouldWaitForMultipleOptionsToBePresent(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
-    CompletableFuture<List<String>> selectPromise = async(() -> page.selectOption("select", new String[]{"green", "scarlet"}));
-    AtomicBoolean didSelect = new AtomicBoolean(false);
-    selectPromise.thenAccept(result -> didSelect.set(true));
-    giveItAChanceToResolve(page);
-    assertEquals(false, didSelect.get());
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evalOnSelector("select", "select => {\n" +
       "    const option = document.createElement('option');\n" +
       "    option.value = 'scarlet';\n" +
       "    option.textContent = 'Scarlet';\n" +
       "    select.appendChild(option);\n" +
       "  }");
-    List<String> items = selectPromise.get();
+    List<String> items = page.selectOption("select", new String[]{"green", "scarlet"});
     assertEquals(asList("green", "scarlet"), items);
   }
 
@@ -394,10 +374,9 @@ public class TestPageSelectOption {
       "    </script>\n" +
       "  ");
 
-    CompletableFuture<List<String>> selectPromise = async(() -> page.locator("select").selectOption("two"));
-    page.waitForTimeout(1000);
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evaluate("() => window.hydrate()");
-    selectPromise.get();
+    page.locator("select").selectOption("two");
     assertEquals("two", page.evaluate("() => window['result']"));
     assertThat(page.locator("select")).hasValue("two");
   }
@@ -427,10 +406,9 @@ public class TestPageSelectOption {
       () -> page.locator("select").selectOption("two", new Locator.SelectOptionOptions().setTimeout(1000)));
     assertTrue(error.getMessage().contains("option being selected is not enabled"));
 
-    CompletableFuture<List<String>> selectPromise = async(() -> page.locator("select").selectOption("two"));
-    page.waitForTimeout(1000);
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evaluate("() => window.hydrate()");
-    selectPromise.get();
+    page.locator("select").selectOption("two");
     assertEquals("two", page.evaluate("() => window['result']"));
     assertThat(page.locator("select")).hasValue("two");
   }
@@ -462,10 +440,9 @@ public class TestPageSelectOption {
       () -> page.locator("select").selectOption("two", new Locator.SelectOptionOptions().setTimeout(1000)));
     assertTrue(error.getMessage().contains("option being selected is not enabled"));
 
-    CompletableFuture<List<String>> selectPromise = async(() -> page.locator("select").selectOption("two"));
-    page.waitForTimeout(1000);
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evaluate("() => window.hydrate()");
-    selectPromise.get();
+    page.locator("select").selectOption("two");
     assertEquals("two", page.evaluate("() => window['result']"));
     assertThat(page.locator("select")).hasValue("two");
   }
@@ -501,10 +478,9 @@ public class TestPageSelectOption {
       "    </script>\n" +
       "  ");
 
-    CompletableFuture<List<String>> selectPromise = async(() -> page.locator("select").selectOption("two"));
-    page.waitForTimeout(1000);
+    // Java: the select runs after the page change, it cannot be pending while the page is driven from the same thread.
     page.evaluate("() => window.hydrate()");
-    selectPromise.get();
+    page.locator("select").selectOption("two");
     assertThat(page.locator("select")).hasValue("two");
     assertEquals("two", page.evaluate("() => window['result']"));
   }

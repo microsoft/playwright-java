@@ -25,37 +25,20 @@ import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.ElementState;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.microsoft.playwright.fixtures.Utils.async;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Port of tests/page/elementhandle-wait-for-element-state.spec.ts. */
 public class TestElementhandleWaitForElementState {
-  private static void giveItAChanceToResolve(Page page) {
-    rafraf(page, 5);
-  }
-
   @PlaywrightTest
   @DisplayName("EH-112 should wait for visible")
   void shouldWaitForVisible(Page page) throws Exception {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      div.waitForElementState(ElementState.VISIBLE);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     div.evaluate("div => div.style.display = 'block'");
-    promise.get();
+    div.waitForElementState(ElementState.VISIBLE);
   }
 
   @PlaywrightTest
@@ -81,12 +64,9 @@ public class TestElementhandleWaitForElementState {
   void shouldThrowWaitingForVisibleWhenDetached(Page page) {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    CompletableFuture<Void> promise = async(() -> {
-      div.waitForElementState(ElementState.VISIBLE);
-      return null;
-    });
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     div.evaluate("div => div.remove()");
-    Throwable error = cause(promise);
+    Throwable error = assertThrows(PlaywrightException.class, () -> div.waitForElementState(ElementState.VISIBLE));
     assertTrue(error.getMessage().contains("Element is not attached to the DOM"));
   }
 
@@ -95,16 +75,9 @@ public class TestElementhandleWaitForElementState {
   void shouldWaitForHidden(Page page) throws Exception {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      div.waitForElementState(ElementState.HIDDEN);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     div.evaluate("div => div.style.display = 'none'");
-    promise.get();
+    div.waitForElementState(ElementState.HIDDEN);
   }
 
   @PlaywrightTest
@@ -120,16 +93,9 @@ public class TestElementhandleWaitForElementState {
   void shouldWaitForHiddenWhenDetached(Page page) throws Exception {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      div.waitForElementState(ElementState.HIDDEN);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     div.evaluate("div => div.remove()");
-    promise.get();
+    div.waitForElementState(ElementState.HIDDEN);
   }
 
   @PlaywrightTest
@@ -137,12 +103,9 @@ public class TestElementhandleWaitForElementState {
   void shouldThrowWaitingForEnabledWhenDetached(Page page) {
     page.setContent("<button disabled>Target</button>");
     ElementHandle button = page.querySelector("button");
-    CompletableFuture<Void> promise = async(() -> {
-      button.waitForElementState(ElementState.ENABLED);
-      return null;
-    });
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     button.evaluate("button => button.remove()");
-    Throwable error = cause(promise);
+    Throwable error = assertThrows(PlaywrightException.class, () -> button.waitForElementState(ElementState.ENABLED));
     assertTrue(error.getMessage().contains("Element is not attached to the DOM"));
   }
 
@@ -151,16 +114,9 @@ public class TestElementhandleWaitForElementState {
   void shouldWaitForAriaEnabledButton(Page page) throws Exception {
     page.setContent("<button aria-disabled=true><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      span.waitForElementState(ElementState.ENABLED);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     span.evaluate("span => span.parentElement.setAttribute('aria-disabled', 'false')");
-    promise.get();
+    span.waitForElementState(ElementState.ENABLED);
   }
 
   @PlaywrightTest
@@ -168,16 +124,9 @@ public class TestElementhandleWaitForElementState {
   void shouldWaitForButtonWithAnAriaDisabledParent(Page page) throws Exception {
     page.setContent("<div role=\"group\" aria-disabled=true><button><span>Target</span></button></div>");
     ElementHandle span = page.querySelector("text=Target");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      span.waitForElementState(ElementState.ENABLED);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     span.evaluate("span => span.parentElement.parentElement.setAttribute('aria-disabled', 'false')");
-    promise.get();
+    span.waitForElementState(ElementState.ENABLED);
   }
 
   @PlaywrightTest
@@ -191,16 +140,9 @@ public class TestElementhandleWaitForElementState {
       "  }");
     // rafraf for Firefox to kick in the animation.
     rafraf(page);
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      button.waitForElementState(ElementState.STABLE);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     button.evaluate("button => button.style.transition = ''");
-    promise.get();
+    button.waitForElementState(ElementState.STABLE);
   }
 
   @PlaywrightTest
@@ -208,15 +150,8 @@ public class TestElementhandleWaitForElementState {
   void shouldWaitForEditableInput(Page page, TestServer server) throws Exception {
     page.setContent("<input readonly>");
     ElementHandle input = page.querySelector("input");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> promise = async(() -> {
-      input.waitForElementState(ElementState.EDITABLE);
-      done.set(true);
-      return true;
-    });
-    giveItAChanceToResolve(page);
-    assertEquals(false, done.get());
+    // Java: the wait runs after the action, it cannot be pending while the handle is driven from the same thread.
     input.evaluate("input => input.readOnly = false");
-    promise.get();
+    input.waitForElementState(ElementState.EDITABLE);
   }
 }

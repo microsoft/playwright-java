@@ -29,13 +29,9 @@ import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.detachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,38 +47,21 @@ public class TestPageWaitForSelector2 {
   @PlaywrightTest
   @DisplayName("WA-044 should survive cross-process navigation")
   void shouldSurviveCrossProcessNavigation(Page page, TestServer server) throws Exception {
-    AtomicBoolean boxFound = new AtomicBoolean(false);
-    // Java: `.then(() => boxFound = true)` runs after the call in the async thread.
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector(".box");
-      boxFound.set(true);
-      return true;
-    });
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(false, boxFound.get());
     page.reload();
-    assertEquals(false, boxFound.get());
     page.navigate(server.CROSS_PROCESS_PREFIX + "/grid.html");
-    waitForSelector.get();
-    assertEquals(true, boxFound.get());
+    assertNotNull(page.waitForSelector(".box"));
   }
 
   @PlaywrightTest
   @DisplayName("WA-045 should wait for visible")
   void shouldWaitForVisible(Page page, TestServer server) throws Exception {
-    AtomicBoolean divFound = new AtomicBoolean(false);
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector("div");
-      divFound.set(true);
-      return true;
-    });
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div style='display: none; visibility: hidden;'>1</div>");
-    assertEquals(false, divFound.get());
     page.evaluate("() => document.querySelector('div').style.removeProperty('display')");
-    assertEquals(false, divFound.get());
     page.evaluate("() => document.querySelector('div').style.removeProperty('visibility')");
-    assertEquals(true, waitForSelector.get());
-    assertEquals(true, divFound.get());
+    assertNotNull(page.waitForSelector("div"));
   }
 
   @PlaywrightTest
@@ -104,19 +83,11 @@ public class TestPageWaitForSelector2 {
   @PlaywrightTest
   @DisplayName("WA-047 should wait for visible recursively")
   void shouldWaitForVisibleRecursively(Page page, TestServer server) throws Exception {
-    AtomicBoolean divVisible = new AtomicBoolean(false);
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector("div#inner");
-      divVisible.set(true);
-      return true;
-    });
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div style='display: none; visibility: hidden;'><div id=\"inner\">hi</div></div>");
-    assertEquals(false, divVisible.get());
     page.evaluate("() => document.querySelector('div').style.removeProperty('display')");
-    assertEquals(false, divVisible.get());
     page.evaluate("() => document.querySelector('div').style.removeProperty('visibility')");
-    assertEquals(true, waitForSelector.get());
-    assertEquals(true, divVisible.get());
+    assertNotNull(page.waitForSelector("div#inner"));
   }
 
   @PlaywrightTest
@@ -145,52 +116,31 @@ public class TestPageWaitForSelector2 {
   @PlaywrightTest
   @DisplayName("WA-049 hidden should wait for hidden")
   void hiddenShouldWaitForHidden(Page page, TestServer server) throws Exception {
-    AtomicBoolean divHidden = new AtomicBoolean(false);
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div style='display: block;'>content</div>");
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN));
-      divHidden.set(true);
-      return true;
-    });
     page.waitForSelector("div"); // do a round trip
-    assertEquals(false, divHidden.get());
     page.evaluate("() => document.querySelector('div').style.setProperty('visibility', 'hidden')");
-    assertEquals(true, waitForSelector.get());
-    assertEquals(true, divHidden.get());
+    assertNull(page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN)));
   }
 
   @PlaywrightTest
   @DisplayName("WA-050 hidden should wait for display: none")
   void hiddenShouldWaitForDisplayNone(Page page, TestServer server) throws Exception {
-    AtomicBoolean divHidden = new AtomicBoolean(false);
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div style='display: block;'>content</div>");
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN));
-      divHidden.set(true);
-      return true;
-    });
     page.waitForSelector("div"); // do a round trip
-    assertEquals(false, divHidden.get());
     page.evaluate("() => document.querySelector('div').style.setProperty('display', 'none')");
-    assertEquals(true, waitForSelector.get());
-    assertEquals(true, divHidden.get());
+    assertNull(page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN)));
   }
 
   @PlaywrightTest
   @DisplayName("WA-051 hidden should wait for removal")
   void hiddenShouldWaitForRemoval(Page page, TestServer server) throws Exception {
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div>content</div>");
-    AtomicBoolean divRemoved = new AtomicBoolean(false);
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN));
-      divRemoved.set(true);
-      return true;
-    });
     page.waitForSelector("div"); // do a round trip
-    assertEquals(false, divRemoved.get());
     page.evaluate("() => document.querySelector('div').remove()");
-    assertEquals(true, waitForSelector.get());
-    assertEquals(true, divRemoved.get());
+    assertNull(page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN)));
   }
 
   @PlaywrightTest
@@ -227,24 +177,18 @@ public class TestPageWaitForSelector2 {
   @PlaywrightTest
   @DisplayName("WA-055 should respond to node attribute mutation")
   void shouldRespondToNodeAttributeMutation(Page page, TestServer server) throws Exception {
-    AtomicBoolean divFound = new AtomicBoolean(false);
-    CompletableFuture<Boolean> waitForSelector = async(() -> {
-      page.waitForSelector(".zombo", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
-      divFound.set(true);
-      return true;
-    });
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div class='notZombo'></div>");
-    assertEquals(false, divFound.get());
     page.evaluate("() => document.querySelector('div').className = 'zombo'");
-    assertEquals(true, waitForSelector.get());
+    assertNotNull(page.waitForSelector(".zombo", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
   }
 
   @PlaywrightTest
   @DisplayName("WA-056 should return the element handle")
   void shouldReturnTheElementHandle(Page page, TestServer server) throws Exception {
-    CompletableFuture<ElementHandle> waitForSelector = async(() -> page.waitForSelector(".zombo"));
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div class='zombo'>anything</div>");
-    assertEquals("anything", page.evaluate("x => x.textContent", waitForSelector.get()));
+    assertEquals("anything", page.evaluate("x => x.textContent", page.waitForSelector(".zombo")));
   }
 
   @PlaywrightTest
@@ -270,11 +214,11 @@ public class TestPageWaitForSelector2 {
   void shouldSupportSelectorSyntax(Page page, TestServer server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
     Frame frame = page.mainFrame();
-    CompletableFuture<ElementHandle> watchdog = async(() -> frame.waitForSelector("css=div >> css=span", new Frame.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     frame.evaluate(addElement, "br");
     frame.evaluate(addElement, "div");
     frame.evaluate("() => document.querySelector('div').appendChild(document.createElement('span'))");
-    ElementHandle eHandle = watchdog.get();
+    ElementHandle eHandle = frame.waitForSelector("css=div >> css=span", new Frame.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     Object tagName = eHandle.getProperty("tagName").jsonValue();
     assertEquals("SPAN", tagName);
   }
@@ -290,18 +234,10 @@ public class TestPageWaitForSelector2 {
   @DisplayName("WA-064 should wait for detached")
   void shouldWaitForDetached(Page page, TestServer server) throws Exception {
     page.setContent("<section id=\"testAttribute\"><div>43543</div></section>");
-    AtomicBoolean done = new AtomicBoolean(false);
-    CompletableFuture<Boolean> waitFor = async(() -> {
-      page.waitForSelector("css=div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.DETACHED));
-      done.set(true);
-      return true;
-    });
-    assertEquals(false, done.get());
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.waitForSelector("css=section");
-    assertEquals(false, done.get());
     page.evalOnSelector("div", "div => div.remove()");
-    assertEquals(true, waitFor.get());
-    assertEquals(true, done.get());
+    assertNull(page.waitForSelector("css=div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.DETACHED)));
   }
 
   @PlaywrightTest
@@ -331,10 +267,10 @@ public class TestPageWaitForSelector2 {
     attachFrame(page, "frame2", server.EMPTY_PAGE);
     Frame frame1 = page.frames().get(1);
     Frame frame2 = page.frames().get(2);
-    CompletableFuture<ElementHandle> waitForXPathPromise = async(() -> frame2.waitForSelector("//div", new Frame.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED)));
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     frame1.evaluate(addElement, "div");
     frame2.evaluate(addElement, "div");
-    ElementHandle eHandle = waitForXPathPromise.get();
+    ElementHandle eHandle = frame2.waitForSelector("//div", new Frame.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
     assertEquals(frame2, eHandle.ownerFrame());
   }
 
@@ -344,19 +280,18 @@ public class TestPageWaitForSelector2 {
   void shouldThrowWhenFrameIsDetachedXpath(Page page, TestServer server) {
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
-    CompletableFuture<ElementHandle> waitPromise = async(() -> frame.waitForSelector("//*[@class=\"box\"]"));
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     detachFrame(page, "frame1");
-    Throwable waitError = cause(waitPromise);
-    assertNotNull(waitError);
+    Throwable waitError = assertThrows(PlaywrightException.class, () -> frame.waitForSelector("//*[@class=\"box\"]"));
     assertTrue(waitError.getMessage().contains("frame.waitForSelector: Frame was detached"));
   }
 
   @PlaywrightTest
   @DisplayName("WA-069 should return the element handle xpath")
   void shouldReturnTheElementHandleXpath(Page page, TestServer server) throws Exception {
-    CompletableFuture<ElementHandle> waitForXPath = async(() -> page.waitForSelector("//*[@class=\"zombo\"]"));
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.setContent("<div class='zombo'>anything</div>");
-    assertEquals("anything", page.evaluate("x => x.textContent", waitForXPath.get()));
+    assertEquals("anything", page.evaluate("x => x.textContent", page.waitForSelector("//*[@class=\"zombo\"]")));
   }
 
   @PlaywrightTest
@@ -395,32 +330,9 @@ public class TestPageWaitForSelector2 {
   void shouldFailIfElementHandleWasDetachedWhileWaiting(Page page, TestServer server) {
     page.setContent("<button>hello</button>");
     ElementHandle button = page.querySelector("button");
-    CompletableFuture<ElementHandle> promise = async(() -> button.waitForSelector("something"));
-    page.waitForTimeout(100);
+    // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     page.evaluate("() => document.body.innerText = ''");
-    Throwable error = cause(promise);
+    Throwable error = assertThrows(PlaywrightException.class, () -> button.waitForSelector("something"));
     assertTrue(error.getMessage().contains("Element is not attached to the DOM"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-075 should succeed if element handle was detached while waiting for hidden")
-  void shouldSucceedIfElementHandleWasDetachedWhileWaitingForHidden(Page page, TestServer server) throws Exception {
-    page.setContent("<button>hello</button>");
-    ElementHandle button = page.querySelector("button");
-    CompletableFuture<ElementHandle> promise = async(() -> button.waitForSelector("something", new ElementHandle.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN)));
-    page.waitForTimeout(1000);
-    page.evaluate("() => document.body.innerText = ''");
-    promise.get();
-  }
-
-  @PlaywrightTest
-  @DisplayName("WA-076 should succeed if element handle was detached while waiting for detached")
-  void shouldSucceedIfElementHandleWasDetachedWhileWaitingForDetached(Page page, TestServer server) throws Exception {
-    page.setContent("<button>hello</button>");
-    ElementHandle button = page.querySelector("button");
-    CompletableFuture<ElementHandle> promise = async(() -> button.waitForSelector("something", new ElementHandle.WaitForSelectorOptions().setState(WaitForSelectorState.DETACHED)));
-    page.waitForTimeout(1000);
-    page.evaluate("() => document.body.innerText = ''");
-    promise.get();
   }
 }

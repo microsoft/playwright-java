@@ -304,6 +304,8 @@ WA-060      passes the invalid state true; state is the WaitForSelectorState enu
 WA-061      passes the invalid state false; state is the WaitForSelectorState enum in Java.
 WA-072      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
 WA-073      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
+WA-075      java: concurrent: elementHandle.waitForSelector while page.evaluate is pending
+WA-076      java: concurrent: elementHandle.waitForSelector while page.evaluate is pending
 # page/page-wait-for-load-state
 WA-080      passes the invalid state 'bad'; state is the LoadState enum in Java.
 # page/workers
