@@ -466,3 +466,79 @@ FE-050      Checks error.code, a Node.js Error property that PlaywrightException
 FE-051      TODO harness: needs req.pause() on the test server request; the server reads the whole request body before it runs the route, so the server can not answer and reset the connection before the body is read.
 FE-030      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
 FE-031      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
+# library/browsercontext-proxy
+PR-020      Passes a number as proxy.server to check the runtime type error; the Java Proxy class only accepts a String.
+# library/proxy-pattern
+PR-040      Tests parsePattern(), a function of the Node.js utils bundle (SOCKS proxy pattern matcher) that is not part of the client API.
+# library/fetch-proxy
+PR-046      Needs a TLS proxy server that negotiates ALPN (Node.js https.createServer with ALPNCallback) and reads the offered protocols; the Java 8 SSLEngine API of the test sources has no ALPN access.
+# library/browsercontext-route
+RO-185      Routes on a URLPattern, a JavaScript-only class (BrowserContext.route() takes a String, a Pattern or a Predicate), so there is no ignoreCase option to test.
+# library/unroute-behavior
+RO-188      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+RO-189      Uses unrouteAll({ behavior: 'ignoreErrors' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+RO-194      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-195      Uses unrouteAll({ behavior: 'ignoreErrors' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-200      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-201      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+# library/screencast
+SC-002      Relies on an async onFrame callback that stays pending while the test goes on; the Java onFrame is a synchronous Consumer acknowledged when it returns, and the single-threaded client can not keep a handler suspended while the test thread makes calls.
+SC-009      TODO harness: needs videoPlayer
+SC-014      TODO harness: needs videoPlayer
+SC-015      TODO harness: needs videoPlayer
+# library/slowmo
+SL-001      TODO harness: needs toImpl
+SL-002      TODO harness: needs toImpl
+SL-003      TODO harness: needs toImpl
+SL-004      TODO harness: needs toImpl
+SL-005      TODO harness: needs toImpl
+SL-006      TODO harness: needs toImpl
+SL-007      TODO harness: needs toImpl
+SL-008      TODO harness: needs toImpl
+SL-009      TODO harness: needs toImpl
+SL-010      TODO harness: needs toImpl
+SL-011      TODO harness: needs toImpl
+SL-012      TODO harness: needs toImpl
+SL-013      TODO harness: needs toImpl
+SL-014      TODO harness: needs toImpl
+SL-015      TODO harness: needs toImpl
+SL-016      TODO harness: needs toImpl
+SL-017      TODO harness: needs toImpl
+SL-018      TODO harness: needs toImpl
+SL-019      TODO harness: needs toImpl
+SL-020      TODO harness: needs toImpl
+SL-021      TODO harness: needs toImpl
+SL-022      TODO harness: needs toImpl
+SL-023      TODO harness: needs toImpl
+SL-024      TODO harness: needs toImpl
+SL-025      TODO harness: needs toImpl
+SL-026      TODO harness: needs toImpl
+SL-027      TODO harness: needs toImpl
+SL-028      TODO harness: needs toImpl
+SL-029      TODO harness: needs toImpl
+SL-030      TODO harness: needs toImpl
+SL-031      TODO harness: needs toImpl
+SL-032      TODO harness: needs toImpl
+SL-033      TODO harness: needs toImpl
+SL-034      TODO harness: needs toImpl
+SL-035      TODO harness: needs toImpl
+SL-036      TODO harness: needs toImpl
+SL-037      TODO harness: needs toImpl
+SL-038      TODO harness: needs toImpl
+SL-039      TODO harness: needs toImpl
+# library/signals
+SI-001      TODO harness: needs startRemoteServer
+SI-002      TODO harness: needs startRemoteServer
+SI-003      TODO harness: needs startRemoteServer
+SI-004      TODO harness: needs startRemoteServer
+SI-005      TODO harness: needs startRemoteServer
+SI-006      TODO harness: needs startRemoteServer
+SI-007      TODO harness: needs startRemoteServer
+SI-008      TODO harness: needs startRemoteServer
+SI-009      TODO harness: needs startRemoteServer
+SI-010      TODO harness: needs startRemoteServer
+# library/screenshot
+SS-080      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-086      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-087      Uses the __testHookAfterScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-089      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
