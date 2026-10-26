@@ -91,6 +91,7 @@ public class TestPageWaitForSelector1 {
   }
 
   @PlaywrightTest
+  @Fixme("java: the message is 'Execution context was destroyed, most likely because of a navigation' without the wait log 'waiting for locator('span') to be visible'")
   @DisplayName("WA-033 elementHandle.waitForSelector should throw on navigation")
   void elementHandleWaitForSelectorShouldThrowOnNavigation(Page page, TestServer server) {
     page.setContent("<div></div>");

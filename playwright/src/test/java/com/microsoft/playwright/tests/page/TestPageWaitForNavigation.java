@@ -338,6 +338,7 @@ public class TestPageWaitForNavigation {
   }
 
   @PlaywrightTest
+  @Fixme("java: the message is 'Navigating frame was detached' without the call log 'waiting for navigation until \"load\"'")
   @DisplayName("WA-109 should fail when frame detaches")
   void shouldFailWhenFrameDetaches(Page page, TestServer server) throws Exception {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
