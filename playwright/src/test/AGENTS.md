@@ -169,11 +169,11 @@ before the action that triggers the request, like upstream. A server WebSocket (
   (`const promise = frame.goto(url); await server.waitForRequest(...); await promise`), is
   `CompletableFuture<Response> promise = async(() -> frame.navigate(url))` (`Utils.async`) and
   `promise.get()`; the error of a failed one is `cause(promise)`. Two independent actions in one
-  `Promise.all` run the same way: one in `async`, the other inline. The Java client is not
-  thread-safe: while the `async` call runs, Playwright calls on the test thread race with it and
-  the test can fail with `Object doesn't exist: ...`. Use `async` only when no callback form
-  exists, mark the statement `// Java:` and report every such test as "concurrent" with the
-  failures seen; do not mark it `@Fixme`.
+  `Promise.all` run the same way: one in `async`, the other inline. The client dispatches the
+  driver's messages in order when several threads call it (a fair lock in `Connection`), but
+  Playwright objects are not otherwise thread-safe: use `async` only when no callback form
+  exists, mark the statement `// Java:`, and report every test that fails with
+  `Object doesn't exist: ...` as "concurrent"; do not mark it `@Fixme`.
 - A promise settled by an event handler (`new Promise(f => page.once('load', f))`, awaited
   later) is a `CompletableFuture` that the `onLoad` handler completes, awaited with
   `page.waitForCondition(future::isDone)`: the Java client only delivers events while the test
