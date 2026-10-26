@@ -182,6 +182,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
         params.addProperty("noDefaultViewport", true);
       }
     }
+    if (options.screenSize != null) {
+      JsonElement size = params.get("screenSize");
+      params.remove("screenSize");
+      params.add("screen", size);
+    }
     addToProtocol(params, options.clientCertificates);
     addHttpCredentialsToProtocol(params);
     params.remove("acceptDownloads");
