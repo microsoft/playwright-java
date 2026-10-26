@@ -28,10 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.lang.System.currentTimeMillis;
@@ -62,18 +60,14 @@ class Message {
 
 public class Connection {
   private final Transport transport;
-  private final Map<String, ChannelOwner> objects = new ConcurrentHashMap<>();
-  // Threads that call into Playwright take turns reading and dispatching the driver's messages,
-  // so that messages are dispatched in the order they arrive. The lock is fair, so a thread
-  // blocked in a long call cannot starve another thread that wants to send a message.
-  private final ReentrantLock messageLock = new ReentrantLock(true);
+  private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
   final boolean isRemote;
   private int lastId = 0;
   // Use a unique prefix for each client to avoid id clashes in a trace.
   private final String callIdPrefix = createCallIdPrefix();
   private final StackTraceCollector stackTraceCollector;
-  private final Map<String, WaitableResult<JsonElement>> callbacks = new ConcurrentHashMap<>();
+  private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private String title;
   private boolean titleReported = false;
   private static final long DRIVER_RESPONSE_GRACE_MS = 10_000;
@@ -182,15 +176,6 @@ public class Connection {
   }
 
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
-    messageLock.lock();
-    try {
-      return internalSendMessageLocked(guid, method, params, timeout, sendStack, expectsReply);
-    } finally {
-      messageLock.unlock();
-    }
-  }
-
-  private WaitableResult<JsonElement> internalSendMessageLocked(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
     String id = callIdPrefix + "@" + (++lastId);
     WaitableResult<JsonElement> result = new WaitableResult<>();
     if (expectsReply) {
@@ -266,19 +251,14 @@ public class Connection {
   }
 
   boolean processOneMessage() {
-    messageLock.lock();
-    try {
-      JsonObject message = transport.poll(Duration.ofMillis(10));
-      if (message == null) {
-        return false;
-      }
-      Gson gson = gson();
-      Message messageObj = gson.fromJson(message, Message.class);
-      dispatch(messageObj);
-      return true;
-    } finally {
-      messageLock.unlock();
+    JsonObject message = transport.poll(Duration.ofMillis(10));
+    if (message == null) {
+      return false;
     }
+    Gson gson = gson();
+    Message messageObj = gson.fromJson(message, Message.class);
+    dispatch(messageObj);
+    return true;
   }
 
   private static String formatCallLog(JsonArray log) {
