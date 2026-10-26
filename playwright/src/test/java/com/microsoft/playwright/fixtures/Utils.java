@@ -222,40 +222,6 @@ public final class Utils {
     return resources;
   }
 
-  /**
-   * Runs a blocking Playwright call on a thread of its own and returns its result as a future,
-   * for an upstream promise that is created first and awaited later: {@code const promise =
-   * frame.goto(url); ...; await promise} is {@code CompletableFuture<Response> promise =
-   * async(() -> frame.navigate(url)); ...; promise.get()}. A failure comes out of {@code get()}
-   * as an {@link java.util.concurrent.ExecutionException} whose cause is the Playwright error.
-   */
-  public static <T> java.util.concurrent.CompletableFuture<T> async(java.util.concurrent.Callable<T> call) {
-    java.util.concurrent.CompletableFuture<T> future = new java.util.concurrent.CompletableFuture<>();
-    Thread thread = new Thread(() -> {
-      try {
-        future.complete(call.call());
-      } catch (Throwable e) {
-        future.completeExceptionally(e);
-      }
-    }, "async");
-    thread.setDaemon(true);
-    thread.start();
-    return future;
-  }
-
-  /** The Playwright error behind a failed {@link #async} future. */
-  public static Throwable cause(java.util.concurrent.Future<?> future) {
-    try {
-      future.get();
-      return null;
-    } catch (java.util.concurrent.ExecutionException e) {
-      return e.getCause();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return e;
-    }
-  }
-
   /** A map from alternating keys and values, for {@code page.evaluate} arguments. */
   public static Map<String, Object> mapOf(Object... keysAndValues) {
     Map<String, Object> map = new LinkedHashMap<>();

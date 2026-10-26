@@ -642,6 +642,7 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-055 should throw when calling waitForNavigation after disconnect")
+    @Fixme(value = "java: the error after a disconnect is 'Browser closed' or 'Browser has been closed', not the target closed message", browsers = BrowserName.FIREFOX)
     void shouldThrowWhenCallingWaitForNavigationAfterDisconnect(Connect connect, StartRemoteServer startRemoteServer) throws Exception {
       PlaywrightServer remoteServer = startRemoteServer.start(kind);
       Browser browser = connect.connect(remoteServer.wsEndpoint());

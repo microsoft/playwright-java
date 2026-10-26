@@ -167,8 +167,8 @@ before the action that triggers the request, like upstream. A server WebSocket (
   first go in the callback, in order. `page.on('x', ...)` is `page.onX(...)`, `page.off` is
   `page.offX`; `page.once('x', h)` is an `onX` handler that calls `offX` on itself first.
 - The Java API is synchronous and a Playwright instance is used from one thread only: the
-  test never calls it from another thread (no `Thread`, `CompletableFuture.supplyAsync`,
-  executor or `Utils.async`). A promise that is created before and awaited later is ported in
+  test never calls it from another thread (no `Thread`, `CompletableFuture.supplyAsync` or
+  executor). A promise that is created before and awaited later is ported in
   the first of these ways that applies:
   1. The callback form of the wait (previous bullet), when everything up to the `await` can go
      in the callback.
