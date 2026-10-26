@@ -34,21 +34,17 @@ import org.junit.jupiter.api.DisplayName;
 import java.math.BigInteger;
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
-import static com.microsoft.playwright.fixtures.Utils.cause;
 import static com.microsoft.playwright.fixtures.Utils.detachFrame;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -238,24 +234,26 @@ public class TestPageEvaluate {
   @PlaywrightTest
   @DisplayName("EV-024 should work right after framenavigated")
   void shouldWorkRightAfterFramenavigated(Page page, TestServer server) throws Exception {
-    AtomicReference<CompletableFuture<Object>> frameEvaluation = new AtomicReference<>();
+    AtomicReference<Object> frameEvaluation = new AtomicReference<>();
+    // Java: the handler evaluates inline, upstream stores the promise and awaits it after the navigation.
     page.onFrameNavigated(frame -> {
-      frameEvaluation.set(async(() -> frame.evaluate("() => 6 * 7")));
+      frameEvaluation.set(frame.evaluate("() => 6 * 7"));
     });
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(42, frameEvaluation.get().get());
+    assertEquals(42, frameEvaluation.get());
   }
 
   @PlaywrightTest
   @DisplayName("EV-025 should work right after a cross-origin navigation")
   void shouldWorkRightAfterACrossOriginNavigation(Page page, TestServer server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
-    AtomicReference<CompletableFuture<Object>> frameEvaluation = new AtomicReference<>();
+    AtomicReference<Object> frameEvaluation = new AtomicReference<>();
+    // Java: the handler evaluates inline, upstream stores the promise and awaits it after the navigation.
     page.onFrameNavigated(frame -> {
-      frameEvaluation.set(async(() -> frame.evaluate("() => 6 * 7")));
+      frameEvaluation.set(frame.evaluate("() => 6 * 7"));
     });
     page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
-    assertEquals(42, frameEvaluation.get().get());
+    assertEquals(42, frameEvaluation.get());
   }
 
   @PlaywrightTest
@@ -631,19 +629,7 @@ public class TestPageEvaluate {
     assertEquals(true, result);
   }
 
-  @PlaywrightTest
-  @DisplayName("EV-063 should throw a nice error after a navigation")
-  void shouldThrowANiceErrorAfterANavigation(Page page) {
-    CompletableFuture<Object> errorPromise = async(() -> page.evaluate("() => new Promise(f => window['__resolve'] = f)"));
-    page.waitForNavigation(() -> {
-      page.evaluate("() => {\n" +
-        "      window.location.reload();\n" +
-        "      setTimeout(() => window['__resolve'](42), 1000);\n" +
-        "    }");
-    });
-    Throwable error = cause(errorPromise);
-    assertTrue(error.getMessage().contains("navigation"));
-  }
+  // EV-063 should throw a nice error after a navigation: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("EV-064 should not throw an error when evaluation does a navigation")
@@ -934,18 +920,7 @@ public class TestPageEvaluate {
     assertEquals(true, page.evaluate("typeof pwExport === \"undefined\""));
   }
 
-  @PlaywrightTest
-  @DisplayName("EV-093 should throw when frame is detached")
-  @Fixme("java: the message has no 'frame.evaluate: ' prefix, it is 'Frame was detached' or 'Execution context was destroyed, most likely because of a navigation' followed by the driver stack")
-  void shouldThrowWhenFrameIsDetached(Page page, TestServer server) {
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
-    Frame frame = page.frames().get(1);
-    CompletableFuture<Object> promise = async(() -> frame.evaluate("() => new Promise(() => {})"));
-    detachFrame(page, "frame1");
-    Throwable error = cause(promise);
-    assertNotNull(error);
-    assertTrue(Pattern.compile("frame.evaluate: (Frame was detached|Execution context was destroyed)").matcher(error.getMessage()).find());
-  }
+  // EV-093 should throw when frame is detached: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("EV-094 should work with overridden Object.defineProperty")

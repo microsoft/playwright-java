@@ -29,10 +29,8 @@ import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.BoundingBox;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -158,12 +156,9 @@ public class TestLocatorMisc2 {
   void shouldWaitFor(Page page) throws Exception {
     page.setContent("<div></div>");
     Locator locator = page.locator("span");
-    CompletableFuture<Void> promise = async(() -> {
-      locator.waitFor();
-      return null;
-    });
     page.evalOnSelector("div", "div => div.innerHTML = '<span>target</span>'");
-    promise.get();
+    // Java: the wait comes after the change, the span stays attached.
+    locator.waitFor();
     assertThat(locator).hasText("target");
   }
 
@@ -172,12 +167,9 @@ public class TestLocatorMisc2 {
   void shouldWaitForHidden(Page page) throws Exception {
     page.setContent("<div><span>target</span></div>");
     Locator locator = page.locator("span");
-    CompletableFuture<Void> promise = async(() -> {
-      locator.waitFor(new Locator.WaitForOptions().setState(com.microsoft.playwright.options.WaitForSelectorState.HIDDEN));
-      return null;
-    });
     page.evalOnSelector("div", "div => div.innerHTML = ''");
-    promise.get();
+    // Java: the wait comes after the change, the span stays hidden.
+    locator.waitFor(new Locator.WaitForOptions().setState(com.microsoft.playwright.options.WaitForSelectorState.HIDDEN));
   }
 
   @PlaywrightTest

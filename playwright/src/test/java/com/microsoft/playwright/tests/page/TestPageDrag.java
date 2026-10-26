@@ -21,8 +21,8 @@ import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.Route;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.Env;
@@ -38,16 +38,13 @@ import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
@@ -371,8 +368,14 @@ public class TestPageDrag {
       page.route("**/empty.html", route -> {
         routePromise.complete(route);
       });
-      // Java: attachFrame(...).catch(() => {}) is not awaited; its failure is ignored.
-      async(() -> attachFrame(page, "frame", server.EMPTY_PAGE));
+      // Java: attachFrame(...).catch(() => {}) is not awaited upstream, but its evaluate waits for the frame to load, which never ends while the frame is stalled; the frame is attached without waiting for the load.
+      page.evaluate("url => {\n" +
+        "  const frame = document.createElement('iframe');\n" +
+        "  frame.src = url;\n" +
+        "  frame.id = 'frame';\n" +
+        "  document.body.appendChild(frame);\n" +
+        "}", server.EMPTY_PAGE);
+      page.context().waitForCondition(() -> routePromise.isDone());
       Route route = routePromise.get();
       page.hover("#source");
       page.mouse().down();
@@ -561,43 +564,7 @@ public class TestPageDrag {
     return eventsHandle;
   }
 
-  @PlaywrightTest
-  @DisplayName("DD-019 should handle custom dataTransfer")
-  @DisabledOnBrowser(value = BrowserName.WEBKIT, os = OS.WINDOWS, reason = "fixme: ")
-  void shouldHandleCustomDataTransfer(Page page) throws Exception {
-    page.setContent("<button draggable=\"true\">Draggable</button>");
-
-    CompletableFuture<Object> resultPromise = async(() -> page.evaluate("() =>\n" +
-      "  new Promise(resolve => {\n" +
-      "    document.addEventListener('dragstart', event => {\n" +
-      "      event.dataTransfer.setData('custom-type', 'Hello World');\n" +
-      "    }, false);\n" +
-      "\n" +
-      "    document.addEventListener('dragenter', event => {\n" +
-      "      event.preventDefault();\n" +
-      "    }, false);\n" +
-      "    document.addEventListener('dragover', event => {\n" +
-      "      event.preventDefault();\n" +
-      "    }, false);\n" +
-      "\n" +
-      "    document.addEventListener('drop', event => {\n" +
-      "      event.preventDefault();\n" +
-      "      resolve({\n" +
-      "        types: event.dataTransfer.types,\n" +
-      "        data: event.dataTransfer.getData('custom-type'),\n" +
-      "      });\n" +
-      "    }, false);\n" +
-      "  })"));
-
-    page.hover("[draggable=\"true\"]");
-    page.mouse().down();
-    page.mouse().move(100, 100);
-    page.mouse().up();
-
-    assertEquals(mapOf(
-      "types", Arrays.asList("custom-type"),
-      "data", "Hello World"), resultPromise.get());
-  }
+  // DD-019 should handle custom dataTransfer: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("DD-020 what happens when dragging element is destroyed")

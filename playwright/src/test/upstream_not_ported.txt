@@ -54,6 +54,8 @@ WA-128      tests a RegExp made in another Node.js vm context; Java has no cross
 PR-001      Passes a number as proxy.server; the typed Java API cannot express it.
 # page/elementhandle-screenshot
 EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sync.read) to compare a webp and a png screenshot.
+EH-078      java: concurrent: elementHandle.screenshot while elementHandle.screenshot is pending
+EH-085      java: concurrent: page.evaluate while elementHandle.screenshot is pending
 # page/page-emulate-media
 EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
 EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
@@ -113,6 +115,8 @@ EV-050      Passes a JavaScript function as the argument; Java cannot pass a fun
 EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
 EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
 EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
+EV-063      java: concurrent: page.evaluate while page.evaluate is pending
+EV-093      java: concurrent: page.evaluate while frame.evaluate is pending
 # page/page-evaluate-callback
 EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
 EV-113      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
@@ -191,8 +195,11 @@ PO-005      TODO harness: page.evaluate() blocks on the alert until the dialog i
 # page/page-select-option
 SO-024      passes numbers and a string index where Java is statically typed; those calls do not compile.
 # page/page-screenshot
+SS-010      java: concurrent: page.screenshot while page.screenshot is pending
 SS-019      TODO harness: needs utils.isLosslessWebp of the Node.js package, to tell lossless from lossy webp.
 SS-020      TODO harness: needs utils.decodeWebp of the Node.js package, to read the pixels of a webp screenshot.
+SS-039      java: concurrent: page.reload while page.screenshot is pending
+SS-045      java: concurrent: page.screenshot while page.screenshot is pending
 SS-055      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it is not in the Java API.
 SS-066      expect(page).toHaveScreenshot() is not in the Java API.
 SS-067      expect(page).toHaveScreenshot() is not in the Java API.
@@ -267,6 +274,8 @@ NA-062      java: concurrent: page.waitForTimeout while page.goto is pending
 NA-063      java: concurrent: page.goto while page.goto is pending
 
 # page/page-route
+RO-012      java: concurrent: page.waitForTimeout while page.evaluate is pending
+RO-013      java: concurrent: page.waitForTimeout while page.evaluate is pending
 RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).
 
 # page/page-request-fulfill
@@ -342,6 +351,8 @@ NE-063      TODO harness: TestServer.Response does not frame the body in chunks 
 SS-056      TODO harness: needs comparePNGs
 SS-057      TODO harness: needs comparePNGs
 SS-095      TODO harness: needs comparePNGs
+# page/page-drag
+DD-019      java: concurrent: page.hover while page.evaluate is pending
 
 # page/elementhandle-scroll-into-view
 EH-095      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending

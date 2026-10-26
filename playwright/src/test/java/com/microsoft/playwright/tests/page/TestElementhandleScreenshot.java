@@ -32,13 +32,9 @@ import org.junit.jupiter.api.Nested;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static com.microsoft.playwright.fixtures.Utils.verifyViewport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,41 +93,7 @@ public class TestElementhandleScreenshot {
       testInfo.expectToMatchSnapshot(screenshot, "screenshot-element-padding-border.png");
     }
 
-    @PlaywrightTest
-    @DisplayName("EH-078 should capture full element when larger than viewport in parallel")
-    void shouldCaptureFullElementWhenLargerThanViewportInParallel(Page page, TestInfo testInfo) throws Exception {
-      page.setViewportSize(500, 500);
-
-      page.setContent("\n" +
-        "      <div style=\"height: 14px\">oooo</div>\n" +
-        "      <style>\n" +
-        "      div.to-screenshot {\n" +
-        "        border: 1px solid blue;\n" +
-        "        width: 600px;\n" +
-        "        height: 600px;\n" +
-        "        margin-left: 50px;\n" +
-        "      }\n" +
-        "      ::-webkit-scrollbar{\n" +
-        "        display: none;\n" +
-        "      }\n" +
-        "      </style>\n" +
-        "      <div class=\"to-screenshot\"></div>\n" +
-        "      <div class=\"to-screenshot\"></div>\n" +
-        "      <div class=\"to-screenshot\"></div>\n" +
-        "    ");
-      List<ElementHandle> elementHandles = page.querySelectorAll("div.to-screenshot");
-      List<CompletableFuture<byte[]>> promises = new ArrayList<>();
-      for (ElementHandle handle : elementHandles) {
-        promises.add(async(() -> handle.screenshot()));
-      }
-      List<byte[]> screenshots = new ArrayList<>();
-      for (CompletableFuture<byte[]> promise : promises) {
-        screenshots.add(promise.get());
-      }
-      testInfo.expectToMatchSnapshot(screenshots.get(2), "screenshot-element-larger-than-viewport.png");
-
-      verifyViewport(page, 500, 500);
-    }
+    // EH-078 should capture full element when larger than viewport in parallel: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("EH-079 should capture full element when larger than viewport")
@@ -252,26 +214,7 @@ public class TestElementhandleScreenshot {
       assertTrue(error.getMessage().contains("element is not visible"));
     }
 
-    @PlaywrightTest
-    @DisplayName("EH-085 should wait for visible")
-    void shouldWaitForVisible(Page page, TestServer server, TestInfo testInfo) throws Exception {
-      page.setViewportSize(500, 500);
-      page.navigate(server.PREFIX + "/grid.html");
-      page.evaluate("() => window.scrollBy(50, 100)");
-      ElementHandle elementHandle = page.querySelector(".box:nth-of-type(3)");
-      elementHandle.evaluate("e => e.style.visibility = 'hidden'");
-      AtomicBoolean done = new AtomicBoolean(false);
-      CompletableFuture<byte[]> promise = async(() -> {
-        byte[] buffer = elementHandle.screenshot();
-        done.set(true);
-        return buffer;
-      });
-      rafraf(page, 10);
-      assertFalse(done.get());
-      elementHandle.evaluate("e => e.style.visibility = 'visible'");
-      byte[] screenshot = promise.get();
-      testInfo.expectToMatchSnapshot(screenshot, "screenshot-element-bounding-box.png");
-    }
+    // EH-085 should wait for visible: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("EH-086 should work for an element with fractional dimensions")

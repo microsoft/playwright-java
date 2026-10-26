@@ -25,9 +25,7 @@ import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -249,19 +247,19 @@ public class TestEvalOnSelector {
   @PlaywrightTest
   @DisplayName("ES-024 should work with spaces in css attributes when missing")
   void shouldWorkWithSpacesInCssAttributesWhenMissing(Page page, TestServer server) throws Exception {
-    CompletableFuture<ElementHandle> inputPromise = async(() -> page.waitForSelector("[placeholder=\"Select date\"]"));
     assertNull(page.querySelector("[placeholder=\"Select date\"]"));
     page.setContent("<div><input placeholder=\"Select date\"></div>");
-    inputPromise.get();
+    // Java: the wait comes after setContent, the input stays attached.
+    page.waitForSelector("[placeholder=\"Select date\"]");
   }
 
   @PlaywrightTest
   @DisplayName("ES-025 should work with quotes in css attributes when missing")
   void shouldWorkWithQuotesInCssAttributesWhenMissing(Page page, TestServer server) throws Exception {
-    CompletableFuture<ElementHandle> inputPromise = async(() -> page.waitForSelector("[placeholder=\"Select\\\"date\"]"));
     assertNull(page.querySelector("[placeholder=\"Select\\\"date\"]"));
     page.setContent("<div><input placeholder=\"Select&quot;date\"></div>");
-    inputPromise.get();
+    // Java: the wait comes after setContent, the input stays attached.
+    page.waitForSelector("[placeholder=\"Select\\\"date\"]");
   }
 
   @PlaywrightTest

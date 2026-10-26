@@ -44,12 +44,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.fixtures.Utils.asset;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -150,14 +148,8 @@ public class TestPageFilechooser {
   @PlaywrightTest
   @DisplayName("FC-008 should work when file input is not attached to DOM")
   void shouldWorkWhenFileInputIsNotAttachedToDOM(Page page) throws Exception {
-    // Java: the evaluate below blocks until the file is set, so the chooser is awaited on another thread; the latch makes sure its listener is registered first, as page.waitForEvent() registers it synchronously upstream.
-    CountDownLatch registered = new CountDownLatch(1);
-    CompletableFuture<Void> setFiles = async(() -> {
-      FileChooser chooser = page.waitForFileChooser(registered::countDown);
-      chooser.setFiles(asset("file-to-upload.txt"));
-      return null;
-    });
-    registered.await();
+    // Java: the evaluate below blocks until the file is set, so the file chooser handler sets the file; it stands for the code that upstream runs after the pending evaluate.
+    page.onFileChooser(chooser -> chooser.setFiles(asset("file-to-upload.txt")));
     Object content = page.evaluate("async () => {\n" +
       "      const el = document.createElement('input');\n" +
       "      el.type = 'file';\n" +
@@ -168,7 +160,6 @@ public class TestPageFilechooser {
       "      reader.readAsText(el.files[0]);\n" +
       "      return promise.then(() => reader.result);\n" +
       "    }");
-    setFiles.get();
     assertEquals("contents of the file", content);
   }
 
@@ -283,14 +274,8 @@ public class TestPageFilechooser {
   @DisplayName("FC-019 should be able to read selected file")
   void shouldBeAbleToReadSelectedFile(Page page) throws Exception {
     page.setContent("<input type=file>");
-    // Java: the evalOnSelector below blocks until the file is set, so the chooser is awaited on another thread; the latch makes sure its listener is registered first, as page.waitForEvent() registers it synchronously upstream.
-    CountDownLatch registered = new CountDownLatch(1);
-    CompletableFuture<Void> setFiles = async(() -> {
-      FileChooser fileChooser = page.waitForFileChooser(registered::countDown);
-      fileChooser.setFiles(asset("file-to-upload.txt"));
-      return null;
-    });
-    registered.await();
+    // Java: the evalOnSelector below blocks until the file is set, so the file chooser handler sets the file; it stands for the code that upstream runs after the pending evalOnSelector.
+    page.onFileChooser(fileChooser -> fileChooser.setFiles(asset("file-to-upload.txt")));
     Object content = page.evalOnSelector("input", "async picker => {\n" +
       "      picker.click();\n" +
       "      await new Promise(x => picker.oninput = x);\n" +
@@ -299,7 +284,6 @@ public class TestPageFilechooser {
       "      reader.readAsText(picker.files[0]);\n" +
       "      return promise.then(() => reader.result);\n" +
       "    }");
-    setFiles.get();
     assertEquals("contents of the file", content);
   }
 
@@ -307,34 +291,22 @@ public class TestPageFilechooser {
   @DisplayName("FC-020 should be able to reset selected files with empty file list")
   void shouldBeAbleToResetSelectedFilesWithEmptyFileList(Page page) throws Exception {
     page.setContent("<input type=file>");
-    // Java: the evalOnSelector below blocks until the file is set, so the chooser is awaited on another thread; the latch makes sure its listener is registered first, as page.waitForEvent() registers it synchronously upstream.
-    CountDownLatch registered1 = new CountDownLatch(1);
-    CompletableFuture<Void> setFiles1 = async(() -> {
-      FileChooser fileChooser = page.waitForFileChooser(registered1::countDown);
-      fileChooser.setFiles(asset("file-to-upload.txt"));
-      return null;
-    });
-    registered1.await();
+    // Java: the evalOnSelector below blocks until the file is set, so a file chooser handler sets the file; it stands for the code that upstream runs after the pending evalOnSelector.
+    Consumer<FileChooser> setFile = fileChooser -> fileChooser.setFiles(asset("file-to-upload.txt"));
+    page.onFileChooser(setFile);
     Object fileLength1 = page.evalOnSelector("input", "async picker => {\n" +
       "      picker.click();\n" +
       "      await new Promise(x => picker.oninput = x);\n" +
       "      return picker.files.length;\n" +
       "    }");
-    setFiles1.get();
     assertEquals(1, fileLength1);
-    CountDownLatch registered2 = new CountDownLatch(1);
-    CompletableFuture<Void> setFiles2 = async(() -> {
-      FileChooser fileChooser = page.waitForFileChooser(registered2::countDown);
-      fileChooser.setFiles(new Path[0]);
-      return null;
-    });
-    registered2.await();
+    page.offFileChooser(setFile);
+    page.onFileChooser(fileChooser -> fileChooser.setFiles(new Path[0]));
     Object fileLength2 = page.evalOnSelector("input", "async picker => {\n" +
       "      picker.click();\n" +
       "      await new Promise(x => picker.oninput = x);\n" +
       "      return picker.files.length;\n" +
       "    }");
-    setFiles2.get();
     assertEquals(0, fileLength2);
   }
 

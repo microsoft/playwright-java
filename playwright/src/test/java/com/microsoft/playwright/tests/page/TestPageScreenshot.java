@@ -42,14 +42,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
@@ -230,23 +227,7 @@ public class TestPageScreenshot {
       assertTrue(screenshotError.getMessage().contains("Expected options.clip.width to be greater than 0"));
     }
 
-    @PlaywrightTest
-    @DisplayName("SS-010 should run in parallel")
-    void shouldRunInParallel(Page page, TestServer server, TestInfo testInfo) throws Exception {
-      page.setViewportSize(500, 500);
-      page.navigate(server.PREFIX + "/grid.html");
-      List<CompletableFuture<byte[]>> promises = new ArrayList<>();
-      for (int i = 0; i < 3; ++i) {
-        int index = i;
-        promises.add(async(() -> page.screenshot(new Page.ScreenshotOptions().setClip(new Clip(50 * index, 0, 50, 50)))));
-      }
-      // Java: Promise.all waits for the futures.
-      List<byte[]> screenshots = new ArrayList<>();
-      for (CompletableFuture<byte[]> promise : promises) {
-        screenshots.add(promise.get());
-      }
-      testInfo.expectToMatchSnapshot(screenshots.get(1), "grid-cell-1.png");
-    }
+    // SS-010 should run in parallel: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("SS-011 should take fullPage screenshots")
@@ -558,28 +539,7 @@ public class TestPageScreenshot {
       testInfo.expectToMatchSnapshot(screenshot, "screenshot-grid-fullpage.png");
     }
 
-    @PlaywrightTest
-    @DisplayName("SS-039 should take fullPage screenshots during navigation")
-    void shouldTakeFullPageScreenshotsDuringNavigation(Page page, TestServer server) throws Exception {
-      // it.slow();
-
-      page.setViewportSize(500, 500);
-      page.navigate(server.PREFIX + "/grid.html");
-      Runnable reloadSeveralTimes = () -> {
-        for (int i = 0; i < 5; ++i)
-          page.reload();
-      };
-      Runnable screenshotSeveralTimes = () -> {
-        for (int i = 0; i < 5; ++i)
-          page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-      };
-      CompletableFuture<Void> reloading = async(() -> {
-        reloadSeveralTimes.run();
-        return null;
-      });
-      screenshotSeveralTimes.run();
-      reloading.get();
-    }
+    // SS-039 should take fullPage screenshots during navigation: not ported, see upstream_not_ported.txt.
 
     @Nested
     class MaskOption {
@@ -636,22 +596,7 @@ public class TestPageScreenshot {
             page.frameLocator("#frame1").locator("div").nth(12)))), "should-mask-inside-iframe.png");
       }
 
-      @PlaywrightTest
-      @DisplayName("SS-045 should mask in parallel")
-      void shouldMaskInParallel(Page page, TestServer server, TestInfo testInfo) throws Exception {
-        page.setViewportSize(500, 500);
-        attachFrame(page, "frame1", server.PREFIX + "/grid.html");
-        attachFrame(page, "frame2", server.PREFIX + "/grid.html");
-        page.addStyleTag(new Page.AddStyleTagOptions().setContent("iframe { border: none; }"));
-        // Java: Promise.all runs the first screenshot with async() and the second one inline.
-        CompletableFuture<byte[]> first = async(() -> page.screenshot(new Page.ScreenshotOptions()
-          .setMask(asList(page.frameLocator("#frame1").locator("div").nth(1)))));
-        byte[] second = page.screenshot(new Page.ScreenshotOptions()
-          .setMask(asList(page.frameLocator("#frame2").locator("div").nth(3))));
-        List<byte[]> screenshots = asList(first.get(), second);
-        testInfo.expectToMatchSnapshot(screenshots.get(0), "should-mask-in-parallel-1.png");
-        testInfo.expectToMatchSnapshot(screenshots.get(1), "should-mask-in-parallel-2.png");
-      }
+      // SS-045 should mask in parallel: not ported, see upstream_not_ported.txt.
 
       @PlaywrightTest
       @DisplayName("SS-046 should remove mask after screenshot")
@@ -668,19 +613,14 @@ public class TestPageScreenshot {
       @PlaywrightTest
       @DisplayName("SS-047 should work when subframe has stalled navigation")
       void shouldWorkWhenSubframeHasStalledNavigation(Page page, TestServer server) throws Exception {
-        CompletableFuture<Route> routeReady = new CompletableFuture<>();
-        page.route("**/subframe.html", route -> routeReady.complete(route)); // Stalling subframe.
+        // Java: the route handler runs the code that upstream runs after the pending setContent.
+        page.route("**/subframe.html", route -> {
+          page.screenshot(new Page.ScreenshotOptions().setMask(asList(page.locator("non-existent"))));
+          route.fulfill(new Route.FulfillOptions().setBody(""));
+        }); // Stalling subframe.
 
         page.navigate(server.EMPTY_PAGE);
-        CompletableFuture<Void> done = async(() -> {
-          page.setContent("<iframe src='/subframe.html'></iframe>");
-          return null;
-        });
-        Route route = routeReady.get();
-
-        page.screenshot(new Page.ScreenshotOptions().setMask(asList(page.locator("non-existent"))));
-        route.fulfill(new Route.FulfillOptions().setBody(""));
-        done.get();
+        page.setContent("<iframe src='/subframe.html'></iframe>");
       }
 
       @PlaywrightTest

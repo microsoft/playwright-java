@@ -18,6 +18,7 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 import com.microsoft.playwright.Route;
@@ -45,7 +46,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -83,15 +83,15 @@ public class TestPageRequestContinue {
   @PlaywrightTest
   @DisplayName("RO-059 should not allow to override unsafe HTTP headers")
   void shouldNotAllowToOverrideUnsafeHTTPHeaders(Page page, TestServer server, BrowserName browserName) throws Exception {
-    CompletableFuture<Route> routePromise = new CompletableFuture<>();
-    page.route("**/*", route -> routePromise.complete(route));
     CompletableFuture<TestServer.Request> serverRequestPromise = server.waitForRequest("/empty.html");
-    async(() -> page.navigate(server.EMPTY_PAGE));
-    Route route = routePromise.get();
-    Map<String, String> headers = new HashMap<>(route.request().headers());
-    headers.put("host", "bar");
-    headers.put("trailer", "baz");
-    route.resume(new Route.ResumeOptions().setHeaders(headers));
+    // Java: the route handler runs the code that upstream runs after the pending navigation.
+    page.route("**/*", route -> {
+      Map<String, String> headers = new HashMap<>(route.request().headers());
+      headers.put("host", "bar");
+      headers.put("trailer", "baz");
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
+    });
+    page.navigate(server.EMPTY_PAGE);
     TestServer.Request serverRequest = serverRequestPromise.get();
     assertNull(serverRequest.headers.get("trailer"));
     assertEquals(URI.create(server.EMPTY_PAGE).getAuthority(), serverRequest.headers.get("host"));
@@ -170,9 +170,15 @@ public class TestPageRequestContinue {
         errorPromise.complete(null);
       } catch (Exception e) {
         errorPromise.complete(e);
+        // Java: upstream leaves the navigation pending, it is aborted here so that the inline navigate returns.
+        route.abort();
       }
     });
-    async(() -> page.navigate(server.EMPTY_PAGE));
+    try {
+      page.navigate(server.EMPTY_PAGE);
+    } catch (PlaywrightException e) {
+      // Java: upstream does not await the navigation.
+    }
     Throwable error = errorPromise.get();
     assertNotNull(error);
     assertTrue(error.getMessage().contains("New URL must have same protocol as overridden URL"));
@@ -181,22 +187,32 @@ public class TestPageRequestContinue {
   @PlaywrightTest
   @DisplayName("RO-064 should not throw if request was cancelled by the page")
   void shouldNotThrowIfRequestWasCancelledByThePage(Page page, TestServer server) throws Exception {
-    CompletableFuture<Route> interceptPromise = new CompletableFuture<>();
-    page.route("**/data.json", route -> interceptPromise.complete(route));
-    page.navigate(server.EMPTY_PAGE);
-    async(() -> page.evaluate("url => {\n" +
-      "  globalThis.controller = new AbortController();\n" +
-      "  return fetch(url, { signal: globalThis.controller.signal });\n" +
-      "}", server.PREFIX + "/data.json"));
-    Route route = interceptPromise.get();
     // Java: there is no page.waitForRequestFailed(), the event is collected with a handler.
     CompletableFuture<Request> failurePromise = new CompletableFuture<>();
     page.onRequestFailed(request -> failurePromise.complete(request));
-    page.evaluate("() => globalThis.controller.abort()");
-    page.context().waitForCondition(() -> failurePromise.isDone());
+    AtomicReference<Throwable> resumeError = new AtomicReference<>();
+    // Java: the route handler runs the code that upstream runs after the pending evaluate: the page aborts the request, then the route is resumed.
+    page.route("**/data.json", route -> {
+      page.evaluate("() => globalThis.controller.abort()");
+      page.context().waitForCondition(() -> failurePromise.isDone());
+      try {
+        route.resume(); // Should not throw.
+      } catch (RuntimeException e) {
+        resumeError.set(e);
+      }
+    });
+    page.navigate(server.EMPTY_PAGE);
+    try {
+      page.evaluate("url => {\n" +
+        "  globalThis.controller = new AbortController();\n" +
+        "  return fetch(url, { signal: globalThis.controller.signal });\n" +
+        "}", server.PREFIX + "/data.json");
+    } catch (PlaywrightException e) {
+      // Java: the aborted fetch rejects the evaluation; upstream does not await it.
+    }
     Request cancelledRequest = failurePromise.get();
     assertTrue(Pattern.compile("cancelled|aborted", Pattern.CASE_INSENSITIVE).matcher(cancelledRequest.failure()).find());
-    route.resume(); // Should not throw.
+    assertNull(resumeError.get());
   }
 
   @PlaywrightTest
@@ -866,12 +882,9 @@ public class TestPageRequestContinue {
       "    </form>");
 
     page.route("**/*", route -> route.resume());
-    CompletableFuture<Void> waitForURL = async(() -> {
-      page.waitForURL(server.PREFIX + "/final");
-      return null;
-    });
     page.locator("input").click();
-    waitForURL.get();
+    // Java: the wait comes after the click, the URL stays reached.
+    page.waitForURL(server.PREFIX + "/final");
     assertThat(page.locator("p")).hasText("ok");
   }
 

@@ -47,14 +47,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -285,54 +283,9 @@ public class TestPageRoute {
     assertTrue(continuePromise[0]);
   }
 
-  @PlaywrightTest
-  @DisplayName("RO-012 should pause intercepted XHR until continue")
-  @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: Redirected request is not paused in WebKit")
-  void shouldPauseInterceptedXHRUntilContinue(Page page, TestServer server) throws Exception {
-    page.navigate(server.EMPTY_PAGE);
-    CompletableFuture<Route> routePromise = new CompletableFuture<>();
-    page.route("**/global-var.html", route -> routePromise.complete(route));
-    AtomicBoolean xhrFinished = new AtomicBoolean(false);
-    CompletableFuture<Object> statusPromise = async(() -> page.evaluate("async () => {\n" +
-      "  const request = new XMLHttpRequest();\n" +
-      "  request.open('GET', '/global-var.html', false);  // `false` makes the request synchronous\n" +
-      "  request.send(null);\n" +
-      "  return request.status;\n" +
-      "}")).thenApply(r -> {
-        xhrFinished.set(true);
-        return r;
-      });
-    Route route = routePromise.get();
-    // Check that intercepted request is actually paused.
-    page.waitForTimeout(500);
-    assertEquals(false, xhrFinished.get());
-    route.resume();
-    Object status = statusPromise.get();
-    assertEquals(200, status);
-  }
+  // RO-012 should pause intercepted XHR until continue: not ported, see upstream_not_ported.txt.
 
-  @PlaywrightTest
-  @DisplayName("RO-013 should pause intercepted fetch request until continue")
-  void shouldPauseInterceptedFetchRequestUntilContinue(Page page, TestServer server) throws Exception {
-    page.navigate(server.EMPTY_PAGE);
-    CompletableFuture<Route> routePromise = new CompletableFuture<>();
-    page.route("**/global-var.html", route -> routePromise.complete(route));
-    AtomicBoolean fetchFinished = new AtomicBoolean(false);
-    CompletableFuture<Object> statusPromise = async(() -> page.evaluate("async () => {\n" +
-      "  const response = await fetch('/global-var.html');\n" +
-      "  return response.status;\n" +
-      "}")).thenApply(r -> {
-        fetchFinished.set(true);
-        return r;
-      });
-    Route route = routePromise.get();
-    // Check that intercepted request is actually paused.
-    page.waitForTimeout(500);
-    assertEquals(false, fetchFinished.get());
-    route.resume();
-    Object status = statusPromise.get();
-    assertEquals(200, status);
-  }
+  // RO-013 should pause intercepted fetch request until continue: not ported, see upstream_not_ported.txt.
 
   @PlaywrightTest
   @DisplayName("RO-014 should work with custom referer headers")
@@ -387,22 +340,32 @@ public class TestPageRoute {
   @PlaywrightTest
   @DisplayName("RO-017 should not throw if request was cancelled by the page")
   void shouldNotThrowIfRequestWasCancelledByThePage(Page page, TestServer server) throws Exception {
-    CompletableFuture<Route> interceptPromise = new CompletableFuture<>();
-    page.route("**/data.json", route -> interceptPromise.complete(route));
-    page.navigate(server.EMPTY_PAGE);
-    async(() -> page.evaluate("url => {\n" +
-      "  globalThis.controller = new AbortController();\n" +
-      "  return fetch(url, { signal: globalThis.controller.signal });\n" +
-      "}", server.PREFIX + "/data.json"));
-    Route route = interceptPromise.get();
     // Java: there is no page.waitForRequestFailed(), the event is collected with a handler.
     CompletableFuture<Request> failurePromise = new CompletableFuture<>();
     page.onRequestFailed(request -> failurePromise.complete(request));
-    page.evaluate("() => globalThis.controller.abort()");
-    page.context().waitForCondition(() -> failurePromise.isDone());
+    AtomicReference<Throwable> abortError = new AtomicReference<>();
+    // Java: the route handler runs the code that upstream runs after the pending evaluate: the page aborts the request, then the route is aborted.
+    page.route("**/data.json", route -> {
+      page.evaluate("() => globalThis.controller.abort()");
+      page.context().waitForCondition(() -> failurePromise.isDone());
+      try {
+        route.abort(); // Should not throw.
+      } catch (RuntimeException e) {
+        abortError.set(e);
+      }
+    });
+    page.navigate(server.EMPTY_PAGE);
+    try {
+      page.evaluate("url => {\n" +
+        "  globalThis.controller = new AbortController();\n" +
+        "  return fetch(url, { signal: globalThis.controller.signal });\n" +
+        "}", server.PREFIX + "/data.json");
+    } catch (PlaywrightException e) {
+      // Java: the aborted fetch rejects the evaluation; upstream does not await it.
+    }
     Request cancelledRequest = failurePromise.get();
     assertTrue(Pattern.compile("cancelled|aborted", Pattern.CASE_INSENSITIVE).matcher(cancelledRequest.failure()).find());
-    route.abort(); // Should not throw.
+    assertNull(abortError.get());
   }
 
   @PlaywrightTest
@@ -1283,11 +1246,18 @@ public class TestPageRoute {
     @PlaywrightTest
     @DisplayName("RO-053 route.${method} should throw if called twice")
     void shouldThrowIfCalledTwice(Page page, TestServer server) throws Exception {
-      CompletableFuture<Route> resolvePromise = new CompletableFuture<>();
-      page.route("**/*", route -> resolvePromise.complete(route));
-      async(() -> page.navigate(server.PREFIX + "/empty.html"));
+      AtomicReference<Route> resolvePromise = new AtomicReference<>();
+      // Java: the second call comes after the navigation, as route.fallback() in the handler does not mark the route handled until the handler returns.
+      page.route("**/*", route -> {
+        resolvePromise.set(route);
+        call(route);
+      });
+      try {
+        page.navigate(server.PREFIX + "/empty.html");
+      } catch (PlaywrightException e) {
+        // Java: aborting the route fails the navigation; upstream does not await it.
+      }
       Route route = resolvePromise.get();
-      call(route);
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> call(route));
       assertTrue(e.getMessage().contains("Route is already handled!"));
     }

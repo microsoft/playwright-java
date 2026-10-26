@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.microsoft.playwright.fixtures.Utils.async;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
@@ -154,13 +153,17 @@ public class TestPageRequestIntercept {
   void shouldGiveAccessToTheInterceptedResponse(Page page, TestServer server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
 
-    CompletableFuture<Route> routePromise = new CompletableFuture<>();
-    page.route("**/title.html", route -> routePromise.complete(route));
+    // Java: the route handler runs the code that upstream runs after the pending evaluate.
+    CompletableFuture<APIResponse> responsePromise = new CompletableFuture<>();
+    page.route("**/title.html", route -> {
+      APIResponse apiResponse = page.request().fetch(route.request());
+      responsePromise.complete(apiResponse);
+      route.fulfill(new Route.FulfillOptions().setResponse(apiResponse));
+    });
 
-    CompletableFuture<Object> evalPromise = async(() -> page.evaluate("url => fetch(url)", server.PREFIX + "/title.html"));
+    page.evaluate("url => fetch(url)", server.PREFIX + "/title.html");
 
-    Route route = routePromise.get();
-    APIResponse response = page.request().fetch(route.request());
+    APIResponse response = responsePromise.get();
 
     assertEquals(200, response.status());
     assertEquals("OK", response.statusText());
@@ -176,9 +179,6 @@ public class TestPageRequestIntercept {
     assertEquals(1, contentTypeHeaders.size());
     assertEquals("Content-Type", contentTypeHeaders.get(0).name);
     assertEquals("text/html; charset=utf-8", contentTypeHeaders.get(0).value);
-
-    route.fulfill(new Route.FulfillOptions().setResponse(response));
-    evalPromise.get();
   }
 
   @PlaywrightTest
@@ -186,18 +186,19 @@ public class TestPageRequestIntercept {
   void shouldGiveAccessToTheInterceptedResponseBody(Page page, TestServer server) throws Exception {
     page.navigate(server.EMPTY_PAGE);
 
-    CompletableFuture<Route> routePromise = new CompletableFuture<>();
-    page.route("**/simple.json", route -> routePromise.complete(route));
+    // Java: the route handler runs the code that upstream runs after the pending evaluate.
+    CompletableFuture<APIResponse> responsePromise = new CompletableFuture<>();
+    page.route("**/simple.json", route -> {
+      APIResponse apiResponse = page.request().fetch(route.request());
+      responsePromise.complete(apiResponse);
+      route.fulfill(new Route.FulfillOptions().setResponse(apiResponse));
+    });
 
-    CompletableFuture<Object> evalPromise = async(() -> page.evaluate("url => fetch(url)", server.PREFIX + "/simple.json"));
+    page.evaluate("url => fetch(url)", server.PREFIX + "/simple.json");
 
-    Route route = routePromise.get();
-    APIResponse response = page.request().fetch(route.request());
+    APIResponse response = responsePromise.get();
 
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
-
-    route.fulfill(new Route.FulfillOptions().setResponse(response));
-    evalPromise.get();
   }
 
   @PlaywrightTest
