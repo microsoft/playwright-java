@@ -276,4 +276,3 @@ WA-073      uses the __testHookBeforeAdoptNode server test hook, a JS function t
 WA-080      passes the invalid state 'bad'; state is the LoadState enum in Java.
 # page/workers
 WO-003      TODO harness: needs an async() that is safe against the Java client race; the in-flight worker.evaluate in async() while page.close() runs hangs the test run forever (jstack: stuck in Connection.processOneMessage), so it can not be marked @Fixme.
-WA-128    tests a RegExp made in another Node.js vm context; Java has no cross-context regular expressions.
