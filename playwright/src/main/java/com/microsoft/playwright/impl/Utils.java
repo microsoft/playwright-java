@@ -248,7 +248,7 @@ public class Utils {
     }
   }
 
-  /** The screenshot type for a path, from its extension, like the Node.js client: a path overrides the type option. */
+  /** The screenshot type for a path when no type is given, from its extension, like the Node.js client. */
   static ScreenshotType screenshotTypeForPath(Path path) {
     String fileName = path.getFileName().toString();
     int extStart = fileName.lastIndexOf('.');
