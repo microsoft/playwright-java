@@ -20,20 +20,15 @@ import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.condition.OS;
-import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.io.TempDir;
-import org.opentest4j.AssertionFailedError;
-import org.opentest4j.TestAbortedException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,13 +38,15 @@ import java.util.List;
  * One invocation of a {@link PlaywrightTest}: binds the browser, resolves fixture parameters and
  * applies the {@link EnabledOnBrowser}/{@link DisabledOnBrowser} conditions.
  */
-final class BrowserInvocation implements TestTemplateInvocationContext, ParameterResolver, ExecutionCondition, InvocationInterceptor {
+final class BrowserInvocation implements TestTemplateInvocationContext, ParameterResolver, ExecutionCondition {
   private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(BrowserInvocation.class);
 
   private final BrowserName browserName;
+  private final Fixme fixme;
 
-  BrowserInvocation(BrowserName browserName) {
+  BrowserInvocation(BrowserName browserName, Fixme fixme) {
     this.browserName = browserName;
+    this.fixme = fixme;
   }
 
   @Override
@@ -59,7 +56,12 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
 
   @Override
   public List<Extension> getAdditionalExtensions() {
-    return Collections.singletonList(this);
+    // The interceptor is only registered for @Fixme tests so that its frame does not get into the
+    // stack traces, and so into the trace sources, of the other tests.
+    if (fixme == null) {
+      return Collections.singletonList(this);
+    }
+    return Arrays.asList(this, new FixmeInterceptor(browserName, fixme));
   }
 
   @Override
@@ -85,19 +87,6 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
     return ConditionEvaluationResult.enabled("Running in " + browserName);
   }
 
-  /** True when an enclosing context, such as a parameterized class invocation, has one of the fragments in its display name. */
-  private static boolean matchesParameters(ExtensionContext context, String[] fragments) {
-    for (ExtensionContext current = context; current != null; current = current.getParent().orElse(null)) {
-      String name = current.getDisplayName();
-      for (String fragment : fragments) {
-        if (name.contains(fragment)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   private static boolean matchesOs(OS[] os) {
     if (os.length == 0) {
       return true;
@@ -112,50 +101,6 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
 
   private static String reason(String reason) {
     return reason.isEmpty() ? "" : ": " + reason;
-  }
-
-  @Override
-  public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-    Fixme fixme = invocationContext.getExecutable().getAnnotation(Fixme.class);
-    if (fixme == null || fixme.browsers().length > 0 && !Arrays.asList(fixme.browsers()).contains(browserName)
-      || fixme.parameters().length > 0 && !matchesParameters(extensionContext, fixme.parameters())) {
-      invocation.proceed();
-      return;
-    }
-    try {
-      if (fixme.timeoutMillis() > 0) {
-        proceedWithTimeout(invocation, fixme.timeoutMillis());
-      } else {
-        invocation.proceed();
-      }
-    } catch (TestAbortedException e) {
-      throw e;
-    } catch (Throwable e) {
-      throw new ExpectedFailure(fixme.value(), e);
-    }
-    throw new AssertionFailedError("Test marked @Fixme passed, remove the annotation: " + fixme.value());
-  }
-
-  /** Runs the test on a thread of its own and gives up on it after the timeout, like JUnit's separate-thread timeout. */
-  private static void proceedWithTimeout(Invocation<Void> invocation, long timeoutMillis) throws Throwable {
-    java.util.concurrent.CompletableFuture<Void> done = new java.util.concurrent.CompletableFuture<>();
-    Thread thread = new Thread(() -> {
-      try {
-        invocation.proceed();
-        done.complete(null);
-      } catch (Throwable e) {
-        done.completeExceptionally(e);
-      }
-    }, "fixme test");
-    thread.setDaemon(true);
-    thread.start();
-    try {
-      done.get(timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
-    } catch (java.util.concurrent.ExecutionException e) {
-      throw e.getCause();
-    } catch (java.util.concurrent.TimeoutException e) {
-      throw new java.util.concurrent.TimeoutException("Test did not finish within " + timeoutMillis + " ms");
-    }
   }
 
   @Override
