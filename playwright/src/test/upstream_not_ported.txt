@@ -424,3 +424,45 @@ CR-024      browserContext.serviceWorkers() and the 'serviceworker' event, and r
 CR-025      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 CR-026      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
 CR-032      TODO harness: needs toImpl (reads toImpl(browser)._connection._sessions, a server internal); it also uses the 'serviceworker' event, which is not in the Java API.
+# library/defaultbrowsercontext-2
+DC-030      TODO harness: needs toImpl (reads toImpl(browserType).defaultArgs(...), a server internal, to build the launch arguments).
+DC-031      Passes __testHookBeforeCreateBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-032      Passes __testHookBeforeCreateBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-034      page.coverage is JavaScript-only (docs langs: js), it is not in the Java API.
+DC-036      Passes __testHookOnConnectToBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-038      Calls browser._channel.defaultUserAgentForTest(), an internal of the Node.js client.
+# library/download
+DO-025      Calls browser._channel.killForTests(), an internal of the Node.js client; there is no way to kill the browser process from the Java API.
+# library/browsercontext-device
+DV-001      playwright.devices is not in the Java API.
+DV-002      playwright.devices is not in the Java API.
+DV-004      playwright.devices is not in the Java API.
+DV-005      playwright.devices is not in the Java API.
+DV-006      playwright.devices is not in the Java API.
+DV-007      playwright.devices is not in the Java API.
+DV-008      playwright.devices is not in the Java API.
+# library/browsercontext-viewport-mobile
+DV-011      playwright.devices is not in the Java API.
+DV-012      playwright.devices is not in the Java API.
+DV-013      playwright.devices is not in the Java API.
+DV-015      playwright.devices is not in the Java API.
+DV-022      playwright.devices is not in the Java API.
+DV-025      playwright.devices is not in the Java API.
+# library/page-event-crash
+ER-014      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-015      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-016      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-017      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-018      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-019      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-020      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-021      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+# library/global-fetch
+FE-028      Calls playwright._instrumentation.runBeforeCreateRequestContext(), an internal hook of the Node.js client that @playwright/test uses to fill context options.
+FE-036      Calls response[util.inspect.custom](), the Node.js console formatter of the JavaScript client.
+FE-046      Checks that the JavaScript client calls the toJSON() of the data object synchronously, before its first await; Java has no toJSON().
+FE-049      Checks error.code, error.syscall and error.errno, Node.js Error properties that PlaywrightException does not have; also needs req.socket.resetAndDestroy(), which the test server does not have.
+FE-050      Checks error.code, a Node.js Error property that PlaywrightException does not have.
+FE-051      TODO harness: needs req.pause() on the test server request; the server reads the whole request body before it runs the route, so the server can not answer and reset the connection before the body is read.
+FE-030      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
+FE-031      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
