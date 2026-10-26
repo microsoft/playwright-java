@@ -228,3 +228,22 @@ NA-028      waitUntil: 'networkidle2' is an invalid string value; WaitUntilState
 NA-044      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
 NA-045      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
 NA-046      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+
+# page/page-route
+RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).
+
+# page/page-request-fulfill
+RO-112      TODO harness: needs a test server response with several values for one header (res.setHeader('Set-Cookie', ['a=b', 'c=d'])); TestServer.Response.setHeader() takes a single String.
+RO-116      The json option of route.fulfill() is not in the Java API (docs langs: js, python, csharp).
+
+# page/page-request-fallback
+RO-133      request.postDataJSON() and a serializable object as the postData option are not in the Java API (postData is a String or a byte[]).
+
+# page/page-request-intercept
+RO-146      A serializable object as the postData option of route.fetch() is not in the Java API (postData is a String or a byte[]).
+
+# page/interception
+RO-153      Tests globToRegexPattern() and urlMatches() of the Node.js client; the Java client converts globs in the driver (LocalUtils.globToRegex), there is no public function to call.
+RO-154      Tests globToRegexPattern() of the Node.js client; the Java client converts globs in the driver (LocalUtils.globToRegex), there is no public function to call.
+RO-160      Creates the RegExp in another Node.js vm context (vm.runInContext) to test the JS client's cross-realm RegExp detection; Java has no vm contexts.
+RO-161      Tests the JavaScript RegExp g flag (its lastIndex state makes RegExp.test() stateful); a java.util.regex.Pattern has no global flag, so the client can not send such a regex.
