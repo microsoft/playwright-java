@@ -34,7 +34,7 @@ jobs:
     - name: Install browsers
       run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
     - name: Run tests
-      run: ${{ runner.os == 'Linux' && 'xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"' || '' }} mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+      run: ${{ runner.os == 'Linux' && 'xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"' || '' }} mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Run tracing tests w/ sources
@@ -81,7 +81,7 @@ jobs:
       - name: Install browsers
         run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
       - name: Run tests
-        run: ${{ runner.os == 'Linux' && 'xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"' || '' }} mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+        run: ${{ runner.os == 'Linux' && 'xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"' || '' }} mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}

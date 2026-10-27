@@ -43,8 +43,9 @@ final class TestScope implements AutoCloseable {
   });
 
   // On JDK 8 the fork-join pool of JUnit adds a thread when a pool thread blocks, and the new thread starts
-  // another test: on the 3-core macOS runners about 30 tests ran at once and timed out. One test per core.
-  private static final Semaphore running = new Semaphore(Runtime.getRuntime().availableProcessors());
+  // another test: on the 3-core macOS runners about 30 tests ran at once and timed out. This keeps the tests
+  // that run at once to the parallelism of the configuration.
+  private static Semaphore running;
 
   static {
     hangWatchdog.setRemoveOnCancelPolicy(true);
@@ -62,8 +63,17 @@ final class TestScope implements AutoCloseable {
     this.context = context;
     this.registry = registry;
     this.browserName = browserName;
-    running.acquireUninterruptibly();
+    running(context).acquireUninterruptibly();
     hangDump = hangWatchdog.schedule(this::dumpThreads, HANG_DUMP_MINUTES, TimeUnit.MINUTES);
+  }
+
+  private static synchronized Semaphore running(ExtensionContext context) {
+    if (running == null) {
+      // The parallelism of the dynamic strategy of JUnit.
+      double factor = context.getConfigurationParameter("junit.jupiter.execution.parallel.config.dynamic.factor").map(Double::parseDouble).orElse(1.0);
+      running = new Semaphore(Math.max(1, (int) (factor * Runtime.getRuntime().availableProcessors())));
+    }
+    return running;
   }
 
   private void dumpThreads() {
