@@ -409,6 +409,7 @@ public class TestPageScreenshot {
 
     @PlaywrightTest
     @DisplayName("SS-027 should work while navigating")
+    @DisabledOnBrowser(value = BrowserName.CHROMIUM, reason = "fixme: Chromium 156 of driver 1.64 sometimes never answers Page.captureScreenshot sent during the redirect loop")
     void shouldWorkWhileNavigating(Page page, TestServer server) {
       page.setViewportSize(500, 500);
       page.navigate(server.PREFIX + "/redirectloop1.html");
