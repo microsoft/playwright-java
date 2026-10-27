@@ -58,6 +58,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.ChildProcessFactory.findFreePort;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -69,9 +70,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** Port of tests/library/chromium/connect-over-cdp.spec.ts. */
 @EnabledOnBrowser(BrowserName.CHROMIUM)
 public class TestConnectOverCdp {
-  // Java: 9339 + testInfo.workerIndex; the tests run one at a time, the worker index is 0.
-  private static final int PORT = 9339;
-
+  // Java: each test passes a free port instead of 9339 + testInfo.workerIndex, the test classes run in parallel in one JVM.
   private static BrowserType.LaunchOptions remoteDebuggingPort(int port) {
     return Env.launchOptions().setArgs(Arrays.asList("--remote-debugging-port=" + port));
   }
@@ -106,7 +105,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-001 should connect to an existing cdp session")
   void shouldConnectToAnExistingCdpSession(BrowserType browserType) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -122,7 +121,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-002 should connect when an existing page has no renderer")
   void shouldConnectWhenAnExistingPageHasNoRenderer(BrowserType browserType, TestServer server) {
     // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/41714' } }
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       // Prepare a page without a renderer, e.g. one discarded by the Memory Saver.
@@ -158,7 +157,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-003 should connect when the opener of an existing page has no renderer")
   void shouldConnectWhenTheOpenerOfAnExistingPageHasNoRenderer(BrowserType browserType, TestServer server) {
     // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/41714' } }
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(Env.launchOptions().setArgs(Arrays.asList(
       // The popup should be in a different process to survive the crash of the opener.
       "--remote-debugging-port=" + port, "--site-per-process")));
@@ -194,7 +193,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-004 should connect when an existing page has been discarded")
   void shouldConnectWhenAnExistingPageHasBeenDiscarded(BrowserType browserType, CreateUserDataDir createUserDataDir, TestServer server, TestInfo testInfo) throws Exception {
     // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/41714' } }
-    int port = PORT;
+    int port = findFreePort();
     Path userDataDir = createUserDataDir.create();
     // chrome://discards is an internal debug page that is only available with this pref.
     Files.write(userDataDir.resolve("Local State"), "{\"internal_only_uis_enabled\":true}".getBytes(StandardCharsets.UTF_8));
@@ -245,7 +244,7 @@ public class TestConnectOverCdp {
       res.end("Hello world");
     });
 
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
 
     try {
@@ -270,7 +269,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-009 should connect to an existing cdp session twice")
   void shouldConnectToAnExistingCdpSessionTwice(BrowserType browserType, TestServer server) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser1 = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -303,7 +302,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-010 should connect to existing page with iframe and navigate")
   void shouldConnectToExistingPageWithIframeAndNavigate(BrowserType browserType, TestServer server) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       {
@@ -324,7 +323,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-012 should connect over a ws endpoint")
   void shouldConnectOverAWsEndpoint(BrowserType browserType, TestServer server) throws Exception {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       String json = httpGet("http://127.0.0.1:" + port + "/json/version/");
@@ -389,7 +388,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-017 should report all pages in an existing browser")
   void shouldReportAllPagesInAnExistingBrowser(BrowserType browserType) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -411,7 +410,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-018 should connect via https")
   void shouldConnectViaHttps(HttpsTestServer httpsServer) throws Exception {
-    int port = PORT;
+    int port = findFreePort();
     // Java: the driver reads NODE_TLS_REJECT_UNAUTHORIZED when it starts, the Playwright instance of this test gets it in its environment.
     try (Playwright playwright = Playwright.create(new Playwright.CreateOptions().setEnv(Collections.singletonMap("NODE_TLS_REJECT_UNAUTHORIZED", "0")))) {
       BrowserType browserType = playwright.chromium();
@@ -441,7 +440,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-019 should return valid browser from context.browser()")
   void shouldReturnValidBrowserFromContextBrowser(BrowserType browserType) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -484,7 +483,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-022 should connect to an existing cdp session when passed as a first argument")
   void shouldConnectToAnExistingCdpSessionWhenPassedAsAFirstArgument(BrowserType browserType) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -502,7 +501,7 @@ public class TestConnectOverCdp {
     server.setRoute("/target.html", (req, res) -> {
       res.end("<html><title>Served by the proxy</title></html>");
     });
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -550,7 +549,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-026 should be able to connect via localhost")
   void shouldBeAbleToConnectViaLocalhost(BrowserType browserType) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port);
@@ -566,7 +565,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-027 emulate media should not be affected by second connectOverCDP with noDefaults")
   void emulateMediaShouldNotBeAffectedBySecondConnectOverCDPWithNoDefaults(BrowserType browserType) {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/24109' });
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       java.util.function.Function<Page, Object> isPrint = page -> page.evaluate("() => matchMedia('print').matches");
@@ -589,7 +588,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-028 should allow tracing over cdp session")
   void shouldAllowTracingOverCdpSession(BrowserType browserType, TestInfo testInfo) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -611,7 +610,7 @@ public class TestConnectOverCdp {
   void setInputFilesShouldPreserveLastModifiedTimestamp(BrowserType browserType) throws Exception {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/27452' });
 
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
@@ -651,7 +650,7 @@ public class TestConnectOverCdp {
   @PlaywrightTest
   @DisplayName("CD-033 should get title and URL of existing page")
   void shouldGetTitleAndURLOfExistingPage(BrowserType browserType, TestServer server) {
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     List<Browser> browsers = new ArrayList<>();
     try {
@@ -685,7 +684,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-034 should skip default overrides with noDefaults")
   void shouldSkipDefaultOverridesWithNoDefaults(BrowserType browserType, TestServer server) {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/40158' });
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser browser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/", new BrowserType.ConnectOverCDPOptions()
@@ -716,7 +715,7 @@ public class TestConnectOverCdp {
   @DisplayName("CD-035 noDefaults should not affect new contexts")
   void noDefaultsShouldNotAffectNewContexts(BrowserType browserType, TestServer server) {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/40158' });
-    int port = PORT;
+    int port = findFreePort();
     Browser browserServer = browserType.launch(remoteDebuggingPort(port));
     try {
       Browser browser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/", new BrowserType.ConnectOverCDPOptions()

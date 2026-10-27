@@ -77,6 +77,7 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.fixtures.ChildProcessFactory.findFreePort;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.kTargetClosedErrorMessage;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
@@ -1249,7 +1250,8 @@ public class TestBrowsercontextFetch {
   @DisplayName("FE-169 should work with connectOverCDP")
   @EnabledOnBrowser(BrowserName.CHROMIUM)
   void shouldWorkWithConnectOverCDP(BrowserName browserName, com.microsoft.playwright.BrowserType browserType, TestServer server) {
-    int port = 9339;
+    // Java: a free port instead of 9339 + testInfo.workerIndex, the test classes run in parallel in one JVM.
+    int port = findFreePort();
     Browser browserServer = browserType.launch(Env.launchOptions().setArgs(Arrays.asList("--remote-debugging-port=" + port)));
     try {
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
