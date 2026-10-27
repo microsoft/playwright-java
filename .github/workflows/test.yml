@@ -16,20 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-latest]
+        os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-26-xlarge]
         browser: [chromium, firefox, webkit]
-        exclude:
-          # macos-latest is the free M1 runner (3 vCPU / 7 GB); Firefox and WebKit need more headroom.
-          # Upstream's webkit matrix runs on macos-15-xlarge for the same reason.
-          - os: macos-latest
-            browser: firefox
-          - os: macos-latest
-            browser: webkit
-        include:
-          - os: macos-26-xlarge
-            browser: firefox
-          - os: macos-15-xlarge
-            browser: webkit
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
