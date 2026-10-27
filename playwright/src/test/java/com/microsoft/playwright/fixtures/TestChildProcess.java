@@ -283,6 +283,11 @@ public final class TestChildProcess {
       return;
     }
     if (Env.isWindows) {
+      if (pid <= 0) {
+        // Java 8 can not tell the pid on Windows, so only the process itself is killed, not its descendants.
+        process.destroyForcibly();
+        return;
+      }
       run("taskkill", "/pid", String.valueOf(pid), "/T", "/F", "/FI", "MEMUSAGE gt 0");
       return;
     }
