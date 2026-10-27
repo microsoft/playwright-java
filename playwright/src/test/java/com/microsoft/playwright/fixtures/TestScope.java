@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +41,10 @@ final class TestScope implements AutoCloseable {
     thread.setDaemon(true);
     return thread;
   });
+
+  // On JDK 8 the fork-join pool of JUnit adds a thread when a pool thread blocks, and the new thread starts
+  // another test: on the 3-core macOS runners about 30 tests ran at once and timed out. One test per core.
+  private static final Semaphore running = new Semaphore(Runtime.getRuntime().availableProcessors());
 
   static {
     hangWatchdog.setRemoveOnCancelPolicy(true);
@@ -57,6 +62,7 @@ final class TestScope implements AutoCloseable {
     this.context = context;
     this.registry = registry;
     this.browserName = browserName;
+    running.acquireUninterruptibly();
     hangDump = hangWatchdog.schedule(this::dumpThreads, HANG_DUMP_MINUTES, TimeUnit.MINUTES);
   }
 
@@ -123,18 +129,22 @@ final class TestScope implements AutoCloseable {
   /** Closes the test fixtures and returns the worker; a failure to close any of them fails the test. */
   @Override
   public void close() throws Exception {
-    Teardown teardown = new Teardown();
-    values.close(teardown);
-    if (worker != null) {
-      // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
-      // browser or the Playwright instance in an unknown state.
-      boolean discard = teardown.failed()
-        || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException) || e instanceof ExpectedFailure).isPresent();
-      teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
-      worker = null;
+    try {
+      Teardown teardown = new Teardown();
+      values.close(teardown);
+      if (worker != null) {
+        // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
+        // browser or the Playwright instance in an unknown state.
+        boolean discard = teardown.failed()
+          || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException) || e instanceof ExpectedFailure).isPresent();
+        teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
+        worker = null;
+      }
+      hangDump.cancel(false);
+      teardown.rethrow();
+    } finally {
+      running.release();
     }
-    hangDump.cancel(false);
-    teardown.rethrow();
   }
 
   private final class Resolver implements FixtureResolver {
