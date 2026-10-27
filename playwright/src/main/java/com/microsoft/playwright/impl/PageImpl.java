@@ -225,7 +225,14 @@ public class PageImpl extends ChannelOwner implements Page {
       route.browserContext = browserContext;
       Router.HandleResult handled = routes.handle(route);
       if (handled != Router.HandleResult.NoMatchingHandler) {
-        updateInterceptionPatterns();
+        try {
+          updateInterceptionPatterns();
+        } catch (PlaywrightException e) {
+          // Like the Node.js client, ignore the error when the page or the context was closed meanwhile.
+          if (!isSafeCloseError(e)) {
+            throw e;
+          }
+        }
       }
       if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
         browserContext.handleRoute(route);
