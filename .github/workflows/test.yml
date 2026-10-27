@@ -69,10 +69,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Chrome needs more headroom than the free M1 runner (3 vCPU / 7 GB) of macos-latest.
-        os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-26-xlarge]
-        browser-channel: [chrome]
+        # Upstream tests the branded browsers on all platforms; here they only check the channel option.
         include:
+          - os: playwright-x64-ubuntu24-64-core
+            browser-channel: chrome
           # Edge runs on Windows only, where the runner image has it.
           - os: playwright-x64-server2025-64-core
             browser-channel: msedge
@@ -106,7 +106,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        # The JDK does not depend on the browser; the other jobs run all three.
+        browser: [chromium]
     runs-on: playwright-x64-ubuntu24-64-core
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
