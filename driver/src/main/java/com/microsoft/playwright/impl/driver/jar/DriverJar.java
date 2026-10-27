@@ -139,16 +139,19 @@ public class DriverJar extends Driver {
   }
 
   void extractDriverToTempDir() throws URISyntaxException, IOException {
-    extractResourceToDir("driver/package", driverTempDir.resolve("package"));
-    if (preinstalledNodePath == null) {
-      String platformResource = "driver/" + platformDir();
-      if (DriverJar.class.getClassLoader().getResource(platformResource) == null) {
-        throw new RuntimeException("Failed to find the bundled Node.js for platform '" + platformDir()
-          + "'. Add the com.microsoft.playwright:driver-bundle dependency, or set the "
-          + PLAYWRIGHT_NODEJS_PATH + " environment variable (or the playwright.nodejs.path system "
-          + "property) to point at a preinstalled Node.js.");
+    // Concurrent extractions would share the zip file system of the jar, and the first one to finish closes it.
+    synchronized (DriverJar.class) {
+      extractResourceToDir("driver/package", driverTempDir.resolve("package"));
+      if (preinstalledNodePath == null) {
+        String platformResource = "driver/" + platformDir();
+        if (DriverJar.class.getClassLoader().getResource(platformResource) == null) {
+          throw new RuntimeException("Failed to find the bundled Node.js for platform '" + platformDir()
+            + "'. Add the com.microsoft.playwright:driver-bundle dependency, or set the "
+            + PLAYWRIGHT_NODEJS_PATH + " environment variable (or the playwright.nodejs.path system "
+            + "property) to point at a preinstalled Node.js.");
+        }
+        extractResourceToDir(platformResource, driverTempDir);
       }
-      extractResourceToDir(platformResource, driverTempDir);
     }
   }
 

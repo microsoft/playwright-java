@@ -27,9 +27,14 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_NODEJS_PATH;
@@ -92,6 +97,23 @@ public class TestInstall {
     Process p = pb.start();
     boolean result = p.waitFor(1, TimeUnit.MINUTES);
     assertTrue(result, "Timed out waiting for browsers to install");
+  }
+
+  @Test
+  void shouldExtractTheDriverOnSeveralThreadsAtOnce() throws Exception {
+    // The extractions share the zip file system of the jar.
+    ExecutorService executor = Executors.newFixedThreadPool(4);
+    try {
+      List<Future<Driver>> drivers = new ArrayList<>();
+      for (int i = 0; i < 4; i++) {
+        drivers.add(executor.submit(() -> Driver.createAndInstall(Collections.emptyMap(), false)));
+      }
+      for (Future<Driver> driver : drivers) {
+        assertTrue(Files.exists(driver.get().driverDir().resolve("package").resolve("cli.js")));
+      }
+    } finally {
+      executor.shutdownNow();
+    }
   }
 
   @Test

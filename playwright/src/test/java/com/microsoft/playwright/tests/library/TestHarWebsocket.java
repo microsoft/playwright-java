@@ -34,7 +34,6 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestInfo;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.impl.PlaywrightImpl;
-import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.options.HarContentPolicy;
 import org.junit.jupiter.api.DisplayName;
 
@@ -580,11 +579,7 @@ public class TestHarWebsocket {
       ws.onMessage(message -> ws.close());
     });
     Path harPath = testInfo.outputPath("test.har");
-    Playwright playwright;
-    // Java: creating drivers at the same time fails sometimes when the driver files are extracted; one at a time.
-    synchronized (Driver.class) {
-      playwright = PlaywrightImpl.createImpl(new Playwright.CreateOptions().setEnv(env), true);
-    }
+    Playwright playwright = PlaywrightImpl.createImpl(new Playwright.CreateOptions().setEnv(env), true);
     try {
       Browser browser = browserName.browserType(playwright).launch(Env.launchOptions());
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setRecordHarPath(harPath).setIgnoreHTTPSErrors(true));
