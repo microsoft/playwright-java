@@ -267,6 +267,7 @@ NA-045      Checks the 'warning' event of the Node.js process (EventEmitter list
 NA-046      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
 NA-056      java: concurrent: page.goto while page.goto is pending
 NA-063      java: concurrent: page.goto while page.goto is pending
+NA-078      java: concurrent: page.evaluate while page.reload is pending
 
 # page/page-route
 RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).

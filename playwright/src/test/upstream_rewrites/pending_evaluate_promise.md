@@ -12,6 +12,10 @@ later can not be ported line by line. The tests below are listed in
 `upstream: evaluate promise awaited later` until they are rewritten upstream as described here;
 the rewritten tests are then ported as they are. Tests whose point is the pending call itself
 (BR-005, BT-004, PA-042, CD-048, EV-093) are not rewritten and stay listed as `java: concurrent`.
+NA-078 is not rewritten either and is listed as `java: concurrent`: its `pushState` must happen
+while `page.reload` is pending, which a rewrite can only arrange with timers in the page and on
+the server, so that the test checks the fix only while the timing holds. The fix is in the driver,
+and the Node.js test covers it for all the ports.
 
 ## The change
 
@@ -63,11 +67,21 @@ the original checked for the evaluate.
 
 ## Already ported in Java with this shape
 
+Status: rewritten upstream on Oct 26 2026 together with TR-041 in
+https://github.com/microsoft/playwright/pull/43656 (open); the six tests pass in Node.js in the
+three browsers. RO-013, RO-100 and DD-019 have the shape of the Java ports. Three upstream rewrites
+differ from the Java ports, which must follow them to be line by line again:
+- RO-012 keeps the XHR status as a promise on window, read by one evaluate after `continue()`, and
+  checks the pause with a `requestfinished` handler (`xhrFinished`) instead of the server request.
+- CA-011 stores `String(e)` of the picker error on window and checks it after the wait, with
+  `stalled` in place of `Test ended` for the headed case.
+- EV-063 resolves the promise from the closure instead of `window['__resolve']`, and a
+  `waitForNavigation` spans the evaluate.
+
 These tests were ported with the same change made on the Java side; rewriting them upstream the
 same way would make the ports line by line again, but nothing waits on it: RO-012 and RO-013
 (`tests/page/page-route.spec.ts`, the status of the sync XHR and of the fetch kept on window),
 RO-100 (`tests/page/page-request-fulfill.spec.ts`, the fetch started without `return`), DD-019
 (`tests/page/page-drag.spec.ts`, the drop promise kept on window), CA-011
-(`tests/library/capabilities.spec.ts`, `showDirectoryPicker()` started without awaiting),
-EV-063 (`tests/page/page-evaluate.spec.ts`, the reload scheduled from the page) and NA-078
-(`tests/page/page-history.spec.ts`, the second `pushState` scheduled from the page).
+(`tests/library/capabilities.spec.ts`, `showDirectoryPicker()` started without awaiting) and
+EV-063 (`tests/page/page-evaluate.spec.ts`, the reload scheduled from the page).
