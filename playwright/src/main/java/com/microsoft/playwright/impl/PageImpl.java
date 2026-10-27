@@ -1520,12 +1520,25 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   <T> Waitable<T> createWaitForCloseHelper() {
-    return new WaitableRace<T>(asList(new WaitablePageClose(), new WaitablePageCrash()));
+    return createWaitForCloseHelper(false);
+  }
+
+  /** With {@code rejectIfClosed}, it is done at once when the page is already closed, like the navigation waiter of the Node.js client. */
+  <T> Waitable<T> createWaitForCloseHelper(boolean rejectIfClosed) {
+    return new WaitableRace<T>(asList(new WaitablePageClose(rejectIfClosed && isClosed), new WaitablePageCrash()));
   }
 
   private class WaitablePageClose<T> extends WaitableEvent<EventType, T> {
-    WaitablePageClose() {
+    private final boolean closedBefore;
+
+    WaitablePageClose(boolean closedBefore) {
       super(PageImpl.this.listeners, EventType.CLOSE);
+      this.closedBefore = closedBefore;
+    }
+
+    @Override
+    public boolean isDone() {
+      return closedBefore || super.isDone();
     }
 
     @Override

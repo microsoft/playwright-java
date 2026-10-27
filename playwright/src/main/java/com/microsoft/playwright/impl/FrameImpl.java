@@ -847,8 +847,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     List<Waitable<Void>> waitables = new ArrayList<>();
+    waitables.add(page.createWaitForCloseHelper(true));
     waitables.add(new WaitForLoadStateHelper(state, logger));
-    waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(options.timeout));
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
@@ -982,7 +982,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     logger.log("waiting for navigation " + matcher);
     waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil, logger));
-    waitables.add(page.createWaitForCloseHelper());
+    waitables.add(page.createWaitForCloseHelper(true));
     waitables.add(page.createWaitableFrameDetach(this));
     waitables.add(page.createWaitableNavigationTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));
