@@ -20,6 +20,8 @@ import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -41,6 +43,8 @@ import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_NODEJS_PATH
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Its tests change system properties.
+@Execution(ExecutionMode.SAME_THREAD)
 public class TestInstall {
   private static boolean isPortAvailable(int port) {
     try (ServerSocket ignored = new ServerSocket(port)) {

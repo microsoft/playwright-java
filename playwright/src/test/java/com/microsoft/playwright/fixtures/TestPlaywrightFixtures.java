@@ -26,6 +26,8 @@ import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,6 +39,8 @@ import static com.microsoft.playwright.fixtures.BrowserName.FIREFOX;
 import static com.microsoft.playwright.fixtures.BrowserName.WEBKIT;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Its tests share static state.
+@Execution(ExecutionMode.SAME_THREAD)
 public class TestPlaywrightFixtures {
   private static final AtomicInteger createdResources = new AtomicInteger();
   private static final AtomicInteger closedResources = new AtomicInteger();

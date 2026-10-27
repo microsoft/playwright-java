@@ -22,6 +22,8 @@ import com.microsoft.playwright.fixtures.EnabledOnBrowser;
 import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,8 @@ import static com.microsoft.playwright.fixtures.BrowserName.CHROMIUM;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Each test instance starts its debugging ports at 9339.
+@Execution(ExecutionMode.SAME_THREAD)
 @EnabledOnBrowser(value = CHROMIUM, reason = "Chromium-specific API")
 public class TestChromium {
   private int nextPort = 9339;

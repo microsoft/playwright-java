@@ -36,6 +36,8 @@ import com.microsoft.playwright.options.MouseButton;
 import com.microsoft.playwright.options.SameSiteAttribute;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/headful.spec.ts. */
+@Execution(ExecutionMode.SAME_THREAD) // Headed windows fail to capture screenshots when several share the display.
 public class TestHeadful {
   // Java: upstream runs this file only in its headed project, where every browser, context and page
   // fixture is headed. The class does the same by overriding the launch options of the worker.
