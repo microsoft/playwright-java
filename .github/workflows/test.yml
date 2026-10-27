@@ -16,7 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Linux and Windows run on the 64-core runners of the organization, as upstream's tests_primary.yml.
+        os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-latest]
         browser: [chromium, firefox, webkit]
         exclude:
           # macos-latest is the free M1 runner (3 vCPU / 7 GB); Firefox and WebKit need more headroom.
@@ -69,10 +70,10 @@ jobs:
       fail-fast: false
       matrix:
         # Chrome and Edge need more headroom than the free M1 runner (3 vCPU / 7 GB) of macos-latest.
-        os: [ubuntu-latest, windows-latest, macos-26-xlarge]
+        os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-26-xlarge]
         browser-channel: [chrome]
         include:
-          - os: windows-latest
+          - os: playwright-x64-server2025-64-core
             browser-channel: msedge
           - os: macos-26-xlarge
             browser-channel: msedge
@@ -80,7 +81,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install Media Pack
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         shell: powershell
         run: Install-WindowsFeature Server-Media-Foundation
       - name: Set up JDK 1.8
@@ -111,7 +112,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
-    runs-on: ubuntu-latest
+    runs-on: playwright-x64-ubuntu24-64-core
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up JDK 21
