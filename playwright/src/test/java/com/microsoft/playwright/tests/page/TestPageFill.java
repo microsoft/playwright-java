@@ -27,6 +27,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -204,7 +205,8 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-013 should fill datetime-local input")
-  @Fixme("driver: the driver (1.64.1) predates the upstream fix of issue 43370: page.fill on input[type=datetime-local] fails with \"Error: Malformed value\"")
+  @Fixme(value = "driver: the driver (1.64.1) predates the upstream fix of issue 43370: page.fill on input[type=datetime-local] fails with \"Error: Malformed value\"", browsers = {BrowserName.CHROMIUM, BrowserName.FIREFOX})
+  @Fixme(value = "driver: the driver (1.64.1) predates the upstream fix of issue 43370: page.fill on input[type=datetime-local] fails with \"Error: Malformed value\"", browsers = BrowserName.WEBKIT, os = {OS.LINUX, OS.MAC})
   void shouldFillDatetimeLocalInput(Page page, TestServer server, BrowserName browserName) {
     page.setContent("<input type=datetime-local>");
     page.fill("input", "2020-03-02T05:15");

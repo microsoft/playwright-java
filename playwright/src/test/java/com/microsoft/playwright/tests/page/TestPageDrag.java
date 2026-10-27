@@ -230,6 +230,7 @@ public class TestPageDrag {
 
     @PlaywrightTest
     @DisplayName("DD-008 should respect the drop effect")
+    @Fixme(value = "driver: the WebKit of driver 1.64.1 on macOS and Windows drops with effectAllowed 'copy' and dropEffect 'move' (expected: <false> but was: <true>)", browsers = BrowserName.WEBKIT, os = {OS.MAC, OS.WINDOWS})
     void shouldRespectTheDropEffect(Page page, BrowserName browserName) {
       assumeFalse(browserName == BrowserName.WEBKIT && Env.isLinux && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");
       assumeFalse(browserName == BrowserName.CHROMIUM && !Env.isMac && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");

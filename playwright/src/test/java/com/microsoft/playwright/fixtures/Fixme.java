@@ -16,8 +16,11 @@
 
 package com.microsoft.playwright.fixtures;
 
+import org.junit.jupiter.api.condition.OS;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -26,11 +29,13 @@ import java.lang.annotation.Target;
  * Marks a ported test that fails because of a known gap of the Java client or of the test
  * harness, the counterpart of a strict {@code xfail}. The test still runs: a failure is reported
  * as skipped with the reason, and a pass fails the test so that the annotation gets removed once
- * the gap is closed.
+ * the gap is closed. When several annotations are given, the first one that applies to the
+ * invocation is used.
  */
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(Fixme.List.class)
 public @interface Fixme {
   /**
    * Why the test fails, starting with {@code java:} for a client gap, {@code harness:} for a
@@ -40,6 +45,9 @@ public @interface Fixme {
 
   /** Only expect the failure in these browsers; empty means all. */
   BrowserName[] browsers() default {};
+
+  /** Only expect the failure on these operating systems; empty means any. */
+  OS[] os() default {};
 
   /**
    * In a {@code @ParameterizedClass}, only expect the failure for the invocations whose display
@@ -53,4 +61,11 @@ public @interface Fixme {
    * expected failure when it has not finished after this many milliseconds; 0 means no limit.
    */
   long timeoutMillis() default 0;
+
+  @Documented
+  @Target(ElementType.METHOD)
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface List {
+    Fixme[] value();
+  }
 }

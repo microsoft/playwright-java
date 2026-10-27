@@ -42,11 +42,11 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
   private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(BrowserInvocation.class);
 
   private final BrowserName browserName;
-  private final Fixme fixme;
+  private final Fixme[] fixmes;
 
-  BrowserInvocation(BrowserName browserName, Fixme fixme) {
+  BrowserInvocation(BrowserName browserName, Fixme[] fixmes) {
     this.browserName = browserName;
-    this.fixme = fixme;
+    this.fixmes = fixmes;
   }
 
   @Override
@@ -58,10 +58,10 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
   public List<Extension> getAdditionalExtensions() {
     // The interceptor is only registered for @Fixme tests so that its frame does not get into the
     // stack traces, and so into the trace sources, of the other tests.
-    if (fixme == null) {
+    if (fixmes.length == 0) {
       return Collections.singletonList(this);
     }
-    return Arrays.asList(this, new FixmeInterceptor(browserName, fixme));
+    return Arrays.asList(this, new FixmeInterceptor(browserName, fixmes));
   }
 
   @Override
@@ -87,7 +87,7 @@ final class BrowserInvocation implements TestTemplateInvocationContext, Paramete
     return ConditionEvaluationResult.enabled("Running in " + browserName);
   }
 
-  private static boolean matchesOs(OS[] os) {
+  static boolean matchesOs(OS[] os) {
     if (os.length == 0) {
       return true;
     }

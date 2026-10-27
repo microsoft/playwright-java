@@ -74,7 +74,6 @@ public class TestElementhandleScreenshot {
 
     @PlaywrightTest
     @DisplayName("EH-077 should take into account padding and border")
-    @Fixme(value = "harness: the text 'oooo' of the first div overflows into the top border rows of div#d and is rendered differently from the golden (14 pixels differ in firefox, 11 in webkit; the local fonts differ from the ones of the golden files)", browsers = {BrowserName.FIREFOX, BrowserName.WEBKIT})
     void shouldTakeIntoAccountPaddingAndBorder(Page page, TestInfo testInfo) {
       page.setViewportSize(500, 500);
       page.setContent("\n" +

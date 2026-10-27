@@ -30,6 +30,7 @@ import com.microsoft.playwright.fixtures.Fixme;
 import com.microsoft.playwright.fixtures.HttpsTestServer;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -84,7 +85,7 @@ public class TestModernizr {
   @PlaywrightTest
   @DisplayName("CA-030 Safari Desktop")
   @EnabledOnBrowser(BrowserName.WEBKIT)
-  @Fixme("driver: the WebKit of driver 1.64.1 supports <input type=month> (inputtypes.month is true), the upstream 1.65 assets/modernizr/safari-26.json expects false")
+  @Fixme(value = "driver: the WebKit of driver 1.64.1 supports <input type=month> (inputtypes.month is true), the upstream 1.65 assets/modernizr/safari-26.json expects false", os = OS.LINUX)
   void safariDesktop(Browser browser, BrowserName browserName, HttpsTestServer httpsServer) throws IOException {
     assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("darwin") && Arrays.asList("x86_64", "amd64").contains(System.getProperty("os.arch")), "Modernizr uses WebGL which is not available on Intel macOS - https://bugs.webkit.org/show_bug.cgi?id=278277");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()

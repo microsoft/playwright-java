@@ -36,17 +36,17 @@ import java.util.concurrent.TimeoutException;
  */
 final class FixmeInterceptor implements InvocationInterceptor {
   private final BrowserName browserName;
-  private final Fixme fixme;
+  private final Fixme[] fixmes;
 
-  FixmeInterceptor(BrowserName browserName, Fixme fixme) {
+  FixmeInterceptor(BrowserName browserName, Fixme[] fixmes) {
     this.browserName = browserName;
-    this.fixme = fixme;
+    this.fixmes = fixmes;
   }
 
   @Override
   public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-    if (fixme.browsers().length > 0 && !Arrays.asList(fixme.browsers()).contains(browserName)
-      || fixme.parameters().length > 0 && !matchesParameters(extensionContext, fixme.parameters())) {
+    Fixme fixme = Arrays.stream(fixmes).filter(candidate -> applies(candidate, extensionContext)).findFirst().orElse(null);
+    if (fixme == null) {
       invocation.proceed();
       return;
     }
@@ -62,6 +62,12 @@ final class FixmeInterceptor implements InvocationInterceptor {
       throw new ExpectedFailure(fixme.value(), e);
     }
     throw new AssertionFailedError("Test marked @Fixme passed, remove the annotation: " + fixme.value());
+  }
+
+  private boolean applies(Fixme fixme, ExtensionContext context) {
+    return (fixme.browsers().length == 0 || Arrays.asList(fixme.browsers()).contains(browserName))
+      && BrowserInvocation.matchesOs(fixme.os())
+      && (fixme.parameters().length == 0 || matchesParameters(context, fixme.parameters()));
   }
 
   /** True when an enclosing context, such as a parameterized class invocation, has one of the fragments in its display name. */
