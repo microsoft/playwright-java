@@ -22,24 +22,54 @@ import org.opentest4j.TestAbortedException;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The fixtures of one test invocation: resolves and caches test-scoped values, borrows a
  * {@link Worker} for the worker-scoped ones, and tears everything down when the test is over.
  */
 final class TestScope implements AutoCloseable {
+  // The method timeout does not cover the fixtures, and a hang there stops the whole run without a trace.
+  private static final long HANG_DUMP_MINUTES = 5;
+  private static final ScheduledThreadPoolExecutor hangWatchdog = new ScheduledThreadPoolExecutor(1, runnable -> {
+    Thread thread = new Thread(runnable, "test hang watchdog");
+    thread.setDaemon(true);
+    return thread;
+  });
+
+  static {
+    hangWatchdog.setRemoveOnCancelPolicy(true);
+  }
+
   private final ExtensionContext context;
   private final FixtureRegistry registry;
   private final BrowserName browserName;
   private final FixtureValues values = new FixtureValues();
   private final Set<FixtureDefinition> resolving = new LinkedHashSet<>();
   private Worker worker;
+  private final ScheduledFuture<?> hangDump;
 
   TestScope(ExtensionContext context, FixtureRegistry registry, BrowserName browserName) {
     this.context = context;
     this.registry = registry;
     this.browserName = browserName;
+    hangDump = hangWatchdog.schedule(this::dumpThreads, HANG_DUMP_MINUTES, TimeUnit.MINUTES);
+  }
+
+  private void dumpThreads() {
+    StringBuilder dump = new StringBuilder("\n" + context.getRequiredTestClass().getName() + "." + context.getRequiredTestMethod().getName() + " " + context.getDisplayName()
+      + " is still running after " + HANG_DUMP_MINUTES + " minutes, the threads:\n");
+    for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+      dump.append('"').append(entry.getKey().getName()).append("\" ").append(entry.getKey().getState()).append('\n');
+      for (StackTraceElement frame : entry.getValue()) {
+        dump.append("\tat ").append(frame).append('\n');
+      }
+    }
+    System.out.println(dump);
   }
 
   <T> T get(Class<T> type) {
@@ -103,6 +133,7 @@ final class TestScope implements AutoCloseable {
       teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
       worker = null;
     }
+    hangDump.cancel(false);
     teardown.rethrow();
   }
 
