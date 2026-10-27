@@ -31,13 +31,13 @@ import org.junit.jupiter.api.DisplayName;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -145,7 +145,7 @@ public class TestVideo {
   @DisplayName("VI-010 should work with relative path for recordVideo.dir")
   void shouldWorkWithRelativePathForRecordVideoDir(Browser browser, TestInfo testInfo) {
     // { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/27086' }
-    Path videosPath = Paths.get("").toAbsolutePath().relativize(testInfo.outputPath(""));
+    Path videosPath = relativeToCwd(testInfo.outputPath(""));
     int[] size = {320, 240};
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(videosPath)

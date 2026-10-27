@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Nested;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -101,7 +101,7 @@ public class TestDownloadsPath {
     @DisplayName("DO-042 should report downloads in downloadsPath folder with a relative path")
     void shouldReportDownloadsInDownloadsPathFolderWithARelativePath(BrowserType browserType, TestServer server, TestInfo testInfo) {
       Browser downloadsBrowser = browserType.launch(Env.launchOptions().setDownloadsPath(
-        Paths.get("").toAbsolutePath().relativize(testInfo.outputPath(""))));
+        relativeToCwd(testInfo.outputPath(""))));
       Page page = downloadsBrowser.newPage();
       page.setContent("<a href=\"" + server.PREFIX + "/download\">download</a>");
       Download download = page.waitForDownload(() -> page.click("a"));

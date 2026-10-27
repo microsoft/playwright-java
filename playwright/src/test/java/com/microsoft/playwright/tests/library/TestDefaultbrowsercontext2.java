@@ -38,7 +38,6 @@ import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,6 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -170,7 +170,7 @@ public class TestDefaultbrowsercontext2 {
   void shouldAcceptRelativeUserDataDir(CreateUserDataDir createUserDataDir, BrowserType browserType) {
     Path userDataDir = createUserDataDir.create();
     BrowserContext context = browserType.launchPersistentContext(
-      Paths.get("").toAbsolutePath().relativize(userDataDir.resolve("foobar")), Env.launchPersistentContextOptions());
+      relativeToCwd(userDataDir.resolve("foobar")), Env.launchPersistentContextOptions());
     assertTrue(userDataDir.resolve("foobar").toFile().list().length > 0);
     context.close();
   }

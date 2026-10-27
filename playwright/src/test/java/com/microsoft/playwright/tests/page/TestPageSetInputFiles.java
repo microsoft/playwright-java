@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.fixtures.Utils.asset;
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,7 +51,7 @@ public class TestPageSetInputFiles {
   @DisplayName("IF-001 should upload the file")
   void shouldUploadTheFile(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/fileupload.html");
-    Path filePath = Paths.get("").toAbsolutePath().relativize(asset("file-to-upload.txt"));
+    Path filePath = relativeToCwd(asset("file-to-upload.txt"));
     ElementHandle input = page.querySelector("input");
     input.setInputFiles(filePath);
     assertEquals("file-to-upload.txt", page.evaluate("e => e.files[0].name", input));
@@ -171,7 +172,7 @@ public class TestPageSetInputFiles {
       Page popup = page.waitForPopup(() -> page.evaluate("() => window['__popup'] = window.open('about:blank')"));
       popup.close();
     }
-    Path filePath = Paths.get("").toAbsolutePath().relativize(asset("file-to-upload.txt"));
+    Path filePath = relativeToCwd(asset("file-to-upload.txt"));
     ElementHandle input = page.querySelector("input");
     input.setInputFiles(filePath);
     assertEquals("file-to-upload.txt", page.evaluate("e => e.files[0].name", input));
@@ -192,7 +193,7 @@ public class TestPageSetInputFiles {
   @DisplayName("IF-012 should upload the file with spaces in name")
   void shouldUploadTheFileWithSpacesInName(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/fileupload.html");
-    Path filePath = Paths.get("").toAbsolutePath().relativize(asset("file to upload.txt"));
+    Path filePath = relativeToCwd(asset("file to upload.txt"));
     ElementHandle input = page.querySelector("input");
     input.setInputFiles(filePath);
     assertEquals("file to upload.txt", page.evaluate("e => e.files[0].name", input));

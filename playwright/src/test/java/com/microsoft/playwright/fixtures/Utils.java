@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -57,6 +58,13 @@ public final class Utils {
       result = result.resolve(segment);
     }
     return result;
+  }
+
+  /** {@code path.relative(process.cwd(), path)}: like Node.js, the absolute path when it is on another drive. */
+  public static Path relativeToCwd(Path path) {
+    Path cwd = Paths.get("").toAbsolutePath();
+    Path absolute = path.toAbsolutePath();
+    return cwd.getRoot().equals(absolute.getRoot()) ? cwd.relativize(absolute) : absolute;
   }
 
   public static Frame attachFrame(Page page, String frameId, String url) {

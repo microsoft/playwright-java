@@ -27,10 +27,10 @@ import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static com.microsoft.playwright.fixtures.Utils.asset;
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -175,7 +175,7 @@ public class TestLocatorMisc1 {
   @DisplayName("LO-139 should upload the file")
   void shouldUploadTheFile(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/fileupload.html");
-    Path filePath = Paths.get("").toAbsolutePath().relativize(asset("file-to-upload.txt"));
+    Path filePath = relativeToCwd(asset("file-to-upload.txt"));
     Locator input = page.locator("input[type=file]");
     input.setInputFiles(filePath);
     assertEquals("file-to-upload.txt", page.evaluate("e => e.files[0].name", input.elementHandle()));

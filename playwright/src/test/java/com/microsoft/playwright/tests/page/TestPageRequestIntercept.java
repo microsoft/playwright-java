@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
+import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -206,7 +206,7 @@ public class TestPageRequestIntercept {
   @DisabledOnBrowser(value = {BrowserName.CHROMIUM, BrowserName.WEBKIT}, reason = "fixme")
   void shouldInterceptMultipartFormDataRequestBody(Page page, TestServer server, BrowserName browserName) throws Exception {
     page.navigate(server.PREFIX + "/input/fileupload.html");
-    Path filePath = Paths.get("").toAbsolutePath().relativize(asset("file-to-upload.txt"));
+    Path filePath = relativeToCwd(asset("file-to-upload.txt"));
     page.locator("input[type=file]").setInputFiles(filePath);
     CompletableFuture<Request> requestPromise = new CompletableFuture<>();
     page.route("**/upload", route -> {
