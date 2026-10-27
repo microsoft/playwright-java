@@ -25,6 +25,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.ContextFactory;
 import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.Fixme;
 import com.microsoft.playwright.fixtures.HttpsTestServer;
 import com.microsoft.playwright.fixtures.MockSocksServer;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
@@ -35,6 +36,7 @@ import com.microsoft.playwright.options.Proxy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -219,6 +221,7 @@ public class TestBrowsercontextProxy {
 
         @PlaywrightTest
         @DisplayName("PR-024 ${params.description}")
+        @Fixme(value = "driver: WebKit on macOS 26 does not proxy localhost even without bypass rules, upstream runs WebKit on macOS 15", browsers = BrowserName.WEBKIT, os = OS.MAC, parameters = "target=localhost,")
         void paramsdescription(BrowserName browserName, ContextFactory contextFactory, TestServer server, ProxyServer proxyServer) {
           assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("darwin") && Arrays.asList("localhost", "127.0.0.1").contains(target) && additionalBypass, "Mac webkit does not proxy localhost when bypass rules are set");
 
