@@ -128,7 +128,7 @@ public final class TestChildProcess {
   public TestChildProcess(List<String> command, Map<String, String> env, Path cwd, Consumer<String> onOutput) {
     this.command = new ArrayList<>(command);
     this.onOutput = onOutput;
-    ProcessBuilder builder = new ProcessBuilder(command);
+    ProcessBuilder builder = new ProcessBuilder(Env.isWindows ? quoteForWindows(command) : command);
     builder.environment().clear();
     builder.environment().putAll(inheritAndCleanEnv(env));
     if (cwd != null) {
@@ -449,6 +449,41 @@ public final class TestChildProcess {
         result++;
         index += sub.length();
       }
+    }
+    return result;
+  }
+
+  /**
+   * Java does not escape the quotes in an argument on Windows, so the child gets {@code {a:1}} for
+   * {@code {"a":1}}. An argument with quotes gets the quoting of the Microsoft C runtime, which Java
+   * then passes as it is.
+   */
+  private static List<String> quoteForWindows(List<String> command) {
+    List<String> result = new ArrayList<>();
+    for (String arg : command) {
+      if (arg.indexOf('"') < 0) {
+        result.add(arg);
+        continue;
+      }
+      StringBuilder quoted = new StringBuilder("\"");
+      int backslashes = 0;
+      for (char c : arg.toCharArray()) {
+        if (c == '\\') {
+          backslashes++;
+          continue;
+        }
+        // Backslashes before a quote are doubled, and the quote gets one more.
+        int count = c == '"' ? backslashes * 2 + 1 : backslashes;
+        for (int i = 0; i < count; i++) {
+          quoted.append('\\');
+        }
+        quoted.append(c);
+        backslashes = 0;
+      }
+      for (int i = 0; i < backslashes * 2; i++) {
+        quoted.append('\\');
+      }
+      result.add(quoted.append('"').toString());
     }
     return result;
   }
