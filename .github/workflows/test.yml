@@ -16,11 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Linux and Windows run on the 64-core runners of the organization, as upstream's tests_primary.yml.
         os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-latest]
         browser: [chromium, firefox, webkit]
         exclude:
           # macos-latest is the free M1 runner (3 vCPU / 7 GB); Firefox and WebKit need more headroom.
+          # Upstream's webkit matrix runs on macos-15-xlarge for the same reason.
           - os: macos-latest
             browser: firefox
           - os: macos-latest
@@ -28,7 +28,6 @@ jobs:
         include:
           - os: macos-26-xlarge
             browser: firefox
-          # Upstream's webkit matrix runs on macos-15-xlarge for the same reason.
           - os: macos-15-xlarge
             browser: webkit
     runs-on: ${{ matrix.os }}
@@ -69,11 +68,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Upstream tests the branded browsers on all platforms; here they only check the channel option.
         include:
           - os: playwright-x64-ubuntu24-64-core
             browser-channel: chrome
-          # Edge runs on Windows only, where the runner image has it.
           - os: playwright-x64-server2025-64-core
             browser-channel: msedge
     runs-on: ${{ matrix.os }}
@@ -106,7 +103,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The JDK does not depend on the browser; the other jobs run all three.
         browser: [chromium]
     runs-on: playwright-x64-ubuntu24-64-core
     steps:
