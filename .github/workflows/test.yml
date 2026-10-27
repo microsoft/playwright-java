@@ -69,13 +69,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Chrome and Edge need more headroom than the free M1 runner (3 vCPU / 7 GB) of macos-latest.
+        # Chrome needs more headroom than the free M1 runner (3 vCPU / 7 GB) of macos-latest.
         os: [playwright-x64-ubuntu24-64-core, playwright-x64-server2025-64-core, macos-26-xlarge]
         browser-channel: [chrome]
         include:
+          # Edge runs on Windows only, where the runner image has it.
           - os: playwright-x64-server2025-64-core
-            browser-channel: msedge
-          - os: macos-26-xlarge
             browser-channel: msedge
     runs-on: ${{ matrix.os }}
     steps:
@@ -96,17 +95,13 @@ jobs:
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Install browsers
         run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
-      - name: Install MS Edge
-        if: matrix.browser-channel == 'msedge' && runner.os == 'macOS'
-        shell: bash
-        run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge" -f playwright/pom.xml
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
 
-  Java_21:
+  Java_25:
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -115,17 +110,17 @@ jobs:
     runs-on: playwright-x64-ubuntu24-64-core
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
         with:
-          distribution: adopt
-          java-version: 21
+          distribution: temurin
+          java-version: 25
       - name: Download drivers
         shell: bash
         run: scripts/download_driver.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
-      # Runs on JDK 21: with JDK 8 the javadoc plugin never uses the module path.
+      # Runs on JDK 25: with JDK 8 the javadoc plugin never uses the module path.
       - name: Verify javadoc
         run: scripts/verify_javadoc.sh
       - name: Install browsers
