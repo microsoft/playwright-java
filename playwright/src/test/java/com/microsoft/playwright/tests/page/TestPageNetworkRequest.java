@@ -32,6 +32,7 @@ import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.OS;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -451,6 +452,7 @@ public class TestPageNetworkRequest {
 
   @PlaywrightTest
   @DisplayName("NE-024 should report raw headers")
+  @Fixme(value = "driver: the WebKit of driver 1.64.1 on Windows sends Accept-Language but leaves it out of request.headersArray()", browsers = BrowserName.WEBKIT, os = OS.WINDOWS)
   void shouldReportRawHeaders(Page page, TestServer server, BrowserName browserName) {
     List<HttpHeader> expectedHeaders = new ArrayList<>();
     server.setRoute("/headers", (req, res) -> {

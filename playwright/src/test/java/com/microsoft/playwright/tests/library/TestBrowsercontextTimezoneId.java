@@ -147,7 +147,8 @@ public class TestBrowsercontextTimezoneId {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setTimezoneId("America/Jamaica"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    ConsoleMessage msg = page.waitForConsoleMessage(() ->
+    // Java: only a log message, Chrome on Windows can log the 404 error of /favicon.ico first.
+    ConsoleMessage msg = page.waitForConsoleMessage(new Page.WaitForConsoleMessageOptions().setPredicate(m -> "log".equals(m.type())), () ->
       page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)'], { type: 'application/javascript' })))"));
     assertEquals("America/Jamaica", msg.text());
     context.close();
