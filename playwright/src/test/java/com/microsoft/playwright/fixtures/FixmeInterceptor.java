@@ -83,7 +83,7 @@ final class FixmeInterceptor implements InvocationInterceptor {
     return false;
   }
 
-  /** Runs the test on a thread of its own and gives up on it after the timeout, like JUnit's separate-thread timeout. */
+  /** Runs the test on a thread of its own and interrupts it after the timeout. */
   private static void proceedWithTimeout(Invocation<Void> invocation, long timeoutMillis) throws Throwable {
     CompletableFuture<Void> done = new CompletableFuture<>();
     Thread thread = new Thread(() -> {
@@ -101,6 +101,9 @@ final class FixmeInterceptor implements InvocationInterceptor {
     } catch (ExecutionException e) {
       throw e.getCause();
     } catch (TimeoutException e) {
+      // The teardown uses the connection of the test, which is not thread-safe, so stop the test first.
+      thread.interrupt();
+      thread.join(TimeUnit.SECONDS.toMillis(30));
       throw new TimeoutException("Test did not finish within " + timeoutMillis + " ms");
     }
   }
