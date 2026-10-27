@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.microsoft.playwright.Utils.nextFreePort;
-
 public class ServerLifecycle implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
   // This is a public map so that objects outside test scope can access the server.
   // For example, nested classes inside test classes that define custom options and need the server.
@@ -60,15 +58,13 @@ public class ServerLifecycle implements BeforeAllCallback, AfterAllCallback, Par
   }
 
   private Server getOrCreateServer(ExtensionContext extensionContext) {
-    Server server = serverMap.get(extensionContext.getRequiredTestClass());
-    if(server == null) {
+    // The tests of a class run in parallel and can ask for the server at the same time.
+    return serverMap.computeIfAbsent(extensionContext.getRequiredTestClass(), testClass -> {
       try {
-        server = Server.createHttp(nextFreePort());
-        serverMap.put(extensionContext.getRequiredTestClass(), server);
+        return Server.createHttp();
       } catch (IOException e) {
         throw new ParameterResolutionException(e.getMessage());
       }
-    }
-    return server;
+    });
   }
 }
