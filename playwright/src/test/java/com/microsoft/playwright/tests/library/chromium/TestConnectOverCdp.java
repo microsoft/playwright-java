@@ -410,7 +410,6 @@ public class TestConnectOverCdp {
 
   @PlaywrightTest
   @DisplayName("CD-018 should connect via https")
-  @Fixme("java: Playwright.create() ignores the env option after the first driver of the JVM (Driver.ensureDriverInstalled() is a singleton), NODE_TLS_REJECT_UNAUTHORIZED does not reach the driver: 'self-signed certificate; if the root CA is installed locally, try running Node.js with --use-system-ca'")
   void shouldConnectViaHttps(HttpsTestServer httpsServer) throws Exception {
     int port = PORT;
     // Java: the driver reads NODE_TLS_REJECT_UNAUTHORIZED when it starts, the Playwright instance of this test gets it in its environment.
@@ -520,7 +519,6 @@ public class TestConnectOverCdp {
 
   @PlaywrightTest
   @DisplayName("CD-024 should use env proxy with connectOverCDP discovery request")
-  @Fixme("java: Playwright.create() ignores the env option after the first driver of the JVM (Driver.ensureDriverInstalled() is a singleton), HTTP_PROXY does not reach the driver: proxyServer.requestUrls is [] instead of [<url>/json/version/]")
   void shouldUseEnvProxyWithConnectOverCDPDiscoveryRequest(TestServer server, ProxyServer proxyServer) {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/40394' });
     proxyServer.forwardTo(server.PORT);
@@ -536,7 +534,6 @@ public class TestConnectOverCdp {
 
   @PlaywrightTest
   @DisplayName("CD-025 should send target Host header when using env HTTP proxy with connectOverCDP")
-  @Fixme("java: Playwright.create() ignores the env option after the first driver of the JVM (Driver.ensureDriverInstalled() is a singleton), HTTP_PROXY does not reach the driver: proxyServer.requestHosts is [] instead of [localhost:<port>]")
   void shouldSendTargetHostHeaderWhenUsingEnvHTTPProxyWithConnectOverCDP(TestServer server, ProxyServer proxyServer) {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/40811' });
     proxyServer.forwardTo(server.PORT);
