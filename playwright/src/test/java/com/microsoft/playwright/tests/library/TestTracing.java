@@ -33,7 +33,9 @@ import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.ContextFactory;
 import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.Fixme;
+import com.microsoft.playwright.fixtures.Fixture;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import com.microsoft.playwright.fixtures.TestInfo;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.RequestOptions;
@@ -52,6 +54,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +81,15 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/tracing.spec.ts. */
 public class TestTracing {
+  // Java: the client sends the stack frames of the calls, and so the sources of the trace, only when
+  // PLAYWRIGHT_JAVA_SRC is set; the Node.js client always sends them.
+  @Fixture(scope = Scope.WORKER)
+  static Playwright.CreateOptions createOptions(Playwright.CreateOptions createOptions) {
+    Map<String, String> env = new HashMap<>(createOptions.env);
+    env.put("PLAYWRIGHT_JAVA_SRC", Env.srcTestDir().resolve("java").toString());
+    return new Playwright.CreateOptions().setEnv(env);
+  }
+
   // Java: the events and the resources of parseTraceRaw() of upstream's tests/config/utils.ts; the
   // titles of the actions (renderFullTitleForCall) and the stacks of the trace model are not available.
   private static final class Trace {
@@ -392,7 +404,6 @@ public class TestTracing {
 
   @PlaywrightTest
   @DisplayName("TR-014 should not include trace resources from the previous chunks")
-  @Fixme("harness: the Playwright instance runs without PLAYWRIGHT_JAVA_SRC, so the Java client sends no stack frames and sources: true collects no src/ files (expected: <1> but was: <0>)")
   void shouldNotIncludeTraceResourcesFromThePreviousChunks(BrowserContext context, Page page, TestServer server, BrowserName browserName, TestInfo testInfo) {
     context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true).setSources(true));
 
@@ -483,7 +494,6 @@ public class TestTracing {
 
   @PlaywrightTest
   @DisplayName("TR-016 should collect sources")
-  @Fixme("harness: the Playwright instance runs without PLAYWRIGHT_JAVA_SRC, so the Java client sends no stack frames and sources: true collects no src/ files (expected: <1> but was: <0>)")
   void shouldCollectSources(BrowserContext context, Page page, TestServer server, TestInfo testInfo) throws Exception {
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);
