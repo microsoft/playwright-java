@@ -1,0 +1,737 @@
+# Upstream tests that the Java port does not run, with the reason.
+#
+# The registry of upstream tests is upstream_registry.md, a copy of tests/registry.md in
+# microsoft/playwright. scripts/check_test_registry.py checks that every test in it is
+# ported under java/com/microsoft/playwright/tests or matches a rule here. One rule per
+# line: a selector, then the reason. A selector is a test identifier (CH-017), a subsystem
+# code (CG), or an upstream file glob without ".spec.ts" (library/unit/*). The checker
+# fails on a rule that matches no test, and on a test that is ported and also matches a
+# rule. A reason starting with "TODO harness:" names a test utility the harness does not
+# have yet; such a test is ported once it does.
+
+# Upstream internals, not the client API.
+library/unit/*                      Unit tests of upstream internals.
+library/events/*                    Tests the EventEmitter class of the Node.js client.
+library/channels                    Checks the object tree of the Node.js client through its internals.
+library/heap                        Measures the heap of the Node.js client.
+page/page-leaks                     Counts server objects through toImpl(), which only the Node.js tests can reach.
+library/role-utils                  Calls the injected script directly.
+library/locator-parser              Tests the locator parser of the driver.
+library/component-parser            Tests the component selector parser of the driver.
+library/css-parser                  Tests the CSS selector parser of the driver.
+library/locator-generator           Tests the locator generator of the driver.
+library/selector-generator          Tests the selector generator of the driver.
+library/coverage                    Checks the API coverage of the Node.js tests.
+
+# Tools that run in the driver. The Java client only starts them.
+library/inspector/*                 Codegen and the Inspector run in the driver.
+library/trace-viewer                The trace viewer runs in the driver.
+library/snapshot-renderer           The trace viewer runs in the driver.
+library/debug-controller            Internal protocol of the VS Code extension.
+
+# Node.js packaging.
+library/browsers-path               Tests importing the Node.js package on an unsupported platform.
+library/playwright-client           Tests the @playwright/client package.
+
+# API that the Java API does not have.
+library/chromium/js-coverage        page.coverage is not in the Java API.
+library/chromium/css-coverage       page.coverage is not in the Java API.
+library/logger                      The logger option is not in the Java API.
+library/browsertype-launch-server   browserType.launchServer() is not in the Java API.
+page/page-listeners                 removeAllListeners() is not in the Java API.
+
+# Features of the @playwright/test runner.
+page/expect-builtins                Generic matchers of @playwright/test, such as toBe().
+page/matchers.misc                  Generic matchers of @playwright/test.
+page/expect-matcher-result          The matcher result objects of @playwright/test.
+page/expect-with-snapshot           toHaveScreenshot() and toMatchSnapshot() are not in the Java API.
+
+# Per test, found while porting.
+# page/page-wait-for-request
+WA-128      tests a RegExp made in another Node.js vm context; Java has no cross-context regular expressions.
+
+# library/proxy
+PR-001      Passes a number as proxy.server; the typed Java API cannot express it.
+# page/elementhandle-screenshot
+EH-075      TODO harness: needs utils.decodeWebp and a PNG pixel decoder (PNG.sync.read) to compare a webp and a png screenshot.
+EH-078      java: concurrent: elementHandle.screenshot while elementHandle.screenshot is pending
+EH-085      java: concurrent: page.evaluate while elementHandle.screenshot is pending
+# page/page-emulate-media
+EM-002      The media option is an enum in the Java API; the invalid value "bad" cannot be passed.
+EM-005      The colorScheme option is an enum in the Java API; the invalid value "bad" cannot be passed.
+EM-006      java: concurrent: page.emulateMedia while page.goto is pending
+# page/page-aria-snapshot-json
+page/page-aria-snapshot-json        page.ariaSnapshotJSON() and locator.ariaSnapshotJSON() are not in the Java API (docs: langs: js).
+# page/page-autowaiting-basic
+AW-010      Passes the server-side __testHookAfterPointerAction function as a click option; only the in-process Node.js client can pass it, and the protocol has no such parameter.
+# page/page-autowaiting-no-hang
+# page/page-click
+CL-003      java: concurrent: page.click while page.click is pending
+CL-020      java: concurrent: page.evaluate while page.click is pending
+CL-021      java: concurrent: page.evaluate while page.click is pending
+CL-022      java: concurrent: page.evaluate while page.click is pending
+CL-043      java: concurrent: page.evaluate while page.click is pending
+CL-044      java: concurrent: page.evaluate while page.click is pending
+CL-049      java: concurrent: page.evaluate while page.click is pending
+CL-050      java: concurrent: page.evaluate while page.click is pending
+CL-051      java: concurrent: page.evaluate while page.click is pending
+CL-052      java: concurrent: page.evaluate while page.click is pending
+CL-053      java: concurrent: page.evaluate while page.click is pending
+CL-055      java: concurrent: page.evaluate while page.click is pending
+CL-056      java: concurrent: page.evaluate while page.click is pending
+CL-060      java: concurrent: page.evaluate while elementHandle.click is pending
+CL-061      java: concurrent: page.evaluate while page.click is pending
+CL-062      java: concurrent: elementHandle.evaluate while elementHandle.click is pending
+CL-063      java: concurrent: elementHandle.evaluate while elementHandle.click is pending
+CL-067      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-068      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-069      Passes the server-side __testHookBeforeStable function as a click option; the Java API and the protocol have no such parameter.
+CL-090      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-091      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-092      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+CL-093      The signal (AbortSignal) option of actions is JavaScript-only; it is not in the Java API.
+page/page-click-during-navigation   Passes the server-side __testHookAfterStable function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-1
+CL-110      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-3
+CL-116      Passes the server-side __testHookBeforeHitTarget function as a click option; the Java API and the protocol have no such parameter.
+# page/page-click-timeout-4
+CL-121      Passes the server-side __testHookBeforePointerAction function as a click option; the Java API and the protocol have no such parameter.
+# page/page-event-console
+CM-003      Passes the ConsoleMessage to Node.js util.inspect, which prints it through the custom inspect function of the Node.js client.
+CM-020      page.pageErrors({ filter }) is not in the Java API; Page.pageErrors() has no options.
+# page/page-expose-function
+EF-006      Throws null from the exposed function; a Java callback can only throw an exception object, so there is no Java form of 'throw null'.
+# page/page-evaluate
+EV-011      Typed arrays (Int8Array, Float32Array, BigInt64Array, ...) are JavaScript-only values; a Java argument cannot be one and the Java client has no typed array result.
+EV-013      Passes a JavaScript Map as an argument; Java has no way to pass a Map that is not an object.
+EV-014      Passes a JavaScript Set as an argument; Java has no way to pass a Set that is not an object.
+EV-018      Passes object method shorthands as the function to evaluate; the JavaScript client stringifies a function, Java evaluates a string.
+EV-038      Passes more than one argument to evaluate(); the Java methods take at most one argument.
+EV-050      Passes a JavaScript function as the argument; Java cannot pass a function.
+EV-051      Passes an object with a JavaScript function property as the argument; Java cannot pass a function.
+EV-052      Passes an object with a nested JavaScript function as the argument; Java cannot pass a function.
+EV-053      Passes an array with a nested JavaScript function as the argument; Java cannot pass a function.
+EV-093      java: concurrent: page.evaluate while frame.evaluate is pending
+# page/page-evaluate-callback
+EV-112      Passes a JavaScript function as the argument; Java cannot pass a function.
+EV-113      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-114      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-115      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-116      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-117      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-118      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-119      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-120      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-121      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-122      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-123      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-124      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-125      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-126      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-127      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-128      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-129      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-130      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-131      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-132      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-133      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+EV-134      The exposeFunctions option of evaluate() and evaluateHandle() is JavaScript-only (a function argument); it is not in the Java API.
+# page/page-evaluate-no-stall
+EV-135      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+EV-136      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+EV-137      TODO harness: needs toImpl (nonStallingRawEvaluateInExistingMainContext of the server frame).
+# page/expect-boolean
+EX-049      java: concurrent: page.setContent while expect(locator).toBeVisible is pending
+EX-050      java: concurrent: page.setContent while expect(locator).toBeVisible is pending
+EX-051      java: concurrent: page.goto while expect(locator).toBeVisible is pending
+EX-068      Checks the JavaScript runtime type error of expect(page).toBeOK(); Java is typed and PageAssertions has no isOK().
+EX-069      Checks the JavaScript runtime type error of expect(promise).toBeOK(); Java is typed and has no such call.
+EX-085      java: concurrent: page.setContent while expect(locator).toBeAttached is pending
+EX-086      java: concurrent: page.goto while expect(locator).toBeAttached is pending
+# page/page-network-request
+NE-016      Request.postDataJSON() is not in the Java API.
+NE-017      Request.postDataJSON() is not in the Java API.
+NE-018      Request.postDataJSON() is not in the Java API.
+NE-019      Request.postDataJSON() is not in the Java API.
+# page/page-network-response
+NE-038      Response.json() is not in the Java API.
+# page/page-network-idle
+NE-071      TODO harness: the test runs a blocking page call (goto with networkidle) while the test body makes other page calls (evaluate); the Java client is not thread safe (Connection.processOneMessage), so Utils.async plus an inline call fails with "Object doesn't exist: request@..." (Python uses sync_gather).
+NE-072      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-073      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-074      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-075      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-076      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-077      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-078      TODO harness: same as NE-071, a blocking page call runs while the test body calls the page.
+NE-080      TODO harness: same as NE-071, page.setContent with networkidle runs while the test body calls page.waitForTimeout and page.evaluate.
+# page/network-post-data
+NE-108      Request.postDataJSON() is not in the Java API.
+NE-109      Request.postDataJSON() is not in the Java API.
+NE-110      Request.postDataJSON() is not in the Java API.
+NE-111      Request.postDataJSON() is not in the Java API.
+NE-113      Request.postDataJSON() is not in the Java API.
+# page/page-set-extra-http-headers
+NE-117      The Java API takes a Map<String, String>, so a header value that is not a string can not be passed.
+# page/page-event-request
+NE-095      Request.serviceWorker() is not in the Java API.
+NE-096      Request.serviceWorker() is not in the Java API.
+NE-097      Request.serviceWorker() is not in the Java API.
+NE-098      Request.serviceWorker() is not in the Java API.
+# page/page-basic
+PA-010      java: concurrent: page.title while page.goto is pending
+PA-019      Iterates over the properties of the Node.js Page object with for...in and Symbol.iterator.
+# page/page-set-content
+PA-034      TODO harness: page.goto() runs with Utils.async while the test thread calls page.content(); the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: response@...".
+PA-036      TODO harness: needs toImpl(page) to tamper with console.debug in the utility world of the driver.
+PA-037      TODO harness: needs toImpl(page) to replace document.close in the utility world of the driver.
+# page/page-event-popup
+PO-005      TODO harness: page.evaluate() blocks on the alert until the dialog is dismissed, so it runs with Utils.async while the test thread dismisses the dialog; the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: dialog@..." or times out.
+# page/page-select-option
+SO-024      passes numbers and a string index where Java is statically typed; those calls do not compile.
+# page/page-screenshot
+SS-010      java: concurrent: page.screenshot while page.screenshot is pending
+SS-019      TODO harness: needs utils.isLosslessWebp of the Node.js package, to tell lossless from lossy webp.
+SS-020      TODO harness: needs utils.decodeWebp of the Node.js package, to read the pixels of a webp screenshot.
+SS-039      java: concurrent: page.reload while page.screenshot is pending
+SS-045      java: concurrent: page.screenshot while page.screenshot is pending
+SS-055      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it is not in the Java API.
+SS-066      expect(page).toHaveScreenshot() is not in the Java API.
+SS-067      expect(page).toHaveScreenshot() is not in the Java API.
+# page/page-wait-for-function
+WA-006      Passes the polling strategy mutation as a string; the polling option is a number of milliseconds in Java.
+WA-012      Passes the polling strategy unknown as a string; the polling option is a number of milliseconds in Java.
+WA-019      java: concurrent: page.waitForFunction while page.waitForFunction is pending
+WA-020      java: concurrent: page.goto while page.waitForFunction is pending
+WA-021      java: concurrent: page.goto while page.waitForFunction is pending
+WA-026      java: concurrent: page.evaluate while frame.waitForFunction is pending
+# page/frame-evaluate
+FR-003      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
+FR-004      TODO harness: needs the toImpl fixture (reads the driver internals _contextIdToContext).
+# page/page-fill
+FI-019      Passes a number to fill(); the Java API is typed and only accepts a String.
+FI-020      java: concurrent: page.evaluate while page.fill is pending
+FI-021      java: concurrent: page.evaluate while page.fill is pending
+FI-022      java: concurrent: page.evaluate while page.fill is pending
+FI-034      java: concurrent: page.evaluate while page.fill is pending
+FI-035      java: concurrent: page.evaluate while page.fill is pending
+# page/page-filechooser
+FC-003      page.prependListener() is a Node.js EventEmitter method; the Java event API has only onX() and offX().
+FC-006      page.addListener() and page.removeListener() are Node.js EventEmitter aliases of on() and off(); the Java event API has only onX() and offX() (covered by FC-005).
+FC-015      The signal (AbortSignal) option of waitForEvent is JavaScript-only; it is not in the Java API.
+FC-018      TODO harness: needs formidable (a multipart/form-data parser for the /upload route of the test server).
+# page/expect-timeout
+EX-249      java: concurrent: page.goto while expect(locator).toHaveText is pending
+EX-250      java: concurrent: page.goto while expect(locator).toHaveText is pending
+EX-253      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-254      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-255      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-256      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-257      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+EX-258      The signal (AbortSignal) option of the assertions is JavaScript-only; it is not in the Java API.
+# page/expect-to-have-accessible
+EX-273      Passes a RegExp to toHaveRole() and checks the runtime type error '"role" argument in toHaveRole must be a string'; the Java hasRole() only accepts an AriaRole.
+# page/expect-to-have-text
+EX-291      Passes an array that mixes a string and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
+EX-298      Passes an array that mixes strings and a RegExp to toHaveText(); the Java hasText() overloads take only String[] or Pattern[].
+EX-300      Passes an array that mixes a string and a RegExp to toContainText(); the Java containsText() overloads take only String[] or Pattern[].
+# page/expect-misc
+EX-181      java: concurrent: page.setContent while expect(locator).toHaveCount is pending
+EX-205      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
+EX-206      Passes an array that mixes strings and a RegExp to toHaveClass(); the Java hasClass() overloads take only String[] or Pattern[].
+EX-207      Passes a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
+EX-210      Passes an array with a RegExp to toContainClass() and checks the runtime type error; the Java containsClass() only accepts a String or a List<String>.
+EX-216      Passes {} to toHaveURL() and checks the runtime type error; the Java hasURL() only accepts a String or a Pattern.
+EX-217      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-218      expect(page).not.toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-219      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-220      expect(page).toHaveURL(predicate) is not in the Java API; hasURL() takes a String or a Pattern.
+EX-222      expect(page).toHaveURL(URLPattern) is not in the Java API; URLPattern is JavaScript-only.
+EX-226      toHaveAttribute(name) without a value is not in the Java API; hasAttribute() requires a value.
+EX-227      toHaveAttribute(name, { timeout }) without a value is not in the Java API; hasAttribute() requires a value.
+EX-235      Checks error.stack, the Node.js stack of the matcher error, for the test file name.
+EX-242      java: concurrent: page.close while expect(locator).toHaveText is pending
+EX-243      java: concurrent: page.close while expect(locator).toHaveText is pending
+# page/locator-query
+LO-177      locator.within() (since v1.64) is not in the Java API yet.
+# page/locator-wait-for-function
+LO-191      locator.waitForFunction({ signal }) takes an AbortSignal; the signal option is JavaScript-only.
+LO-192      locator.waitForFunction({ signal }) takes an AbortSignal; the signal option is JavaScript-only.
+# page/page-goto
+NA-027      waitUntil: 'networkidle0' is an undocumented alias that only the Node.js client maps; WaitUntilState is an enum in Java and can not hold it.
+NA-028      waitUntil: 'networkidle2' is an invalid string value; WaitUntilState is an enum in Java and can not hold it.
+NA-037      java: concurrent: page.goto while page.goto is pending
+NA-044      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+NA-045      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+NA-046      Checks the 'warning' event of the Node.js process (EventEmitter listener leaks).
+NA-056      java: concurrent: page.goto while page.goto is pending
+NA-063      java: concurrent: page.goto while page.goto is pending
+NA-078      java: concurrent: page.evaluate while page.reload is pending
+
+# page/page-route
+RO-056      page.route(URLPattern) is not in the Java API (URLPattern is JavaScript-only; route() takes a String glob, a Pattern or a Predicate).
+
+# page/page-request-fulfill
+RO-112      TODO harness: needs a test server response with several values for one header (res.setHeader('Set-Cookie', ['a=b', 'c=d'])); TestServer.Response.setHeader() takes a single String.
+RO-116      The json option of route.fulfill() is not in the Java API (docs langs: js, python, csharp).
+
+# page/page-request-fallback
+RO-133      request.postDataJSON() and a serializable object as the postData option are not in the Java API (postData is a String or a byte[]).
+
+# page/page-request-intercept
+RO-146      A serializable object as the postData option of route.fetch() is not in the Java API (postData is a String or a byte[]).
+
+# page/interception
+RO-153      Tests globToRegexPattern() and urlMatches() of the Node.js client; the Java client converts globs in the driver (LocalUtils.globToRegex), there is no public function to call.
+RO-154      Tests globToRegexPattern() of the Node.js client; the Java client converts globs in the driver (LocalUtils.globToRegex), there is no public function to call.
+RO-160      Creates the RegExp in another Node.js vm context (vm.runInContext) to test the JS client's cross-realm RegExp detection; Java has no vm contexts.
+RO-161      Tests the JavaScript RegExp g flag (its lastIndex state makes RegExp.test() stateful); a java.util.regex.Pattern has no global flag, so the client can not send such a regex.
+# page/page-add-init-script
+IS-004      Passes an options object without path or content ({ foo: 'bar' }); the Java addInitScript() takes a String or a Path.
+# page/page-add-init-script-callback
+IS-012      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-013      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-014      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-015      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-016      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-017      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-018      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-019      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-020      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-021      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-022      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+IS-023      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
+# page/page-add-locator-handler
+LH-005      The never-settling handler (new Promise(() => {})) has no Java equivalent: handlers run on the thread that dispatches client messages, so a handler that never returns hangs the client for good (a handler waiting in page.waitForTimeout(9999999) hangs the run).
+LH-008      Uses expect(page).toHaveScreenshot(); it is not in the Java API.
+# page/page-set-input-files
+IF-009      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-011      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-016      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+IF-017      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
+# page/page-wait-for-selector-1
+WA-027      page.waitForSelector({ waitFor }) is an undocumented JS-client option; the Java API has no waitFor option.
+WA-028      page.waitForSelector({ waitFor: 'visible' }) is an undocumented JS-client option; the Java API has no waitFor option.
+WA-033      java: concurrent: page.goto while elementHandle.waitForSelector is pending
+WA-036      java: concurrent: frame.evaluate while frame.waitForSelector is pending
+WA-037      java: concurrent: frame.evaluate while frame.waitForSelector is pending
+WA-043      java: concurrent: page.evaluate while frame.waitForSelector is pending
+# page/page-wait-for-selector-2
+WA-058      passes the invalid state 'foo'; state is the WaitForSelectorState enum in Java.
+WA-059      page.waitForSelector({ visibility }) is an undocumented JS-client option; the Java API has no visibility option.
+WA-060      passes the invalid state true; state is the WaitForSelectorState enum in Java.
+WA-061      passes the invalid state false; state is the WaitForSelectorState enum in Java.
+WA-072      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
+WA-073      uses the __testHookBeforeAdoptNode server test hook, a JS function that only an in-process Node.js test can pass.
+WA-075      java: concurrent: elementHandle.waitForSelector while page.evaluate is pending
+WA-076      java: concurrent: elementHandle.waitForSelector while page.evaluate is pending
+# page/page-wait-for-load-state
+WA-080      passes the invalid state 'bad'; state is the LoadState enum in Java.
+WA-090      java: concurrent: page.evaluate while popup.waitForLoadState is pending
+WA-091      java: concurrent: page.evaluate while frame.waitForLoadState is pending
+# page/workers
+WO-003      TODO harness: needs an async() that is safe against the Java client race; the in-flight worker.evaluate in async() while page.close() runs hangs the test run forever (jstack: stuck in Connection.processOneMessage), so it can not be marked @Fixme.
+
+# page/page-network-response
+NE-042      TODO harness: TestServer.Response.writeHead(status, statusMessage) does not take a custom status message.
+NE-043      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+NE-044      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+NE-045      TODO harness: TestServer.Response.writeHead() does not take an array as a header value (a header written on several lines).
+# page/page-network-sizes
+NE-063      TODO harness: TestServer.Response does not frame the body in chunks when the route sets the Transfer-Encoding: chunked header itself.
+# page/page-screenshot
+SS-056      TODO harness: needs comparePNGs
+SS-057      TODO harness: needs comparePNGs
+SS-095      TODO harness: needs comparePNGs
+# page/page-drag
+
+# page/elementhandle-scroll-into-view
+EH-095      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+EH-099      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+EH-100      java: concurrent: elementHandle.evaluate while elementHandle.scrollIntoViewIfNeeded is pending
+# page/elementhandle-select-text
+EH-106      java: concurrent: elementHandle.evaluate while elementHandle.selectText is pending
+# page/page-dispatchevent
+DE-008      java: concurrent: page.evaluate while page.dispatchEvent is pending
+# page/page-aria-snapshot
+AR-037      java: concurrent: page.setContent while locator.ariaSnapshot is pending
+# page/locator-frame
+LO-093      java: concurrent: page.goto while locator.click is pending
+LO-098      java: concurrent: page.evaluate while locator.click is pending
+LO-100      java: concurrent: page.evaluate while locator.click is pending
+LO-101      java: concurrent: page.evaluate while locator.click is pending
+LO-112      java: concurrent: page.evaluate while locator.click is pending
+# page/selectors-frame
+SE-116      java: concurrent: page.evaluate while locator.click is pending
+SE-120      java: concurrent: page.evaluate while locator.click is pending
+SE-121      java: concurrent: page.evaluate while locator.click is pending
+SE-122      java: concurrent: page.goto while page.click is pending
+# library/browsercontext-credentials
+AU-002      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
+AU-003      browserContext.setHTTPCredentials() is JavaScript-only (docs: langs: js); it is not in the Java API.
+# library/browsercontext-basic
+BC-003      java: concurrent: browserContext.newPage while browserContext.newPage is pending
+BC-022      java: concurrent: locator.evaluate while locator.click is pending
+BC-030      Calls browser._channel.defaultUserAgentForTest(), a private protocol command of the Node.js client that the Java API does not expose.
+BC-031      java: concurrent: browserContext.newPage while browserContext.newPage is pending
+# library/browsercontext-pages
+BC-055      Uses playwright.devices['iPhone 6']; Playwright.devices is not in the Java API.
+BC-059      Listens to process.on('warning') for the Node.js MaxListenersExceededWarning of the Node.js client.
+# library/browsercontext-reuse
+library/browsercontext-reuse        Uses the private context-reuse mode of the Node.js client (browser._newContextForReuse(), browser._disconnectFromReusedContext() and browserType._instrumentation), which the Java API does not have.
+# library/browser
+BR-005      java: concurrent: browser.close while page.evaluate is pending
+BR-007      Passes __testHookBeforeSetStorageState, a JS function, as a context option and reads toImpl(browser).contexts(); the Java API has neither.
+# library/browser-server
+BR-009      TODO harness: needs a per-test PWTEST_SERVER_REGISTRY environment variable for the driver process, to read the descriptor files that browser.bind() writes.
+# library/browsertype-launch
+BT-004      java: concurrent: page.evaluate while browser.close is pending
+BT-005      launch({ userDataDir }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no userDataDir.
+BT-007      launch({ port }) is an untyped option that only the Node.js client checks; the Java LaunchOptions has no port.
+BT-008      launchPersistentContext({ port }) is an untyped option that only the Node.js client checks; the Java LaunchPersistentContextOptions has no port.
+BT-012      Passes __testHookBeforeCreateBrowser, a JS function, as a launch option; only an in-process server can receive it.
+BT-013      Passes __testHookBeforeCreateBrowser, a JS function, as a launch option; only an in-process server can receive it.
+BT-014      launch({ process }) passes an untyped Node.js object as an option; the Java LaunchOptions takes only its documented options.
+BT-016      java: concurrent: browser.close while browser.close is pending
+# library/launcher
+BT-018      playwright.errors is JavaScript-only (docs: langs: js); it is not in the Java API.
+BT-019      playwright.devices is not in the Java API.
+BT-020      Passes __testHookGracefullyClose, a JS function, as a launch option; only an in-process server can receive it.
+# library/browsertype-launch-selenium
+library/browsertype-launch-selenium Starts a Selenium grid with the childProcess and waitForPort fixtures and passes the __testHookSeleniumRemoteURL launch option (or starts an in-process driver with SELENIUM_REMOTE_URL), which the Java API does not have; the tests are also skipped unless PWTEST_CHROMEDRIVER is set.
+# library/modernizr
+CA-031      Uses playwright.devices['iPhone 12']; Playwright.devices is not in the Java API.
+# library/client-certificates
+CC-023      TODO harness: needs to set the HTTPS_PROXY environment variable of the driver process for one test.
+CC-024      TODO harness: needs to set the HTTPS_PROXY environment variable of the driver process for one test.
+CC-036      TODO harness: needs an HTTP/2 server with client certificates (createHttp2Server) that reports the ALPN protocol.
+CC-037      TODO harness: needs an HTTP/2 server with allowHTTP1 (createHttp2Server) that reports the ALPN protocol of its TLS socket; TestServer.Connection does not expose the SSLSocket.
+CC-038      TODO harness: needs an HTTP/2 server with client certificates (createHttp2Server).
+CC-039      TODO harness: needs an HTTP/2 server with client certificates (createHttp2Server).
+
+# library/browsercontext-user-agent
+UA-003      playwright.devices (the device descriptors) is not in the Java API.
+UA-006      playwright.devices (the Pixel 7 descriptor) is not in the Java API.
+# library/browsercontext-viewport
+VP-004      Reads the deviceDescriptors of the server; playwright.devices is not in the Java API.
+VP-017      playwright.devices (the iPhone 14 descriptor) is not in the Java API.
+# library/tracing
+TR-001      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-002      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-011      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-012      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-013      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-018      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-024      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-030      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-031      java: concurrent: tracing.stop while page.goto is pending
+TR-033      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action titles of renderFullTitleForCall).
+TR-034      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
+TR-035      TODO harness: needs parseTraceRaw of tests/config/utils.ts (the action objects and the stacks of the trace model, relativeStack).
+TR-019      Reads context.tracing._stacksId, an internal of the Node.js client.
+TR-021      Sets browserType._playwright._defaultTracesDir, an internal of the Node.js client.
+TR-039      TODO harness: reads the .trace file in the traces folder of the test runner (testInfo.project.outputDir and artifactsFolderName); the harness has no such folder.
+# library/video
+VI-002      Passes recordVideo: {} (recording without a dir); the Java options are flattened and recordVideoDir is what turns recording on.
+VI-022      playwright.devices (the iPhone 6 descriptor) is not in the Java API.
+VI-024      Kills the browser with browser._channel.killForTests(), an internal of the Node.js client.
+VI-003      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-004      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-005      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-012      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-013      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-014      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-015      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-016      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-017      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-018      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-020      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-021      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-025      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-028      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-029      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+VI-030      TODO harness: needs videoPlayer (./videoPlayer) to read the frames of the video.
+# library/chromium/launcher
+CR-033      Calls browserType.launchServer(), which is not in the Java API.
+CR-034      Calls browserType.launchServer(), which is not in the Java API.
+# library/chromium/connect-to-worker
+CR-043      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
+CR-044      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
+# library/chromium/session
+CD-038      Passes the timeout and signal (AbortController) options to cdpSession.send(), which the Java CDPSession.send() does not have.
+CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.
+CD-041      page.coverage (startJSCoverage/stopJSCoverage) is JavaScript-only; it is not in the Java API.
+CD-043      Checks error.stack, the Node.js stack of the error, for the calling function name.
+CD-048      java: concurrent: page.close while cdpSession.send is pending
+# library/chromium/extensions
+CR-036      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-037      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-038      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-039      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-041      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+# library/debugger
+DB-001      java: concurrent: debugger.pausedDetails while page.click is pending
+DB-002      java: concurrent: debugger.resume while page.pause is pending
+DB-003      java: concurrent: debugger.runTo while page.click is pending
+DB-004      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-005      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-006      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-007      Calls page._wrapApiCall(..., { internal: true }), private to the Node.js client; the Java client has no such method.
+DB-008      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-009      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+DB-010      Uses Debugger._enable() and the 'apicallsupdated' event, private to the Node.js client (the dashboard bridge); the Java Debugger has neither.
+# library/page-clock
+CK-048      Calls clock.runFor(0.5); the Java Clock.runFor() takes a long or a String, so a fractional tick count cannot be passed.
+# library/chromium/connect-over-cdp
+CD-005      TODO harness: needs toImpl (reads toImpl(cdpBrowser).options.artifactsDir, a server internal).
+CD-006      Calls browserType.launchServer() and browserServer.kill(); launchServer is not in the Java API.
+CD-007      TODO harness: needs toImpl (reads toImpl(cdpBrowser).options.artifactsDir and tracesDir, server internals).
+CD-011      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CD-016      Compares the User-Agent header with getUserAgent() of the playwright-core Node.js bundle.
+CD-030      TODO harness: needs toImpl (reads toImpl(cdpBrowser)._isBrowserCollocatedWithServer, a server internal).
+CD-032      TODO harness: needs toImpl (calls toImpl(frame).evaluateExpression() in the utility world, a server internal).
+CD-036      connectOverCDP(transport) takes a server ConnectionTransport object (WebSocketTransport), which only the in-process Node.js client can pass.
+# library/chromium/chromium
+CR-001      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-002      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-003      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-004      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-005      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-006      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-008      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-010      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-011      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-014      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-015      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-016      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-017      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-018      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-019      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-020      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python).
+CR-021      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-024      browserContext.serviceWorkers() and the 'serviceworker' event, and request.serviceWorker(), are not in the Java API (docs langs: js, python); it also sets process.env of the driver dynamically.
+CR-025      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-026      browserContext.serviceWorkers() and the 'serviceworker' event are not in the Java API (docs langs: js, python).
+CR-032      TODO harness: needs toImpl (reads toImpl(browser)._connection._sessions, a server internal); it also uses the 'serviceworker' event, which is not in the Java API.
+# library/defaultbrowsercontext-2
+DC-030      TODO harness: needs toImpl (reads toImpl(browserType).defaultArgs(...), a server internal, to build the launch arguments).
+DC-031      Passes __testHookBeforeCreateBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-032      Passes __testHookBeforeCreateBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-034      page.coverage is JavaScript-only (docs langs: js), it is not in the Java API.
+DC-036      Passes __testHookOnConnectToBrowser, a JS function, as a launchPersistentContext option; only an in-process server can receive it.
+DC-038      Calls browser._channel.defaultUserAgentForTest(), an internal of the Node.js client.
+# library/download
+DO-023      java: concurrent: context.close while download.path is pending
+DO-024      java: concurrent: context.close while download.path is pending
+DO-025      Calls browser._channel.killForTests(), an internal of the Node.js client; there is no way to kill the browser process from the Java API.
+# library/browsercontext-device
+DV-001      playwright.devices is not in the Java API.
+DV-002      playwright.devices is not in the Java API.
+DV-004      playwright.devices is not in the Java API.
+DV-005      playwright.devices is not in the Java API.
+DV-006      playwright.devices is not in the Java API.
+DV-007      playwright.devices is not in the Java API.
+DV-008      playwright.devices is not in the Java API.
+# library/browsercontext-viewport-mobile
+DV-011      playwright.devices is not in the Java API.
+DV-012      playwright.devices is not in the Java API.
+DV-013      playwright.devices is not in the Java API.
+DV-015      playwright.devices is not in the Java API.
+DV-022      playwright.devices is not in the Java API.
+DV-025      playwright.devices is not in the Java API.
+# library/page-event-crash
+ER-014      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-015      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-016      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-017      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-018      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-019      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-020      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+ER-021      TODO harness: needs toImpl (the crash fixture sends Page.crash with toImpl(page).delegate._session in webkit and firefox) and utils.hostPlatform.
+# library/global-fetch
+FE-028      Calls playwright._instrumentation.runBeforeCreateRequestContext(), an internal hook of the Node.js client that @playwright/test uses to fill context options.
+FE-036      Calls response[util.inspect.custom](), the Node.js console formatter of the JavaScript client.
+FE-046      Checks that the JavaScript client calls the toJSON() of the data object synchronously, before its first await; Java has no toJSON().
+FE-049      Checks error.code, error.syscall and error.errno, Node.js Error properties that PlaywrightException does not have; also needs req.socket.resetAndDestroy(), which the test server does not have.
+FE-050      Checks error.code, a Node.js Error property that PlaywrightException does not have.
+FE-051      TODO harness: needs req.pause() on the test server request; the server reads the whole request body before it runs the route, so the server can not answer and reset the connection before the body is read.
+FE-030      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
+FE-031      TODO harness: needs the test server to report that the client closed a connection while the route never answers (req.socket 'close'); the server thread waits for the response to end and never notices the closed peer, so the test hangs at `await connectionClosed`.
+# library/browsercontext-proxy
+PR-020      Passes a number as proxy.server to check the runtime type error; the Java Proxy class only accepts a String.
+# library/proxy-pattern
+PR-040      Tests parsePattern(), a function of the Node.js utils bundle (SOCKS proxy pattern matcher) that is not part of the client API.
+# library/fetch-proxy
+PR-046      Needs a TLS proxy server that negotiates ALPN (Node.js https.createServer with ALPNCallback) and reads the offered protocols; the Java 8 SSLEngine API of the test sources has no ALPN access.
+# library/browsercontext-route
+RO-185      Routes on a URLPattern, a JavaScript-only class (BrowserContext.route() takes a String, a Pattern or a Predicate), so there is no ignoreCase option to test.
+# library/unroute-behavior
+RO-186      java: concurrent: context.unroute while page.goto is pending
+RO-188      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+RO-189      Uses unrouteAll({ behavior: 'ignoreErrors' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+RO-192      java: concurrent: page.unroute while page.goto is pending
+RO-194      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-195      Uses unrouteAll({ behavior: 'ignoreErrors' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-200      Uses unrouteAll({ behavior: 'wait' }); Page.unrouteAll() of the Java API has no behavior option.
+RO-201      Uses unrouteAll({ behavior: 'wait' }); BrowserContext.unrouteAll() of the Java API has no behavior option.
+# library/screencast
+SC-002      Relies on an async onFrame callback that stays pending while the test goes on; the Java onFrame is a synchronous Consumer acknowledged when it returns, and the single-threaded client can not keep a handler suspended while the test thread makes calls.
+SC-009      TODO harness: needs videoPlayer
+SC-014      TODO harness: needs videoPlayer
+SC-015      TODO harness: needs videoPlayer
+# library/slowmo
+SL-001      TODO harness: needs toImpl
+SL-002      TODO harness: needs toImpl
+SL-003      TODO harness: needs toImpl
+SL-004      TODO harness: needs toImpl
+SL-005      TODO harness: needs toImpl
+SL-006      TODO harness: needs toImpl
+SL-007      TODO harness: needs toImpl
+SL-008      TODO harness: needs toImpl
+SL-009      TODO harness: needs toImpl
+SL-010      TODO harness: needs toImpl
+SL-011      TODO harness: needs toImpl
+SL-012      TODO harness: needs toImpl
+SL-013      TODO harness: needs toImpl
+SL-014      TODO harness: needs toImpl
+SL-015      TODO harness: needs toImpl
+SL-016      TODO harness: needs toImpl
+SL-017      TODO harness: needs toImpl
+SL-018      TODO harness: needs toImpl
+SL-019      TODO harness: needs toImpl
+SL-020      TODO harness: needs toImpl
+SL-021      TODO harness: needs toImpl
+SL-022      TODO harness: needs toImpl
+SL-023      TODO harness: needs toImpl
+SL-024      TODO harness: needs toImpl
+SL-025      TODO harness: needs toImpl
+SL-026      TODO harness: needs toImpl
+SL-027      TODO harness: needs toImpl
+SL-028      TODO harness: needs toImpl
+SL-029      TODO harness: needs toImpl
+SL-030      TODO harness: needs toImpl
+SL-031      TODO harness: needs toImpl
+SL-032      TODO harness: needs toImpl
+SL-033      TODO harness: needs toImpl
+SL-034      TODO harness: needs toImpl
+SL-035      TODO harness: needs toImpl
+SL-036      TODO harness: needs toImpl
+SL-037      TODO harness: needs toImpl
+SL-038      TODO harness: needs toImpl
+SL-039      TODO harness: needs toImpl
+# library/signals
+SI-001      TODO harness: needs startRemoteServer
+SI-002      TODO harness: needs startRemoteServer
+SI-003      TODO harness: needs startRemoteServer
+SI-004      TODO harness: needs startRemoteServer
+SI-005      TODO harness: needs startRemoteServer
+SI-006      TODO harness: needs startRemoteServer
+SI-007      TODO harness: needs startRemoteServer
+SI-008      TODO harness: needs startRemoteServer
+SI-009      TODO harness: needs startRemoteServer
+SI-010      TODO harness: needs startRemoteServer
+# library/screenshot
+SS-080      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-086      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-087      Uses the __testHookAfterScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+SS-089      Uses the __testHookBeforeScreenshot screenshot option, a JavaScript function that the driver calls; it can not be sent over the protocol from Java.
+# library/geolocation
+GE-004      Calls setGeolocation({ longitude: 10 }) without latitude and checks the runtime type error; the Java Geolocation constructor requires both coordinates, so the call can not be written.
+GE-006      Passes geolocation: { latitude: 10 } without longitude and checks the runtime type error; the Java Geolocation constructor requires both coordinates, so the call can not be written.
+# library/browsercontext-fetch-happy-eyeballs
+FE-185      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+FE-186      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+FE-187      Passes __testHookLookup, a JavaScript function, as a request option and checks that it was called; the Java API has no such option.
+# library/browsercontext-fetch
+FE-099      Passes the params option as a URLSearchParams; the Java RequestOptions has setQueryParam(name, value) only, which sets one value per name.
+FE-100      Passes the params option as a string; the Java RequestOptions has setQueryParam(name, value) only.
+FE-101      Passes the params option as a string and as a URLSearchParams; the Java RequestOptions has setQueryParam(name, value) only.
+FE-119      browserContext.setHTTPCredentials() is JavaScript-only (docs langs: js); it is not in the Java API.
+FE-120      browserContext.setHTTPCredentials() is JavaScript-only (docs langs: js); it is not in the Java API.
+FE-158      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-159      TODO harness: needs a multipart/form-data parser (the test parses the request body with Node's Request.formData()).
+FE-160      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-161      TODO harness: needs formidable (a multipart/form-data parser for the request body of the test server).
+FE-164      Passes a function as the data option and checks the runtime type error; the Java setData() takes a String, a byte[] or an Object that is serialized to JSON, so there is no unsupported type.
+FE-168      TODO harness: needs the TestServer to notice that a client closed the connection while a route handler is still pending (the 'close' event of req.socket); the test hangs forever now.
+# library/har
+HA-047      TODO harness: needs createHttp2Server (an HTTP/2 server over TLS, taken from the utils of the Node.js server).
+HA-066      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.StartHarOptions has no resourcesDir.
+HA-067      tracing.startHar({ resourcesDir }) is not in the Java API: Tracing.StartHarOptions has no resourcesDir.
+# library/firefox/launcher
+FF-004      Driver: page.setViewportSize() never returns in the bundled driver 1.64.1 when the firefoxUserPrefs layout.css.devPixelsPerPx is 1.1 (the fix of https://github.com/microsoft/playwright/issues/43028 is newer than the driver), so the test would hang the whole run instead of failing.
+# library/browsertype-connect
+BT-052      passes __testHookBeforeCreateBrowser, a JavaScript function that the Node.js client calls during connect; the Java connect() has no such hook.
+BT-056      java: concurrent: browser.close while page.goto is pending
+BT-057      java: concurrent: browser.close while page.waitForSelector is pending
+BT-070      java: concurrent: page.waitForNavigation while page.goto is pending
+BT-096      starts an in-process remote.PlaywrightServer of the Node.js package and reads its internal _dontReuseBrowsers.
+# library/browsercontext-add-init-script
+IS-031      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-032      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-033      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+IS-034      browserContext.addInitScript(script, arg, { exposeFunctions }) exposes functions passed in arg; the arg parameter and the exposeFunctions option are JavaScript-only (docs: langs: js); the Java addInitScript() takes only a script string or a path.
+# library/locator-highlight
+LO-194      locator.highlight({ style }) with an object style is JavaScript-only; the Java HighlightOptions.setStyle() takes a CSS string only.
+# library/multiclient
+MC-001      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-002      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-003      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-004      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-005      page.coverage is not in the Java API.
+MC-006      page.coverage is not in the Java API.
+MC-007      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-008      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-009      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-010      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-011      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-012      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-013      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-014      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-015      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-016      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-017      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-018      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
+MC-019      Calls the internal context._startRecording() / _stopRecording() with JavaScript recorder callbacks.
+# library/network-timeout
+NE-128      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+NE-129      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+NE-130      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
+# library/chromium/oopif
+OO-010      playwright.devices is not in the Java API (docs: langs: js, python, csharp).
+
+# page/page-wait-for-url
+
+# page/page-wait-for-navigation
+WA-104      java: concurrent: frame.evaluate while page.goto is pending
+
+# page/page-history
+
+# page/frame-goto
+FR-021      java: concurrent: page.$eval while frame.goto is pending
+FR-023      java: concurrent: frame.goto while frame.goto is pending
+OO-025      java: concurrent: page.evaluate while page.exposeFunction is pending
+# library/browsercontext-network-event
+NE-127      java: concurrent: context.close while response.finished is pending
+# library/webmcp
+WM-010      java: concurrent: webMCP.tools while webMCP.callTool is pending
+# library/popup
+# library/route-web-socket
+# library/capabilities
+# library/screencast-actions
+SC-016      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-017      java: concurrent: page.locator.boundingBox while page.click is pending
+SC-018      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-020      java: concurrent: expect(locator).toBeVisible while page.fill is pending
+SC-025      java: concurrent: expect(locator).toBeVisible while page.click is pending
+SC-027      java: concurrent: expect(locator).toBeVisible while page.click is pending
+# library/page-close
+PA-040      java: concurrent: page.close while expect(locator).toHaveText is pending
+PA-042      java: concurrent: page.close while page.evaluate is pending
+PA-046      java: concurrent: page.close while page.close is pending
+PA-050      java: concurrent: page.mouse.click while page.close is pending
+PA-051      java: concurrent: page.close while request.response is pending
+PA-054      java: concurrent: page.close while response.finished is pending
+# library/tap
+TA-008      java: concurrent: elementHandle.evaluate while elementHandle.tap is pending

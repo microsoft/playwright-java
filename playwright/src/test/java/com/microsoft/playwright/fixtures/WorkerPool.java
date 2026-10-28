@@ -75,7 +75,7 @@ final class WorkerPool {
     Teardown teardown = new Teardown();
     boolean reuse = !discard && worker.isHealthy();
     if (reuse) {
-      worker.closeTestContexts(teardown);
+      worker.resetForNextTest(teardown);
       reuse = !teardown.failed();
     }
     synchronized (this) {

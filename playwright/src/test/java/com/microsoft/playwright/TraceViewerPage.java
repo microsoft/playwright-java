@@ -82,7 +82,7 @@ class TraceViewerPage {
   static void showTraceViewer(BrowserType browserType, Path tracePath, TraceViewerConsumer callback) throws Exception {
     Path driverDir = Driver.ensureDriverInstalled(java.util.Collections.emptyMap(), true).driverDir();
     Path traceViewerPath = driverDir.resolve("package").resolve("lib").resolve("vite").resolve("traceViewer");
-    Server traceServer = Server.createHttp(Utils.nextFreePort());
+    Server traceServer = Server.createHttp();
     traceServer.setResourceProvider(path -> {
       Path filePath = traceViewerPath.resolve(path.substring(1));
       if (Files.exists(filePath) && !Files.isDirectory(filePath)) {

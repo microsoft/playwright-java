@@ -22,6 +22,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -35,6 +37,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// Its tests share static state.
+@Execution(ExecutionMode.SAME_THREAD)
 @FixtureTest
 @UsePlaywright(TestFixtureTraceOutputDir.TraceOptions.class)
 public class TestFixtureTraceOutputDir {

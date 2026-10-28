@@ -18,6 +18,7 @@ package com.microsoft.playwright.fixtures;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Playwright;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -87,14 +88,19 @@ final class Worker implements AutoCloseable {
   }
 
   /**
-   * Closes the contexts that the last test opened in this worker's browsers and left behind, so
-   * that the next test starts with only the contexts of the worker fixtures.
+   * Undoes what the last test changed in this worker: closes the contexts that it opened in this
+   * worker's browsers and left behind, so that the next test starts with only the contexts of the
+   * worker fixtures, and restores the default test id attribute, which Playwright Test sets before
+   * every test.
    */
-  void closeTestContexts(Teardown teardown) {
+  void resetForNextTest(Teardown teardown) {
     Set<BrowserContext> leaked = contexts();
     leaked.removeAll(workerContexts);
     for (BrowserContext context : leaked) {
       teardown.run(context::close);
+    }
+    for (Playwright playwright : values.ofType(Playwright.class)) {
+      teardown.run(() -> playwright.selectors().setTestIdAttribute("data-testid"));
     }
   }
 

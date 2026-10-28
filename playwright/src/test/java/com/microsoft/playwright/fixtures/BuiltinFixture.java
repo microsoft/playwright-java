@@ -24,9 +24,12 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.Server;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The fixtures every test can use without declaring anything, the counterpart of the
@@ -52,21 +55,42 @@ final class BuiltinFixture<T> implements FixtureDefinition {
 
   static final List<FixtureDefinition> ALL = Collections.unmodifiableList(Arrays.asList(
     BROWSER_NAME,
-    worker(Playwright.CreateOptions.class, resolver -> new Playwright.CreateOptions(), null),
+    // Run the driver as upstream runs it in its tests: pages get window.builtins, for example.
+    worker(Playwright.CreateOptions.class, resolver -> new Playwright.CreateOptions().setEnv(underTestEnv()), null),
     worker(Playwright.class, resolver -> Playwright.create(resolver.get(Playwright.CreateOptions.class)), Playwright::close),
     worker(BrowserType.class, resolver -> resolver.get(BrowserName.class).browserType(resolver.get(Playwright.class)), null),
     worker(BrowserType.LaunchOptions.class, resolver -> Env.launchOptions(), null),
     BROWSER,
     worker(Server.class, resolver -> Server.createHttp(), Server::stop),
     worker(HttpsServer.class, resolver -> Server.createHttps(), Server::stop),
+    worker(TestServer.class, resolver -> withHttpCache(TestServer.createHttp(assetsDir(), 0)), TestServer::stop),
+    worker(HttpsTestServer.class, resolver -> withHttpCache(TestServer.createHttps(assetsDir(), 0)), TestServer::stop),
+    worker(ProxyServer.class, resolver -> ProxyServer.create(0), ProxyServer::stop),
+    worker(MockSocksServer.class, resolver -> MockSocksServer.create(0), MockSocksServer::close),
     // The test-scoped servers are the worker ones, reset before every test.
     test(Server.class, resolver -> reset(resolver.get(Server.class)), null),
     test(HttpsServer.class, resolver -> reset(resolver.get(HttpsServer.class)), null),
+    test(TestServer.class, resolver -> reset(resolver.get(TestServer.class)), null),
+    test(HttpsTestServer.class, resolver -> reset(resolver.get(HttpsTestServer.class)), null),
+    test(ProxyServer.class, resolver -> reset(resolver.get(ProxyServer.class)), null),
+    test(TestInfo.class, resolver -> new TestInfo(resolver.extensionContext(), resolver.get(BrowserName.class)), TestInfo::close),
     test(Browser.NewContextOptions.class, resolver -> new Browser.NewContextOptions(), null),
     test(BrowserContext.class,
       resolver -> resolver.get(Browser.class).newContext(resolver.get(Browser.NewContextOptions.class)),
       BrowserContext::close),
-    test(Page.class, resolver -> resolver.get(BrowserContext.class).newPage(), null)));
+    test(Page.class, resolver -> resolver.get(BrowserContext.class).newPage(), null),
+    test(ContextFactory.class,
+      resolver -> new ContextFactory(resolver.get(Browser.class), resolver.get(Browser.NewContextOptions.class)),
+      ContextFactory::close),
+    test(CreateUserDataDir.class, resolver -> new CreateUserDataDir(), CreateUserDataDir::close),
+    test(LaunchPersistent.class,
+      resolver -> new LaunchPersistent(resolver.get(BrowserType.class), resolver.get(CreateUserDataDir.class)),
+      LaunchPersistent::close),
+    test(PageWithHar.class, resolver -> new PageWithHar(resolver.get(ContextFactory.class), resolver.get(TestInfo.class)), null),
+    test(ChildProcessFactory.class, resolver -> new ChildProcessFactory(resolver.extensionContext()), ChildProcessFactory::close),
+    test(StartRemoteServer.class,
+      resolver -> new StartRemoteServer(resolver.get(BrowserType.class), resolver.get(ChildProcessFactory.class), resolver.get(BrowserType.LaunchOptions.class)),
+      StartRemoteServer::close)));
 
   private final Class<T> type;
   private final Scope scope;
@@ -75,6 +99,31 @@ final class BuiltinFixture<T> implements FixtureDefinition {
 
   private static <S extends Server> S reset(S server) {
     server.reset();
+    return server;
+  }
+
+  private static <S extends TestServer> S reset(S server) {
+    server.reset();
+    return server;
+  }
+
+  private static ProxyServer reset(ProxyServer server) {
+    server.reset();
+    return server;
+  }
+
+  private static Path assetsDir() {
+    return Env.srcTestDir().resolve("assets");
+  }
+
+  private static Map<String, String> underTestEnv() {
+    Map<String, String> env = new HashMap<>();
+    env.put("PWTEST_UNDER_TEST", "1");
+    return env;
+  }
+
+  private static <S extends TestServer> S withHttpCache(S server) {
+    server.enableHTTPCache(assetsDir().resolve("cached"));
     return server;
   }
 

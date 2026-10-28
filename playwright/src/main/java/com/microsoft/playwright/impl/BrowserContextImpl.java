@@ -743,7 +743,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   void handleRoute(RouteImpl route) {
     Router.HandleResult handled = routes.handle(route);
     if (handled != Router.HandleResult.NoMatchingHandler) {
-      updateInterceptionPatterns();
+      try {
+        updateInterceptionPatterns();
+      } catch (PlaywrightException e) {
+        // Like the Node.js client, ignore the error when the page or the context was closed meanwhile.
+        if (!isSafeCloseError(e)) {
+          throw e;
+        }
+      }
     }
     if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
       route.resume(null, true);

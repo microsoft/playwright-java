@@ -107,7 +107,8 @@ class StackTraceCollector {
     // Find Playwright API call
     while (index < stack.length && stack[index].getClassName().startsWith("com.microsoft.playwright.")) {
       // hack for tests
-      if (stack[index].getClassName().startsWith("com.microsoft.playwright.Test")) {
+      if (stack[index].getClassName().startsWith("com.microsoft.playwright.Test")
+          || stack[index].getClassName().startsWith("com.microsoft.playwright.tests.")) {
         break;
       }
       index++;

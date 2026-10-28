@@ -22,24 +22,70 @@ import org.opentest4j.TestAbortedException;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The fixtures of one test invocation: resolves and caches test-scoped values, borrows a
  * {@link Worker} for the worker-scoped ones, and tears everything down when the test is over.
  */
 final class TestScope implements AutoCloseable {
+  // The method timeout does not cover the fixtures, and a hang there stops the whole run without a trace.
+  private static final long HANG_DUMP_MINUTES = 5;
+  private static final ScheduledThreadPoolExecutor hangWatchdog = new ScheduledThreadPoolExecutor(1, runnable -> {
+    Thread thread = new Thread(runnable, "test hang watchdog");
+    thread.setDaemon(true);
+    return thread;
+  });
+
+  // On JDK 8 the fork-join pool of JUnit adds a thread when a pool thread blocks, and the new thread starts
+  // another test: on the 3-core macOS runners about 30 tests ran at once and timed out. This keeps the tests
+  // that run at once to the parallelism of the configuration.
+  private static Semaphore running;
+
+  static {
+    hangWatchdog.setRemoveOnCancelPolicy(true);
+  }
+
   private final ExtensionContext context;
   private final FixtureRegistry registry;
   private final BrowserName browserName;
   private final FixtureValues values = new FixtureValues();
   private final Set<FixtureDefinition> resolving = new LinkedHashSet<>();
   private Worker worker;
+  private final ScheduledFuture<?> hangDump;
 
   TestScope(ExtensionContext context, FixtureRegistry registry, BrowserName browserName) {
     this.context = context;
     this.registry = registry;
     this.browserName = browserName;
+    running(context).acquireUninterruptibly();
+    hangDump = hangWatchdog.schedule(this::dumpThreads, HANG_DUMP_MINUTES, TimeUnit.MINUTES);
+  }
+
+  private static synchronized Semaphore running(ExtensionContext context) {
+    if (running == null) {
+      // The parallelism of the dynamic strategy of JUnit.
+      double factor = context.getConfigurationParameter("junit.jupiter.execution.parallel.config.dynamic.factor").map(Double::parseDouble).orElse(1.0);
+      running = new Semaphore(Math.max(1, (int) (factor * Runtime.getRuntime().availableProcessors())));
+    }
+    return running;
+  }
+
+  private void dumpThreads() {
+    StringBuilder dump = new StringBuilder("\n" + context.getRequiredTestClass().getName() + "." + context.getRequiredTestMethod().getName() + " " + context.getDisplayName()
+      + " is still running after " + HANG_DUMP_MINUTES + " minutes, the threads:\n");
+    for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+      dump.append('"').append(entry.getKey().getName()).append("\" ").append(entry.getKey().getState()).append('\n');
+      for (StackTraceElement frame : entry.getValue()) {
+        dump.append("\tat ").append(frame).append('\n');
+      }
+    }
+    System.out.println(dump);
   }
 
   <T> T get(Class<T> type) {
@@ -93,17 +139,22 @@ final class TestScope implements AutoCloseable {
   /** Closes the test fixtures and returns the worker; a failure to close any of them fails the test. */
   @Override
   public void close() throws Exception {
-    Teardown teardown = new Teardown();
-    values.close(teardown);
-    if (worker != null) {
-      // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
-      // browser or the Playwright instance in an unknown state.
-      boolean discard = teardown.failed()
-        || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException)).isPresent();
-      teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
-      worker = null;
+    try {
+      Teardown teardown = new Teardown();
+      values.close(teardown);
+      if (worker != null) {
+        // Like Playwright Test, do not reuse a worker after a failure: the test may have left the
+        // browser or the Playwright instance in an unknown state.
+        boolean discard = teardown.failed()
+          || context.getExecutionException().filter(e -> !(e instanceof TestAbortedException) || e instanceof ExpectedFailure).isPresent();
+        teardown.run(() -> WorkerPool.INSTANCE.release(worker, discard));
+        worker = null;
+      }
+      hangDump.cancel(false);
+      teardown.rethrow();
+    } finally {
+      running.release();
     }
-    teardown.rethrow();
   }
 
   private final class Resolver implements FixtureResolver {
@@ -142,6 +193,14 @@ final class TestScope implements AutoCloseable {
       }
       return context.getRequiredTestInstances().findInstance(declaringClass)
         .orElseThrow(() -> new IllegalStateException("No test instance of " + declaringClass.getName() + " to invoke " + from.describe()));
+    }
+
+    @Override
+    public ExtensionContext extensionContext() {
+      if (from.scope() == Scope.WORKER) {
+        throw new IllegalStateException("Worker-scoped " + from.describe() + " cannot depend on the test context");
+      }
+      return context;
     }
   }
 }

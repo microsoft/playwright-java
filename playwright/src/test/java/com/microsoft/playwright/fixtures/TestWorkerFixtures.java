@@ -23,6 +23,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.Isolated;
 
 import java.util.HashSet;
@@ -34,7 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Runs alone so that no other test class can evict the workers whose reuse it checks.
+// Runs alone and one test at a time, so that no other test can evict the workers whose reuse it checks.
+@Execution(ExecutionMode.SAME_THREAD)
 @Isolated
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestWorkerFixtures {

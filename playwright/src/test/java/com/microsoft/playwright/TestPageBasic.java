@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import java.util.ArrayList;
@@ -364,6 +365,8 @@ public class TestPageBasic {
   }
 
   @PlaywrightTest
+  // Not a @Fixme with a timeout: the paused call would keep reading the connection of the worker while the teardown uses it.
+  @Disabled("driver: with PWTEST_UNDER_TEST=1 the bundled driver pauses on page.pause() in headless mode until the inspector resumes, upstream 1.65 only pauses with the debugger enabled")
   void pagePauseShouldNotThrow(Page page) {
     page.pause();
   }

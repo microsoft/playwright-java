@@ -46,6 +46,8 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Driver.ensureDriverInstalled(env, true);
     try {
       ProcessBuilder pb = driver.createProcessBuilder();
+      // The driver is installed once per JVM with the env of the first instance, so add the env of this one.
+      pb.environment().putAll(env);
       pb.command().add("run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       Process p = pb.start();

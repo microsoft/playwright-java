@@ -50,6 +50,16 @@ public class TestPlaywrightCreate {
     }
   }
 
+  @PlaywrightTest
+  void shouldPassEnvToTheDriverOfEachInstance(BrowserName browserName, Playwright playwright, @TempDir Path browsersDir) {
+    // The playwright fixture has installed the driver with the env of another instance.
+    Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString()));
+    try (Playwright other = Playwright.create(options)) {
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> browserName.browserType(other).launch());
+      assertTrue(e.getMessage().contains(browsersDir.toString()), e.getMessage());
+    }
+  }
+
   // This test is too slow, so we don't run it.
   void shouldSupportEnvBrowsersPath(@TempDir Path browsersDir) throws IOException {
     Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString());

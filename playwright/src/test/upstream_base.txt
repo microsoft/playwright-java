@@ -1,0 +1,8 @@
+# The commit of microsoft/playwright (the checkout in ../playwright) that the port of tests/page
+# and tests/library is based on: upstream_registry.md is the tests/registry.md of that commit, and
+# the ported tests follow its spec files. The checkout is ahead of the driver this repo bundles.
+# To find the upstream changes that are still to port, run in ../playwright:
+#   git log <commit>..main --oneline -- tests/page tests/library tests/registry.md
+#   git diff <commit>..main -- tests/page tests/library tests/registry.md
+# and move this line forward together with the registry copy and the ports.
+8c1b148f3d73120aa90f10119920358062fda177 2026-10-25 docs(ci): align upload-artifact to v5 in CI guides (#43624)

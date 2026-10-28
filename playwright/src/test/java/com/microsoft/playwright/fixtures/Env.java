@@ -18,6 +18,9 @@ package com.microsoft.playwright.fixtures;
 
 import com.microsoft.playwright.BrowserType;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,9 +75,65 @@ public final class Env {
     return System.getenv("BROWSER_CHANNEL");
   }
 
+  /** The {@code isBidi} fixture: the channel drives the browser over WebDriver BiDi. */
+  public static boolean isBidi() {
+    String channel = channel();
+    return channel != null && (channel.startsWith("bidi-chrom") || channel.startsWith("moz-firefox"));
+  }
+
+  /** The {@code isHeadlessShell} fixture: Chromium runs as the headless shell rather than the full browser. */
+  public static boolean isHeadlessShell(BrowserName browserName) {
+    String channel = channel();
+    boolean isShell = "chromium-headless-shell".equals(channel) || (channel == null && !headed());
+    return browserName == BrowserName.CHROMIUM && isShell;
+  }
+
+  /** The {@code platform} fixture: {@code win32}, {@code darwin} or {@code linux}. */
+  public static String platform() {
+    return isWindows ? "win32" : isMac ? "darwin" : "linux";
+  }
+
+  /** The {@code macVersion} fixture: the major macOS version, 0 elsewhere. */
+  public static int macVersion() {
+    if (!isMac) {
+      return 0;
+    }
+    return Integer.parseInt(System.getProperty("os.version").split("\\.")[0]);
+  }
+
+  /**
+   * {@code playwright/src/test}, where the assets, config and snapshots directories live. Found
+   * from the {@code playwright.test.dir} system property or by walking up from the working
+   * directory, so tests run from the module, the repository root or an IDE.
+   */
+  public static Path srcTestDir() {
+    String property = System.getProperty("playwright.test.dir");
+    if (property != null) {
+      return Paths.get(property).toAbsolutePath();
+    }
+    Path start = Paths.get("").toAbsolutePath();
+    for (Path dir = start; dir != null; dir = dir.getParent()) {
+      for (String candidate : new String[]{"src/test", "playwright/src/test"}) {
+        Path testDir = dir.resolve(candidate);
+        if (Files.isDirectory(testDir.resolve("assets"))) {
+          return testDir;
+        }
+      }
+    }
+    throw new IllegalStateException("Cannot find playwright/src/test from " + start + "; set -Dplaywright.test.dir");
+  }
+
   /** Fresh launch options honoring {@link #headed()} and {@link #channel()}. */
   public static BrowserType.LaunchOptions launchOptions() {
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+    options.headless = !headed();
+    options.channel = channel();
+    return options;
+  }
+
+  /** Fresh persistent context launch options honoring {@link #headed()} and {@link #channel()}. */
+  public static BrowserType.LaunchPersistentContextOptions launchPersistentContextOptions() {
+    BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions();
     options.headless = !headed();
     options.channel = channel();
     return options;

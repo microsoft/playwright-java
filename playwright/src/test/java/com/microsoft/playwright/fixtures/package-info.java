@@ -35,11 +35,29 @@
  *       or {@link com.microsoft.playwright.fixtures.EnabledOnBrowser}; dynamic conditions use JUnit assumptions.</li>
  *   <li>Tests generated in a {@code for} loop are a {@code @Nested @ParameterizedClass} whose
  *       {@code @Parameter} field is read by a {@code @Fixture} method.</li>
+ *   <li>The test server ({@code tests/config/testserver}) is {@link com.microsoft.playwright.fixtures.TestServer}
+ *       and {@link com.microsoft.playwright.fixtures.HttpsTestServer}, serving {@code src/test/assets};
+ *       {@code testInfo} is {@link com.microsoft.playwright.fixtures.TestInfo}; the function fixtures
+ *       {@code contextFactory}, {@code launchPersistent}, {@code createUserDataDir} and {@code pageWithHar}
+ *       are the classes of those names; {@code tests/config/utils.ts} is {@link com.microsoft.playwright.fixtures.Utils};
+ *       {@code tests/config/commonFixtures.ts} is {@link com.microsoft.playwright.fixtures.TestChildProcess} and
+ *       {@link com.microsoft.playwright.fixtures.ChildProcessFactory}; {@code tests/config/proxy.ts} and
+ *       {@code tests/config/mockSocksServer.ts} are {@link com.microsoft.playwright.fixtures.ProxyServer} and
+ *       {@link com.microsoft.playwright.fixtures.MockSocksServer}; {@code tests/config/remoteServer.ts} is
+ *       {@link com.microsoft.playwright.fixtures.StartRemoteServer} with {@link com.microsoft.playwright.fixtures.PlaywrightServer}
+ *       and {@link com.microsoft.playwright.fixtures.RunServer}; the image comparator of
+ *       {@code toMatchSnapshot} is {@link com.microsoft.playwright.fixtures.ImageComparator}.</li>
+ *   <li>A port that fails because of a known gap of the Java client carries
+ *       {@link com.microsoft.playwright.fixtures.Fixme}, a strict expected failure.</li>
  * </ul>
  *
+ * <p>The rules for porting the upstream tests with these fixtures are in {@code src/test/AGENTS.md}.
+ *
  * <h2>Threading</h2>
- * Playwright objects are not thread-safe, so every worker is used by a single test at a time and tests
- * only touch the fixtures they were given. Workers are pooled rather than bound to threads because
+ * Playwright objects are not thread-safe, so every worker is used by a single test at a time, tests
+ * only touch the fixtures they were given, and a test calls Playwright from its own thread only (event
+ * and route handlers run on it, inside the call that pumps the messages); the test servers run on
+ * threads of their own and never call Playwright. Workers are pooled rather than bound to threads because
  * JUnit's fork-join executor may add or retire threads; sequential use from different threads is safe.
  * Each test thread runs a test in every browser one after another, so the pool keeps a worker per
  * browser for every thread. Errors while closing fixtures fail the test that used them, or the whole

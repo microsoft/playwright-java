@@ -20,9 +20,13 @@ import com.microsoft.playwright.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Compares the fixtures of @BeforeAll with those of the tests, which are per thread.
+@Execution(ExecutionMode.SAME_THREAD)
 @UsePlaywright
 public class TestFixtures {
   private static Playwright playwrightFromBeforeAll;

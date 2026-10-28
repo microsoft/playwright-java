@@ -46,6 +46,7 @@ public final class PlaywrightExtension implements TestTemplateInvocationContextP
   @Override
   public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
     context.getRoot().getStore(NAMESPACE).getOrComputeIfAbsent(PoolCloser.class, key -> new PoolCloser(), PoolCloser.class);
-    return Env.browserNames().stream().map(BrowserInvocation::new);
+    Fixme[] fixmes = context.getRequiredTestMethod().getAnnotationsByType(Fixme.class);
+    return Env.browserNames().stream().map(browserName -> new BrowserInvocation(browserName, fixmes));
   }
 }
