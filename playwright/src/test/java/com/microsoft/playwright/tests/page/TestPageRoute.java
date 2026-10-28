@@ -291,26 +291,26 @@ public class TestPageRoute {
     page.navigate(server.EMPTY_PAGE);
     Route[] routePromise = {null};
     page.route("**/global-var.html", route -> routePromise[0] = route);
-    // Java: the synchronous request blocks the page, so it is started from a page timer and its status
-    // is kept on window; the evaluate returns at once and the route stays pending.
-    CompletableFuture<TestServer.Request> serverRequest = server.waitForRequest("/global-var.html");
+    boolean[] xhrFinished = {false};
+    page.onRequestFinished(request -> {
+      if (request.url().endsWith("/global-var.html"))
+        xhrFinished[0] = true;
+    });
+    // The synchronous request blocks the page, so it is started from a timer.
     page.evaluate("() => {\n" +
-      "  window.__status = undefined;\n" +
-      "  setTimeout(() => {\n" +
+      "  window.__statusPromise = new Promise(resolve => setTimeout(() => {\n" +
       "    const request = new XMLHttpRequest();\n" +
       "    request.open('GET', '/global-var.html', false);  // `false` makes the request synchronous\n" +
       "    request.send(null);\n" +
-      "    window.__status = request.status;\n" +
-      "  }, 0);\n" +
+      "    resolve(request.status);\n" +
+      "  }, 0));\n" +
       "}");
     page.waitForCondition(() -> routePromise[0] != null);
     // Check that intercepted request is actually paused.
-    // Java: the page is blocked by the synchronous request, so the check is that the server has not seen it.
     page.waitForTimeout(500);
-    assertFalse(serverRequest.isDone());
+    assertFalse(xhrFinished[0]);
     routePromise[0].resume();
-    page.waitForFunction("() => window.__status !== undefined");
-    assertEquals(200, page.evaluate("() => window.__status"));
+    assertEquals(200, page.evaluate("() => window.__statusPromise"));
   }
 
   @PlaywrightTest
@@ -319,8 +319,6 @@ public class TestPageRoute {
     page.navigate(server.EMPTY_PAGE);
     Route[] routePromise = {null};
     page.route("**/global-var.html", route -> routePromise[0] = route);
-    // Java: the fetch is started in the page and its promise kept on window, so that the evaluate returns
-    // while the route is pending; the promise is awaited by a second evaluate.
     page.evaluate("() => {\n" +
       "  window.__fetchFinished = false;\n" +
       "  window.__statusPromise = fetch('/global-var.html').then(response => {\n" +
@@ -333,8 +331,7 @@ public class TestPageRoute {
     page.waitForTimeout(500);
     assertEquals(false, page.evaluate("() => window.__fetchFinished"));
     routePromise[0].resume();
-    Object status = page.evaluate("() => window.__statusPromise");
-    assertEquals(200, status);
+    assertEquals(200, page.evaluate("() => window.__statusPromise"));
   }
 
   @PlaywrightTest

@@ -142,8 +142,6 @@ public class TestPageRequestFulfill {
     Route[] interceptedRoute = {null};
     page.route("**/data.json", route -> interceptedRoute[0] = route);
     page.navigate(server.EMPTY_PAGE);
-    // Java: upstream does not await the evaluate; the fetch is started in the page without returning
-    // its promise, so that evaluate returns while the route is pending.
     page.evaluate("url => {\n" +
       "  globalThis.controller = new AbortController();\n" +
       "  fetch(url, { signal: globalThis.controller.signal }).catch(() => {});\n" +

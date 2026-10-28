@@ -572,7 +572,6 @@ public class TestPageDrag {
     assumeFalse(browserName == BrowserName.WEBKIT && OS.WINDOWS.isCurrentOs(), "fixme");
     page.setContent("<button draggable=\"true\">Draggable</button>");
 
-    // Java: the promise is kept on window and awaited after the drag, so that the evaluate returns at once.
     page.evaluate("() => {\n" +
       "  window.__result = new Promise(resolve => {\n" +
       "    document.addEventListener('dragstart', event => {\n" +

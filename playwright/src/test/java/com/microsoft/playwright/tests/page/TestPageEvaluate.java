@@ -632,16 +632,14 @@ public class TestPageEvaluate {
   @PlaywrightTest
   @DisplayName("EV-063 should throw a nice error after a navigation")
   void shouldThrowANiceErrorAfterANavigation(Page page) {
-    // Java: the first evaluate blocks, so the reload that upstream triggers with a second evaluate
-    // is scheduled from the page before the promise is returned.
-    PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.evaluate("() => {\n" +
-      "  setTimeout(() => {\n" +
-      "    window.location.reload();\n" +
-      "    setTimeout(() => window['__resolve'](42), 1000);\n" +
-      "  }, 0);\n" +
-      "  return new Promise(f => window['__resolve'] = f);\n" +
-      "}"));
-    assertTrue(error.getMessage().contains("navigation"), error.getMessage());
+    PlaywrightException[] error = {null};
+    page.waitForNavigation(() -> {
+      error[0] = assertThrows(PlaywrightException.class, () -> page.evaluate("() => new Promise(f => setTimeout(() => {\n" +
+        "  window.location.reload();\n" +
+        "  setTimeout(() => f(42), 1000);\n" +
+        "}, 0))"));
+    });
+    assertTrue(error[0].getMessage().contains("navigation"), error[0].getMessage());
   }
 
   @PlaywrightTest
