@@ -141,7 +141,12 @@ public class TestClick {
   void shouldClickOffscreenButtons(Page page, Server server) {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
-    page.onConsoleMessage(message -> messages.add(message.text()));
+    // Only log messages, Chrome can log the 404 error of /favicon.ico while the test runs.
+    page.onConsoleMessage(message -> {
+      if ("log".equals(message.type())) {
+        messages.add(message.text());
+      }
+    });
     for (int i = 0; i < 11; ++i) {
       // We might've scrolled to click a button - reset to (0, 0).
       page.evaluate("() => window.scrollTo(0, 0)");

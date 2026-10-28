@@ -223,7 +223,7 @@ public class TestPageClick {
   void shouldClickOffscreenButtons(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
-    // Java: only log messages, Edge on macOS can log the 404 error of /favicon.ico first.
+    // Java: only log messages, Chrome can log the 404 error of /favicon.ico while the test runs.
     page.onConsoleMessage(msg -> {
       if ("log".equals(msg.type())) {
         messages.add(msg.text());
@@ -1087,7 +1087,12 @@ public class TestPageClick {
       "  document.addEventListener('contextmenu', logEvent);\n" +
       "}");
     List<String> entries = new ArrayList<>();
-    page.onConsoleMessage(message -> entries.add(message.text()));
+    // Java: only log messages, Chrome can log the 404 error of /favicon.ico while the test runs.
+    page.onConsoleMessage(message -> {
+      if ("log".equals(message.type())) {
+        entries.add(message.text());
+      }
+    });
     page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Click me")).click(new Locator.ClickOptions().setButton(MouseButton.RIGHT));
     if (browserName == BrowserName.CHROMIUM && Env.isWindows) {
       expectPollToEqual(page, () -> entries, Arrays.asList("mousedown", "mouseup", "contextmenu"));
