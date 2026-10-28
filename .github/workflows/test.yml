@@ -24,7 +24,7 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-    - uses: microsoft/playwright/.github/actions/test-env@main
+    - uses: microsoft/playwright/.github/actions/ci-env@main
     - name: Set up JDK 1.8
       uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
       with:
@@ -38,11 +38,11 @@ jobs:
     - name: Install browsers
       run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
     - name: Run tests
-      run: $EXEC mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+      run: $CI_ENV_EXEC mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Run tracing tests w/ sources
-      run: $EXEC mvn test --no-transfer-progress --fail-at-end --projects=playwright -D test=*TestTracing* -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+      run: $CI_ENV_EXEC mvn test --no-transfer-progress --fail-at-end --projects=playwright -D test=*TestTracing* -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
         PLAYWRIGHT_JAVA_SRC: src/test/java
@@ -71,7 +71,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: microsoft/playwright/.github/actions/test-env@main
+      - uses: microsoft/playwright/.github/actions/ci-env@main
       - name: Install Media Pack
         if: runner.os == 'Windows'
         shell: powershell
@@ -89,7 +89,7 @@ jobs:
       - name: Install browsers
         run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
       - name: Run tests
-        run: $EXEC mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+        run: $CI_ENV_EXEC mvn test --no-transfer-progress --fail-at-end ${{ runner.os == 'Windows' && '-D junit.parallel.factor=0.25' || '' }} -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
@@ -103,7 +103,7 @@ jobs:
     runs-on: playwright-x64-ubuntu24-64-core
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: microsoft/playwright/.github/actions/test-env@main
+      - uses: microsoft/playwright/.github/actions/ci-env@main
       - name: Set up JDK 25
         uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
         with:
@@ -120,7 +120,7 @@ jobs:
       - name: Install browsers
         run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
       - name: Run tests
-        run: $EXEC mvn test --no-transfer-progress --fail-at-end
+        run: $CI_ENV_EXEC mvn test --no-transfer-progress --fail-at-end
         env:
           BROWSER: ${{ matrix.browser }}
       - name: Test Spring Boot Starter
