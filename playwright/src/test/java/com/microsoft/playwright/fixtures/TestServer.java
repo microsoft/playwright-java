@@ -414,6 +414,10 @@ public class TestServer implements AutoCloseable {
     try {
       if (handler != null) {
         handler.handle(request, response);
+      } else if (pathWithSearch.equals("/favicon.ico")) {
+        // Java: headless Chrome requests the favicon after a load and logs a 404 to the console of the page.
+        response.statusCode = 204;
+        response.end();
       } else {
         serveFile(request, response);
       }

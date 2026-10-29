@@ -555,7 +555,9 @@ public class TestOopif {
   }
 
   private static List<String> dumpFrames(Frame frame, String indent) {
-    assertEquals(frame.url(), frame.evaluate("() => '' + location.href"));
+    // Java: the URL is read after the evaluate, as upstream does; the frame of a new OOPIF gets it with its context.
+    Object href = frame.evaluate("() => '' + location.href");
+    assertEquals(frame.url(), href);
     List<String> result = new ArrayList<>();
     result.add(indent + frame.url());
     for (Frame child : frame.childFrames())

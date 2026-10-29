@@ -223,12 +223,7 @@ public class TestPageClick {
   void shouldClickOffscreenButtons(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
-    // Java: only log messages, Edge on macOS can log the 404 error of /favicon.ico first.
-    page.onConsoleMessage(msg -> {
-      if ("log".equals(msg.type())) {
-        messages.add(msg.text());
-      }
-    });
+    page.onConsoleMessage(msg -> messages.add(msg.text()));
     for (int i = 0; i < 11; ++i) {
       // We might've scrolled to click a button - reset to (0, 0).
       page.evaluate("() => window.scrollTo(0, 0)");

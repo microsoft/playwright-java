@@ -196,6 +196,12 @@ public class Server implements HttpHandler {
       handler.handle(exchange);
       return;
     }
+    // Headless Chrome requests the favicon after a load and logs a 404 to the console of the page.
+    if ("/favicon.ico".equals(path)) {
+      exchange.sendResponseHeaders(204, -1);
+      exchange.close();
+      return;
+    }
 
     if (csp.containsKey(path)) {
       exchange.getResponseHeaders().add("Content-Security-Policy", csp.get(path));

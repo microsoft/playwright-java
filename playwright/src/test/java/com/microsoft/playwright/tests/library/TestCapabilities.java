@@ -190,17 +190,15 @@ public class TestCapabilities {
     page.navigate(server.EMPTY_PAGE);
     // "User activation is required to show a file picker." - so we click first.
     page.locator("body").click();
-    // Java: upstream does not await the evaluate; the picker is opened from the page without returning its promise.
     page.evaluate("() => {\n" +
-      "  window.__picker = (async () => {\n" +
-      "    const dir = await window.showDirectoryPicker();\n" +
-      "    return dir.name;\n" +
-      "    // In headless it throws (aborted), in headed it stalls (Test ended) and waits for the picker to be accepted.\n" +
-      "  })().catch(e => e.message);\n" +
+      "  window.showDirectoryPicker().catch(e => { window.__pickerError = String(e); });\n" +
       "}");
     // The dialog will not be accepted, so we just wait for some time to
     // to give the browser a chance to crash.
     page.waitForTimeout(3_000);
+    // In headless it throws (aborted), in headed it stalls and waits for the picker to be accepted.
+    String error = (String) page.evaluate("() => window.__pickerError ?? 'stalled'");
+    assertTrue(Pattern.compile("((DOMException|AbortError): .*The user aborted a request|stalled)").matcher(error).find(), error);
   }
 
   @PlaywrightTest
