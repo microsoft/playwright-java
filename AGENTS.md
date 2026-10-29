@@ -4,6 +4,32 @@ The Java client is a port of the JavaScript client in `../playwright/packages/pl
 
 Project checkouts (including the upstream `playwright` repo) live in the parent directory (`../`). Use the `gh` cli to interact with GitHub.
 
+## Build and test
+
+```bash
+scripts/download_driver.sh                           # the driver, once per DRIVER_VERSION
+mvn -B install -D skipTests --no-transfer-progress   # build and install every module
+mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
+BROWSER=chromium mvn test -f playwright/pom.xml -D test=TestPageScreenshot --no-transfer-progress
+```
+
+- `mvn test -f playwright/pom.xml` compiles the `playwright` module and its tests, so a change in `playwright/src/main/` needs no separate build step. After a change in `driver/` or `driver-bundle/`, run `mvn -B install -D skipTests --no-transfer-progress -f <module>/pom.xml` first: the `playwright` module takes those modules from the local Maven repository.
+- The project targets Java 8. CI builds with JDK 8 (Zulu) and JDK 25. Do not use a newer language feature or library API.
+- There is no lint or format check. The style is the Google Java Style with a two-space indent, and without comments. When you change a file under `playwright/src/test/java/com/microsoft/playwright/tests/`, run `python3 scripts/check_test_registry.py`.
+- `-D test=<Class>` runs one class, `-D test=<Class>#<method>` one method. `BROWSER` is a comma-separated list of `chromium`, `firefox` and `webkit`; unset, it runs all three. `HEADED=1` runs headed. A filter that matches no test passes with `Tests run: 0`, so check the count. Each test method has a 120 second timeout, set in the root `pom.xml`. Do not set `PW_MAX_RETRIES`, which reruns a failed test; CI sets it to 3. The reports are in `playwright/target/surefire-reports/`.
+
+## Tests
+
+The tests are in `playwright/src/test/java/com/microsoft/playwright/`. A test is a `@PlaywrightTest` method that takes the fixtures it needs as parameters, resolved by type: `Page page`, `BrowserContext context`, `Browser browser`, `BrowserType browserType`, `Playwright playwright`, `BrowserName browserName`, `Server server`, `HttpsServer httpsServer` and `@TempDir Path`. The method runs once per selected browser, with a context and a page of its own; the browser and the servers are shared. A class overrides options with `@Fixture` methods, and skips a browser with `@DisabledOnBrowser` or `@EnabledOnBrowser`. Drive the page with `page.setContent(...)` or `page.navigate(server.PREFIX + "/...")`, and the server with `server.setRoute(...)`, `server.setRedirect(...)`, `server.futureRequest(...)` and `server.EMPTY_PAGE`.
+
+| Directory | Use for |
+|-----------|---------|
+| `com/microsoft/playwright/` | the Java-only tests, one class per feature (`TestPageScreenshot`, `TestBrowserContextHar`). A regression test for a bug of the Java client goes here, in the class that owns the feature, as one added case. |
+| `com/microsoft/playwright/tests/page/`, `tests/library/` | line-by-line ports of upstream `tests/page` and `tests/library`, one class per spec file (`TestPageCheck` for `page-check.spec.ts`), each test titled `@DisplayName("CH-001 ...")` with the upstream identifier. Do not add a test or an assertion that upstream does not have. When the port that covers a bug carries `@Fixme("java: ...")`, the fix removes the mark, and that port is the regression test. `playwright/src/test/AGENTS.md` has the rules. |
+| `com/microsoft/playwright/junit/` | the public JUnit extension, `@UsePlaywright` |
+
+Tag a regression test with the issue as the Java-only tests do: a comment with the full URL on the first line of the test body, `// https://github.com/microsoft/playwright-java/issues/<n>`. Good models: `TestBrowserContextExposeFunction`, `shouldNotDispatchBindingOnAClosedPage` (a binding, a popup and a context of its own in a try-with-resources block); `TestTracing`, `shouldRecoverTracingAfterAFailedStop` (a tagged test with `@TempDir` on `context.tracing()`).
+
 ## Commit Convention
 
 Semantic commit messages: `label(scope): description`
