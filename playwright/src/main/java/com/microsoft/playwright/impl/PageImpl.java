@@ -623,14 +623,13 @@ public class PageImpl extends ChannelOwner implements Page {
       return;
     }
     AddLocatorHandlerOptions finalOptions = options;
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", locatorImpl.selector);
+    PageRegisterLocatorHandlerParams params = new PageRegisterLocatorHandlerParams();
+    params.selector = locatorImpl.selector;
     if (finalOptions.noWaitAfter != null && finalOptions.noWaitAfter) {
-      params.addProperty("noWaitAfter", true);
+      params.noWaitAfter = true;
     }
-    params.addProperty("selector", locatorImpl.selector);
-    JsonObject json = (JsonObject) sendMessage("registerLocatorHandler", params, NO_TIMEOUT);
-    int uid = json.get("uid").getAsInt();
+    PageRegisterLocatorHandlerResult json = channel.registerLocatorHandler(params, NO_TIMEOUT);
+    int uid = json.uid;
     locatorHandlers.put(uid, new LocatorHandler(locator, handler, finalOptions.times));
   }
 
@@ -639,10 +638,10 @@ public class PageImpl extends ChannelOwner implements Page {
     for (Map.Entry<Integer, LocatorHandler> entry: locatorHandlers.entrySet()) {
       if (entry.getValue().locator.equals(locator)) {
         locatorHandlers.remove(locator);
-        JsonObject params = new JsonObject();
-        params.addProperty("uid", entry.getKey());
+        PageUnregisterLocatorHandlerParams params = new PageUnregisterLocatorHandlerParams();
+        params.uid = entry.getKey();
         try {
-          sendMessage("unregisterLocatorHandler", params, NO_TIMEOUT);
+          channel.unregisterLocatorHandler(params, NO_TIMEOUT);
         } catch (PlaywrightException e) {
         }
       }
@@ -658,10 +657,10 @@ public class PageImpl extends ChannelOwner implements Page {
       if (remove) {
         locatorHandlers.remove(uid);
       }
-      JsonObject params = new JsonObject();
-      params.addProperty("uid", uid);
-      params.addProperty("remove", remove);
-      sendMessageAsync("resolveLocatorHandlerNoReply", params);
+      PageResolveLocatorHandlerNoReplyParams params = new PageResolveLocatorHandlerNoReplyParams();
+      params.uid = uid;
+      params.remove = remove;
+      sendMessageAsync("resolveLocatorHandlerNoReply", connection.protocolGson().toJsonTree(params).getAsJsonObject());
     }
   }
 
@@ -670,9 +669,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject result = mainFrame.sendMessage("ariaSnapshot", params, mainFrame.timeout(options.timeout)).getAsJsonObject();
-    return result.get("snapshot").getAsString();
+    FrameAriaSnapshotParams params = toProtocol(options, FrameAriaSnapshotParams.class);
+    return mainFrame.channel.ariaSnapshot(params, mainFrame.timeout(options.timeout)).snapshot;
   }
 
   @Override
@@ -703,10 +701,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private AutoCloseable addInitScriptImpl(String script) {
-    JsonObject params = new JsonObject();
-    params.addProperty("source", script);
-    JsonObject result = sendMessage("addInitScript", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    PageAddInitScriptParams params = new PageAddInitScriptParams();
+    params.source = script;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -791,10 +788,9 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     bindings.put(name, playwrightBinding);
 
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    return channel.exposeBinding(params, NO_TIMEOUT).disposable;
   }
 
   @Override
