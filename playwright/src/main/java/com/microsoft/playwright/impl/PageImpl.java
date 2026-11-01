@@ -41,6 +41,7 @@ import static java.util.Arrays.asList;
 public class PageImpl extends ChannelOwner implements Page {
   final BrowserContextImpl browserContext;
   private final FrameImpl mainFrame;
+  final PageChannel channel;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
@@ -135,6 +136,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (initializer.has("viewportSize")) {
       viewport = gson().fromJson(initializer.get("viewportSize"), ViewportSize.class);
     }
+    channel = new PageChannel(this);
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);

@@ -73,7 +73,8 @@ public class Utils {
         try {
           Field fromField = f.getClass().getDeclaredField(toField.getName());
           Object value = fromField.get(f);
-          if (value != null) {
+          // Fields of a different type (e.g. an options enum vs a protocol string) are set by the caller.
+          if (value != null && toField.getType().isInstance(value)) {
             toField.set(result, value);
           }
         } catch (NoSuchFieldException e) {

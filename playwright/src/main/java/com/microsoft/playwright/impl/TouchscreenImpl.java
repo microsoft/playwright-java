@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.Touchscreen;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
@@ -25,14 +24,14 @@ class TouchscreenImpl implements Touchscreen {
   private final PageImpl page;
 
   TouchscreenImpl(PageImpl page) {
-      this.page = page;
-    }
+    this.page = page;
+  }
 
   @Override
   public void tap(double x, double y) {
-    JsonObject params = new JsonObject();
-    params.addProperty("x", x);
-    params.addProperty("y", y);
-    page.sendMessage("touchscreenTap", params, NO_TIMEOUT);
+    PageTouchscreenTapParams params = new PageTouchscreenTapParams();
+    params.x = x;
+    params.y = y;
+    page.channel.touchscreenTap(params, NO_TIMEOUT);
   }
 }
