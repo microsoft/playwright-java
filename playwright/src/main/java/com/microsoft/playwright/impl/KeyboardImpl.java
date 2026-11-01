@@ -19,7 +19,7 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.Keyboard;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class KeyboardImpl implements Keyboard {
   private final PageImpl page;
@@ -48,10 +48,7 @@ class KeyboardImpl implements Keyboard {
   }
 
   private void pressImpl(String key, PressOptions options) {
-    PageKeyboardPressParams params = convertType(options, PageKeyboardPressParams.class);
-    if (params == null) {
-      params = new PageKeyboardPressParams();
-    }
+    PageKeyboardPressParams params = toProtocol(options, PageKeyboardPressParams.class);
     params.key = key;
     page.channel.keyboardPress(params, NO_TIMEOUT);
   }
@@ -62,10 +59,7 @@ class KeyboardImpl implements Keyboard {
   }
 
   private void typeImpl(String text, TypeOptions options) {
-    PageKeyboardTypeParams params = convertType(options, PageKeyboardTypeParams.class);
-    if (params == null) {
-      params = new PageKeyboardTypeParams();
-    }
+    PageKeyboardTypeParams params = toProtocol(options, PageKeyboardTypeParams.class);
     params.text = text;
     page.channel.keyboardType(params, NO_TIMEOUT);
   }

@@ -73,8 +73,7 @@ public class Utils {
         try {
           Field fromField = f.getClass().getDeclaredField(toField.getName());
           Object value = fromField.get(f);
-          // Fields of a different type (e.g. an options enum vs a protocol string) are set by the caller.
-          if (value != null && toField.getType().isInstance(value)) {
+          if (value != null) {
             toField.set(result, value);
           }
         } catch (NoSuchFieldException e) {
@@ -85,6 +84,18 @@ public class Utils {
     } catch (Exception e) {
       throw new PlaywrightException("Internal error", e);
     }
+  }
+
+  /** Copies public API options into a generated protocol params class with the same Gson that serializes them on the wire. */
+  static <T> T toProtocol(Object options, Class<T> paramsClass) {
+    if (options == null) {
+      try {
+        return paramsClass.getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        throw new PlaywrightException("Internal error", e);
+      }
+    }
+    return Serialization.gson().fromJson(Serialization.gson().toJsonTree(options), paramsClass);
   }
 
   public static <T> T clone(T f) {

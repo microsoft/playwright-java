@@ -17,10 +17,10 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.Mouse;
-import com.microsoft.playwright.options.MouseButton;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class MouseImpl implements Mouse {
   private final PageImpl page;
@@ -29,19 +29,9 @@ class MouseImpl implements Mouse {
     this.page = page;
   }
 
-  private static String toProtocol(MouseButton button) {
-    return button == null ? null : button.name().toLowerCase();
-  }
-
   @Override
   public void click(double x, double y, ClickOptions options) {
-    PageMouseClickParams params = convertType(options, PageMouseClickParams.class);
-    if (params == null) {
-      params = new PageMouseClickParams();
-    }
-    if (options != null) {
-      params.button = toProtocol(options.button);
-    }
+    PageMouseClickParams params = toProtocol(options, PageMouseClickParams.class);
     params.x = x;
     params.y = y;
     page.channel.mouseClick(params, NO_TIMEOUT);
@@ -65,22 +55,13 @@ class MouseImpl implements Mouse {
 
   @Override
   public void down(DownOptions options) {
-    PageMouseDownParams params = convertType(options, PageMouseDownParams.class);
-    if (params == null) {
-      params = new PageMouseDownParams();
-    }
-    if (options != null) {
-      params.button = toProtocol(options.button);
-    }
+    PageMouseDownParams params = toProtocol(options, PageMouseDownParams.class);
     page.channel.mouseDown(params, NO_TIMEOUT);
   }
 
   @Override
   public void move(double x, double y, MoveOptions options) {
-    PageMouseMoveParams params = convertType(options, PageMouseMoveParams.class);
-    if (params == null) {
-      params = new PageMouseMoveParams();
-    }
+    PageMouseMoveParams params = toProtocol(options, PageMouseMoveParams.class);
     params.x = x;
     params.y = y;
     page.channel.mouseMove(params, NO_TIMEOUT);
@@ -88,13 +69,7 @@ class MouseImpl implements Mouse {
 
   @Override
   public void up(UpOptions options) {
-    PageMouseUpParams params = convertType(options, PageMouseUpParams.class);
-    if (params == null) {
-      params = new PageMouseUpParams();
-    }
-    if (options != null) {
-      params.button = toProtocol(options.button);
-    }
+    PageMouseUpParams params = toProtocol(options, PageMouseUpParams.class);
     page.channel.mouseUp(params, NO_TIMEOUT);
   }
 
