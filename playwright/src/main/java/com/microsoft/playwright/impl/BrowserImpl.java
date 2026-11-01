@@ -48,6 +48,8 @@ class BrowserImpl extends ChannelOwner implements Browser {
     DISCONNECTED,
   }
 
+  final ProtocolBrowserChannel channel = new ProtocolBrowserChannel(this);
+
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

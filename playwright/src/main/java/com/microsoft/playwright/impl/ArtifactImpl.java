@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.impl.Utils.writeToFile;
 
 class ArtifactImpl extends ChannelOwner {
+  final ArtifactChannel channel = new ArtifactChannel(this);
+
   public ArtifactImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

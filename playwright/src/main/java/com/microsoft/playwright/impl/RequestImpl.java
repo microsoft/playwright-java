@@ -52,6 +52,8 @@ public class RequestImpl extends ChannelOwner implements Request {
     Map<String, String> headers;
   }
 
+  final RequestChannel channel = new RequestChannel(this);
+
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 

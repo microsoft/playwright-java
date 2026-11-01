@@ -35,6 +35,8 @@ class JsonPipe extends ChannelOwner implements Transport {
   private boolean isClosed;
   private String closeReason = "Browser has been closed";
 
+  final JsonPipeChannel channel = new JsonPipeChannel(this);
+
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

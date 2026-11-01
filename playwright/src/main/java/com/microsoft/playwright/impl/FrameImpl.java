@@ -49,6 +49,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
   boolean isDetached;
   private final WebMCPImpl webmcp = new WebMCPImpl(this);
 
+  final FrameChannel channel = new FrameChannel(this);
+
   FrameImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 

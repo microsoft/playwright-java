@@ -38,6 +38,8 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     SOCKETERROR,
   }
 
+  final WebSocketChannel channel = new WebSocketChannel(this);
+
   WebSocketImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     page = (PageImpl) parent;

@@ -40,6 +40,9 @@ import static com.microsoft.playwright.impl.Utils.addFilePathUploadParams;
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   private final FrameImpl frame;
 
+  // Hides JSHandleImpl.channel on purpose: upstream ElementHandle narrows the type of _channel the same way.
+  final ElementHandleChannel channel = new ElementHandleChannel(this);
+
   ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.frame = (FrameImpl)parent;

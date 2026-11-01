@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 class WritableStream extends ChannelOwner {
+  final WritableStreamChannel channel = new WritableStreamChannel(this);
+
   WritableStream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

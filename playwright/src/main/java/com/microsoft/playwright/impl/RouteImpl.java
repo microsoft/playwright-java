@@ -36,6 +36,8 @@ public class RouteImpl extends ChannelOwner implements Route {
   boolean fallbackCalled;
   boolean shouldResumeIfFallbackIsCalled;
 
+  final RouteChannel channel = new RouteChannel(this);
+
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());

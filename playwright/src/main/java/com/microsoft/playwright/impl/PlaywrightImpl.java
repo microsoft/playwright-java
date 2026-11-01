@@ -66,6 +66,8 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final APIRequestImpl apiRequest;
   protected SelectorsImpl selectors;
 
+  final PlaywrightChannel channel = new PlaywrightChannel(this);
+
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());

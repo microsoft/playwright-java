@@ -90,6 +90,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     RESPONSE,
   }
 
+  final BrowserContextChannel channel = new BrowserContextChannel(this);
+
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());

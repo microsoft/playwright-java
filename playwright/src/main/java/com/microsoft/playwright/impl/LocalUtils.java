@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class LocalUtils extends ChannelOwner {
+  final LocalUtilsChannel channel = new LocalUtilsChannel(this);
+
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

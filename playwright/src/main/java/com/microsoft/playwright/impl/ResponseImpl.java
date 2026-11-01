@@ -38,6 +38,8 @@ public class ResponseImpl extends ChannelOwner implements Response {
   private RawHeaders rawHeaders;
   final RequestImpl request;
 
+  final ResponseChannel channel = new ResponseChannel(this);
+
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));

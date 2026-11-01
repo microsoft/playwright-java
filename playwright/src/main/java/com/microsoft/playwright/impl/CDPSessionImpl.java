@@ -31,6 +31,8 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     CLOSE,
   }
 
+  final CDPSessionChannel channel = new CDPSessionChannel(this);
+
   protected CDPSessionImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

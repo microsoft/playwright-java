@@ -24,6 +24,8 @@ import java.util.Base64;
 
 public class Stream extends ChannelOwner {
   private final InputStream stream = new InputStreamImpl();
+  final StreamChannel channel = new StreamChannel(this);
+
   public Stream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

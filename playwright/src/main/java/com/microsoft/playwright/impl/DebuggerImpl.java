@@ -30,6 +30,8 @@ class DebuggerImpl extends ChannelOwner implements Debugger {
   private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
   private DebuggerPausedDetails pausedDetails;
 
+  final DebuggerChannel channel = new DebuggerChannel(this);
+
   DebuggerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

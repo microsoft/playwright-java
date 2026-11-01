@@ -45,6 +45,8 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   protected TimeoutSettings timeoutSettings = new TimeoutSettings();
 
+  final APIRequestContextChannel channel = new APIRequestContextChannel(this);
+
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());

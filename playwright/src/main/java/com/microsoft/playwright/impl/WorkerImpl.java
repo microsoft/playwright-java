@@ -39,6 +39,8 @@ class WorkerImpl extends ChannelOwner implements Worker {
     CONSOLE,
   }
 
+  final WorkerChannel channel = new WorkerChannel(this);
+
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

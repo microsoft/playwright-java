@@ -55,6 +55,8 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
 
+  final TracingChannel channel = new TracingChannel(this);
+
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

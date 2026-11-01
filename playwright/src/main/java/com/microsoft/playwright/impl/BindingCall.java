@@ -53,6 +53,8 @@ class BindingCall extends ChannelOwner {
     }
   }
 
+  final BindingCallChannel channel = new BindingCallChannel(this);
+
   BindingCall(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

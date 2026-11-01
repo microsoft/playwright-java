@@ -29,6 +29,8 @@ import static com.microsoft.playwright.impl.Serialization.*;
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
   private String preview;
 
+  final JSHandleChannel channel = new JSHandleChannel(this);
+
   public JSHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.preview = initializer.get("preview").getAsString();
