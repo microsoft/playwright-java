@@ -16,11 +16,10 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.ElementState;
@@ -55,61 +54,52 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public ElementHandle querySelector(String selector) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    JsonElement json = sendMessage("querySelector", params, NO_TIMEOUT);
-    JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
-    if (element == null) {
-      return null;
-    }
-    return connection.getExistingObject(element.get("guid").getAsString());
+    ElementHandleQuerySelectorParams params = new ElementHandleQuerySelectorParams();
+    params.selector = selector;
+    return channel.querySelector(params, NO_TIMEOUT).element;
   }
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    JsonElement json = sendMessage("querySelectorAll", params, NO_TIMEOUT);
-    JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
+    ElementHandleQuerySelectorAllParams params = new ElementHandleQuerySelectorAllParams();
+    params.selector = selector;
+    List<ElementHandleImpl> elements = channel.querySelectorAll(params, NO_TIMEOUT).elements;
     if (elements == null) {
       return null;
     }
-    List<ElementHandle> handles = new ArrayList<>();
-    for (JsonElement item : elements) {
-      handles.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
-    }
-    return handles;
+    return new ArrayList<ElementHandle>(elements);
   }
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evalOnSelector", params, NO_TIMEOUT);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    ElementHandleEvalOnSelectorParams params = new ElementHandleEvalOnSelectorParams();
+    params.selector = selector;
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return deserialize(channel.evalOnSelector(params, NO_TIMEOUT).value);
   }
 
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evalOnSelectorAll", params, NO_TIMEOUT);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    ElementHandleEvalOnSelectorAllParams params = new ElementHandleEvalOnSelectorAllParams();
+    params.selector = selector;
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return deserialize(channel.evalOnSelectorAll(params, NO_TIMEOUT).value);
   }
 
   @Override
   public BoundingBox boundingBox() {
-    JsonObject json = sendMessage("boundingBox").getAsJsonObject();
-    if (!json.has("value")) {
+    Rect value = channel.boundingBox(NO_TIMEOUT).value;
+    if (value == null) {
       return null;
     }
-    return gson().fromJson(json.get("value"), BoundingBox.class);
+    BoundingBox box = new BoundingBox();
+    box.x = value.x;
+    box.y = value.y;
+    box.width = value.width;
+    box.height = value.height;
+    return box;
   }
 
   @Override
@@ -117,8 +107,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new CheckOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("check", params, frame.timeout(options.timeout));
+    ElementHandleCheckParams params = Utils.toProtocol(options, ElementHandleCheckParams.class);
+    channel.check(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -126,17 +116,13 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ClickOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("click", params, frame.timeout(options.timeout));
+    ElementHandleClickParams params = Utils.toProtocol(options, ElementHandleClickParams.class);
+    channel.click(params, frame.timeout(options.timeout));
   }
 
   @Override
   public Frame contentFrame() {
-    JsonObject json = sendMessage("contentFrame").getAsJsonObject();
-    if (!json.has("frame")) {
-      return null;
-    }
-    return connection.getExistingObject(json.getAsJsonObject("frame").get("guid").getAsString());
+    return channel.contentFrame(NO_TIMEOUT).frame;
   }
 
   @Override
@@ -144,16 +130,16 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new DblclickOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("dblclick", params, frame.timeout(options.timeout));
+    ElementHandleDblclickParams params = Utils.toProtocol(options, ElementHandleDblclickParams.class);
+    channel.dblclick(params, frame.timeout(options.timeout));
   }
 
   @Override
   public void dispatchEvent(String type, Object eventInit) {
-    JsonObject params = new JsonObject();
-    params.addProperty("type", type);
-    params.add("eventInit", gson().toJsonTree(serializeArgument(eventInit)));
-    sendMessage("dispatchEvent", params, NO_TIMEOUT);
+    ElementHandleDispatchEventParams params = new ElementHandleDispatchEventParams();
+    params.type = type;
+    params.eventInit = serializeArgument(eventInit);
+    channel.dispatchEvent(params, NO_TIMEOUT);
   }
 
   @Override
@@ -161,22 +147,21 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new FillOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("value", value);
-    sendMessage("fill", params, frame.timeout(options.timeout));
+    ElementHandleFillParams params = Utils.toProtocol(options, ElementHandleFillParams.class);
+    params.value = value;
+    channel.fill(params, frame.timeout(options.timeout));
   }
 
   @Override
   public void focus() {
-    sendMessage("focus");
+    channel.focus(NO_TIMEOUT);
   }
 
   @Override
   public String getAttribute(String name) {
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    JsonObject json = sendMessage("getAttribute", params, NO_TIMEOUT).getAsJsonObject();
-    return json.has("value") ? json.get("value").getAsString() : null;
+    ElementHandleGetAttributeParams params = new ElementHandleGetAttributeParams();
+    params.name = name;
+    return channel.getAttribute(params, NO_TIMEOUT).value;
   }
 
   @Override
@@ -184,20 +169,18 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new HoverOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("hover", params, frame.timeout(options.timeout));
+    ElementHandleHoverParams params = Utils.toProtocol(options, ElementHandleHoverParams.class);
+    channel.hover(params, frame.timeout(options.timeout));
   }
 
   @Override
   public String innerHTML() {
-    JsonObject json = sendMessage("innerHTML").getAsJsonObject();
-    return json.get("value").getAsString();
+    return channel.innerHTML(NO_TIMEOUT).value;
   }
 
   @Override
   public String innerText() {
-    JsonObject json = sendMessage("innerText").getAsJsonObject();
-    return json.get("value").getAsString();
+    return channel.innerText(NO_TIMEOUT).value;
   }
 
   @Override
@@ -205,54 +188,43 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new InputValueOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("inputValue", params, NO_TIMEOUT).getAsJsonObject();
-    return json.get("value").getAsString();
+    ElementHandleInputValueParams params = Utils.toProtocol(options, ElementHandleInputValueParams.class);
+    return channel.inputValue(params, NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isChecked() {
-    JsonObject json = sendMessage("isChecked").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isChecked(NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isDisabled() {
-    JsonObject json = sendMessage("isDisabled").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isDisabled(NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isEditable() {
-    JsonObject json = sendMessage("isEditable").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isEditable(NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isEnabled() {
-    JsonObject json = sendMessage("isEnabled").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isEnabled(NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isHidden() {
-    JsonObject json = sendMessage("isHidden").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isHidden(NO_TIMEOUT).value;
   }
 
   @Override
   public boolean isVisible() {
-    JsonObject json = sendMessage("isVisible").getAsJsonObject();
-    return json.get("value").getAsBoolean();
+    return channel.isVisible(NO_TIMEOUT).value;
   }
 
   @Override
   public FrameImpl ownerFrame() {
-    JsonObject json = sendMessage("ownerFrame").getAsJsonObject();
-    if (!json.has("frame")) {
-      return null;
-    }
-    return connection.getExistingObject(json.getAsJsonObject("frame").get("guid").getAsString());
+    return channel.ownerFrame(NO_TIMEOUT).frame;
   }
 
   @Override
@@ -260,9 +232,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new PressOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("key", key);
-    sendMessage("press", params, frame.timeout(options.timeout));
+    ElementHandlePressParams params = Utils.toProtocol(options, ElementHandlePressParams.class);
+    params.key = key;
+    channel.press(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -273,11 +245,20 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options.type == null && options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonObject json = sendMessage("screenshot", params, frame.timeout(options.timeout)).getAsJsonObject();
-
-    byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());
+    // The mask locators cannot be read back through Gson, they are converted below.
+    JsonObject json = gson().toJsonTree(options).getAsJsonObject();
+    json.remove("mask");
+    ElementHandleScreenshotParams params = gson().fromJson(json, ElementHandleScreenshotParams.class);
+    if (options.mask != null) {
+      params.mask = new ArrayList<>();
+      for (Locator locator : options.mask) {
+        ElementHandleScreenshotParams.ElementHandleScreenshotParamsMask item = new ElementHandleScreenshotParams.ElementHandleScreenshotParamsMask();
+        item.frame = ((LocatorImpl) locator).frame;
+        item.selector = ((LocatorImpl) locator).selector;
+        params.mask.add(item);
+      }
+    }
+    byte[] buffer = channel.screenshot(params, frame.timeout(options.timeout)).binary;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);
     }
@@ -289,8 +270,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScrollIntoViewIfNeededOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("scrollIntoViewIfNeeded", params, frame.timeout(options.timeout));
+    ElementHandleScrollIntoViewIfNeededParams params = Utils.toProtocol(options, ElementHandleScrollIntoViewIfNeededParams.class);
+    channel.scrollIntoViewIfNeeded(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -310,9 +291,14 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
-      params.add("options", toSelectValueOrLabel(values));
+      params.options = new ArrayList<>();
+      for (String value : values) {
+        ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
+        option.valueOrLabel = value;
+        params.options.add(option);
+      }
     }
     return selectOption(params, options.timeout);
   }
@@ -329,9 +315,16 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
-      params.add("options", gson().toJsonTree(values));
+      params.options = new ArrayList<>();
+      for (SelectOption value : values) {
+        ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
+        option.value = value.value;
+        option.label = value.label;
+        option.index = value.index;
+        params.options.add(option);
+      }
     }
     return selectOption(params, options.timeout);
   }
@@ -341,16 +334,18 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
-      params.add("elements", Serialization.toProtocol(values));
+      params.elements = new ArrayList<>();
+      for (ElementHandle value : values) {
+        params.elements.add((ElementHandleImpl) value);
+      }
     }
     return selectOption(params, options.timeout);
   }
 
-  private List<String> selectOption(JsonObject params, Double timeout) {
-    JsonObject json = sendMessage("selectOption", params, frame.timeout(timeout)).getAsJsonObject();
-    return parseStringList(json.getAsJsonArray("values"));
+  private List<String> selectOption(ElementHandleSelectOptionParams params, Double timeout) {
+    return channel.selectOption(params, frame.timeout(timeout)).values;
   }
 
   @Override
@@ -358,8 +353,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectTextOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("selectText", params, frame.timeout(options.timeout));
+    ElementHandleSelectTextParams params = Utils.toProtocol(options, ElementHandleSelectTextParams.class);
+    channel.selectText(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -386,9 +381,17 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    addFilePathUploadParams(files, params, frame.page().context());
-    sendMessage("setInputFiles", params, frame.timeout(options.timeout));
+    ElementHandleSetInputFilesParams params = Utils.toProtocol(options, ElementHandleSetInputFilesParams.class);
+    // java: addFilePathUploadParams (Utils) still fills a JsonObject, read it back into the typed params.
+    JsonObject upload = new JsonObject();
+    addFilePathUploadParams(files, upload, frame.page().context());
+    ElementHandleSetInputFilesParams uploadParams = connection.protocolGson().fromJson(upload, ElementHandleSetInputFilesParams.class);
+    params.payloads = uploadParams.payloads;
+    params.localDirectory = uploadParams.localDirectory;
+    params.directoryStream = uploadParams.directoryStream;
+    params.localPaths = uploadParams.localPaths;
+    params.streams = uploadParams.streams;
+    channel.setInputFiles(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -402,9 +405,16 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.add("payloads", Serialization.toJsonArray(files));
-    sendMessage("setInputFiles", params, frame.timeout(options.timeout));
+    ElementHandleSetInputFilesParams params = Utils.toProtocol(options, ElementHandleSetInputFilesParams.class);
+    params.payloads = new ArrayList<>();
+    for (FilePayload file : files) {
+      ElementHandleSetInputFilesParams.ElementHandleSetInputFilesParamsPayloads payload = new ElementHandleSetInputFilesParams.ElementHandleSetInputFilesParamsPayloads();
+      payload.name = file.name;
+      payload.mimeType = file.mimeType;
+      payload.buffer = file.buffer;
+      params.payloads.add(payload);
+    }
+    channel.setInputFiles(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -412,14 +422,13 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new TapOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("tap", params, frame.timeout(options.timeout));
+    ElementHandleTapParams params = Utils.toProtocol(options, ElementHandleTapParams.class);
+    channel.tap(params, frame.timeout(options.timeout));
   }
 
   @Override
   public String textContent() {
-    JsonObject json = sendMessage("textContent").getAsJsonObject();
-    return json.has("value") ? json.get("value").getAsString() : null;
+    return channel.textContent(NO_TIMEOUT).value;
   }
 
   @Override
@@ -427,9 +436,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new TypeOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("text", text);
-    sendMessage("type", params, frame.timeout(options.timeout));
+    ElementHandleTypeParams params = Utils.toProtocol(options, ElementHandleTypeParams.class);
+    params.text = text;
+    channel.type(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -437,8 +446,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new UncheckOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("uncheck", params, frame.timeout(options.timeout));
+    ElementHandleUncheckParams params = Utils.toProtocol(options, ElementHandleUncheckParams.class);
+    channel.uncheck(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -449,13 +458,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (state == null) {
       throw new IllegalArgumentException("State cannot be null");
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("state", toProtocol(state));
-    sendMessage("waitForElementState", params, frame.timeout(options.timeout));
-  }
-
-  private static String toProtocol(ElementState state) {
-    return state.toString().toLowerCase();
+    ElementHandleWaitForElementStateParams params = Utils.toProtocol(options, ElementHandleWaitForElementStateParams.class);
+    params.state = state.toString().toLowerCase();
+    channel.waitForElementState(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -463,13 +468,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("selector", selector);
-    JsonElement json = sendMessage("waitForSelector", params, frame.timeout(options.timeout)).getAsJsonObject();
-    JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
-    if (element == null) {
-      return null;
-    }
-    return connection.getExistingObject(element.get("guid").getAsString());
+    ElementHandleWaitForSelectorParams params = Utils.toProtocol(options, ElementHandleWaitForSelectorParams.class);
+    params.selector = selector;
+    return channel.waitForSelector(params, frame.timeout(options.timeout)).element;
   }
 }

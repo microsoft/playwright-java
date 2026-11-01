@@ -44,57 +44,47 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
   @Override
   public void dispose() {
     try {
-      sendMessage("dispose");
+      channel.dispose(NO_TIMEOUT);
     } catch (TargetClosedError e) {
     }
   }
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.addProperty("world", "main");
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params, NO_TIMEOUT);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    JSHandleEvaluateExpressionParams params = new JSHandleEvaluateExpressionParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.addProperty("world", "main");
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params, NO_TIMEOUT);
-    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
+    JSHandleEvaluateExpressionHandleParams params = new JSHandleEvaluateExpressionHandleParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return channel.evaluateExpressionHandle(params, NO_TIMEOUT).handle;
   }
 
   @Override
   public Map<String, JSHandle> getProperties() {
-    JsonObject json = sendMessage("getPropertyList").getAsJsonObject();
+    JSHandleGetPropertyListResult json = channel.getPropertyList(NO_TIMEOUT);
     Map<String, JSHandle> result = new HashMap<>();
-    for (JsonElement e : json.getAsJsonArray("properties")) {
-      JsonObject item = e.getAsJsonObject();
-      JSHandle value = connection.getExistingObject(item.getAsJsonObject("value").get("guid").getAsString());
-      result.put(item.get("name").getAsString(), value);
+    for (JSHandleGetPropertyListResult.JSHandleGetPropertyListResultProperties item : json.properties) {
+      result.put(item.name, item.value);
     }
     return result;
   }
 
   @Override
   public JSHandle getProperty(String propertyName) {
-    JsonObject params = new JsonObject();
-    params.addProperty("name", propertyName);
-    JsonObject json = sendMessage("getProperty", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(json.getAsJsonObject("handle").get("guid").getAsString());
+    JSHandleGetPropertyParams params = new JSHandleGetPropertyParams();
+    params.name = propertyName;
+    return channel.getProperty(params, NO_TIMEOUT).handle;
   }
 
   @Override
   public Object jsonValue() {
-    JsonObject json = sendMessage("jsonValue").getAsJsonObject();
-    SerializedValue value = gson().fromJson(json.get("value"), SerializedValue.class);
-    return deserialize(value);
+    return deserialize(channel.jsonValue(NO_TIMEOUT).value);
   }
 
   @Override
