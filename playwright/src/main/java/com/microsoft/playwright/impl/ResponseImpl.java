@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static java.util.Arrays.asList;
 
 public class ResponseImpl extends ChannelOwner implements Response {
@@ -55,8 +56,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public byte[] body() {
-    JsonObject json = sendMessage("body").getAsJsonObject();
-    return Base64.getDecoder().decode(json.get("binary").getAsString());
+    return channel.body(NO_TIMEOUT).binary;
   }
 
   @Override
@@ -91,8 +91,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public String httpVersion() {
-    JsonObject result = sendMessage("httpVersion").getAsJsonObject();
-    return result.get("value").getAsString();
+    return channel.httpVersion(NO_TIMEOUT).value;
   }
 
   @Override
@@ -127,20 +126,29 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public SecurityDetails securityDetails() {
-    JsonObject json = sendMessage("securityDetails").getAsJsonObject();
-    if (json.has("value")) {
-      return gson().fromJson(json.get("value"), SecurityDetails.class);
+    ProtocolSecurityDetails value = channel.securityDetails(NO_TIMEOUT).value;
+    if (value == null) {
+      return null;
     }
-    return null;
+    SecurityDetails result = new SecurityDetails();
+    result.issuer = value.issuer;
+    result.protocol = value.protocol;
+    result.subjectName = value.subjectName;
+    result.validFrom = value.validFrom;
+    result.validTo = value.validTo;
+    return result;
   }
 
   @Override
   public ServerAddr serverAddr() {
-    JsonObject json = sendMessage("serverAddr").getAsJsonObject();
-    if (json.has("value")) {
-      return gson().fromJson(json.get("value"), ServerAddr.class);
+    RemoteAddr value = channel.serverAddr(NO_TIMEOUT).value;
+    if (value == null) {
+      return null;
     }
-    return null;
+    ServerAddr result = new ServerAddr();
+    result.ipAddress = value.ipAddress;
+    result.port = value.port;
+    return result;
   }
 
   @Override
@@ -165,8 +173,14 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   private RawHeaders getRawHeaders() {
     if (rawHeaders == null) {
-      JsonObject json = sendMessage("rawResponseHeaders").getAsJsonObject();
-      rawHeaders = new RawHeaders(asList(gson().fromJson(json.getAsJsonArray("headers"), HttpHeader[].class)));
+      List<HttpHeader> headers = new ArrayList<>();
+      for (NameValue nv : channel.rawResponseHeaders(NO_TIMEOUT).headers) {
+        HttpHeader h = new HttpHeader();
+        h.name = nv.name;
+        h.value = nv.value;
+        headers.add(h);
+      }
+      rawHeaders = new RawHeaders(headers);
     }
     return rawHeaders;
   }
