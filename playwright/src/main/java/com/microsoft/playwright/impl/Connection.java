@@ -98,11 +98,9 @@ public class Connection {
     }
 
     PlaywrightImpl initialize() {
-      JsonObject params = new JsonObject();
-      params.addProperty("sdkLanguage", "java");
-      params.addProperty("supportsLoneSurrogates", true);
-      JsonElement result = sendMessage("initialize", params.getAsJsonObject(), NO_TIMEOUT);
-      return this.connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("playwright").get("guid").getAsString());
+      RootInitializeParams params = new RootInitializeParams();
+      params.sdkLanguage = "java";
+      return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
     }
   }
 

@@ -17,21 +17,23 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.ClientCertificate;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.addHttpCredentialsToProtocol;
-import static com.microsoft.playwright.impl.Utils.addToProtocol;
+import static com.microsoft.playwright.impl.BrowserImpl.clientCertificatesToProtocol;
+import static com.microsoft.playwright.impl.BrowserImpl.httpCredentialsToProtocol;
+import static com.microsoft.playwright.impl.BrowserImpl.selectorEnginesToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   protected PlaywrightImpl playwright;
@@ -47,9 +49,8 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new LaunchOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonElement result = sendMessage("launch", params, TimeoutSettings.launchTimeout(options.timeout));
-    BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
+    BrowserTypeLaunchParams params = toProtocol(options, BrowserTypeLaunchParams.class);
+    BrowserImpl browser = channel.launch(params, TimeoutSettings.launchTimeout(options.timeout)).browser;
     browser.browserType = this;
     browser.launchOptions = options;
     return browser;
@@ -60,14 +61,12 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new ConnectOptions();
     }
+    LocalUtilsConnectParams params = new LocalUtilsConnectParams();
+    params.endpoint = wsEndpoint;
+    params.exposeNetwork = options.exposeNetwork;
+    params.slowMo = options.slowMo;
     // We don't use gson() here as the headers map should be serialized to a json object.
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("endpoint", wsEndpoint);
-
-    if (!params.has("headers")) {
-      params.add("headers", new JsonObject());
-    }
-    JsonObject headers = params.get("headers").getAsJsonObject();
+    JsonObject headers = options.headers == null ? new JsonObject() : new Gson().toJsonTree(options.headers).getAsJsonObject();
     boolean foundBrowserHeader = false;
     for (String name : headers.keySet()) {
       if ("x-playwright-browser".equalsIgnoreCase(name)) {
@@ -78,14 +77,14 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (!foundBrowserHeader) {
       headers.addProperty("x-playwright-browser", name());
     }
+    params.headers = headers;
 
     Double timeout = options.timeout;
     if (timeout == null) {
       timeout = 0.0;
     }
 
-    JsonObject json = connection.localUtils().sendMessage("connect", params, timeout).getAsJsonObject();
-    JsonPipe pipe = connection.getExistingObject(json.getAsJsonObject("pipe").get("guid").getAsString());
+    JsonPipe pipe = connection.localUtils().channel.connect(params, timeout).pipe;
     Connection connection = new Connection(pipe, this.connection.env, this.connection.localUtils);
     PlaywrightImpl playwright = connection.initializePlaywright();
     if (!playwright.initializer.has("preLaunchedBrowser")) {
@@ -122,11 +121,9 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       options = new ConnectOverCDPOptions();
     }
 
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("endpointURL", endpointURL);
-    JsonObject json = sendMessage("connectOverCDP", params, TimeoutSettings.launchTimeout(options.timeout)).getAsJsonObject();
-
-    BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
+    BrowserTypeConnectOverCDPParams params = toProtocol(options, BrowserTypeConnectOverCDPParams.class);
+    params.endpointURL = endpointURL;
+    BrowserImpl browser = channel.connectOverCDP(params, TimeoutSettings.launchTimeout(options.timeout)).browser;
     browser.connectToBrowserType(this, null);
     return browser;
   }
@@ -151,25 +148,29 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     options.recordHarOmitContent = null;
     options.recordHarUrlFilter = null;
 
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    // These two are converted below, their option types differ from the protocol ones.
+    Object httpCredentials = options.httpCredentials;
+    options.httpCredentials = null;
+    List<ClientCertificate> clientCertificates = options.clientCertificates;
+    options.clientCertificates = null;
+    BrowserTypeLaunchPersistentContextParams params = toProtocol(options, BrowserTypeLaunchPersistentContextParams.class);
     if (!userDataDir.isAbsolute() && !userDataDir.toString().isEmpty()) {
       Path cwd = Paths.get("").toAbsolutePath();
       userDataDir = cwd.resolve(userDataDir);
     }
-    params.addProperty("userDataDir", userDataDir.toString());
+    params.userDataDir = userDataDir.toString();
     if (options.recordVideoDir != null) {
-      JsonObject recordVideo = new JsonObject();
-      recordVideo.addProperty("dir", options.recordVideoDir.toAbsolutePath().toString());
+      BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsRecordVideo recordVideo = new BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsRecordVideo();
+      recordVideo.dir = options.recordVideoDir.toAbsolutePath().toString();
       if (options.recordVideoSize != null) {
-        recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
+        recordVideo.size = new BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsRecordVideo.BrowserTypeLaunchPersistentContextParamsRecordVideoSize();
+        recordVideo.size.width = options.recordVideoSize.width;
+        recordVideo.size.height = options.recordVideoSize.height;
       }
       if (options.recordVideoFps != null) {
-        recordVideo.addProperty("fps", options.recordVideoFps);
+        recordVideo.fps = options.recordVideoFps;
       }
-      params.remove("recordVideoDir");
-      params.remove("recordVideoSize");
-      params.remove("recordVideoFps");
-      params.add("recordVideo", recordVideo);
+      params.recordVideo = recordVideo;
     } else if (options.recordVideoSize != null) {
       throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
     } else if (options.recordVideoFps != null) {
@@ -177,26 +178,22 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     if (options.viewportSize != null) {
       if (options.viewportSize.isPresent()) {
-        JsonElement size = params.get("viewportSize");
-        params.remove("viewportSize");
-        params.add("viewport", size);
+        params.viewport = new BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsViewport();
+        params.viewport.width = options.viewportSize.get().width;
+        params.viewport.height = options.viewportSize.get().height;
       } else {
-        params.remove("viewportSize");
-        params.addProperty("noDefaultViewport", true);
+        params.noDefaultViewport = true;
       }
     }
-    addToProtocol(params, options.clientCertificates);
-    addHttpCredentialsToProtocol(params);
-    params.remove("acceptDownloads");
-    if (options.acceptDownloads != null) {
-      params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
-    }
-    params.add("selectorEngines", gson().toJsonTree(playwright.selectors.selectorEngines));
-    params.addProperty("testIdAttributeName", playwright.selectors.testIdAttributeName);
-    JsonObject json = sendMessage("launchPersistentContext", params, TimeoutSettings.launchTimeout(options.timeout)).getAsJsonObject();
-    BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
+    params.clientCertificates = clientCertificatesToProtocol(connection, clientCertificates, BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsClientCertificates.class);
+    params.httpCredentials = httpCredentialsToProtocol(connection, httpCredentials);
+    params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
+    params.selectorEngines = selectorEnginesToProtocol(connection, playwright.selectors.selectorEngines);
+    params.testIdAttributeName = playwright.selectors.testIdAttributeName;
+    BrowserTypeLaunchPersistentContextResult result = channel.launchPersistentContext(params, TimeoutSettings.launchTimeout(options.timeout));
+    BrowserImpl browser = result.browser;
     browser.connectToBrowserType(this, options.tracesDir);
-    BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
+    BrowserContextImpl context = result.context;
     context.initializeHarFromOptions(harOptions);
     context.setTracesDir(options.tracesDir);
     return context;

@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
@@ -356,18 +357,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public CDPSession newCDPSession(Page page) {
-    JsonObject params = new JsonObject();
-    params.add("page", ((PageImpl) page).toProtocolRef());
-    JsonObject result = sendMessage("newCDPSession", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
+    params.page = (PageImpl) page;
+    return channel.newCDPSession(params, NO_TIMEOUT).session;
   }
 
   @Override
   public CDPSession newCDPSession(Frame frame) {
-    JsonObject params = new JsonObject();
-    params.add("frame", ((FrameImpl) frame).toProtocolRef());
-    JsonObject result = sendMessage("newCDPSession", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
+    params.frame = (FrameImpl) frame;
+    return channel.newCDPSession(params, NO_TIMEOUT).session;
   }
 
   @Override
@@ -394,8 +393,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       } catch (RuntimeException e) {
         harError = e;
       }
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      sendMessage("close", params, NO_TIMEOUT);
+      BrowserContextCloseParams params = toProtocol(options, BrowserContextCloseParams.class);
+      channel.close(params, NO_TIMEOUT);
     }
     runUntil(() -> {}, closePromise);
     if (harError != null) {
@@ -411,17 +410,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void addCookies(List<Cookie> cookies) {
-    JsonObject params = new JsonObject();
-    params.add("cookies", gson().toJsonTree(cookies));
-    sendMessage("addCookies", params, NO_TIMEOUT);
+    BrowserContextAddCookiesParams params = new BrowserContextAddCookiesParams();
+    params.cookies = connection.protocolGson().fromJson(gson().toJsonTree(cookies), TypeToken.getParameterized(List.class, SetNetworkCookie.class).getType());
+    channel.addCookies(params, NO_TIMEOUT);
   }
 
   @Override
   public AutoCloseable addInitScript(String script) {
-    JsonObject params = new JsonObject();
-    params.addProperty("source", script);
-    JsonObject result = sendMessage("addInitScript", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
+    params.source = script;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -449,23 +447,21 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new ClearCookiesOptions();
     }
-    sendMessage("clearCookies", toClearCookiesParams(options.name, options.domain, options.path), NO_TIMEOUT);
+    BrowserContextClearCookiesParams params = connection.protocolGson().fromJson(toClearCookiesParams(options.name, options.domain, options.path), BrowserContextClearCookiesParams.class);
+    channel.clearCookies(params, NO_TIMEOUT);
   }
 
   @Override
   public void clearPermissions() {
-    sendMessage("clearPermissions");
+    channel.clearPermissions(NO_TIMEOUT);
   }
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
-    JsonObject params = new JsonObject();
-    if (urls == null) {
-      urls = new ArrayList<>();
-    }
-    params.add("urls", gson().toJsonTree(urls));
-    JsonObject json = sendMessage("cookies", params, NO_TIMEOUT).getAsJsonObject();
-    Cookie[] cookies = gson().fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
+    BrowserContextCookiesParams params = new BrowserContextCookiesParams();
+    params.urls = urls == null ? new ArrayList<>() : urls;
+    BrowserContextCookiesResult result = channel.cookies(params, NO_TIMEOUT);
+    Cookie[] cookies = gson().fromJson(gson().toJsonTree(result.cookies), Cookie[].class);
     return asList(cookies);
   }
 
@@ -485,10 +481,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     bindings.put(name, playwrightBinding);
 
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
+    params.name = name;
+    return channel.exposeBinding(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -504,9 +499,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (permissions == null) {
       permissions = new ArrayList<>();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.add("permissions", gson().toJsonTree(permissions));
-    sendMessage("grantPermissions", params, NO_TIMEOUT);
+    BrowserContextGrantPermissionsParams params = toProtocol(options, BrowserContextGrantPermissionsParams.class);
+    params.permissions = permissions;
+    channel.grantPermissions(params, NO_TIMEOUT);
   }
 
   @Override
@@ -514,8 +509,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (ownerPage != null) {
       throw new PlaywrightException("Please use browser.newContext()");
     }
-    JsonObject json = sendMessage("newPage").getAsJsonObject();
-    return connection.getExistingObject(json.getAsJsonObject("page").get("guid").getAsString());
+    return channel.newPage(NO_TIMEOUT).page;
   }
 
   @Override
@@ -605,41 +599,40 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    JsonObject params = new JsonObject();
-    JsonArray jsonHeaders = new JsonArray();
+    BrowserContextSetExtraHTTPHeadersParams params = new BrowserContextSetExtraHTTPHeadersParams();
+    params.headers = new ArrayList<>();
     for (Map.Entry<String, String> e : headers.entrySet()) {
-      JsonObject header = new JsonObject();
-      header.addProperty("name", e.getKey());
-      header.addProperty("value", e.getValue());
-      jsonHeaders.add(header);
+      NameValue header = new NameValue();
+      header.name = e.getKey();
+      header.value = e.getValue();
+      params.headers.add(header);
     }
-    params.add("headers", jsonHeaders);
-    sendMessage("setExtraHTTPHeaders", params, NO_TIMEOUT);
+    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
   @Override
   public void setGeolocation(Geolocation geolocation) {
-    JsonObject params = new JsonObject();
+    BrowserContextSetGeolocationParams params = new BrowserContextSetGeolocationParams();
     if (geolocation != null) {
-      params.add("geolocation", gson().toJsonTree(geolocation));
+      params.geolocation = toProtocol(geolocation, BrowserContextSetGeolocationParams.BrowserContextSetGeolocationParamsGeolocation.class);
     }
-    sendMessage("setGeolocation", params, NO_TIMEOUT);
+    channel.setGeolocation(params, NO_TIMEOUT);
   }
 
   @Override
   public void setOffline(boolean offline) {
-    JsonObject params = new JsonObject();
-    params.addProperty("offline", offline);
-    sendMessage("setOffline", params, NO_TIMEOUT);
+    BrowserContextSetOfflineParams params = new BrowserContextSetOfflineParams();
+    params.offline = offline;
+    channel.setOffline(params, NO_TIMEOUT);
   }
 
   @Override
   public void setStorageState(Path storageState) {
     try {
       String state = new String(readAllBytes(storageState), UTF_8);
-      JsonObject params = new JsonObject();
-      params.add("storageState", gson().fromJson(state, JsonObject.class));
-      sendMessage("setStorageState", params, NO_TIMEOUT);
+      BrowserContextSetStorageStateParams params = new BrowserContextSetStorageStateParams();
+      params.storageState = connection.protocolGson().fromJson(state, BrowserContextSetStorageStateParams.BrowserContextSetStorageStateParamsStorageState.class);
+      channel.setStorageState(params, NO_TIMEOUT);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read storage state from file", e);
     }
@@ -650,11 +643,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new StorageStateOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonElement json = sendMessage("storageState", params, NO_TIMEOUT);
+    BrowserContextStorageStateParams params = toProtocol(options, BrowserContextStorageStateParams.class);
+    BrowserContextStorageStateResult result = channel.storageState(params, NO_TIMEOUT);
 
-    String storageState = json.toString();
+    String storageState = connection.protocolGson().toJson(result);
     if (options.path != null) {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }
@@ -735,11 +727,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void updateInterceptionPatterns() {
-    sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns(), NO_TIMEOUT);
+    BrowserContextSetNetworkInterceptionPatternsParams params = connection.protocolGson().fromJson(routes.interceptionPatterns(), BrowserContextSetNetworkInterceptionPatternsParams.class);
+    channel.setNetworkInterceptionPatterns(params, NO_TIMEOUT);
   }
 
   private void updateWebSocketInterceptionPatterns() {
-    sendMessage("setWebSocketInterceptionPatterns", webSocketRoutes.interceptionPatterns(), NO_TIMEOUT);
+    BrowserContextSetWebSocketInterceptionPatternsParams params = connection.protocolGson().fromJson(webSocketRoutes.interceptionPatterns(), BrowserContextSetWebSocketInterceptionPatternsParams.class);
+    channel.setWebSocketInterceptionPatterns(params, NO_TIMEOUT);
   }
 
   void handleRoute(RouteImpl route) {
@@ -766,7 +760,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   WaitableResult<JsonElement> pause() {
-    return sendMessageAsync("pause", new JsonObject());
+    return sendMessageAsync("pause", connection.protocolGson().toJsonTree(new BrowserContextPauseParams()).getAsJsonObject());
   }
 
   @Override
