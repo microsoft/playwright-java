@@ -644,9 +644,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       options = new StorageStateOptions();
     }
     BrowserContextStorageStateParams params = toProtocol(options, BrowserContextStorageStateParams.class);
-    BrowserContextStorageStateResult result = channel.storageState(params, NO_TIMEOUT);
+    // The reply is returned to the user verbatim: a typed round trip would print -1 as -1.0 and
+    // differ from the raw string of APIRequestContext.storageState(), so the typed params go through
+    // the JsonObject overload and the result stays a JsonElement.
+    JsonElement json = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT);
 
-    String storageState = connection.protocolGson().toJson(result);
+    String storageState = json.toString();
     if (options.path != null) {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }

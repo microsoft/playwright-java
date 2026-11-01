@@ -61,12 +61,12 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options == null) {
       options = new ConnectOptions();
     }
-    LocalUtilsConnectParams params = new LocalUtilsConnectParams();
-    params.endpoint = wsEndpoint;
-    params.exposeNetwork = options.exposeNetwork;
-    params.slowMo = options.slowMo;
     // We don't use gson() here as the headers map should be serialized to a json object.
-    JsonObject headers = options.headers == null ? new JsonObject() : new Gson().toJsonTree(options.headers).getAsJsonObject();
+    // Serializing the options object itself (not field by field) keeps fields added by subclasses, like the tests do.
+    JsonObject optionsJson = new Gson().toJsonTree(options).getAsJsonObject();
+    LocalUtilsConnectParams params = connection.protocolGson().fromJson(optionsJson, LocalUtilsConnectParams.class);
+    params.endpoint = wsEndpoint;
+    JsonObject headers = options.headers == null ? new JsonObject() : optionsJson.getAsJsonObject("headers");
     boolean foundBrowserHeader = false;
     for (String name : headers.keySet()) {
       if ("x-playwright-browser".equalsIgnoreCase(name)) {
