@@ -99,21 +99,18 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params, NO_TIMEOUT);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    WorkerEvaluateExpressionParams params = new WorkerEvaluateExpressionParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params, NO_TIMEOUT);
-    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
+    WorkerEvaluateExpressionHandleParams params = new WorkerEvaluateExpressionHandleParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return channel.evaluateExpressionHandle(params, NO_TIMEOUT).handle;
   }
 
   @Override

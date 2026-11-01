@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 
 public class Stream extends ChannelOwner {
   private final InputStream stream = new InputStreamImpl();
@@ -50,14 +49,12 @@ public class Stream extends ChannelOwner {
       if (len == 0) {
         return 0;
       }
-      JsonObject params = new JsonObject();
-      params.addProperty("size", len);
-      JsonObject json = sendMessage("read", params, NO_TIMEOUT).getAsJsonObject();
-      String encoded = json.get("binary").getAsString();
-      if (encoded.isEmpty()) {
+      StreamReadParams params = new StreamReadParams();
+      params.size = len;
+      byte[] buffer = channel.read(params, NO_TIMEOUT).binary;
+      if (buffer.length == 0) {
         return -1;
       }
-      byte[] buffer = Base64.getDecoder().decode(encoded);
       for (int i = 0; i < buffer.length;) {
         b[off++] = buffer[i++];
       }
@@ -67,7 +64,7 @@ public class Stream extends ChannelOwner {
     @Override
     public void close() throws IOException {
       super.close();
-      sendMessage("close");
+      channel.close(NO_TIMEOUT);
     }
   }
 }
