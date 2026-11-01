@@ -240,11 +240,11 @@ public class Utils {
   }
 
   private static JsonObject createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
-    JsonObject tempFilesParams = new JsonObject();
+    BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
     if (localDirectory != null) {
-      tempFilesParams.addProperty("rootDirName", localDirectory.getFileName().toString());
+      params.rootDirName = localDirectory.getFileName().toString();
     }
-    JsonArray items = new JsonArray();
+    params.items = new ArrayList<>();
     for (Path path : localPaths) {
       long lastModifiedMs;
       try {
@@ -258,13 +258,14 @@ public class Utils {
       } else {
         name = localDirectory.relativize(path);
       }
-      JsonObject item = new JsonObject();
-      item.addProperty("name", name.toString());
-      item.addProperty("lastModifiedMs", lastModifiedMs);
-      items.add(item);
+      BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems item = new BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems();
+      item.name = name.toString();
+      item.lastModifiedMs = (double) lastModifiedMs;
+      params.items.add(item);
     }
-    tempFilesParams.add("items", items);
-    return context.sendMessage("createTempFiles", tempFilesParams, NO_TIMEOUT).getAsJsonObject();
+    BrowserContextCreateTempFilesResult result = context.channel.createTempFiles(params, NO_TIMEOUT);
+    // java: the caller still reads the reply as JsonObject ({guid} refs), see copyLocalToTempFiles.
+    return context.connection.protocolGson().toJsonTree(result).getAsJsonObject();
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {
