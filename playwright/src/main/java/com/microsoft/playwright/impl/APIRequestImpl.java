@@ -16,8 +16,9 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
@@ -25,11 +26,12 @@ import com.microsoft.playwright.options.ClientCertificate;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.addToProtocol;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class APIRequestImpl implements APIRequest {
   private final PlaywrightImpl playwright;
@@ -54,24 +56,52 @@ class APIRequestImpl implements APIRequest {
         throw new PlaywrightException("Failed to read storage state from file", e);
       }
     }
-    JsonObject storageState = null;
+    PlaywrightNewRequestParams.PlaywrightNewRequestParamsStorageState storageState = null;
     if (options.storageState != null) {
-      storageState = new Gson().fromJson(options.storageState, JsonObject.class);
+      storageState = gson().fromJson(options.storageState, PlaywrightNewRequestParams.PlaywrightNewRequestParamsStorageState.class);
       options.storageState = null;
     }
     List<ClientCertificate> clientCertificateList = options.clientCertificates;
     options.clientCertificates = null;
+    // The protocol always takes a list (mirrors toHttpCredentialsProtocol() in the JS client).
+    Object httpCredentials = options.httpCredentials;
+    options.httpCredentials = null;
     Double timeout = options.timeout;
     // Timeout is handled on the client.
     options.timeout = null;
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    PlaywrightNewRequestParams params = toProtocol(options, PlaywrightNewRequestParams.class);
     if (storageState != null) {
-      params.add("storageState", storageState);
+      params.storageState = storageState;
     }
-    addToProtocol(params, clientCertificateList);
-    Utils.addHttpCredentialsToProtocol(params);
-    JsonObject result = playwright.sendMessage("newRequest", params, NO_TIMEOUT).getAsJsonObject();
-    APIRequestContextImpl context = playwright.connection.getExistingObject(result.getAsJsonObject("request").get("guid").getAsString());
+    if (clientCertificateList != null) {
+      params.clientCertificates = new ArrayList<>();
+      for (ClientCertificate cert : clientCertificateList) {
+        PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates c = new PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates();
+        c.origin = cert.origin;
+        try {
+          c.cert = cert.certPath != null ? Files.readAllBytes(cert.certPath) : cert.cert;
+          c.key = cert.keyPath != null ? Files.readAllBytes(cert.keyPath) : cert.key;
+          c.pfx = cert.pfxPath != null ? Files.readAllBytes(cert.pfxPath) : cert.pfx;
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to read from file", e);
+        }
+        c.passphrase = cert.passphrase;
+        params.clientCertificates.add(c);
+      }
+    }
+    if (httpCredentials != null) {
+      JsonElement credentials = gson().toJsonTree(httpCredentials);
+      JsonArray list = new JsonArray();
+      if (credentials.isJsonArray()) {
+        list.addAll(credentials.getAsJsonArray());
+      } else {
+        list.add(credentials);
+      }
+      if (list.size() > 0) {
+        params.httpCredentials = gson().fromJson(list, new TypeToken<List<ProtocolHttpCredentials>>() {}.getType());
+      }
+    }
+    APIRequestContextImpl context = playwright.channel.newRequest(params, NO_TIMEOUT).request;
     context.timeoutSettings.setDefaultTimeout(timeout);
     return context;
   }
