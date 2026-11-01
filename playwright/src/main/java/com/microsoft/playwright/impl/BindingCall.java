@@ -78,8 +78,7 @@ class BindingCall extends ChannelOwner {
       method = "reject";
     }
     // Like the Node client, do not fail when the page was closed before the result arrived.
-    // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
-    sendMessageAsync(method, connection.protocolGson().toJsonTree(params).getAsJsonObject());
+    sendMessageAsync(method, params);
   }
 
   private Object invoke(BindingCallback binding) {

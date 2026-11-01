@@ -50,7 +50,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     startHandling();
     RouteAbortParams params = new RouteAbortParams();
     params.errorCode = errorCode;
-    sendMessageAsync("abort", toJson(params));
+    sendMessageAsync("abort", params);
   }
 
   boolean isHandled() {
@@ -130,11 +130,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.postData = options.postData;
     }
     params.isFallback = isFallback;
-    sendMessageAsync("continue", toJson(params));
-  }
-
-  private JsonObject toJson(Object params) {
-    return connection.protocolGson().toJsonTree(params).getAsJsonObject();
+    sendMessageAsync("continue", params);
   }
 
   private static List<NameValue> toNameValues(Map<String, String> map) {
@@ -240,7 +236,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.isBase64 = isBase64;
     params.body = body;
     params.fetchResponseUid = fetchResponseUid;
-    sendMessageAsync("fulfill", toJson(params));
+    sendMessageAsync("fulfill", params);
   }
 
   @Override
@@ -253,7 +249,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
     params.url = redirectURL;
     // TODO: _raceWithPageClose ?
-    sendMessageAsync("redirectNavigationRequest", toJson(params));
+    sendMessageAsync("redirectNavigationRequest", params);
   }
 
   private void startHandling() {

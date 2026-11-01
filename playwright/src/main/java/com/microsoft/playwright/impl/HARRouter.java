@@ -131,6 +131,6 @@ public class HARRouter {
   void dispose() {
     LocalUtilsHarCloseParams params = new LocalUtilsHarCloseParams();
     params.harId = harId;
-    localUtils.sendMessageAsync("harClose", localUtils.connection.protocolGson().toJsonTree(params).getAsJsonObject());
+    localUtils.sendMessageAsync("harClose", params);
   }
 }

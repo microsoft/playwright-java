@@ -45,8 +45,7 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       try {
         BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
         params.testIdAttributeName = attributeName;
-        // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
-        context.sendMessageAsync("setTestIdAttributeName", context.connection.protocolGson().toJsonTree(params).getAsJsonObject());
+        context.sendMessageAsync("setTestIdAttributeName", params);
       } catch (PlaywrightException e) {
       }
     }

@@ -29,7 +29,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       }
       WebSocketRouteCloseServerParams params = toProtocol(options, WebSocketRouteCloseServerParams.class);
       params.wasClean = true;
-      sendMessageAsync("closeServer", toJson(params));
+      sendMessageAsync("closeServer", params);
     }
 
     @Override
@@ -52,7 +52,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       WebSocketRouteSendToServerParams params = new WebSocketRouteSendToServerParams();
       params.message = message;
       params.isBase64 = false;
-      sendMessageAsync("sendToServer", toJson(params));
+      sendMessageAsync("sendToServer", params);
     }
 
     @Override
@@ -60,7 +60,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       WebSocketRouteSendToServerParams params = new WebSocketRouteSendToServerParams();
       params.message = Base64.getEncoder().encodeToString(message);
       params.isBase64 = true;
-      sendMessageAsync("sendToServer", toJson(params));
+      sendMessageAsync("sendToServer", params);
     }
 
     @Override
@@ -87,7 +87,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       }
       WebSocketRouteClosePageParams params = toProtocol(options, WebSocketRouteClosePageParams.class);
       params.wasClean = true;
-      sendMessageAsync("closePage", toJson(params));
+      sendMessageAsync("closePage", params);
   }
 
   @Override
@@ -96,7 +96,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       throw new PlaywrightException("Already connected to the server");
     }
     connected = true;
-    sendMessageAsync("connect");
+    sendMessageAsync("connect", new WebSocketRouteConnectParams());
     return server;
   }
 
@@ -115,7 +115,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     WebSocketRouteSendToPageParams params = new WebSocketRouteSendToPageParams();
     params.message = message;
     params.isBase64 = false;
-    sendMessageAsync("sendToPage", toJson(params));
+    sendMessageAsync("sendToPage", params);
   }
 
   @Override
@@ -123,7 +123,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     WebSocketRouteSendToPageParams params = new WebSocketRouteSendToPageParams();
     params.message = Base64.getEncoder().encodeToString(message);
     params.isBase64 = true;
-    sendMessageAsync("sendToPage", toJson(params));
+    sendMessageAsync("sendToPage", params);
   }
 
   @Override
@@ -147,17 +147,13 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     return result;
   }
 
-  private JsonObject toJson(Object params) {
-    return connection.protocolGson().toJsonTree(params).getAsJsonObject();
-  }
-
   void afterHandle() {
     if (this.connected) {
       return;
     }
     // Ensure that websocket is "open" and can send messages without an actual server connection.
     try {
-      sendMessageAsync("ensureOpened");
+      sendMessageAsync("ensureOpened", new WebSocketRouteEnsureOpenedParams());
     } catch (PlaywrightException e) {
       // If this happens after the page has been closed, ignore the error.
     }
@@ -174,7 +170,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         WebSocketRouteSendToServerParams messageParams = new WebSocketRouteSendToServerParams();
         messageParams.message = message;
         messageParams.isBase64 = isBase64;
-        sendMessageAsync("sendToServer", toJson(messageParams));
+        sendMessageAsync("sendToServer", messageParams);
       }
     } else if ("messageFromServer".equals(event)) {
       String message = params.get("message").getAsString();
@@ -185,7 +181,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         WebSocketRouteSendToPageParams messageParams = new WebSocketRouteSendToPageParams();
         messageParams.message = message;
         messageParams.isBase64 = isBase64;
-        sendMessageAsync("sendToPage", toJson(messageParams));
+        sendMessageAsync("sendToPage", messageParams);
       }
     } else if ("closePage".equals(event)) {
       Integer code = params.has("code") ? params.get("code").getAsInt() : null;
@@ -198,7 +194,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         closeParams.code = code;
         closeParams.reason = reason;
         closeParams.wasClean = wasClean;
-        sendMessageAsync("closeServer", toJson(closeParams));
+        sendMessageAsync("closeServer", closeParams);
       }
     } else if ("closeServer".equals(event)) {
       Integer code = params.has("code") ? params.get("code").getAsInt() : null;
@@ -211,7 +207,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         closeParams.code = code;
         closeParams.reason = reason;
         closeParams.wasClean = wasClean;
-        sendMessageAsync("closePage", toJson(closeParams));
+        sendMessageAsync("closePage", closeParams);
       }
     }
   }

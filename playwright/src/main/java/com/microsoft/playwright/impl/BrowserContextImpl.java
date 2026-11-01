@@ -763,7 +763,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   WaitableResult<JsonElement> pause() {
-    return sendMessageAsync("pause", connection.protocolGson().toJsonTree(new BrowserContextPauseParams()).getAsJsonObject());
+    return sendMessageAsync("pause", new BrowserContextPauseParams());
   }
 
   @Override

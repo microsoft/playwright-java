@@ -660,7 +660,7 @@ public class PageImpl extends ChannelOwner implements Page {
       PageResolveLocatorHandlerNoReplyParams params = new PageResolveLocatorHandlerNoReplyParams();
       params.uid = uid;
       params.remove = remove;
-      sendMessageAsync("resolveLocatorHandlerNoReply", connection.protocolGson().toJsonTree(params).getAsJsonObject());
+      sendMessageAsync("resolveLocatorHandlerNoReply", params);
     }
   }
 

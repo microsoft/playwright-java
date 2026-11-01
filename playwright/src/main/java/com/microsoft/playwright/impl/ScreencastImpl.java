@@ -52,8 +52,7 @@ class ScreencastImpl implements Screencast {
       // The server sends the next frame only after the previous one is acknowledged.
       PageScreencastFrameAckParams ackParams = new PageScreencastFrameAckParams();
       ackParams.frameId = params.get("frameId").getAsInt();
-      // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
-      page.sendMessageAsync("screencastFrameAck", page.connection.protocolGson().toJsonTree(ackParams).getAsJsonObject());
+      page.sendMessageAsync("screencastFrameAck", ackParams);
     }
   }
 

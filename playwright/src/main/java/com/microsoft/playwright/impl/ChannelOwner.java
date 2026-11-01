@@ -119,6 +119,25 @@ class ChannelOwner extends LoggingSupport {
     return connection.sendMessageAsync(guid, method, params);
   }
 
+  /** Typed counterpart of {@link #sendMessageAsync(String, JsonObject)}; {@code null} params mean an empty object. */
+  WaitableResult<JsonElement> sendMessageAsync(String method, Object params) {
+    return sendMessageAsync(method, paramsToJson(params));
+  }
+
+  /** Typed counterpart of {@link #sendMessageNoReply(String, JsonObject)}. */
+  void sendMessageNoReply(String method, Object params) {
+    sendMessageNoReply(method, paramsToJson(params));
+  }
+
+  private JsonObject paramsToJson(Object params) {
+    if (params == null) {
+      return new JsonObject();
+    }
+    JsonObject json = connection.protocolGson().toJsonTree(params).getAsJsonObject();
+    json.remove("timeout");
+    return json;
+  }
+
   // Fire-and-forget: silently drop if the object was collected.
   void sendMessageNoReply(String method, JsonObject params) {
     if (wasCollected) {
