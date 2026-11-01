@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class ScreencastImpl implements Screencast {
   private final PageImpl page;
@@ -50,9 +50,10 @@ class ScreencastImpl implements Screencast {
       }
     } finally {
       // The server sends the next frame only after the previous one is acknowledged.
-      JsonObject ackParams = new JsonObject();
-      ackParams.add("frameId", params.get("frameId"));
-      page.sendMessageAsync("screencastFrameAck", ackParams);
+      PageScreencastFrameAckParams ackParams = new PageScreencastFrameAckParams();
+      ackParams.frameId = params.get("frameId").getAsInt();
+      // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
+      page.sendMessageAsync("screencastFrameAck", page.connection.protocolGson().toJsonTree(ackParams).getAsJsonObject());
     }
   }
 
@@ -62,31 +63,26 @@ class ScreencastImpl implements Screencast {
       throw new PlaywrightException("Screencast is already started");
     }
     started = true;
-    JsonObject params = new JsonObject();
+    PageScreencastStartParams params = new PageScreencastStartParams();
     if (options != null) {
       if (options.onFrame != null) {
         onFrame = options.onFrame;
       }
       if (options.size != null) {
-        params.add("size", gson().toJsonTree(options.size));
+        params.size = toProtocol(options.size, PageScreencastStartParams.PageScreencastStartParamsSize.class);
       }
-      if (options.quality != null) {
-        params.addProperty("quality", options.quality);
-      }
-      if (options.fps != null) {
-        params.addProperty("fps", options.fps);
-      }
-      params.addProperty("sendFrames", options.onFrame != null);
-      params.addProperty("record", options.path != null);
+      params.quality = options.quality;
+      params.fps = options.fps;
+      params.sendFrames = options.onFrame != null;
+      params.record = options.path != null;
       savePath = options.path;
     } else {
-      params.addProperty("sendFrames", false);
-      params.addProperty("record", false);
+      params.sendFrames = false;
+      params.record = false;
     }
-    JsonObject result = page.sendMessage("screencastStart", params, NO_TIMEOUT).getAsJsonObject();
-    if (result.has("artifact")) {
-      String artifactGuid = result.getAsJsonObject("artifact").get("guid").getAsString();
-      artifact = page.connection.getExistingObject(artifactGuid);
+    PageScreencastStartResult result = page.channel.screencastStart(params, NO_TIMEOUT);
+    if (result != null && result.artifact != null) {
+      artifact = result.artifact;
     }
     return new DisposableStub(this::stop);
   }
@@ -95,7 +91,7 @@ class ScreencastImpl implements Screencast {
   public void stop() {
     started = false;
     onFrame = null;
-    page.sendMessage("screencastStop", new JsonObject(), NO_TIMEOUT);
+    page.channel.screencastStop(NO_TIMEOUT);
     if (savePath != null && artifact != null) {
       artifact.saveAs(savePath);
     }
@@ -105,75 +101,47 @@ class ScreencastImpl implements Screencast {
 
   @Override
   public AutoCloseable showOverlay(String html, ShowOverlayOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("html", html);
-    if (options != null && options.duration != null) {
-      params.addProperty("duration", options.duration);
-    }
-    JsonObject result = (JsonObject) page.sendMessage("screencastShowOverlay", params, NO_TIMEOUT);
-    String id = result.get("id").getAsString();
+    PageScreencastShowOverlayParams params = toProtocol(options, PageScreencastShowOverlayParams.class);
+    params.html = html;
+    PageScreencastShowOverlayResult result = page.channel.screencastShowOverlay(params, NO_TIMEOUT);
+    String id = result.id;
     return () -> {
-      JsonObject removeParams = new JsonObject();
-      removeParams.addProperty("id", id);
-      page.sendMessage("screencastRemoveOverlay", removeParams, NO_TIMEOUT);
+      PageScreencastRemoveOverlayParams removeParams = new PageScreencastRemoveOverlayParams();
+      removeParams.id = id;
+      page.channel.screencastRemoveOverlay(removeParams, NO_TIMEOUT);
     };
   }
 
   @Override
   public void showChapter(String title, ShowChapterOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("title", title);
-    if (options != null) {
-      if (options.description != null) {
-        params.addProperty("description", options.description);
-      }
-      if (options.duration != null) {
-        params.addProperty("duration", options.duration);
-      }
-    }
-    page.sendMessage("screencastChapter", params, NO_TIMEOUT);
+    PageScreencastChapterParams params = toProtocol(options, PageScreencastChapterParams.class);
+    params.title = title;
+    page.channel.screencastChapter(params, NO_TIMEOUT);
   }
 
   @Override
   public AutoCloseable showActions(ShowActionsOptions options) {
-    JsonObject params = new JsonObject();
-    if (options != null) {
-      if (options.duration != null) {
-        params.addProperty("duration", options.duration);
-      }
-      if (options.fontSize != null) {
-        params.addProperty("fontSize", options.fontSize);
-      }
-      if (options.position != null) {
-        params.add("position", gson().toJsonTree(options.position));
-      }
-      if (options.cursor != null) {
-        params.add("cursor", gson().toJsonTree(options.cursor));
-      }
-      if (options.style != null) {
-        params.add("style", gson().toJsonTree(options.style));
-      }
-    }
-    page.sendMessage("screencastShowActions", params, NO_TIMEOUT);
+    PageScreencastShowActionsParams params = toProtocol(options, PageScreencastShowActionsParams.class);
+    page.channel.screencastShowActions(params, NO_TIMEOUT);
     return new DisposableStub(this::hideActions);
   }
 
   @Override
   public void showOverlays() {
-    JsonObject params = new JsonObject();
-    params.addProperty("visible", true);
-    page.sendMessage("screencastSetOverlayVisible", params, NO_TIMEOUT);
+    PageScreencastSetOverlayVisibleParams params = new PageScreencastSetOverlayVisibleParams();
+    params.visible = true;
+    page.channel.screencastSetOverlayVisible(params, NO_TIMEOUT);
   }
 
   @Override
   public void hideActions() {
-    page.sendMessage("screencastHideActions", new JsonObject(), NO_TIMEOUT);
+    page.channel.screencastHideActions(NO_TIMEOUT);
   }
 
   @Override
   public void hideOverlays() {
-    JsonObject params = new JsonObject();
-    params.addProperty("visible", false);
-    page.sendMessage("screencastSetOverlayVisible", params, NO_TIMEOUT);
+    PageScreencastSetOverlayVisibleParams params = new PageScreencastSetOverlayVisibleParams();
+    params.visible = false;
+    page.channel.screencastSetOverlayVisible(params, NO_TIMEOUT);
   }
 }

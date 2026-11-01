@@ -65,16 +65,21 @@ class BindingCall extends ChannelOwner {
 
   void call(BindingCallback binding) {
     String method;
-    JsonObject params = new JsonObject();
+    Object params;
     try {
-      params.add("result", gson().toJsonTree(serializeArgument(invoke(binding))));
+      BindingCallResolveParams resolveParams = new BindingCallResolveParams();
+      resolveParams.result = serializeArgument(invoke(binding));
+      params = resolveParams;
       method = "resolve";
     } catch (RuntimeException exception) {
-      params.add("error", gson().toJsonTree(serializeError(exception)));
+      BindingCallRejectParams rejectParams = new BindingCallRejectParams();
+      rejectParams.error = serializeError(exception);
+      params = rejectParams;
       method = "reject";
     }
     // Like the Node client, do not fail when the page was closed before the result arrived.
-    sendMessageAsync(method, params);
+    // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
+    sendMessageAsync(method, connection.protocolGson().toJsonTree(params).getAsJsonObject());
   }
 
   private Object invoke(BindingCallback binding) {

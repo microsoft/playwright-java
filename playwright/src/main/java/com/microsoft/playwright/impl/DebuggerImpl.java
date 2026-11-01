@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class DebuggerImpl extends ChannelOwner implements Debugger {
   private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
@@ -67,22 +68,23 @@ class DebuggerImpl extends ChannelOwner implements Debugger {
 
   @Override
   public void requestPause() {
-    sendMessage("requestPause", new JsonObject(), NO_TIMEOUT);
+    channel.requestPause(NO_TIMEOUT);
   }
 
   @Override
   public void resume() {
-    sendMessage("resume", new JsonObject(), NO_TIMEOUT);
+    channel.resume(NO_TIMEOUT);
   }
 
   @Override
   public void next() {
-    sendMessage("next", new JsonObject(), NO_TIMEOUT);
+    channel.next(NO_TIMEOUT);
   }
 
   @Override
   public void runTo(Location location) {
-    JsonObject params = gson().toJsonTree(location).getAsJsonObject();
-    sendMessage("runTo", params, NO_TIMEOUT);
+    DebuggerRunToParams params = new DebuggerRunToParams();
+    params.location = toProtocol(location, DebuggerRunToParams.DebuggerRunToParamsLocation.class);
+    channel.runTo(params, NO_TIMEOUT);
   }
 }

@@ -43,9 +43,10 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
     testIdAttributeName = attributeName;
     for (BrowserContextImpl context : contextsForSelectors) {
       try {
-        JsonObject params = new JsonObject();
-        params.addProperty("testIdAttributeName", attributeName);
-        context.sendMessageAsync("setTestIdAttributeName", params);
+        BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
+        params.testIdAttributeName = attributeName;
+        // java: there is no typed async send yet, so the typed params are converted to a JsonObject.
+        context.sendMessageAsync("setTestIdAttributeName", context.connection.protocolGson().toJsonTree(params).getAsJsonObject());
       } catch (PlaywrightException e) {
       }
     }
@@ -72,17 +73,18 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       throw new PlaywrightException("selectors.register: \"" + name + "\" selector engine has been already registered");
     }
 
-    JsonObject engine = new JsonObject();
-    engine.addProperty("name", name);
-    engine.addProperty("source", script);
-    if (options != null && options.contentScript != null) {
-      engine.addProperty("contentScript", options.contentScript);
+    SelectorEngine engine = new SelectorEngine();
+    engine.name = name;
+    engine.source = script;
+    if (options != null) {
+      engine.contentScript = options.contentScript;
     }
     for (BrowserContextImpl context : contextsForSelectors) {
-      JsonObject params = new JsonObject();
-      params.add("selectorEngine", engine);
-      context.sendMessage("registerSelectorEngine", params, NO_TIMEOUT);
+      BrowserContextRegisterSelectorEngineParams params = new BrowserContextRegisterSelectorEngineParams();
+      params.selectorEngine = engine;
+      context.channel.registerSelectorEngine(params, NO_TIMEOUT);
     }
-    selectorEngines.add(engine);
+    // java: kept as JsonObject because BrowserImpl and BrowserTypeImpl serialize the list as is.
+    selectorEngines.add(Serialization.gson().toJsonTree(engine).getAsJsonObject());
   }
 }

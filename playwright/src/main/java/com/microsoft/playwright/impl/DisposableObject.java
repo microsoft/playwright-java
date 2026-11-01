@@ -27,6 +27,6 @@ class DisposableObject extends ChannelOwner implements AutoCloseable {
 
   @Override
   public void close() {
-    sendMessage("dispose", new JsonObject(), NO_TIMEOUT);
+    channel.dispose(NO_TIMEOUT);
   }
 }

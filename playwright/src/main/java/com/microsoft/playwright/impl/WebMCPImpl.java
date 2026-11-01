@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.WebMCP;
 import com.microsoft.playwright.options.WebMCPTool;
 
@@ -37,18 +35,17 @@ class WebMCPImpl implements WebMCP {
 
   @Override
   public List<WebMCPTool> tools(ToolsOptions options) {
-    JsonElement json = frame.sendMessage("webmcpTools", new JsonObject(), frame.timeout(options == null ? null : options.timeout));
-    WebMCPTool[] tools = gson().fromJson(json.getAsJsonObject().get("tools"), WebMCPTool[].class);
+    FrameWebmcpToolsResult result = frame.channel.webmcpTools(frame.timeout(options == null ? null : options.timeout));
+    WebMCPTool[] tools = gson().fromJson(gson().toJsonTree(result.tools), WebMCPTool[].class);
     return Arrays.asList(tools);
   }
 
   @Override
   public Object callTool(String name, Object input, CallToolOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    params.add("input", gson().toJsonTree(serializeArgument(input)));
-    JsonElement json = frame.sendMessage("webmcpCallTool", params, frame.timeout(options == null ? null : options.timeout));
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("result"), SerializedValue.class);
-    return deserialize(value);
+    FrameWebmcpCallToolParams params = new FrameWebmcpCallToolParams();
+    params.name = name;
+    params.input = serializeArgument(input);
+    FrameWebmcpCallToolResult result = frame.channel.webmcpCallTool(params, frame.timeout(options == null ? null : options.timeout));
+    return deserialize(result.result);
   }
 }

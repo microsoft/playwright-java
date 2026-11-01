@@ -44,9 +44,9 @@ class JsonPipe extends ChannelOwner implements Transport {
   @Override
   public void send(JsonObject message) {
     checkIfClosed();
-    JsonObject params = new JsonObject();
-    params.add("message", message);
-    sendMessage("send", params, NO_TIMEOUT);
+    JsonPipeSendParams params = new JsonPipeSendParams();
+    params.message = message;
+    channel.send(params, NO_TIMEOUT);
   }
 
   @Override
@@ -81,7 +81,7 @@ class JsonPipe extends ChannelOwner implements Transport {
   @Override
   public void close() throws IOException {
     if (!isClosed) {
-      sendMessage("close");
+      channel.close(NO_TIMEOUT);
     }
   }
 
