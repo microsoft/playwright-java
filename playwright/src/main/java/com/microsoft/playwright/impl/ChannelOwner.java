@@ -142,6 +142,25 @@ class ChannelOwner extends LoggingSupport {
     return connection.sendMessage(guid, method, params, timeout);
   }
 
+  /**
+   * Typed counterpart of {@link #sendMessage(String, JsonObject, Double)}: {@code params} is serialized
+   * with the connection's Gson (channel owners travel as {@code {guid}}), the reply is deserialized into
+   * {@code resultClass}. {@code null} params mean an empty object, {@code null} or {@code Void.class}
+   * result class discards the reply.
+   */
+  <R> R sendMessage(String method, Object params, Class<R> resultClass, Double timeout) {
+    JsonObject paramsJson = params == null ? new JsonObject() : connection.protocolGson().toJsonTree(params).getAsJsonObject();
+    JsonElement result = sendMessage(method, paramsJson, timeout);
+    if (resultClass == null || resultClass == Void.class || result == null || result.isJsonNull()) {
+      return null;
+    }
+    return connection.protocolGson().fromJson(result, resultClass);
+  }
+
+  void sendMessage(String method, Object params, Double timeout) {
+    sendMessage(method, params, Void.class, timeout);
+  }
+
   private void checkNotCollected() {
     if (wasCollected)
       throw new PlaywrightException("The object has been collected to prevent unbounded heap growth.");
