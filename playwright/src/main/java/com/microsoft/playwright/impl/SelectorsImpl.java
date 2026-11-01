@@ -31,7 +31,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SelectorsImpl extends LoggingSupport implements Selectors {
   protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
-  protected final List<JsonObject> selectorEngines = new ArrayList<>();
+  protected final List<SelectorEngine> selectorEngines = new ArrayList<>();
 
   String testIdAttributeName = "data-testid";
 
@@ -68,7 +68,7 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
   }
 
   private void registerImpl(String name, String script, RegisterOptions options) {
-    if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.get("name").getAsString()))) {
+    if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.name))) {
       throw new PlaywrightException("selectors.register: \"" + name + "\" selector engine has been already registered");
     }
 
@@ -83,7 +83,6 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       params.selectorEngine = engine;
       context.channel.registerSelectorEngine(params, NO_TIMEOUT);
     }
-    // java: kept as JsonObject because BrowserImpl and BrowserTypeImpl serialize the list as is.
-    selectorEngines.add(Serialization.gson().toJsonTree(engine).getAsJsonObject());
+    selectorEngines.add(engine);
   }
 }

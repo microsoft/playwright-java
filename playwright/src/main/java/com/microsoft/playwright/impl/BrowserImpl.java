@@ -196,7 +196,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     params.clientCertificates = clientCertificatesToProtocol(connection, clientCertificates, BrowserNewContextParams.BrowserNewContextParamsClientCertificates.class);
     params.httpCredentials = httpCredentialsToProtocol(connection, httpCredentials);
     params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
-    params.selectorEngines = selectorEnginesToProtocol(connection, browserType.playwright.selectors.selectorEngines);
+    params.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
     params.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
     BrowserContextImpl context = channel.newContext(params, NO_TIMEOUT).context;
     context.initializeHarFromOptions(harOptions);
@@ -272,10 +272,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
     JsonObject tmp = new JsonObject();
     addToProtocol(tmp, clientCertificates);
     return fromJsonList(connection, tmp.get("clientCertificates"), protocolClass);
-  }
-
-  static List<SelectorEngine> selectorEnginesToProtocol(Connection connection, Object selectorEngines) {
-    return fromJsonList(connection, connection.protocolGson().toJsonTree(selectorEngines), SelectorEngine.class);
   }
 
   private static <T> List<T> fromJsonList(Connection connection, JsonElement json, Class<T> elementClass) {

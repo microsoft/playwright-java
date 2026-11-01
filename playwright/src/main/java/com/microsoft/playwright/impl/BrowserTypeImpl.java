@@ -26,12 +26,12 @@ import com.microsoft.playwright.options.ClientCertificate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.BrowserImpl.clientCertificatesToProtocol;
 import static com.microsoft.playwright.impl.BrowserImpl.httpCredentialsToProtocol;
-import static com.microsoft.playwright.impl.BrowserImpl.selectorEnginesToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
@@ -188,7 +188,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     params.clientCertificates = clientCertificatesToProtocol(connection, clientCertificates, BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsClientCertificates.class);
     params.httpCredentials = httpCredentialsToProtocol(connection, httpCredentials);
     params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
-    params.selectorEngines = selectorEnginesToProtocol(connection, playwright.selectors.selectorEngines);
+    params.selectorEngines = new ArrayList<>(playwright.selectors.selectorEngines);
     params.testIdAttributeName = playwright.selectors.testIdAttributeName;
     BrowserTypeLaunchPersistentContextResult result = channel.launchPersistentContext(params, TimeoutSettings.launchTimeout(options.timeout));
     BrowserImpl browser = result.browser;
