@@ -59,18 +59,32 @@ too, the root cause is in the driver or in a browser, and the fix lands in `micr
 which the family treats as one team. When Node.js passes, the bug is in the Java client: compare
 the `*Impl.java` with its JavaScript counterpart, and fix it here.
 
-For an upstream bug, create `$OUTPUT_DIR/upstream/` with:
+For an upstream bug, write a report for a maintainer to file in `microsoft/playwright`, for an
+engineer who did not read the Java issue: what fails, expected versus actual, the driver version,
+the browsers and the platform, the root cause when you found it, and the condensed Node.js test as
+the repro. The title has at most 256 characters, for example
+`route.fulfill() ignores the charset in Content-Type`.
 
-- `report.md`: the report for a maintainer to file in `microsoft/playwright`, for an engineer who
-  did not read the Java issue: what fails, expected versus actual, the driver version, the browsers
-  and the platform, the root cause when you found it, and the condensed Node.js test as the repro.
-- `report.json`: `{"title": "..."}`, at most 256 characters, for example
-  `route.fulfill() ignores the charset in Content-Type`.
+The bot never files it: this run allows no `issue` call (the calls are in
+`$AGENT_GUIDES_DIR/calls.d.ts`). Put the report at the end of your comment, for a maintainer to
+file, in this form:
 
-The comment job appends the title and the body to your comment, for a maintainer to file. The bot
-never files it. Still write the comment as the note: the verdict, the evidence, and that the bug is
-upstream. Do not paste the report into it. Write `report.json` last, when `report.md` and the
-comment are done. Like `proposal.json`, it marks the report as ready.
+`````markdown
+Upstream bug report, for a maintainer to file in microsoft/playwright:
+
+**Title:** <title>
+
+<details>
+<summary>Body</summary>
+
+````markdown
+<the report>
+````
+
+</details>
+`````
+
+Write the rest of the comment as the note: the verdict, the evidence, and that the bug is upstream.
 
 The public API is generated from the upstream docs: `scripts/generate_api.sh` runs upstream's
 `utils/doclint/generateApiJson.js` at the commit of the driver, and `tools/api-generator` writes
