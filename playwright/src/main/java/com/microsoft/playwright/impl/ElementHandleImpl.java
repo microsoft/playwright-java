@@ -382,15 +382,14 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new SetInputFilesOptions();
     }
     ElementHandleSetInputFilesParams params = Utils.toProtocol(options, ElementHandleSetInputFilesParams.class);
-    // java: addFilePathUploadParams (Utils) still fills a JsonObject, read it back into the typed params.
-    JsonObject upload = new JsonObject();
-    addFilePathUploadParams(files, upload, frame.page().context());
-    ElementHandleSetInputFilesParams uploadParams = connection.protocolGson().fromJson(upload, ElementHandleSetInputFilesParams.class);
-    params.payloads = uploadParams.payloads;
-    params.localDirectory = uploadParams.localDirectory;
-    params.directoryStream = uploadParams.directoryStream;
-    params.localPaths = uploadParams.localPaths;
-    params.streams = uploadParams.streams;
+    Utils.UploadParams upload = addFilePathUploadParams(files, frame.page().context());
+    if (upload.emptyPayloads) {
+      params.payloads = new ArrayList<>();
+    }
+    params.localDirectory = upload.localDirectory;
+    params.directoryStream = upload.directoryStream;
+    params.localPaths = upload.localPaths;
+    params.streams = upload.streams;
     channel.setInputFiles(params, frame.timeout(options.timeout));
   }
 

@@ -166,32 +166,45 @@ public class Utils {
     return mimeType;
   }
 
-  static void addFilePathUploadParams(Path[] items, JsonObject params, BrowserContextImpl context) {
+  /** Upload fields shared by the set-input-files and drop params; each call site copies them into its own params class. */
+  static class UploadParams {
+    boolean emptyPayloads;
+    List<String> localPaths;
+    List<WritableStream> streams;
+    String localDirectory;
+    WritableStream directoryStream;
+  }
+
+  static UploadParams addFilePathUploadParams(Path[] items, BrowserContextImpl context) {
+    UploadParams upload = new UploadParams();
     List<Path> localPaths = new ArrayList<>();
     Path localDirectory = resolvePathsAndDirectoryForInputFiles(items, localPaths);
     if (items.length == 0) {
       // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
-      params.add("payloads", new JsonArray());
+      upload.emptyPayloads = true;
     } else if (context.connection.isRemote) {
       if (localDirectory != null) {
         localPaths = collectFiles(localDirectory);
       }
-      JsonObject json = createTempFiles(context, localDirectory, localPaths);
-      JsonArray writableStreams = json.getAsJsonArray("writableStreams");
-      JsonArray jsonStreams = copyLocalToTempFiles(context, localPaths, writableStreams);
-      if (json.has("rootDir")) {
-        params.add("directoryStream", json.get("rootDir"));
+      BrowserContextCreateTempFilesResult result = createTempFiles(context, localDirectory, localPaths);
+      List<WritableStream> streams = copyLocalToTempFiles(localPaths, result.writableStreams);
+      if (result.rootDir != null) {
+        upload.directoryStream = result.rootDir;
       } else {
-        params.add("streams", jsonStreams);
+        upload.streams = streams;
       }
     } else {
       if (!localPaths.isEmpty()) {
-        params.add("localPaths", toJsonArray(localPaths.toArray(new Path[0])));
+        upload.localPaths = new ArrayList<>();
+        for (Path p : localPaths) {
+          upload.localPaths.add(p.toAbsolutePath().toString());
+        }
       }
       if (localDirectory != null) {
-        params.addProperty("localDirectory", localDirectory.toString());
+        upload.localDirectory = localDirectory.toString();
       }
     }
+    return upload;
   }
 
   private static Path resolvePathsAndDirectoryForInputFiles(Path[] items, List<Path> outLocalPaths) {
@@ -224,22 +237,21 @@ public class Utils {
     }
   }
 
-  private static JsonArray copyLocalToTempFiles(BrowserContextImpl context, List<Path> localPaths, JsonArray writableStreams) {
-    JsonArray jsonStreams = new JsonArray();
+  private static List<WritableStream> copyLocalToTempFiles(List<Path> localPaths, List<WritableStream> writableStreams) {
+    List<WritableStream> streams = new ArrayList<>();
     for (int i = 0; i < localPaths.size(); i++) {
-      JsonObject jsonStream = writableStreams.get(i).getAsJsonObject();
-      WritableStream temp = context.connection.getExistingObject(jsonStream.get("guid").getAsString());
+      WritableStream temp = writableStreams.get(i);
       try (OutputStream out = temp.stream()) {
         Files.copy(localPaths.get(i), out);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to copy file to remote server.", e);
       }
-      jsonStreams.add(temp.toProtocolRef());
+      streams.add(temp);
     }
-    return jsonStreams;
+    return streams;
   }
 
-  private static JsonObject createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
+  private static BrowserContextCreateTempFilesResult createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
     BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
     if (localDirectory != null) {
       params.rootDirName = localDirectory.getFileName().toString();
@@ -263,9 +275,7 @@ public class Utils {
       item.lastModifiedMs = (double) lastModifiedMs;
       params.items.add(item);
     }
-    BrowserContextCreateTempFilesResult result = context.channel.createTempFiles(params, NO_TIMEOUT);
-    // java: the caller still reads the reply as JsonObject ({guid} refs), see copyLocalToTempFiles.
-    return context.connection.protocolGson().toJsonTree(result).getAsJsonObject();
+    return context.channel.createTempFiles(params, NO_TIMEOUT);
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {

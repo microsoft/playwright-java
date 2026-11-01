@@ -719,14 +719,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
       options = new SetInputFilesOptions();
     }
     FrameSetInputFilesParams params = toProtocol(options, FrameSetInputFilesParams.class);
-    JsonObject upload = new JsonObject();
-    addFilePathUploadParams(files, upload, page.context());
-    FrameSetInputFilesParams uploadParams = connection.protocolGson().fromJson(upload, FrameSetInputFilesParams.class);
-    params.payloads = uploadParams.payloads;
-    params.localDirectory = uploadParams.localDirectory;
-    params.directoryStream = uploadParams.directoryStream;
-    params.localPaths = uploadParams.localPaths;
-    params.streams = uploadParams.streams;
+    Utils.UploadParams upload = addFilePathUploadParams(files, page.context());
+    if (upload.emptyPayloads) {
+      params.payloads = new ArrayList<>();
+    }
+    params.localDirectory = upload.localDirectory;
+    params.directoryStream = upload.directoryStream;
+    params.localPaths = upload.localPaths;
+    params.streams = upload.streams;
     params.selector = selector;
     channel.setInputFiles(params, timeout(options.timeout));
   }
@@ -1080,12 +1080,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   private void addDropFilePaths(Path[] files, FrameDropParams params) {
-    JsonObject upload = new JsonObject();
-    addFilePathUploadParams(files, upload, page.context());
-    FrameDropParams uploadParams = connection.protocolGson().fromJson(upload, FrameDropParams.class);
-    params.payloads = uploadParams.payloads;
-    params.localPaths = uploadParams.localPaths;
-    params.streams = uploadParams.streams;
+    Utils.UploadParams upload = addFilePathUploadParams(files, page.context());
+    if (upload.emptyPayloads) {
+      params.payloads = new ArrayList<>();
+    }
+    params.localPaths = upload.localPaths;
+    params.streams = upload.streams;
   }
 
   private void addDropPayloads(com.microsoft.playwright.options.FilePayload[] files, FrameDropParams params) {
