@@ -16,22 +16,20 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 import com.microsoft.playwright.options.HarNotFound;
+import com.microsoft.playwright.options.HttpHeader;
 
 import java.nio.file.Path;
-import java.util.Base64;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.LoggingSupport.*;
-import static com.microsoft.playwright.impl.Serialization.fromNameValues;
-import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class HARRouter {
   private final LocalUtils localUtils;
@@ -42,40 +40,45 @@ public class HARRouter {
     this.localUtils = localUtils;
     this.defaultAction = defaultAction;
 
-    JsonObject params = new JsonObject();
-    params.addProperty("file", harFile.toString());
-    JsonObject json = localUtils.sendMessage("harOpen", params, NO_TIMEOUT).getAsJsonObject();
-    if (json.has("error")) {
-      throw new PlaywrightException(json.get("error").getAsString());
+    LocalUtilsHarOpenParams params = new LocalUtilsHarOpenParams();
+    params.file = harFile.toString();
+    LocalUtilsHarOpenResult result = localUtils.channel.harOpen(params, NO_TIMEOUT);
+    if (result.error != null) {
+      throw new PlaywrightException(result.error);
     }
-    harId = json.get("harId").getAsString();
+    harId = result.harId;
   }
 
   void handle(Route route) {
     Request request = route.request();
 
-    JsonObject params = new JsonObject();
-    params.addProperty("harId", harId);
-    params.addProperty("url", request.url());
-    params.addProperty("method", request.method());
-    params.add("headers", gson().toJsonTree(request.headersArray()));
-    if (request.postDataBuffer() != null) {
-      String base64 = Base64.getEncoder().encodeToString(request.postDataBuffer());
-      params.addProperty("postData", base64);
+    LocalUtilsHarLookupParams params = new LocalUtilsHarLookupParams();
+    params.harId = harId;
+    params.url = request.url();
+    params.method = request.method();
+    params.headers = new ArrayList<>();
+    for (HttpHeader header : request.headersArray()) {
+      NameValue nv = new NameValue();
+      nv.name = header.name;
+      nv.value = header.value;
+      params.headers.add(nv);
     }
-    params.addProperty("isNavigationRequest", request.isNavigationRequest());
-    JsonObject response = localUtils.sendMessage("harLookup", params, NO_TIMEOUT).getAsJsonObject();
+    if (request.postDataBuffer() != null) {
+      params.postData = request.postDataBuffer();
+    }
+    params.isNavigationRequest = request.isNavigationRequest();
+    LocalUtilsHarLookupResult response = localUtils.channel.harLookup(params, NO_TIMEOUT);
 
-    String action = response.get("action").getAsString();
+    String action = response.action;
     if ("redirect".equals(action)) {
-      String redirectURL = response.get("redirectURL").getAsString();
+      String redirectURL = response.redirectURL;
       logApiIfEnabled("HAR: " + route.request().url() + " redirected to " + redirectURL);
       ((RouteImpl) route).redirectNavigationRequest(redirectURL);
       return;
     }
 
     if ("fulfill".equals(action)) {
-      int status = response.get("status").getAsInt();
+      int status = response.status;
       // If the response status is -1, the request was canceled or stalled, so we just stall it here.
       // See https://github.com/microsoft/playwright/issues/29311.
       // TODO: it'd be better to abort such requests, but then we likely need to respect the timing,
@@ -84,8 +87,8 @@ public class HARRouter {
       if (status == -1) {
         return;
       }
-      Map<String, String> headers = mergeSetCookieHeaders(response.getAsJsonArray("headers"));
-      byte[] buffer = Base64.getDecoder().decode(response.get("body").getAsString());
+      Map<String, String> headers = mergeSetCookieHeaders(response.headers);
+      byte[] buffer = response.body;
       route.fulfill(new Route.FulfillOptions()
         .setStatus(status)
         .setHeaders(headers)
@@ -94,7 +97,7 @@ public class HARRouter {
     }
 
     if ("error".equals(action)) {
-      logApiIfEnabled("HAR: " + response.get("message").getAsString());
+      logApiIfEnabled("HAR: " + response.message);
       // Report the error, but fall through to the default handler.
     }
 
@@ -107,12 +110,11 @@ public class HARRouter {
     route.abort();
   }
 
-  private static Map<String, String> mergeSetCookieHeaders(JsonArray headersArray) {
+  private static Map<String, String> mergeSetCookieHeaders(List<NameValue> headersArray) {
     Map<String, String> result = new java.util.LinkedHashMap<>();
-    for (JsonElement element : headersArray) {
-      JsonObject pair = element.getAsJsonObject();
-      String name = pair.get("name").getAsString();
-      String value = pair.get("value").getAsString();
+    for (NameValue pair : headersArray) {
+      String name = pair.name;
+      String value = pair.value;
       if ("set-cookie".equalsIgnoreCase(name)) {
         if (!result.containsKey("set-cookie")) {
           result.put("set-cookie", value);
@@ -127,8 +129,8 @@ public class HARRouter {
   }
 
   void dispose() {
-    JsonObject params = new JsonObject();
-    params.addProperty("harId", harId);
-    localUtils.sendMessageAsync("harClose", params);
+    LocalUtilsHarCloseParams params = new LocalUtilsHarCloseParams();
+    params.harId = harId;
+    localUtils.sendMessageAsync("harClose", localUtils.connection.protocolGson().toJsonTree(params).getAsJsonObject());
   }
 }

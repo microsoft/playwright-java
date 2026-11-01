@@ -36,48 +36,40 @@ public class LocalUtils extends ChannelOwner {
     return initializer.getAsJsonArray("deviceDescriptors");
   }
 
-  void zip(Path zipFile, JsonArray entries, String stacksId, boolean appendMode, boolean includeSources, List<String> additionalSources) {
-    JsonObject params = new JsonObject();
-    params.addProperty("zipFile", zipFile.toString());
-    params.add("entries", entries);
-    params.addProperty("mode", appendMode ? "append" : "write");
-    params.addProperty("stacksId", stacksId);
-    params.addProperty("includeSources", includeSources);
+  void zip(Path zipFile, List<NameValue> entries, String stacksId, boolean appendMode, boolean includeSources, List<String> additionalSources) {
+    LocalUtilsZipParams params = new LocalUtilsZipParams();
+    params.zipFile = zipFile.toString();
+    params.entries = entries;
+    params.mode = appendMode ? "append" : "write";
+    params.stacksId = stacksId;
+    params.includeSources = includeSources;
     if (!additionalSources.isEmpty()) {
-      JsonArray sourcesArray = new JsonArray();
-      for (String source : additionalSources) {
-        sourcesArray.add(source);
-      }
-      params.add("additionalSources", sourcesArray);
+      params.additionalSources = additionalSources;
     }
-    sendMessage("zip", params, NO_TIMEOUT);
+    channel.zip(params, NO_TIMEOUT);
   }
 
   void traceDiscarded(String stacksId) {
-    JsonObject params = new JsonObject();
-    params.addProperty("stacksId", stacksId);
-    sendMessage("traceDiscarded", params, NO_TIMEOUT);
+    LocalUtilsTraceDiscardedParams params = new LocalUtilsTraceDiscardedParams();
+    params.stacksId = stacksId;
+    channel.traceDiscarded(params, NO_TIMEOUT);
   }
 
   String tracingStarted(String tracesDir, String traceName) {
-    JsonObject params = new JsonObject();
+    LocalUtilsTracingStartedParams params = new LocalUtilsTracingStartedParams();
     if (tracesDir != null) {
-      params.addProperty("tracesDir", "");
+      params.tracesDir = "";
     }
-    params.addProperty("traceName", traceName);
-    JsonObject json = connection.localUtils().sendMessage("tracingStarted", params, NO_TIMEOUT).getAsJsonObject();
-    return json.get("stacksId").getAsString();
+    params.traceName = traceName;
+    return connection.localUtils().channel.tracingStarted(params, NO_TIMEOUT).stacksId;
   }
 
   public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
-    JsonObject params = new JsonObject();
-    params.addProperty("glob", glob);
-    if (baseURL != null) {
-      params.addProperty("baseURL", baseURL);
-    }
-    params.addProperty("webSocketUrl", webSocketUrl);
-    JsonObject json = connection.localUtils().sendMessage("globToRegex", params, NO_TIMEOUT).getAsJsonObject();
-    String regex = json.get("regex").getAsString();
+    LocalUtilsGlobToRegexParams params = new LocalUtilsGlobToRegexParams();
+    params.glob = glob;
+    params.baseURL = baseURL;
+    params.webSocketUrl = webSocketUrl;
+    String regex = connection.localUtils().channel.globToRegex(params, NO_TIMEOUT).regex;
     return Pattern.compile(regex);
   }
 }
