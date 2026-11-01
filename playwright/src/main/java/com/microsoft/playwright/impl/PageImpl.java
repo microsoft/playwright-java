@@ -1261,7 +1261,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options.type == null && options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
-    PageScreenshotParams params = toProtocol(options, PageScreenshotParams.class);
+    PageScreenshotParams params = toProtocol(this, options, PageScreenshotParams.class);
     byte[] buffer = channel.screenshot(params, timeoutSettings.timeout(options.timeout)).binary;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);

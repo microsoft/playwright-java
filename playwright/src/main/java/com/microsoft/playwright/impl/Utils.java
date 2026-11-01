@@ -19,6 +19,12 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.TypeAdapter;
+import com.google.gson.Gson;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
 import com.microsoft.playwright.options.FilePayload;
@@ -86,8 +92,21 @@ public class Utils {
     }
   }
 
-  /** Copies public API options into a generated protocol params class with the same Gson that serializes them on the wire. */
+  /**
+   * Copies public API options into a generated protocol params class with the same Gson that serializes them
+   * on the wire. Params that carry channel references (a locator mask holds a frame) must be built with the
+   * overload that takes the owner, which resolves the references through its connection (tChannelImplFromWire
+   * upstream): this variant refuses to read them.
+   */
   static <T> T toProtocol(Object options, Class<T> paramsClass) {
+    return toProtocol(noChannelReadsGson, options, paramsClass);
+  }
+
+  static <T> T toProtocol(ChannelOwner owner, Object options, Class<T> paramsClass) {
+    return toProtocol(owner.connection.protocolGson(), options, paramsClass);
+  }
+
+  private static <T> T toProtocol(Gson reader, Object options, Class<T> paramsClass) {
     if (options == null) {
       try {
         return paramsClass.getDeclaredConstructor().newInstance();
@@ -95,8 +114,37 @@ public class Utils {
         throw new PlaywrightException("Internal error", e);
       }
     }
-    return Serialization.gson().fromJson(Serialization.gson().toJsonTree(options), paramsClass);
+    return reader.fromJson(Serialization.gson().toJsonTree(options), paramsClass);
   }
+
+  private static final Gson noChannelReadsGson = Serialization.gson().newBuilder()
+    .registerTypeAdapterFactory(new TypeAdapterFactory() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (!ChannelOwner.class.isAssignableFrom(type.getRawType())) {
+          return null;
+        }
+        return (TypeAdapter<T>) new TypeAdapter<ChannelOwner>() {
+          @Override
+          public void write(JsonWriter out, ChannelOwner value) throws IOException {
+            if (value == null) {
+              out.nullValue();
+              return;
+            }
+            out.beginObject();
+            out.name("guid");
+            out.value(value.guid);
+            out.endObject();
+          }
+
+          @Override
+          public ChannelOwner read(JsonReader in) {
+            throw new PlaywrightException("Internal error: params with channel references must be built with ChannelOwner.toProtocol");
+          }
+        };
+      }
+    }).create();
 
   public static <T> T clone(T f) {
     if (f == null) {
