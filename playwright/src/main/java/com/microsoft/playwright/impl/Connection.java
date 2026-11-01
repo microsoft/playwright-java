@@ -59,7 +59,7 @@ class Message {
       ", method='" + method + '\'' +
       ", params=" + (params == null ? null : "<...>") +
       ", result='" + result + '\'' +
-      ", error='" + error + '\'' +
+      ", error='" + Connection.errorToString(error) + '\'' +
       '}';
   }
 }
@@ -333,6 +333,24 @@ public class Connection {
     }
   }
 
+  // Format of the driver error message; tests match on it.
+  static String errorToString(SerializedError.SerializedErrorError error) {
+    return "Error {\n" +
+      "  message='" + error.message + '\n' +
+      "  name='" + error.name + '\n' +
+      "  stack='" + error.stack + '\n' +
+      '}';
+  }
+
+  static String errorToString(SerializedError error) {
+    if (error.error != null) {
+      return errorToString(error.error);
+    }
+    return "SerializedError{" +
+      "value=" + error.value +
+      '}';
+  }
+
   private static String formatCallLog(JsonArray log) {
     if (log == null) {
       return "";
@@ -372,13 +390,13 @@ public class Connection {
         String callLog = formatCallLog(message.log);
         PlaywrightException exception;
         if (message.error.error == null) {
-          exception = new PlaywrightException(message.error + callLog);
+          exception = new PlaywrightException(errorToString(message.error) + callLog);
         } else if ("TimeoutError".equals(message.error.error.name)) {
-          exception = new TimeoutError(message.error.error + callLog);
+          exception = new TimeoutError(errorToString(message.error.error) + callLog);
         } else if ("TargetClosedError".equals(message.error.error.name)) {
-          exception = new TargetClosedError(message.error.error + callLog);
+          exception = new TargetClosedError(errorToString(message.error.error) + callLog);
         } else {
-          exception = new DriverException(message.error.error + callLog);
+          exception = new DriverException(errorToString(message.error.error) + callLog);
         }
         if (message.errorDetails != null) {
           exception = new ServerErrorWithDetails(exception, message.errorDetails, message.log);
