@@ -50,13 +50,13 @@ class APIResponseImpl implements APIResponse {
   @Override
   public byte[] body() {
     try {
-      JsonObject params = new JsonObject();
-      params.addProperty("fetchUid", fetchUid());
-      JsonObject json = context.sendMessage("fetchResponseBody", params, NO_TIMEOUT).getAsJsonObject();
-      if (!json.has("binary")) {
+      APIRequestContextFetchResponseBodyParams params = new APIRequestContextFetchResponseBodyParams();
+      params.fetchUid = fetchUid();
+      APIRequestContextFetchResponseBodyResult result = context.channel.fetchResponseBody(params, NO_TIMEOUT);
+      if (result.binary == null) {
         throw new PlaywrightException("Response has been disposed");
       }
-      return Base64.getDecoder().decode(json.get("binary").getAsString());
+      return result.binary;
     } catch (PlaywrightException e) {
       if (isSafeCloseError(e)) {
         throw new PlaywrightException("Response has been disposed");
@@ -67,9 +67,9 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public void dispose() {
-    JsonObject params = new JsonObject();
-    params.addProperty("fetchUid", fetchUid());
-    context.sendMessage("disposeAPIResponse", params, NO_TIMEOUT);
+    APIRequestContextDisposeAPIResponseParams params = new APIRequestContextDisposeAPIResponseParams();
+    params.fetchUid = fetchUid();
+    context.channel.disposeAPIResponse(params, NO_TIMEOUT);
   }
 
   @Override
@@ -149,11 +149,9 @@ class APIResponseImpl implements APIResponse {
   }
 
   List<String> fetchLog() {
-    JsonObject params = new JsonObject();
-    params.addProperty("fetchUid", fetchUid());
-    JsonObject json = context.sendMessage("fetchLog", params, NO_TIMEOUT).getAsJsonObject();
-    JsonArray log = json.get("log").getAsJsonArray();
-    return gson().fromJson(log, new TypeToken<List<String>>() {}.getType());
+    APIRequestContextFetchLogParams params = new APIRequestContextFetchLogParams();
+    params.fetchUid = fetchUid();
+    return context.channel.fetchLog(params, NO_TIMEOUT).log;
   }
 
 }
