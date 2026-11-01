@@ -274,8 +274,9 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       options = new StorageStateOptions();
     }
     APIRequestContextStorageStateParams params = toProtocol(options, APIRequestContextStorageStateParams.class);
-    APIRequestContextStorageStateResult result = channel.storageState(params, NO_TIMEOUT);
-    String storageState = gson().toJson(result);
+    // Keep the raw reply: re-serializing the typed result would turn "expires":-1 into -1.0 and change the string
+    // that is compared with BrowserContext.storageState().
+    String storageState = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT).toString();
     if (options.path != null) {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }
