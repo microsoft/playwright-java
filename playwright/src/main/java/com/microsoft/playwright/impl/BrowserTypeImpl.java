@@ -24,13 +24,13 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.BrowserImpl.clientCertificatesToProtocol;
 import static com.microsoft.playwright.impl.BrowserImpl.httpCredentialsToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
@@ -185,8 +185,23 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         params.noDefaultViewport = true;
       }
     }
-    params.clientCertificates = clientCertificatesToProtocol(connection, clientCertificates, BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsClientCertificates.class);
-    params.httpCredentials = httpCredentialsToProtocol(connection, httpCredentials);
+    if (clientCertificates != null) {
+      params.clientCertificates = new ArrayList<>();
+      for (ClientCertificate cert : clientCertificates) {
+        BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsClientCertificates c = new BrowserTypeLaunchPersistentContextParams.BrowserTypeLaunchPersistentContextParamsClientCertificates();
+        c.origin = cert.origin;
+        try {
+          c.cert = cert.certPath != null ? Files.readAllBytes(cert.certPath) : cert.cert;
+          c.key = cert.keyPath != null ? Files.readAllBytes(cert.keyPath) : cert.key;
+          c.pfx = cert.pfxPath != null ? Files.readAllBytes(cert.pfxPath) : cert.pfx;
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to read from file", e);
+        }
+        c.passphrase = cert.passphrase;
+        params.clientCertificates.add(c);
+      }
+    }
+    params.httpCredentials = httpCredentialsToProtocol(httpCredentials);
     params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
     params.selectorEngines = new ArrayList<>(playwright.selectors.selectorEngines);
     params.testIdAttributeName = playwright.selectors.testIdAttributeName;

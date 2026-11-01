@@ -45,7 +45,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 import static java.nio.file.Files.readAllBytes;
 
 public class Utils {
@@ -428,66 +427,6 @@ public class Utils {
 
   static String addSourceUrlToScript(String source, Path path) {
     return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
-  }
-
-  static void addToProtocol(JsonObject params, List<ClientCertificate> clientCertificateList) {
-    if (clientCertificateList == null) {
-      return;
-    }
-    JsonArray clientCertificates = new JsonArray();
-    for (ClientCertificate cert: clientCertificateList) {
-      JsonObject jsonCert = new JsonObject();
-      jsonCert.addProperty("origin", cert.origin);
-      try {
-        String certBase64 = base64Buffer(cert.cert, cert.certPath);
-        if (certBase64 != null) {
-          jsonCert.addProperty("cert",  certBase64);
-        }
-        String keyBase64 = base64Buffer(cert.key, cert.keyPath);
-        if (keyBase64 != null) {
-          jsonCert.addProperty("key", keyBase64);
-        }
-        String pfxBase64 = base64Buffer(cert.pfx, cert.pfxPath);
-        if (pfxBase64 != null) {
-          jsonCert.addProperty("pfx", pfxBase64);
-        }
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file", e);
-      }
-      if (cert.passphrase != null) {
-        jsonCert.addProperty("passphrase", cert.passphrase);
-      }
-      clientCertificates.add(jsonCert);
-    }
-    params.remove("clientCertificates");
-    params.add("clientCertificates", clientCertificates);
-  }
-
-  // Mirrors toHttpCredentialsProtocol() in the JS client: the protocol always takes a list.
-  static void addHttpCredentialsToProtocol(JsonObject params) {
-    JsonElement credentials = params.remove("httpCredentials");
-    if (credentials == null) {
-      return;
-    }
-    JsonArray list = new JsonArray();
-    if (credentials.isJsonArray()) {
-      list.addAll(credentials.getAsJsonArray());
-    } else {
-      list.add(credentials);
-    }
-    if (list.size() > 0) {
-      params.add("httpCredentials", list);
-    }
-  }
-
-  private static String base64Buffer(byte[] bytes, Path path) throws IOException {
-    if (path != null) {
-      bytes = readAllBytes(path);
-    }
-    if (bytes == null) {
-      return null;
-    }
-    return Base64.getEncoder().encodeToString(bytes);
   }
 
   static JsonObject interceptionPatterns(List<UrlMatcher> matchers) {

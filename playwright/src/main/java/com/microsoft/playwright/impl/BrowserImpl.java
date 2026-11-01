@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.BindResult;
 import com.microsoft.playwright.options.ClientCertificate;
+import com.microsoft.playwright.options.HttpCredentials;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -193,8 +194,8 @@ class BrowserImpl extends ChannelOwner implements Browser {
       params.screen.width = options.screenSize.width;
       params.screen.height = options.screenSize.height;
     }
-    params.clientCertificates = clientCertificatesToProtocol(connection, clientCertificates, BrowserNewContextParams.BrowserNewContextParamsClientCertificates.class);
-    params.httpCredentials = httpCredentialsToProtocol(connection, httpCredentials);
+    params.clientCertificates = clientCertificatesToProtocol(clientCertificates);
+    params.httpCredentials = httpCredentialsToProtocol(httpCredentials);
     params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
     params.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
     params.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
@@ -255,30 +256,51 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   // The protocol takes a list of http credentials, the option is a single value or a list.
-  static List<ProtocolHttpCredentials> httpCredentialsToProtocol(Connection connection, Object httpCredentials) {
+  @SuppressWarnings("unchecked")
+  static List<ProtocolHttpCredentials> httpCredentialsToProtocol(Object httpCredentials) {
     if (httpCredentials == null) {
       return null;
     }
-    JsonObject tmp = new JsonObject();
-    tmp.add("httpCredentials", connection.protocolGson().toJsonTree(httpCredentials));
-    addHttpCredentialsToProtocol(tmp);
-    return fromJsonList(connection, tmp.get("httpCredentials"), ProtocolHttpCredentials.class);
+    List<HttpCredentials> list = new ArrayList<>();
+    if (httpCredentials instanceof List) {
+      list.addAll((List<HttpCredentials>) httpCredentials);
+    } else {
+      list.add((HttpCredentials) httpCredentials);
+    }
+    if (list.isEmpty()) {
+      return null;
+    }
+    List<ProtocolHttpCredentials> result = new ArrayList<>();
+    for (HttpCredentials credentials : list) {
+      ProtocolHttpCredentials c = new ProtocolHttpCredentials();
+      c.username = credentials.username;
+      c.password = credentials.password;
+      c.origin = credentials.origin;
+      c.send = credentials.send == null ? null : credentials.send.name().toLowerCase();
+      result.add(c);
+    }
+    return result;
   }
 
-  static <T> List<T> clientCertificatesToProtocol(Connection connection, List<ClientCertificate> clientCertificates, Class<T> protocolClass) {
+  static List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> clientCertificatesToProtocol(List<ClientCertificate> clientCertificates) {
     if (clientCertificates == null) {
       return null;
     }
-    JsonObject tmp = new JsonObject();
-    addToProtocol(tmp, clientCertificates);
-    return fromJsonList(connection, tmp.get("clientCertificates"), protocolClass);
-  }
-
-  private static <T> List<T> fromJsonList(Connection connection, JsonElement json, Class<T> elementClass) {
-    if (json == null) {
-      return null;
+    List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> result = new ArrayList<>();
+    for (ClientCertificate cert : clientCertificates) {
+      BrowserNewContextParams.BrowserNewContextParamsClientCertificates c = new BrowserNewContextParams.BrowserNewContextParamsClientCertificates();
+      c.origin = cert.origin;
+      try {
+        c.cert = cert.certPath != null ? Files.readAllBytes(cert.certPath) : cert.cert;
+        c.key = cert.keyPath != null ? Files.readAllBytes(cert.keyPath) : cert.key;
+        c.pfx = cert.pfxPath != null ? Files.readAllBytes(cert.pfxPath) : cert.pfx;
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read from file", e);
+      }
+      c.passphrase = cert.passphrase;
+      result.add(c);
     }
-    return connection.protocolGson().fromJson(json, TypeToken.getParameterized(List.class, elementClass).getType());
+    return result;
   }
 
   private Page newPageImpl(NewPageOptions options) {

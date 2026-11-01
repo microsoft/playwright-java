@@ -321,38 +321,6 @@ class Serialization {
     }
   }
 
-  static JsonArray toJsonArray(Path[] files) {
-    JsonArray jsonFiles = new JsonArray();
-    for (Path p : files) {
-      jsonFiles.add(p.toAbsolutePath().toString());
-    }
-    return jsonFiles;
-  }
-
-  static JsonArray toJsonArray(FilePayload[] files) {
-    JsonArray jsonFiles = new JsonArray();
-    for (FilePayload p : files) {
-      jsonFiles.add(toProtocol(p));
-    }
-    return jsonFiles;
-  }
-
-  static JsonObject toProtocol(FilePayload p) {
-    JsonObject jsonFile = new JsonObject();
-    jsonFile.addProperty("name", p.name);
-    jsonFile.addProperty("mimeType", p.mimeType);
-    jsonFile.addProperty("buffer", Base64.getEncoder().encodeToString(p.buffer));
-    return jsonFile;
-  }
-
-  static JsonArray toProtocol(ElementHandle[] handles) {
-    JsonArray jsonElements = new JsonArray();
-    for (ElementHandle handle : handles) {
-      jsonElements.add(((ElementHandleImpl) handle).toProtocolRef());
-    }
-    return jsonElements;
-  }
-
   static JsonArray toProtocol(Map<String, String> map) {
     for (String value : map.values()) {
       if (value == null) {

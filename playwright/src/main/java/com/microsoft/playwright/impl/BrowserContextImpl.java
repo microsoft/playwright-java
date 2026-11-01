@@ -911,14 +911,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     listeners.notify(EventType.CLOSE, this);
   }
 
-  WritableStream createTempFile(String name, long lastModifiedMs) {
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    params.addProperty("lastModifiedMs", lastModifiedMs);
-    JsonObject json = sendMessage("createTempFile", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(json.getAsJsonObject("writableStream").get("guid").getAsString());
-  }
-
   protected void initializeHarFromOptions(Browser.NewContextOptions options) {
     if (options.recordHarPath == null) {
       if (options.recordHarOmitContent != null) {
