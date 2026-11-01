@@ -579,13 +579,11 @@ public class PageImpl extends ChannelOwner implements Page {
       if (ownedContext != null) {
         ownedContext.close();
       } else if (options.runBeforeUnload != null && options.runBeforeUnload) {
-        sendMessage("runBeforeUnload", new JsonObject(), NO_TIMEOUT);
+        channel.runBeforeUnload(NO_TIMEOUT);
       } else {
-        JsonObject params = new JsonObject();
-        if (options.reason != null) {
-          params.addProperty("reason", options.reason);
-        }
-        sendMessage("close", params, NO_TIMEOUT);
+        PageCloseParams params = new PageCloseParams();
+        params.reason = options.reason;
+        channel.close(params, NO_TIMEOUT);
       }
     } catch (PlaywrightException exception) {
       if (isSafeCloseError(exception) && (options.runBeforeUnload == null || !options.runBeforeUnload)) {
@@ -608,13 +606,8 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<Request> requests() {
-    JsonObject json = sendMessage("requests", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    JsonArray requests = json.getAsJsonArray("requests");
-    List<Request> result = new ArrayList<>();
-    for (JsonElement item : requests) {
-      result.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
-    }
-    return result;
+    PageRequestsResult json = channel.requests(NO_TIMEOUT);
+    return new ArrayList<Request>(json.requests);
   }
 
   @Override
@@ -728,7 +721,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void bringToFront() {
-    sendMessage("bringToFront");
+    channel.bringToFront(NO_TIMEOUT);
   }
 
   @Override
@@ -974,7 +967,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void requestGC() {
-    sendMessage("requestGC");
+    channel.requestGC(NO_TIMEOUT);
   }
 
   @Override
@@ -1052,33 +1045,37 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options) {
-    JsonObject params = options != null ? gson().toJsonTree(options).getAsJsonObject() : new JsonObject();
-    JsonObject json = sendMessage("consoleMessages", params, NO_TIMEOUT).getAsJsonObject();
-    JsonArray messages = json.getAsJsonArray("messages");
+    PageConsoleMessagesParams params = toProtocol(options, PageConsoleMessagesParams.class);
+    PageConsoleMessagesResult json = channel.consoleMessages(params, NO_TIMEOUT);
     List<ConsoleMessage> result = new ArrayList<>();
-    for (JsonElement item : messages) {
-      result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this, null));
+    for (PageConsoleMessagesResult.PageConsoleMessagesResultMessages item : json.messages) {
+      result.add(new ConsoleMessageImpl(connection, connection.protocolGson().toJsonTree(item).getAsJsonObject(), this, null));
     }
     return result;
   }
 
   @Override
   public void clearConsoleMessages() {
-    sendMessage("clearConsoleMessages", new JsonObject(), NO_TIMEOUT);
+    channel.clearConsoleMessages(NO_TIMEOUT);
   }
 
   @Override
   public void clearPageErrors() {
-    sendMessage("clearPageErrors", new JsonObject(), NO_TIMEOUT);
+    channel.clearPageErrors(NO_TIMEOUT);
   }
 
   @Override
   public List<String> pageErrors() {
-    JsonObject json = sendMessage("pageErrors", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    JsonArray errors = json.getAsJsonArray("errors");
+    PagePageErrorsResult json = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
     List<String> result = new ArrayList<>();
-    for (JsonElement item : errors) {
-      String errorStr = parseError(item.getAsJsonObject());
+    for (com.microsoft.playwright.impl.SerializedError item : json.errors) {
+      String errorStr = "";
+      if (item.error != null) {
+        errorStr = item.error.name + ": " + item.error.message;
+        if (item.error.stack != null && !item.error.stack.isEmpty()) {
+          errorStr += "\n" + item.error.stack;
+        }
+      }
       result.add(errorStr);
     }
     return result;
@@ -1101,7 +1098,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void hideHighlight() {
-    sendMessage("hideHighlight", new JsonObject(), NO_TIMEOUT);
+    channel.hideHighlight(NO_TIMEOUT);
   }
 
   @Override
@@ -1119,13 +1116,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void cancelPickLocator() {
-    sendMessage("cancelPickLocator", new JsonObject(), NO_TIMEOUT);
+    channel.cancelPickLocator(NO_TIMEOUT);
   }
 
   @Override
   public Locator pickLocator() {
-    JsonObject result = sendMessage("pickLocator", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    return new LocatorImpl(mainFrame, result.get("selector").getAsString(), null);
+    PagePickLocatorResult result = channel.pickLocator(NO_TIMEOUT);
+    return new LocatorImpl(mainFrame, result.selector, null);
   }
 
   @Override
