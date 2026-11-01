@@ -760,8 +760,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new EmulateMediaOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("emulateMedia", params, NO_TIMEOUT);
+    PageEmulateMediaParams params = toProtocol(options, PageEmulateMediaParams.class);
+    channel.emulateMedia(params, NO_TIMEOUT);
   }
 
   @Override
@@ -936,12 +936,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoBackOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("goBack", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageGoBackParams params = toProtocol(options, PageGoBackParams.class);
+    return channel.goBack(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
@@ -953,12 +949,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoForwardOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("goForward", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageGoForwardParams params = toProtocol(options, PageGoForwardParams.class);
+    return channel.goForward(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
@@ -1145,10 +1137,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new PdfOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonObject json = sendMessage("pdf", params, NO_TIMEOUT).getAsJsonObject();
-    byte[] buffer = Base64.getDecoder().decode(json.get("pdf").getAsString());
+    PagePdfParams params = toProtocol(options, PagePdfParams.class);
+    byte[] buffer = channel.pdf(params, NO_TIMEOUT).pdf;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);
     }
@@ -1174,12 +1164,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("reload", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageReloadParams params = toProtocol(options, PageReloadParams.class);
+    return channel.reload(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
@@ -1275,11 +1261,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options.type == null && options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonObject json = sendMessage("screenshot", params, timeoutSettings.timeout(options.timeout)).getAsJsonObject();
-
-    byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());
+    PageScreenshotParams params = toProtocol(options, PageScreenshotParams.class);
+    byte[] buffer = channel.screenshot(params, timeoutSettings.timeout(options.timeout)).binary;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);
     }
@@ -1318,16 +1301,15 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    JsonObject params = new JsonObject();
-    JsonArray jsonHeaders = new JsonArray();
+    PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
+    params.headers = new ArrayList<>();
     for (Map.Entry<String, String> e : headers.entrySet()) {
-      JsonObject header = new JsonObject();
-      header.addProperty("name", e.getKey());
-      header.addProperty("value", e.getValue());
-      jsonHeaders.add(header);
+      NameValue header = new NameValue();
+      header.name = e.getKey();
+      header.value = e.getValue();
+      params.headers.add(header);
     }
-    params.add("headers", jsonHeaders);
-    sendMessage("setExtraHTTPHeaders", params, NO_TIMEOUT);
+    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
   @Override
@@ -1353,9 +1335,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void setViewportSize(int width, int height) {
     viewport = new ViewportSize(width, height);
-    JsonObject params = new JsonObject();
-    params.add("viewportSize", gson().toJsonTree(viewport));
-    sendMessage("setViewportSize", params, NO_TIMEOUT);
+    PageSetViewportSizeParams params = new PageSetViewportSizeParams();
+    params.viewportSize = new PageSetViewportSizeParams.PageSetViewportSizeParamsViewportSize();
+    params.viewportSize.width = width;
+    params.viewportSize.height = height;
+    channel.setViewportSize(params, NO_TIMEOUT);
   }
 
   @Override
@@ -1430,11 +1414,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void updateInterceptionPatterns() {
-    sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns(), NO_TIMEOUT);
+    channel.setNetworkInterceptionPatterns(
+      connection.protocolGson().fromJson(routes.interceptionPatterns(), PageSetNetworkInterceptionPatternsParams.class), NO_TIMEOUT);
   }
 
   private void updateWebSocketInterceptionPatterns() {
-    sendMessage("setWebSocketInterceptionPatterns", webSocketRoutes.interceptionPatterns(), NO_TIMEOUT);
+    channel.setWebSocketInterceptionPatterns(
+      connection.protocolGson().fromJson(webSocketRoutes.interceptionPatterns(), PageSetWebSocketInterceptionPatternsParams.class), NO_TIMEOUT);
   }
 
   @Override
