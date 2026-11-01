@@ -27,6 +27,7 @@ import com.microsoft.playwright.options.ServerAddr;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,20 @@ import static java.util.Arrays.asList;
 
 class APIResponseImpl implements APIResponse {
   final APIRequestContextImpl context;
-  private final JsonObject initializer;
+  private final ProtocolAPIResponse response;
   private final RawHeaders headers;
 
-  APIResponseImpl(APIRequestContextImpl apiRequestContext, JsonObject response) {
+  APIResponseImpl(APIRequestContextImpl apiRequestContext, ProtocolAPIResponse response) {
     context = apiRequestContext;
-    initializer = response;
-    headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
+    this.response = response;
+    List<HttpHeader> headerList = new ArrayList<>();
+    for (NameValue nv : response.headers) {
+      HttpHeader h = new HttpHeader();
+      h.name = nv.name;
+      h.value = nv.value;
+      headerList.add(h);
+    }
+    headers = new RawHeaders(headerList);
   }
 
   @Override
@@ -90,28 +98,38 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public SecurityDetails securityDetails() {
-    if (!initializer.has("securityDetails")) {
+    ProtocolSecurityDetails d = response.securityDetails;
+    if (d == null) {
       return null;
     }
-    return gson().fromJson(initializer.get("securityDetails"), SecurityDetails.class);
+    SecurityDetails result = new SecurityDetails();
+    result.issuer = d.issuer;
+    result.protocol = d.protocol;
+    result.subjectName = d.subjectName;
+    result.validFrom = d.validFrom;
+    result.validTo = d.validTo;
+    return result;
   }
 
   @Override
   public ServerAddr serverAddr() {
-    if (!initializer.has("serverAddr")) {
+    if (response.serverAddr == null) {
       return null;
     }
-    return gson().fromJson(initializer.get("serverAddr"), ServerAddr.class);
+    ServerAddr result = new ServerAddr();
+    result.ipAddress = response.serverAddr.ipAddress;
+    result.port = response.serverAddr.port == null ? 0 : response.serverAddr.port;
+    return result;
   }
 
   @Override
   public int status() {
-    return initializer.get("status").getAsInt();
+    return response.status;
   }
 
   @Override
   public String statusText() {
-    return initializer.get("statusText").getAsString();
+    return response.statusText;
   }
 
   @Override
@@ -122,8 +140,17 @@ class APIResponseImpl implements APIResponse {
   @Override
   public Timing timing() {
     Timing timing;
-    if (initializer.has("timing")) {
-      timing = gson().fromJson(initializer.get("timing"), Timing.class);
+    ResourceTiming t = response.timing;
+    if (t != null) {
+      timing = new Timing();
+      timing.startTime = orZero(t.startTime);
+      timing.domainLookupStart = orZero(t.domainLookupStart);
+      timing.domainLookupEnd = orZero(t.domainLookupEnd);
+      timing.connectStart = orZero(t.connectStart);
+      timing.secureConnectionStart = orZero(t.secureConnectionStart);
+      timing.connectEnd = orZero(t.connectEnd);
+      timing.requestStart = orZero(t.requestStart);
+      timing.responseStart = orZero(t.responseStart);
     } else {
       timing = new Timing();
       timing.startTime = -1;
@@ -135,17 +162,21 @@ class APIResponseImpl implements APIResponse {
       timing.requestStart = -1;
       timing.responseStart = -1;
     }
-    timing.responseEnd = initializer.has("responseEndTiming") ? initializer.get("responseEndTiming").getAsDouble() : -1;
+    timing.responseEnd = response.responseEndTiming != null ? response.responseEndTiming : -1;
     return timing;
+  }
+
+  private static double orZero(Double value) {
+    return value == null ? 0 : value;
   }
 
   @Override
   public String url() {
-    return initializer.get("url").getAsString();
+    return response.url;
   }
 
   String fetchUid() {
-    return initializer.get("fetchUid").getAsString();
+    return response.fetchUid;
   }
 
   List<String> fetchLog() {

@@ -190,7 +190,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       params.maxRetries = options.maxRetries;
     }
     APIRequestContextFetchResult result = channel.fetch(params, timeoutSettings.timeout(options.timeout));
-    return new APIResponseImpl(this, connection.protocolGson().toJsonTree(result.response).getAsJsonObject());
+    return new APIResponseImpl(this, result.response);
   }
 
   private static List<NameValue> toNameValues(JsonArray array) {

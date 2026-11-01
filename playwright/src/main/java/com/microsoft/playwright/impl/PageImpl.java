@@ -1037,7 +1037,7 @@ public class PageImpl extends ChannelOwner implements Page {
     PageConsoleMessagesResult json = channel.consoleMessages(params, NO_TIMEOUT);
     List<ConsoleMessage> result = new ArrayList<>();
     for (PageConsoleMessagesResult.PageConsoleMessagesResultMessages item : json.messages) {
-      result.add(new ConsoleMessageImpl(connection, connection.protocolGson().toJsonTree(item).getAsJsonObject(), this, null));
+      result.add(new ConsoleMessageImpl(this, item));
     }
     return result;
   }

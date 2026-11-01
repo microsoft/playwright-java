@@ -825,15 +825,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         bindingCall.call(binding);
       }
     } else if ("console".equals(event)) {
-      PageImpl page = null;
-      if (params.has("page")) {
-        page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-      }
-      WorkerImpl worker = null;
-      if (params.has("worker")) {
-        worker = connection.getExistingObject(params.getAsJsonObject("worker").get("guid").getAsString());
-      }
-      ConsoleMessageImpl message = new ConsoleMessageImpl(connection, params, page, worker);
+      BrowserContextConsoleEvent consoleEvent = connection.protocolGson().fromJson(params, BrowserContextConsoleEvent.class);
+      PageImpl page = consoleEvent.page;
+      WorkerImpl worker = consoleEvent.worker;
+      ConsoleMessageImpl message = new ConsoleMessageImpl(consoleEvent);
       listeners.notify(BrowserContextImpl.EventType.CONSOLE, message);
       if (worker != null) {
         worker.listeners.notify(WorkerImpl.EventType.CONSOLE, message);
