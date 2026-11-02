@@ -182,7 +182,7 @@ public class Utils {
     if (items.length == 0) {
       // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
       upload.emptyPayloads = true;
-    } else if (context.connection.isRemote) {
+    } else if (context.connection.isRemote()) {
       if (localDirectory != null) {
         localPaths = collectFiles(localDirectory);
       }

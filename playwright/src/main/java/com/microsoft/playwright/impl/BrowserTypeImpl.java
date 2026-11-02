@@ -86,7 +86,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
 
     JsonPipe pipe = connection.localUtils().channel.connect(params, timeout).pipe;
-    Connection connection = new Connection(pipe, this.connection.env, this.connection.localUtils);
+    Connection connection = new Connection(pipe, this.connection.env, this.connection.localUtils());
     PlaywrightImpl playwright = connection.initializePlaywright();
     if (!playwright.initializer.has("preLaunchedBrowser")) {
       try {

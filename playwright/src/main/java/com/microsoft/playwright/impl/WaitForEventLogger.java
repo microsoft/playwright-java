@@ -78,19 +78,11 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
   // message only, so that the calls made from the callback of the wait are not hidden as internal.
   private void sendWaitInfo(JsonObject info, String title) {
     info.addProperty("waitId", waitId);
-    Connection connection = channel.connection;
-    boolean setTitle = title != null && connection.title() == null;
-    if (setTitle) {
-      connection.setTitle(title);
-    }
+    // java: wrapApiCall reuses the zone of an outer call, so that call keeps its own title.
     try {
-      channel.sendMessageNoReply("__waitInfo__", info);
+      channel.wrapApiCall(() -> channel.sendMessageNoReply("__waitInfo__", info), title, false);
     } catch (RuntimeException e) {
       // Fire-and-forget: never throw to the caller.
-    } finally {
-      if (setTitle) {
-        connection.setTitle(null);
-      }
     }
   }
 }

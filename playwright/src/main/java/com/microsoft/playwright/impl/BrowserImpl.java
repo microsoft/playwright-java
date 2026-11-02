@@ -92,7 +92,8 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     closeReason = options.reason;
     if (isConnectedOverWebSocket) {
       try {
-        connection.close();
+        // java: the message of a call that fails because of this, the default close reason of JsonPipe.
+        connection.close("Browser has been closed");
       } catch (IOException e) {
         throw new PlaywrightException("Failed to close browser connection", e);
       }

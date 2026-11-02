@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// Port of packages/playwright-core/src/client/connection.ts
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
@@ -40,218 +42,153 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static java.lang.System.currentTimeMillis;
 
-class Message {
-  String id;
-  String guid;
-  String method;
-  JsonObject params;
-  JsonElement result;
-  SerializedError error;
-  JsonObject errorDetails;
-  JsonArray log;
+class Root extends ChannelOwner {
+  Root(Connection connection) {
+    super(connection, "Root", "");
+  }
 
-  @Override
-  public String toString() {
-    return "Message{" +
-      "id='" + id + '\'' +
-      ", guid='" + guid + '\'' +
-      ", method='" + method + '\'' +
-      ", params=" + (params == null ? null : "<...>") +
-      ", result='" + result + '\'' +
-      ", error='" + Errors.errorToString(error) + '\'' +
-      '}';
+  PlaywrightImpl initialize() {
+    RootInitializeParams params = new RootInitializeParams();
+    params.sdkLanguage = "java";
+    return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
   }
 }
 
+class DummyChannelOwner extends ChannelOwner {
+  DummyChannelOwner(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+    super(parent, type, guid, initializer);
+  }
+}
+
+interface ChannelOwnerFactory {
+  ChannelOwner create(ChannelOwner parent, String type, String guid, JsonObject initializer);
+}
 
 public class Connection {
+  final Map<String, ChannelOwner> objects = new HashMap<>();
+  // java: upstream keeps { resolve, reject, signal, title, type, method } per call, nothing but the result is needed here.
+  private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
+  private final Root rootObject;
+  private TargetClosedError closedError;
+  private boolean isRemote = false;
+  private LocalUtils localUtils;
+  private int tracingCount;
+  private final Map<String, ChannelOwnerFactory> objectFactories = new HashMap<>();
+
+  // java: everything below has no counterpart in connection.ts.
   private final Transport transport;
-  private final Map<String, ChannelOwner> objects = new HashMap<>();
+  // Upstream creates the ids with createCallIdGenerator(); the prefix is unique for each client to avoid id clashes in a trace.
+  private final String callIdPrefix = createCallIdPrefix();
+  private int lastId = 0;
+  private final StackTraceCollector stackTraceCollector;
   private final Gson protocolGson = gson().newBuilder()
     .registerTypeAdapterFactory(new ChannelOwnerAdapterFactory())
     .registerTypeAdapter(byte[].class, new Base64Adapter().nullSafe())
     .create();
-  private final Root root;
-  final boolean isRemote;
-  private int lastId = 0;
-  // Use a unique prefix for each client to avoid id clashes in a trace.
-  private final String callIdPrefix = createCallIdPrefix();
-  private final StackTraceCollector stackTraceCollector;
-  private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
-  private String title;
-  private boolean titleReported = false;
+  // java: upstream keeps the api zone in an AsyncLocalStorage; the single API thread keeps it here, see ChannelOwner.wrapApiCall.
+  ApiZone apiZone;
+  PlaywrightImpl playwright;
+  final Map<String, String> env;
   private static final long DRIVER_RESPONSE_GRACE_MS = 10_000;
   private static final boolean isLogging;
   static {
     String debug = System.getenv("DEBUG");
     isLogging = (debug != null) && debug.contains("pw:channel");
   }
-  LocalUtils localUtils;
-  PlaywrightImpl playwright;
-  final Map<String, String> env;
-  private int tracingCount;
 
-  class Root extends ChannelOwner {
-    Root(Connection connection) {
-      super(connection, "Root", "");
-    }
-
-    PlaywrightImpl initialize() {
-      RootInitializeParams params = new RootInitializeParams();
-      params.sdkLanguage = "java";
-      params.supportsLoneSurrogates = true;
-      return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
-    }
+  /** The options of upstream's sendMessageToServer; {@code timeout == null} means that no timeout is sent. */
+  static class CallOptions {
+    String title;
+    boolean internal;
+    Double timeout;
+    JsonArray frames;
   }
 
+  // java: the connection of a connect() call is remote and shares LocalUtils with the driver connection.
   Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils) {
-    this(pipe, env, true);
-    this.localUtils = localUtils;
+    this(pipe, env, localUtils, true);
   }
 
   Connection(Transport transport, Map<String, String> env) {
-    this(transport, env, false);
+    this(transport, env, null, false);
   }
 
-  private Connection(Transport transport, Map<String, String> env, boolean isRemote) {
+  private Connection(Transport transport, Map<String, String> env, LocalUtils localUtils, boolean remote) {
     this.env = env;
-    this.isRemote = isRemote;
     if (isLogging) {
       transport = new TransportLogger(transport);
     }
     this.transport = transport;
-    root = new Root(this);
     stackTraceCollector = StackTraceCollector.createFromEnv(env);
-  }
-
-  private static String createCallIdPrefix() {
-    String alphabet = "abcdefghijklmnopqrstuvwxyz";
-    StringBuilder prefix = new StringBuilder();
-    for (int i = 0; i < 4; i++) {
-      prefix.append(alphabet.charAt(ThreadLocalRandom.current().nextInt(alphabet.length())));
+    this.localUtils = localUtils;
+    this.rootObject = new Root(this);
+    if (remote) {
+      markAsRemote();
     }
-    return prefix.toString();
+    registerObjectFactories();
   }
 
-  void setIsTracing(boolean tracing) {
-    if (tracing) {
-      ++tracingCount;
-    } else {
-      --tracingCount;
-    }
-  }
-
-  String title() {
-    return title;
-  }
-
-  String setTitle(String newTitle) {
-    String previous = title;
-    titleReported = false;
-    title = newTitle;
-    return previous;
-  }
-
-  void close() throws IOException {
-    transport.close();
-  }
-
-  public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    return sendMessage(guid, method, params, null);
-  }
-
-  public JsonElement sendMessage(String guid, String method, JsonObject params, Double timeout) {
-    WaitableResult<JsonElement> result = internalSendMessage(guid, method, params, timeout, true, true);
-    if (timeout == null || timeout == 0) {
-      return root.runUntil(() -> {}, result);
-    }
-    // The driver enforces the timeout, but the driver itself may hang.
-    long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
-    while (!result.isDone()) {
-      if (!processOneMessage() && System.nanoTime() - deadline > 0) {
-        result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
-          method + ". The driver is not responding."));
+  private void registerObjectFactories() {
+    // java: Android and Electron are not ported, their objects are ignored.
+    objectFactories.put("Android", (parent, type, guid, init) -> null);
+    objectFactories.put("AndroidDevice", (parent, type, guid, init) -> null);
+    objectFactories.put("AndroidSocket", (parent, type, guid, init) -> null);
+    objectFactories.put("APIRequestContext", (parent, type, guid, init) -> new APIRequestContextImpl(parent, type, guid, init));
+    objectFactories.put("Artifact", (parent, type, guid, init) -> new ArtifactImpl(parent, type, guid, init));
+    objectFactories.put("BindingCall", (parent, type, guid, init) -> new BindingCall(parent, type, guid, init));
+    objectFactories.put("Browser", (parent, type, guid, init) -> new BrowserImpl(parent, type, guid, init));
+    objectFactories.put("BrowserContext", (parent, type, guid, init) -> new BrowserContextImpl(parent, type, guid, init));
+    objectFactories.put("BrowserType", (parent, type, guid, init) -> new BrowserTypeImpl(parent, type, guid, init));
+    objectFactories.put("CDPSession", (parent, type, guid, init) -> new CDPSessionImpl(parent, type, guid, init));
+    objectFactories.put("Debugger", (parent, type, guid, init) -> new DebuggerImpl(parent, type, guid, init));
+    objectFactories.put("Dialog", (parent, type, guid, init) -> new DialogImpl(parent, type, guid, init));
+    objectFactories.put("Disposable", (parent, type, guid, init) -> new DisposableObject(parent, type, guid, init));
+    objectFactories.put("Electron", (parent, type, guid, init) -> null);
+    objectFactories.put("ElementHandle", (parent, type, guid, init) -> new ElementHandleImpl(parent, type, guid, init));
+    objectFactories.put("Frame", (parent, type, guid, init) -> new FrameImpl(parent, type, guid, init));
+    objectFactories.put("JSHandle", (parent, type, guid, init) -> new JSHandleImpl(parent, type, guid, init));
+    objectFactories.put("JsonPipe", (parent, type, guid, init) -> new JsonPipe(parent, type, guid, init));
+    objectFactories.put("LocalUtils", (parent, type, guid, init) -> {
+      LocalUtils result = new LocalUtils(parent, type, guid, init);
+      if (localUtils == null) {
+        localUtils = result;
       }
-    }
-    return result.get();
+      return result;
+    });
+    objectFactories.put("Page", (parent, type, guid, init) -> new PageImpl(parent, type, guid, init));
+    objectFactories.put("Playwright", (parent, type, guid, init) -> new PlaywrightImpl(parent, type, guid, init));
+    objectFactories.put("Request", (parent, type, guid, init) -> new RequestImpl(parent, type, guid, init));
+    objectFactories.put("Response", (parent, type, guid, init) -> new ResponseImpl(parent, type, guid, init));
+    objectFactories.put("Route", (parent, type, guid, init) -> new RouteImpl(parent, type, guid, init));
+    objectFactories.put("Stream", (parent, type, guid, init) -> new Stream(parent, type, guid, init));
+    objectFactories.put("SocksSupport", (parent, type, guid, init) -> new DummyChannelOwner(parent, type, guid, init));
+    objectFactories.put("Tracing", (parent, type, guid, init) -> new TracingImpl(parent, type, guid, init));
+    objectFactories.put("WebSocket", (parent, type, guid, init) -> new WebSocketImpl(parent, type, guid, init));
+    objectFactories.put("WebSocketRoute", (parent, type, guid, init) -> new WebSocketRouteImpl(parent, type, guid, init));
+    objectFactories.put("Worker", (parent, type, guid, init) -> new WorkerImpl(parent, type, guid, init));
+    objectFactories.put("WritableStream", (parent, type, guid, init) -> new WritableStream(parent, type, guid, init));
   }
 
-  public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    return internalSendMessage(guid, method, params, null, true, true);
+  void markAsRemote() {
+    isRemote = true;
   }
 
-  // Fire-and-forget: the server never replies.
-  public void sendMessageNoReply(String guid, String method, JsonObject params) {
-    internalSendMessage(guid, method, params, null, false, false);
-  }
-
-  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, Double timeout, boolean sendStack, boolean expectsReply) {
-    String id = callIdPrefix + "@" + (++lastId);
-    WaitableResult<JsonElement> result = new WaitableResult<>();
-    if (expectsReply) {
-      callbacks.put(id, result);
-    }
-    JsonObject message = new JsonObject();
-    message.addProperty("id", id);
-    message.addProperty("guid", guid);
-    message.addProperty("method", method);
-    message.add("params", params);
-    JsonObject metadata = new JsonObject();
-    metadata.addProperty("wallTime", currentTimeMillis());
-    if (timeout != null) {
-      metadata.addProperty("timeout", timeout);
-    }
-    JsonArray stack = null;
-    if (titleReported) {
-      metadata.addProperty("internal", true);
-    } else {
-      if (title != null) {
-        metadata.addProperty("title", title);
-        // All but first message in a custom-titled API call are considered internal and will be hidden from the inspector.
-        titleReported = true;
-      }
-      if (stackTraceCollector != null) {
-        stack = stackTraceCollector.currentStackTrace();
-        if (!stack.isEmpty()) {
-          JsonObject location = new JsonObject();
-          JsonObject frame = stack.get(0).getAsJsonObject();
-          location.addProperty("file", frame.get("file").getAsString());
-          location.addProperty("line", frame.get("line").getAsInt());
-          location.addProperty("column", frame.get("column").getAsInt());
-          metadata.add("location", location);
-        }
-      }
-    }
-    message.add("metadata", metadata);
-    transport.send(message);
-    if (sendStack && tracingCount > 0 && stack != null && !method.startsWith("LocalUtils")) {
-      JsonObject callData = new JsonObject();
-      callData.addProperty("id", id);
-      callData.add("stack", stack);
-      JsonObject stackParams = new JsonObject();
-      stackParams.add("callData", callData);
-      // LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
-      localUtils.connection.internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, null, false, true);
-    }
-    return result;
-  }
-
-  public PlaywrightImpl initializePlaywright() {
-    playwright = root.initialize();
-    return playwright;
+  boolean isRemote() {
+    return isRemote;
   }
 
   LocalUtils localUtils() {
     return localUtils;
   }
 
-  /** Gson that serializes channel owners as {guid} and resolves them back through this connection (see channelOwner.ts, connection.ts upstream). */
-  Gson protocolGson() {
-    return protocolGson;
+  public PlaywrightImpl initializePlaywright() {
+    // java: also remembered for getByTestId, which needs the selectors of the Playwright object.
+    playwright = rootObject.initialize();
+    return playwright;
   }
 
+  // java: upstream has getObjectWithKnownName(guid) for the same lookup; this one throws for an unknown guid.
   public <T> T getExistingObject(String guid) {
     @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
     if (result == null)
@@ -267,6 +204,109 @@ public class Connection {
     objects.remove(guid);
   }
 
+  void setIsTracing(boolean tracing) {
+    if (tracing) {
+      ++tracingCount;
+    } else {
+      --tracingCount;
+    }
+  }
+
+  // java: upstream returns a promise; the result is completed by dispatch() while some thread pumps messages.
+  WaitableResult<JsonElement> sendMessageToServer(ChannelOwner object, String method, JsonObject params, CallOptions options) {
+    // Fire-and-forget: server intentionally never replies to __waitInfo__,
+    // so silently drop it after the connection is closed or the object was collected.
+    if ("__waitInfo__".equals(method) && (closedError != null || object.wasCollected)) {
+      return completed();
+    }
+    if (closedError != null) {
+      // java: a new exception, so that the stack trace points at the caller.
+      throw new TargetClosedError(closedError.getMessage(), closedError);
+    }
+    if (object.wasCollected) {
+      throw new PlaywrightException("The object has been collected to prevent unbounded heap growth.");
+    }
+
+    String guid = object.guid;
+    String type = object.type;
+    String id = callIdPrefix + "@" + (++lastId);
+    JsonObject message = new JsonObject();
+    message.addProperty("id", id);
+    message.addProperty("guid", guid);
+    message.addProperty("method", method);
+    message.add("params", params);
+    JsonObject metadata = new JsonObject();
+    if (options.title != null) {
+      metadata.addProperty("title", options.title);
+    }
+    if (options.frames != null && !options.frames.isEmpty()) {
+      JsonObject frame = options.frames.get(0).getAsJsonObject();
+      JsonObject location = new JsonObject();
+      location.addProperty("file", frame.get("file").getAsString());
+      location.addProperty("line", frame.get("line").getAsInt());
+      location.addProperty("column", frame.get("column").getAsInt());
+      metadata.add("location", location);
+    }
+    if (options.internal) {
+      metadata.addProperty("internal", true);
+    }
+    // java: upstream always sends a timeout, 0 by default; here null stays absent.
+    if (options.timeout != null) {
+      metadata.addProperty("timeout", options.timeout);
+    }
+    message.add("metadata", metadata);
+    // java: registered before sending, the callback is looked up by id only when a reply arrives.
+    WaitableResult<JsonElement> result = new WaitableResult<>();
+    // Fire-and-forget: server intentionally never replies to __waitInfo__.
+    boolean expectsReply = !"__waitInfo__".equals(method);
+    if (expectsReply) {
+      callbacks.put(id, result);
+    }
+    transport.send(message);
+    if (tracingCount > 0 && options.frames != null && !"LocalUtils".equals(type)) {
+      JsonObject callData = new JsonObject();
+      callData.addProperty("id", id);
+      callData.add("stack", options.frames);
+      JsonObject stackParams = new JsonObject();
+      stackParams.add("callData", callData);
+      // LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
+      CallOptions stackOptions = new CallOptions();
+      stackOptions.internal = true;
+      localUtils.connection.sendMessageToServer(localUtils, "addStackToTracingNoReply", stackParams, stackOptions);
+    }
+    return expectsReply ? result : completed();
+  }
+
+  private static WaitableResult<JsonElement> completed() {
+    WaitableResult<JsonElement> result = new WaitableResult<>();
+    result.complete(null);
+    return result;
+  }
+
+  // java: sends the message and pumps messages until the reply arrives; upstream awaits the promise of sendMessageToServer.
+  JsonElement sendMessage(ChannelOwner object, String method, JsonObject params, CallOptions options) {
+    if (closedError != null && transport instanceof JsonPipe) {
+      // java: a call over a closed JsonPipe fails like the pipe does, with the reason the server gave
+      // ('Browser closed' after it went away); async calls and waits get the closedError.
+      throw new TargetClosedError(((JsonPipe) transport).closeReason(), closedError);
+    }
+    WaitableResult<JsonElement> result = sendMessageToServer(object, method, params, options);
+    Double timeout = options.timeout;
+    if (timeout == null || timeout == 0) {
+      return rootObject.runUntil(() -> {}, result);
+    }
+    // The driver enforces the timeout, but the driver itself may hang.
+    long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
+    while (!result.isDone()) {
+      if (!processOneMessage() && System.nanoTime() - deadline > 0) {
+        result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
+          method + ". The driver is not responding."));
+      }
+    }
+    return result.get();
+  }
+
+  // java: upstream receives messages through onmessage(); here the pump polls the transport.
   boolean processOneMessage() {
     JsonObject message = transport.poll(Duration.ofMillis(10));
     if (message == null) {
@@ -276,6 +316,84 @@ public class Connection {
     Message messageObj = gson.fromJson(message, Message.class);
     dispatch(messageObj);
     return true;
+  }
+
+  private void dispatch(Message message) {
+    if (closedError != null) {
+      return;
+    }
+
+    if (message.id != null) {
+      WaitableResult<JsonElement> callback = callbacks.get(message.id);
+      if (callback == null) {
+        throw new PlaywrightException("Cannot find command to respond: " + message.id);
+      }
+      callbacks.remove(message.id);
+      if (message.error == null) {
+        callback.complete(message.result);
+      } else {
+        PlaywrightException parsedError = Errors.parseError(message.error, formatCallLog(message.log));
+        if (message.errorDetails != null) {
+          parsedError = new ServerErrorWithDetails(parsedError, message.errorDetails, message.log);
+        }
+        callback.completeExceptionally(parsedError);
+      }
+      return;
+    }
+
+    // TODO: throw?
+    if (message.method == null) {
+      return;
+    }
+    if (message.method.equals("__create__")) {
+      createRemoteObject(message.guid, message.params.get("type").getAsString(), message.params.get("guid").getAsString(), message.params.getAsJsonObject("initializer"));
+      return;
+    }
+
+    ChannelOwner object = objects.get(message.guid);
+    if (object == null) {
+      throw new PlaywrightException("Cannot find object to call " + message.method + ": " + message.guid);
+    }
+    if (message.method.equals("__adopt__")) {
+      String childGuid = message.params.get("guid").getAsString();
+      ChannelOwner child = objects.get(childGuid);
+      if (child == null) {
+        throw new PlaywrightException("Unknown new child:  " + childGuid);
+      }
+      object.adopt(child);
+      return;
+    }
+    if (message.method.equals("__dispose__")) {
+      String reason = message.params != null && message.params.has("reason") ? message.params.get("reason").getAsString() : null;
+      object.dispose(reason);
+      return;
+    }
+
+    // java: upstream emits the event on the channel, ChannelOwner.handleEvent does the same until EventEmitter is ported.
+    object.handleEvent(message.method, message.params);
+  }
+
+  void close() throws IOException {
+    close(null);
+  }
+
+  void close(String cause) throws IOException {
+    if (closedError != null) {
+      return;
+    }
+    closedError = new TargetClosedError(cause);
+    for (WaitableResult<JsonElement> callback : callbacks.values()) {
+      callback.completeExceptionally(closedError);
+    }
+    callbacks.clear();
+    // java: upstream emits 'close' here; the transport has to be closed as well.
+    transport.close();
+  }
+
+  // java: upstream's _tChannelImplFromWire and, in channelOwner.ts, tChannelImplToWire; Gson adapters instead of validator hooks.
+  /** Gson that serializes channel owners as {guid} and resolves them back through this connection. */
+  Gson protocolGson() {
+    return protocolGson;
   }
 
   private class ChannelOwnerAdapterFactory implements TypeAdapterFactory {
@@ -333,6 +451,32 @@ public class Connection {
     }
   }
 
+  private ChannelOwner createRemoteObject(String parentGuid, String type, String guid, JsonObject initializer) {
+    ChannelOwner parent = objects.get(parentGuid);
+    if (parent == null) {
+      throw new PlaywrightException("Cannot find parent object " + parentGuid + " to create " + guid);
+    }
+    ChannelOwnerFactory factory = objectFactories.get(type);
+    if (factory == null) {
+      throw new PlaywrightException("Unknown type " + type);
+    }
+    return factory.create(parent, type, guid, initializer);
+  }
+
+  // java: upstream's captureLibraryStackTrace() lives in clientStackTrace.ts; null when PLAYWRIGHT_JAVA_SRC is not set.
+  JsonArray captureLibraryStackTrace() {
+    return stackTraceCollector == null ? null : stackTraceCollector.captureLibraryStackTrace();
+  }
+
+  private static String createCallIdPrefix() {
+    String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    StringBuilder prefix = new StringBuilder();
+    for (int i = 0; i < 4; i++) {
+      prefix.append(alphabet.charAt(ThreadLocalRandom.current().nextInt(alphabet.length())));
+    }
+    return prefix.toString();
+  }
+
   private static String formatCallLog(JsonArray log) {
     if (log == null) {
       return "";
@@ -356,169 +500,28 @@ public class Connection {
     lines.add("");
     return String.join("\n", lines);
   }
+}
 
-  private void dispatch(Message message) {
-//    System.out.println("Message: " + message.method + " " + message.id);
-    if (message.id != null) {
-      WaitableResult<JsonElement> callback = callbacks.get(message.id);
-      if (callback == null) {
-        throw new PlaywrightException("Cannot find command to respond: " + message.id);
-      }
-      callbacks.remove(message.id);
-//      System.out.println("Message: " + message.id + " " + message);
-      if (message.error == null) {
-        callback.complete(message.result);
-      } else {
-        PlaywrightException exception = Errors.parseError(message.error, formatCallLog(message.log));
-        if (message.errorDetails != null) {
-          exception = new ServerErrorWithDetails(exception, message.errorDetails, message.log);
-        }
-        callback.completeExceptionally(exception);
-      }
-      return;
-    }
+// java: the wire shape of an incoming message.
+class Message {
+  String id;
+  String guid;
+  String method;
+  JsonObject params;
+  JsonElement result;
+  SerializedError error;
+  JsonObject errorDetails;
+  JsonArray log;
 
-    // TODO: throw?
-    if (message.method == null) {
-      return;
-    }
-    if (message.method.equals("__create__")) {
-      createRemoteObject(message.guid, message.params);
-      return;
-    }
-
-    ChannelOwner object = objects.get(message.guid);
-    if (object == null) {
-      throw new PlaywrightException("Cannot find object to call " + message.method + ": " + message.guid);
-    }
-    if (message.method.equals("__adopt__")) {
-      String childGuid = message.params.get("guid").getAsString();
-      ChannelOwner child = objects.get(childGuid);
-      if (child == null) {
-        throw new PlaywrightException("Unknown new child:  " + childGuid);
-      }
-      object.adopt(child);
-      return;
-    }
-    if (message.method.equals("__dispose__")) {
-      boolean wasCollected = message.params.has("reason") && "gc".equals(message.params.get("reason").getAsString());
-      object.disposeChannelOwner(wasCollected);
-      return;
-    }
-    object.handleEvent(message.method, message.params);
-  }
-
-  private ChannelOwner createRemoteObject(String parentGuid, JsonObject params) {
-    String type = params.get("type").getAsString();
-    String guid = params.get("guid").getAsString();
-
-    ChannelOwner parent = objects.get(parentGuid);
-    if (parent == null) {
-      throw new PlaywrightException("Cannot find parent object " + parentGuid + " to create " + guid);
-    }
-    JsonObject initializer = params.getAsJsonObject("initializer");
-    ChannelOwner result = null;
-    switch (type) {
-      case "Android":
-//        result = new Android(parent, type, guid, initializer);
-        break;
-      case "AndroidSocket":
-//        result = new AndroidSocket(parent, type, guid, initializer);
-        break;
-      case "AndroidDevice":
-//        result = new AndroidDevice(parent, type, guid, initializer);
-        break;
-      case "Artifact":
-        result = new ArtifactImpl(parent, type, guid, initializer);
-        break;
-      case "BindingCall":
-        result = new BindingCall(parent, type, guid, initializer);
-        break;
-      case "BrowserType":
-        result = new BrowserTypeImpl(parent, type, guid, initializer);
-        break;
-      case "Browser":
-        result = new BrowserImpl(parent, type, guid, initializer);
-        break;
-      case "BrowserContext":
-        result = new BrowserContextImpl(parent, type, guid, initializer);
-        break;
-      case "Dialog":
-        result = new DialogImpl(parent, type, guid, initializer);
-        break;
-      case "Disposable":
-        result = new DisposableObject(parent, type, guid, initializer);
-        break;
-      case "Electron":
-//        result = new Playwright(parent, type, guid, initializer);
-        break;
-      case "ElementHandle":
-        result = new ElementHandleImpl(parent, type, guid, initializer);
-        break;
-      case "APIRequestContext":
-        // Create fake object as this API is experimental an only exposed in Node.js.
-        result = new APIRequestContextImpl(parent, type, guid, initializer);
-        break;
-      case "Frame":
-        result = new FrameImpl(parent, type, guid, initializer);
-        break;
-      case "JSHandle":
-        result = new JSHandleImpl(parent, type, guid, initializer);
-        break;
-      case "JsonPipe":
-        result = new JsonPipe(parent, type, guid, initializer);
-        break;
-      case "LocalUtils":
-        result = new LocalUtils(parent, type, guid, initializer);
-        if (localUtils == null) {
-          localUtils = (LocalUtils) result;
-        }
-        break;
-      case "Page":
-        result = new PageImpl(parent, type, guid, initializer);
-        break;
-      case "Playwright":
-        result = new PlaywrightImpl(parent, type, guid, initializer);
-        break;
-      case "Request":
-        result = new RequestImpl(parent, type, guid, initializer);
-        break;
-      case "Response":
-        result = new ResponseImpl(parent, type, guid, initializer);
-        break;
-      case "Route":
-        result = new RouteImpl(parent, type, guid, initializer);
-        break;
-      case "Stream":
-        result = new Stream(parent, type, guid, initializer);
-        break;
-      case "SocksSupport":
-        break;
-      case "Debugger":
-        result = new DebuggerImpl(parent, type, guid, initializer);
-        break;
-      case "Tracing":
-        result = new TracingImpl(parent, type, guid, initializer);
-        break;
-      case "WebSocket":
-        result = new WebSocketImpl(parent, type, guid, initializer);
-        break;
-      case "WebSocketRoute":
-        result = new WebSocketRouteImpl(parent, type, guid, initializer);
-        break;
-      case "Worker":
-        result = new WorkerImpl(parent, type, guid, initializer);
-        break;
-      case "WritableStream":
-        result = new WritableStream(parent, type, guid, initializer);
-        break;
-      case "CDPSession":
-        result = new CDPSessionImpl(parent, type, guid, initializer);
-        break;
-      default:
-        throw new PlaywrightException("Unknown type " + type);
-    }
-
-    return result;
+  @Override
+  public String toString() {
+    return "Message{" +
+      "id='" + id + '\'' +
+      ", guid='" + guid + '\'' +
+      ", method='" + method + '\'' +
+      ", params=" + (params == null ? null : "<...>") +
+      ", result='" + result + '\'' +
+      ", error='" + Errors.errorToString(error) + '\'' +
+      '}';
   }
 }

@@ -822,7 +822,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Frame frameByUrl(String glob) {
-    return frameFor(UrlMatcher.forGlob(browserContext.baseUrl(), glob, this.connection.localUtils, false));
+    return frameFor(UrlMatcher.forGlob(browserContext.baseUrl(), glob, this.connection.localUtils(), false));
   }
 
   @Override
@@ -1172,7 +1172,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), handler, options);
+    route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler, options);
     return new DisposableStub(() -> unroute(url, handler));
   }
 
@@ -1197,8 +1197,8 @@ public class PageImpl extends ChannelOwner implements Page {
       browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class), null);
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl(), options.url, this.connection.localUtils, false);
-    HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
+    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl(), options.url, this.connection.localUtils(), false);
+    HARRouter harRouter = new HARRouter(connection.localUtils(), har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
   }
@@ -1210,7 +1210,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, true), handler);
+    routeWebSocketImpl(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), true), handler);
   }
 
   @Override
@@ -1397,7 +1397,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), handler);
+    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler);
   }
 
   @Override
@@ -1543,7 +1543,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils, false), null, options, code);
+    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, options, code);
   }
 
   @Override
@@ -1588,7 +1588,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils, false), null, options, code);
+    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, options, code);
   }
 
   @Override
@@ -1640,7 +1640,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), options);
+    waitForURL(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), options);
   }
 
   @Override

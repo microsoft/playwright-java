@@ -677,7 +677,6 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-059 should terminate network waiters")
-    @Fixme("java: the error of a wait after a disconnect is 'Browser closed', not the target closed message")
     void shouldTerminateNetworkWaiters(Connect connect, StartRemoteServer startRemoteServer, TestServer server) {
       PlaywrightServer remoteServer = startRemoteServer.start(kind);
       Browser browser = connect.connect(remoteServer.wsEndpoint());

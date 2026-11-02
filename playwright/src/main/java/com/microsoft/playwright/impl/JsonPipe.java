@@ -86,6 +86,10 @@ public class JsonPipe extends ChannelOwner implements Transport {
     }
   }
 
+  String closeReason() {
+    return closeReason;
+  }
+
   void onClose(Consumer<JsonPipe> handler) {
     listeners.add(EventType.CLOSE, handler);
   }

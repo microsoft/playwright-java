@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.util.*;
@@ -24,15 +23,21 @@ import java.util.function.Consumer;
 
 class ListenerCollection <EventType> {
   private final HashMap<EventType, List<Consumer<?>>> listeners = new HashMap<>();
-  private final Map<EventType, String> eventSubscriptions;
   private final ChannelOwner channelOwner;
 
   ListenerCollection() {
     this(null, null);
   }
   ListenerCollection(Map<EventType, String> eventSubscriptions, ChannelOwner channelOwner) {
-    this.eventSubscriptions = eventSubscriptions;
     this.channelOwner = channelOwner;
+    if (eventSubscriptions != null) {
+      // java: the per-class EventType enums stay until EventEmitter is ported, the owner is keyed by their names.
+      Map<String, String> mapping = new HashMap<>();
+      for (Map.Entry<EventType, String> entry : eventSubscriptions.entrySet()) {
+        mapping.put(entry.getKey().toString(), entry.getValue());
+      }
+      channelOwner.setEventToSubscriptionMapping(mapping);
+    }
   }
 
   <T> void notify(EventType eventType, T param) {
@@ -76,16 +81,8 @@ class ListenerCollection <EventType> {
   }
 
   private void updateSubscription(EventType eventType, boolean enabled) {
-    if (eventSubscriptions == null) {
-      return;
+    if (channelOwner != null) {
+      channelOwner.updateSubscription(eventType.toString(), enabled);
     }
-    String protocolEvent = eventSubscriptions.get(eventType);
-    if (protocolEvent == null) {
-      return;
-    }
-    JsonObject params = new JsonObject();
-    params.addProperty("event", protocolEvent);
-    params.addProperty("enabled", enabled);
-    channelOwner.sendMessageAsync("updateSubscription", params);
   }
 }

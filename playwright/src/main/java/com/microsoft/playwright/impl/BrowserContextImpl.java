@@ -526,7 +526,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils, false), handler, options);
+    route(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils(), false), handler, options);
     return new DisposableStub(() -> unroute(url, handler));
   }
 
@@ -551,8 +551,8 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       recordIntoHar(null, har, options, null);
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl(), options.url, this.connection.localUtils, false);
-    HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl(), options.url, this.connection.localUtils(), false);
+    HARRouter harRouter = new HARRouter(connection.localUtils(), har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
   }
@@ -564,7 +564,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils, true), handler);
+    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils(), true), handler);
   }
 
   @Override
@@ -681,7 +681,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(this.baseUrl(), url, this.connection.localUtils, false), handler);
+    unroute(UrlMatcher.forGlob(this.baseUrl(), url, this.connection.localUtils(), false), handler);
   }
 
   @Override

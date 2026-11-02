@@ -43,7 +43,7 @@ class VideoImpl implements Video {
 
   @Override
   public Path path() {
-    if (page.connection.isRemote) {
+    if (page.connection.isRemote()) {
       throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
     }
     if (artifact == null)
