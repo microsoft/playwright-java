@@ -79,13 +79,16 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     else return response.result.getAsJsonObject();
   }
 
+  // java: the raw parameter type overrides EventEmitter.on(String, Consumer<?>) and implements CDPSession.on at once.
   @Override
-  public void on(String event, Consumer<JsonObject> handler) {
+  @SuppressWarnings("rawtypes")
+  public void on(String event, Consumer handler) {
     listeners.add(event, handler);
   }
 
   @Override
-  public void off(String event, Consumer<JsonObject> handler) {
+  @SuppressWarnings("rawtypes")
+  public void off(String event, Consumer handler) {
     listeners.remove(event, handler);
   }
 

@@ -24,10 +24,11 @@ import com.microsoft.playwright.PlaywrightException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ChannelOwner extends LoggingSupport {
+public class ChannelOwner extends EventEmitter {
   final Connection connection;
   private ChannelOwner parent;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
@@ -68,7 +69,6 @@ public class ChannelOwner extends LoggingSupport {
     this.eventToSubscriptionMapping = mapping;
   }
 
-  // java: upstream calls this from the overridden on/off of its event emitter; ListenerCollection does it until EventEmitter is ported.
   void updateSubscription(String event, boolean enabled) {
     String protocolEvent = eventToSubscriptionMapping.get(event);
     if (protocolEvent != null) {
@@ -76,6 +76,35 @@ public class ChannelOwner extends LoggingSupport {
       params.addProperty("event", protocolEvent);
       params.addProperty("enabled", enabled);
       sendMessageAsync("updateSubscription", params);
+    }
+  }
+
+  // java: the listener is added first so that a null listener fails before anything is sent.
+  @Override
+  void on(String event, Consumer<?> listener) {
+    addListener(event, listener);
+  }
+
+  @Override
+  void addListener(String event, Consumer<?> listener) {
+    super.addListener(event, listener);
+    if (listenerCount(event) == 1) {
+      updateSubscription(event, true);
+    }
+  }
+
+  @Override
+  void off(String event, Consumer<?> listener) {
+    removeListener(event, listener);
+  }
+
+  @Override
+  void removeListener(String event, Consumer<?> listener) {
+    // java: nothing is sent when there was no listener to remove, upstream sends the disable message anyway.
+    boolean hadListeners = listenerCount(event) > 0;
+    super.removeListener(event, listener);
+    if (hadListeners && listenerCount(event) == 0) {
+      updateSubscription(event, false);
     }
   }
 
