@@ -35,6 +35,7 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
+import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
 
 public class BrowserImpl extends ChannelOwner implements Browser {
   // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.

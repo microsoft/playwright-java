@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
 import static java.util.Arrays.asList;
 
 class APIResponseImpl implements APIResponse {
