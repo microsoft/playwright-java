@@ -247,6 +247,10 @@ public class PageImpl extends ChannelOwner implements Page {
     return browserContext.effectiveCloseReason();
   }
 
+  TargetClosedError closeErrorWithReason() {
+    return new TargetClosedError(effectiveCloseReason());
+  }
+
   @Override
   public void onClose(Consumer<Page> handler) {
     on(Events.Page.CLOSE, handler);
@@ -454,95 +458,78 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForClose", "close", logger -> waitForCloseImpl(options, code));
-  }
-
-  private Page waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(Events.Page.CLOSE, code, null, options.timeout);
+    return waitForEvent(Events.Page.CLOSE, null, options.timeout, "waiting for event \"close\"", code);
   }
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
-  }
-
-  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(Events.Page.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.CONSOLE, options.predicate, options.timeout, "waiting for event \"console\"", code);
   }
 
   @Override
   public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForDownload", "download", logger -> waitForDownloadImpl(options, code));
-  }
-
-  private Download waitForDownloadImpl(WaitForDownloadOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
-    return waitForEventWithTimeout(Events.Page.DOWNLOAD, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.DOWNLOAD, options.predicate, options.timeout, "waiting for event \"download\"", code);
   }
 
   @Override
   public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForFileChooser", "filechooser", logger -> waitForFileChooserImpl(options, code));
-  }
-
-  private FileChooser waitForFileChooserImpl(WaitForFileChooserOptions options, Runnable code) {
     // TODO: enable/disable file chooser interception
     if (options == null) {
       options = new WaitForFileChooserOptions();
     }
-    return waitForEventWithTimeout(Events.Page.FILE_CHOOSER, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.FILE_CHOOSER, options.predicate, options.timeout, "waiting for event \"filechooser\"", code);
   }
 
   @Override
   public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForPopup", "popup", logger -> waitForPopupImpl(options, code));
-  }
-
-  private Page waitForPopupImpl(WaitForPopupOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
-    return waitForEventWithTimeout(Events.Page.POPUP, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.POPUP, options.predicate, options.timeout, "waiting for event \"popup\"", code);
   }
 
   @Override
   public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWebSocket", "websocket", logger -> waitForWebSocketImpl(options, code));
-  }
-
-  private WebSocket waitForWebSocketImpl(WaitForWebSocketOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
-    return waitForEventWithTimeout(Events.Page.WEB_SOCKET, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.WEB_SOCKET, options.predicate, options.timeout, "waiting for event \"websocket\"", code);
   }
 
   @Override
   public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWorker", "worker", logger -> waitForWorkerImpl(options, code));
-  }
-
-  private Worker waitForWorkerImpl(WaitForWorkerOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
-    return waitForEventWithTimeout(Events.Page.WORKER, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.WORKER, options.predicate, options.timeout, "waiting for event \"worker\"", code);
   }
 
-  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(this, eventType, predicate));
-    waitables.add(createWaitForCloseHelper());
-    waitables.add(createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
+  // _waitForEvent in page.ts
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, String logLine, Runnable code) {
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    if (logLine != null) {
+      waiter.log(logLine);
+    }
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.Page.CRASH.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CRASH, () -> new PlaywrightException("Page crashed"));
+    }
+    if (!Events.Page.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CLOSE, () -> closeErrorWithReason());
+    }
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override
@@ -1415,10 +1402,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return viewport;
   }
 
-  <T> Waitable<T> createWaitableNavigationTimeout(Double timeout) {
-    return new WaitableTimeout<>(timeoutSettings.navigationTimeout(timeout));
-  }
-
   <T> Waitable<T> createWaitableTimeout(Double timeout) {
     return timeoutSettings.createWaitable(timeout);
   }
@@ -1430,28 +1413,18 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    final LoadState loadState = state == null ? LoadState.LOAD : state;
-    withTitle("Wait for load state \"" + loadState.toString().toLowerCase() + "\"", () -> {
-      withWaitLogging("Page.waitForLoadState", logger -> {
-        mainFrame.waitForLoadStateImpl(loadState, convertType(options, Frame.WaitForLoadStateOptions.class), logger);
-        return null;
-      });
-    });
+    mainFrame.waitForLoadState(state, convertType(options, Frame.WaitForLoadStateOptions.class));
   }
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withWaitLoggingTitled("Page.waitForNavigation", "Wait for navigation", logger -> waitForNavigationImpl(logger, code, options));
-  }
-
-  private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
     Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
       frameOptions.url = options.url;
     }
-    return mainFrame.waitForNavigationImpl(logger, code, frameOptions);
+    return mainFrame.waitForNavigation(frameOptions, code);
   }
 
   void frameNavigated(FrameImpl frame) {
@@ -1459,48 +1432,18 @@ public class PageImpl extends ChannelOwner implements Page {
     browserContext.notifyFrameNavigated(frame);
   }
 
-  private class WaitableFrameDetach extends WaitableEvent<Frame> {
-    WaitableFrameDetach(Frame frameArg) {
-      super(PageImpl.this, Events.Page.FRAME_DETACHED, detachedFrame -> frameArg.equals(detachedFrame));
-    }
-
-    @Override
-    public Frame get() {
-      throw new PlaywrightException("Navigating frame was detached");
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  <T> Waitable<T> createWaitableFrameDetach(Frame frame) {
-    // It is safe to cast as WaitableFrameDetach.get() always throws.
-    return (Waitable<T>) new WaitableFrameDetach(frame);
-  }
-
   <T> Waitable<T> createWaitForCloseHelper() {
-    return createWaitForCloseHelper(false);
-  }
-
-  /** With {@code rejectIfClosed}, it is done at once when the page is already closed, like the navigation waiter of the Node.js client. */
-  <T> Waitable<T> createWaitForCloseHelper(boolean rejectIfClosed) {
-    return new WaitableRace<T>(asList(new WaitablePageClose(rejectIfClosed && isClosed), new WaitablePageCrash()));
+    return new WaitableRace<T>(asList(new WaitablePageClose(), new WaitablePageCrash()));
   }
 
   private class WaitablePageClose<T> extends WaitableEvent<T> {
-    private final boolean closedBefore;
-
-    WaitablePageClose(boolean closedBefore) {
+    WaitablePageClose() {
       super(PageImpl.this, Events.Page.CLOSE);
-      this.closedBefore = closedBefore;
-    }
-
-    @Override
-    public boolean isDone() {
-      return closedBefore || super.isDone();
     }
 
     @Override
     public T get() {
-      throw new TargetClosedError(effectiveCloseReason());
+      throw closeErrorWithReason();
     }
   }
 
@@ -1531,33 +1474,20 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequest", "request", logger -> {
-      logger.log("waiting for request " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
-      Predicate<Request> requestPredicate = predicate;
-      if (requestPredicate == null) {
-        requestPredicate = request -> urlMatcher.test(request.url());;
-      }
-      return waitForRequestImpl(requestPredicate, options, code);
-    });
-  }
-
-  private Request waitForRequestImpl(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
-    return waitForEventWithTimeout(Events.Page.REQUEST, code, predicate, options.timeout);
+    Predicate<Request> requestPredicate = predicate != null ? predicate : request -> urlMatcher.test(request.url());
+    String logLine = urlMatcher == null ? null : "waiting for request " + urlMatcher;
+    return waitForEvent(Events.Page.REQUEST, requestPredicate, options.timeout, logLine, code);
   }
 
   @Override
   public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequestFinished", "requestfinished", logger -> waitForRequestFinishedImpl(options, code));
-  }
-
-  private Request waitForRequestFinishedImpl(WaitForRequestFinishedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestFinishedOptions();
     }
-    return waitForEventWithTimeout(Events.Page.REQUEST_FINISHED, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.REQUEST_FINISHED, options.predicate, options.timeout, "waiting for event \"requestfinished\"", code);
   }
 
   @Override
@@ -1576,21 +1506,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForResponse", "response", logger -> {
-      logger.log("waiting for response " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
-      Predicate<Response> responsePredicate = predicate;
-      if (responsePredicate == null) {
-        responsePredicate = response -> urlMatcher.test(response.url());;
-      }
-      return waitForResponseImpl(responsePredicate, options, code);
-    });
-  }
-
-  private Response waitForResponseImpl(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
-    return waitForEventWithTimeout(Events.Page.RESPONSE, code, predicate, options.timeout);
+    Predicate<Response> responsePredicate = predicate != null ? predicate : response -> urlMatcher.test(response.url());
+    String logLine = urlMatcher == null ? null : "waiting for response " + urlMatcher;
+    return waitForEvent(Events.Page.RESPONSE, responsePredicate, options.timeout, logLine, code);
   }
 
   @Override
@@ -1614,24 +1535,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), options);
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override
   public void waitForURL(Pattern url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override
   public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
-  }
-
-  private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withWaitLogging("Page.waitForURL", logger -> {
-      mainFrame.waitForURLImpl(logger, matcher, convertType(options, Frame.WaitForURLOptions.class));
-      return null;
-    });
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override

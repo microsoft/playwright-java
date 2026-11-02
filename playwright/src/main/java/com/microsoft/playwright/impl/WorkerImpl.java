@@ -60,36 +60,41 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     off(Events.Worker.CONSOLE, handler);
   }
 
-  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(this, eventType, predicate));
-    waitables.add(page.createWaitForCloseHelper());
-    waitables.add(page.createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
-  }
-
   @Override
   public Worker waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Worker.waitForClose", "close", logger -> waitForCloseImpl(options, code));
+    if (options == null) {
+      options = new WaitForCloseOptions();
+    }
+    return waitForEvent(Events.Worker.CLOSE, null, options.timeout, code);
   }
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("Worker.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
-  }
-
-  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(Events.Worker.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Worker.CONSOLE, options.predicate, options.timeout, code);
   }
 
-  private Worker waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForCloseOptions();
+  TargetClosedError closeErrorWithReason() {
+    if (page != null) {
+      return page.closeErrorWithReason();
     }
-    return waitForEventWithTimeout(Events.Worker.CLOSE, code, null, options.timeout);
+    return new TargetClosedError();
+  }
+
+  // waitForEvent in worker.ts
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
+    TimeoutSettings timeoutSettings = page != null ? page.timeoutSettings : new TimeoutSettings();
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.Worker.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Worker.CLOSE, () -> closeErrorWithReason());
+    }
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override

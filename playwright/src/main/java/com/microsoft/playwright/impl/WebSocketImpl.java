@@ -80,26 +80,18 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable code) {
-    return withWaitLogging("WebSocket.waitForFrameReceived", "framereceived", logger -> waitForFrameReceivedImpl(options, code));
-  }
-
-  private WebSocketFrame waitForFrameReceivedImpl(WaitForFrameReceivedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
-    return waitForEventWithTimeout(Events.WebSocket.FRAME_RECEIVED, code, options.predicate, options.timeout);
+    return waitForEvent(Events.WebSocket.FRAME_RECEIVED, options.predicate, options.timeout, code);
   }
 
   @Override
   public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable code) {
-    return withWaitLogging("WebSocket.waitForFrameSent", "framesent", logger -> waitForFrameSentImpl(options, code));
-  }
-
-  private WebSocketFrame waitForFrameSentImpl(WaitForFrameSentOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
-    return waitForEventWithTimeout(Events.WebSocket.FRAME_SENT, code, options.predicate, options.timeout);
+    return waitForEvent(Events.WebSocket.FRAME_SENT, options.predicate, options.timeout, code);
   }
 
   @Override
@@ -112,36 +104,21 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     return initializer.get("url").getAsString();
   }
 
-  private class WaitableWebSocketClose<T> extends WaitableEvent<T> {
-    WaitableWebSocketClose() {
-      super(WebSocketImpl.this, Events.WebSocket.CLOSE);
+  // waitForEvent in network.ts
+  private WebSocketFrame waitForEvent(String event, Predicate<WebSocketFrame> predicate, Double timeout, Runnable code) {
+    double timeoutMs = page.timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.WebSocket.ERROR.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.ERROR, () -> new PlaywrightException("Socket error"));
     }
-
-    @Override
-    public T get() {
-      throw new PlaywrightException("Socket closed");
+    if (!Events.WebSocket.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.CLOSE, () -> new PlaywrightException("Socket closed"));
     }
-  }
-
-  private class WaitableWebSocketError<T> extends WaitableEvent<T> {
-    WaitableWebSocketError() {
-      super(WebSocketImpl.this, Events.WebSocket.ERROR);
-    }
-
-    @Override
-    public T get() {
-      throw new PlaywrightException("Socket error");
-    }
-  }
-
-  private WebSocketFrame waitForEventWithTimeout(String eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
-    List<Waitable<WebSocketFrame>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(this, eventType, predicate));
-    waitables.add(new WaitableWebSocketClose<>());
-    waitables.add(new WaitableWebSocketError<>());
-    waitables.add(page.createWaitForCloseHelper());
-    waitables.add(page.createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
+    waiter.rejectOnEvent(page, Events.Page.CLOSE, () -> page.closeErrorWithReason());
+    WebSocketFrame result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override

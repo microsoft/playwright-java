@@ -315,24 +315,25 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return credentials;
   }
 
-  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(this, eventType, predicate));
-    waitables.add(new WaitableContextClose<>());
-    waitables.add(timeoutSettings.createWaitable(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
-  }
-
   @Override
   public Page waitForPage(WaitForPageOptions options, Runnable code) {
-    return withWaitLogging("BrowserContext.waitForPage", "page", logger -> waitForPageImpl(options, code));
-  }
-
-  private Page waitForPageImpl(WaitForPageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPageOptions();
     }
-    return waitForEventWithTimeout(Events.BrowserContext.PAGE, code, options.predicate, options.timeout);
+    return waitForEvent(Events.BrowserContext.PAGE, options.predicate, options.timeout, code);
+  }
+
+  // waitForEvent in browserContext.ts
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.BrowserContext.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.BrowserContext.CLOSE, () -> new TargetClosedError(effectiveCloseReason()));
+    }
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override
@@ -683,14 +684,10 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("BrowserContext.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
-  }
-
-  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(Events.BrowserContext.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEvent(Events.BrowserContext.CONSOLE, options.predicate, options.timeout, code);
   }
 
   private class WaitableContextClose<R> extends WaitableEvent<R> {

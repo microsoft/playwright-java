@@ -194,19 +194,6 @@ public class ChannelOwner extends EventEmitter {
     return wrapApiCall(code, title, false);
   }
 
-  <T> T withWaitLogging(String apiName, Function<Logger, T> code) {
-    return new WaitForEventLogger<>(this, apiName, null, null, code).get();
-  }
-
-  /** A wait for the event, titled {@code Wait for event "<event>"} in the trace like the Node.js client's waitForEvent. */
-  <T> T withWaitLogging(String apiName, String event, Function<Logger, T> code) {
-    return new WaitForEventLogger<>(this, apiName, event, "Wait for event \"" + event + "\"", code).get();
-  }
-
-  <T> T withWaitLoggingTitled(String apiName, String title, Function<Logger, T> code) {
-    return new WaitForEventLogger<>(this, apiName, null, title, code).get();
-  }
-
   // java: the sendMessage family is the typed channel proxy of upstream's createChannel().
   WaitableResult<JsonElement> sendMessageAsync(String method) {
     return sendMessageAsync(method, new JsonObject());

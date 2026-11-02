@@ -201,6 +201,14 @@ class Waiter {
     return e;
   }
 
+  // java: the number as JavaScript prints it in the timeout messages.
+  static String formatTimeout(double timeout) {
+    if (timeout == Math.rint(timeout) && !Double.isInfinite(timeout)) {
+      return Long.toString((long) timeout);
+    }
+    return Double.toString(timeout);
+  }
+
   static String formatLogRecording(List<String> log) {
     if (log.isEmpty()) {
       return "";
