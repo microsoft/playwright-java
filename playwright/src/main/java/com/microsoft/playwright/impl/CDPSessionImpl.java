@@ -82,7 +82,7 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
   @Override
   @SuppressWarnings("rawtypes")
   public void off(String event, Consumer handler) {
-    off(event, handler);
+    super.off(event, handler);
   }
 
   @Override
