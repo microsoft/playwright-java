@@ -64,7 +64,6 @@ public class TestPageWaitForRequest {
 
   @PlaywrightTest
   @DisplayName("WA-123 should respect timeout")
-  @Fixme("java: the message is 'Timeout 1ms exceeded' without the event name")
   void shouldRespectTimeout(Page page) {
     TimeoutError error = assertThrows(TimeoutError.class,
       () -> page.waitForRequest(r -> false, new Page.WaitForRequestOptions().setTimeout(1), () -> {}));
@@ -81,7 +80,6 @@ public class TestPageWaitForRequest {
 
   @PlaywrightTest
   @DisplayName("WA-125 should log the url")
-  @Fixme("java: the message is 'Timeout 1000ms exceeded' without the wait log")
   void shouldLogTheUrl(Page page) {
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.waitForRequest(
       "long-long-long-long-long-long-long-long-long-long-long-long-long-long.css",

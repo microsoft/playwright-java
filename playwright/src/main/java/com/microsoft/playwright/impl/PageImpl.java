@@ -513,6 +513,28 @@ public class PageImpl extends ChannelOwner implements Page {
     return waitForEvent(Events.Page.WORKER, options.predicate, options.timeout, "waiting for event \"worker\"", code);
   }
 
+  private static String trimUrl(Object param) {
+    if (param instanceof Pattern) {
+      Pattern pattern = (Pattern) param;
+      return "/" + trimStringWithEllipsis(pattern.pattern(), 50) + "/" + Utils.toJsRegexFlags(pattern);
+    }
+    if (param instanceof String) {
+      return "\"" + trimStringWithEllipsis((String) param, 50) + "\"";
+    }
+    return null;
+  }
+
+  private static String trimStringWithEllipsis(String input, int cap) {
+    if (input.length() <= cap) {
+      return input;
+    }
+    int[] chars = input.codePoints().toArray();
+    if (chars.length > cap) {
+      return new String(chars, 0, cap - 1) + "\u2026";
+    }
+    return input;
+  }
+
   // _waitForEvent in page.ts
   private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, String logLine, Runnable code) {
     double timeoutMs = timeoutSettings.timeout(timeout);
@@ -1460,25 +1482,25 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, options, code);
+    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
   }
 
   @Override
   public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(new UrlMatcher(urlPattern), null, options, code);
+    return waitForRequest(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
   }
 
   @Override
   public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(null, predicate, options, code);
+    return waitForRequest(null, predicate, null, options, code);
   }
 
-  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
+  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, String trimmedUrl, WaitForRequestOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
     Predicate<Request> requestPredicate = predicate != null ? predicate : request -> urlMatcher.test(request.url());
-    String logLine = urlMatcher == null ? null : "waiting for request " + urlMatcher;
+    String logLine = trimmedUrl == null ? null : "waiting for request " + trimmedUrl;
     return waitForEvent(Events.Page.REQUEST, requestPredicate, options.timeout, logLine, code);
   }
 
@@ -1492,25 +1514,25 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, options, code);
+    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
   }
 
   @Override
   public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(new UrlMatcher(urlPattern), null, options, code);
+    return waitForResponse(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
   }
 
   @Override
   public Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(null, predicate, options, code);
+    return waitForResponse(null, predicate, null, options, code);
   }
 
-  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
+  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, String trimmedUrl, WaitForResponseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
     Predicate<Response> responsePredicate = predicate != null ? predicate : response -> urlMatcher.test(response.url());
-    String logLine = urlMatcher == null ? null : "waiting for response " + urlMatcher;
+    String logLine = trimmedUrl == null ? null : "waiting for response " + trimmedUrl;
     return waitForEvent(Events.Page.RESPONSE, responsePredicate, options.timeout, logLine, code);
   }
 

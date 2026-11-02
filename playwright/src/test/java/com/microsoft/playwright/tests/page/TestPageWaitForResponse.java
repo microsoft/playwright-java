@@ -73,7 +73,6 @@ public class TestPageWaitForResponse {
 
   @PlaywrightTest
   @DisplayName("WA-132 should log the url")
-  @Fixme("java: the message is 'Timeout 1000ms exceeded' without the wait log")
   void shouldLogTheUrl(Page page) {
     PlaywrightException error1 = assertThrows(PlaywrightException.class,
       () -> page.waitForResponse("foo.css", new Page.WaitForResponseOptions().setTimeout(1000), () -> {}));
