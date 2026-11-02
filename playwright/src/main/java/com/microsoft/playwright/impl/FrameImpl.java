@@ -44,8 +44,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<WaitUntilState> loadStates = new HashSet<>();
 
-  enum InternalEventType { NAVIGATED, LOADSTATE }
-  private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
   PageImpl page;
   boolean isDetached;
   private final WebMCPImpl webmcp = new WebMCPImpl(this);
@@ -859,7 +857,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       this.logger = logger;
       isDone = loadStates.contains(state);
       if (!isDone) {
-        internalListeners.add(InternalEventType.LOADSTATE, this);
+        on(Events.Frame.LOAD_STATE, this);
       }
     }
 
@@ -873,7 +871,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     public void dispose() {
-      internalListeners.remove(InternalEventType.LOADSTATE, this);
+      off(Events.Frame.LOAD_STATE, this);
     }
 
     public boolean isDone() {
@@ -899,7 +897,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       this.matcher = matcher;
       this.expectedLoadState = expectedLoadState;
       this.logger = logger;
-      internalListeners.add(InternalEventType.NAVIGATED, this);
+      on(Events.Frame.NAVIGATED, this);
     }
 
     @Override
@@ -920,12 +918,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
         }
         loadStateHelper = new WaitForLoadStateHelper(expectedLoadState, logger);
       }
-      internalListeners.remove(InternalEventType.NAVIGATED, this);
+      off(Events.Frame.NAVIGATED, this);
     }
 
     @Override
     public void dispose() {
-      internalListeners.remove(InternalEventType.NAVIGATED, this);
+      off(Events.Frame.NAVIGATED, this);
       if (loadStateHelper != null) {
         loadStateHelper.dispose();
       }
@@ -1122,13 +1120,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
         loadStates.add(state);
         if (parentFrame == null && page != null) {
           if (state == LOAD) {
-            page.listeners.notify(PageImpl.EventType.LOAD, page);
+            page.emit(Events.Page.LOAD, page);
             page.browserContext.notifyPageLoad(page);
           } else if (state == DOMCONTENTLOADED) {
-            page.listeners.notify(PageImpl.EventType.DOMCONTENTLOADED, page);
+            page.emit(Events.Page.DOM_CONTENT_LOADED, page);
           }
         }
-        internalListeners.notify(InternalEventType.LOADSTATE, state);
+        emit(Events.Frame.LOAD_STATE, state);
       }
       JsonElement remove = params.get("remove");
       if (remove != null) {
@@ -1140,7 +1138,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       if (!params.has("error") && page != null) {
         page.frameNavigated(this);
       }
-      internalListeners.notify(InternalEventType.NAVIGATED, params);
+      emit(Events.Frame.NAVIGATED, params);
     }
   }
 

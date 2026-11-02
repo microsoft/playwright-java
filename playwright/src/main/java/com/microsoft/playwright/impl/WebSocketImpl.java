@@ -28,16 +28,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class WebSocketImpl extends ChannelOwner implements WebSocket {
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private final PageImpl page;
   private boolean isClosed;
-
-  enum EventType {
-    CLOSE,
-    FRAMERECEIVED,
-    FRAMESENT,
-    SOCKETERROR,
-  }
 
   final WebSocketChannel channel = new WebSocketChannel(this);
 
@@ -48,42 +40,42 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public void onClose(Consumer<WebSocket> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.WebSocket.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<WebSocket> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.WebSocket.CLOSE, handler);
   }
 
   @Override
   public void onFrameReceived(Consumer<WebSocketFrame> handler) {
-    listeners.add(EventType.FRAMERECEIVED, handler);
+    on(Events.WebSocket.FRAME_RECEIVED, handler);
   }
 
   @Override
   public void offFrameReceived(Consumer<WebSocketFrame> handler) {
-    listeners.remove(EventType.FRAMERECEIVED, handler);
+    off(Events.WebSocket.FRAME_RECEIVED, handler);
   }
 
   @Override
   public void onFrameSent(Consumer<WebSocketFrame> handler) {
-    listeners.add(EventType.FRAMESENT, handler);
+    on(Events.WebSocket.FRAME_SENT, handler);
   }
 
   @Override
   public void offFrameSent(Consumer<WebSocketFrame> handler) {
-    listeners.remove(EventType.FRAMESENT, handler);
+    off(Events.WebSocket.FRAME_SENT, handler);
   }
 
   @Override
   public void onSocketError(Consumer<String> handler) {
-    listeners.add(EventType.SOCKETERROR, handler);
+    on(Events.WebSocket.ERROR, handler);
   }
 
   @Override
   public void offSocketError(Consumer<String> handler) {
-    listeners.remove(EventType.SOCKETERROR, handler);
+    off(Events.WebSocket.ERROR, handler);
   }
 
   @Override
@@ -95,7 +87,7 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMERECEIVED, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.WebSocket.FRAME_RECEIVED, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -107,7 +99,7 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMESENT, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.WebSocket.FRAME_SENT, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -120,9 +112,9 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     return initializer.get("url").getAsString();
   }
 
-  private class WaitableWebSocketClose<T> extends WaitableEvent<EventType, T> {
+  private class WaitableWebSocketClose<T> extends WaitableEvent<T> {
     WaitableWebSocketClose() {
-      super(WebSocketImpl.this.listeners, EventType.CLOSE);
+      super(WebSocketImpl.this, Events.WebSocket.CLOSE);
     }
 
     @Override
@@ -131,9 +123,9 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
   }
 
-  private class WaitableWebSocketError<T> extends WaitableEvent<EventType, T> {
+  private class WaitableWebSocketError<T> extends WaitableEvent<T> {
     WaitableWebSocketError() {
-      super(WebSocketImpl.this.listeners, EventType.SOCKETERROR);
+      super(WebSocketImpl.this, Events.WebSocket.ERROR);
     }
 
     @Override
@@ -142,9 +134,9 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
   }
 
-  private WebSocketFrame waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
+  private WebSocketFrame waitForEventWithTimeout(String eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
     List<Waitable<WebSocketFrame>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
+    waitables.add(new WaitableEvent<>(this, eventType, predicate));
     waitables.add(new WaitableWebSocketClose<>());
     waitables.add(new WaitableWebSocketError<>());
     waitables.add(page.createWaitForCloseHelper());
@@ -162,7 +154,7 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
         }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), opCode == 2);
-        listeners.notify(EventType.FRAMESENT, WebSocketFrame);
+        emit(Events.WebSocket.FRAME_SENT, WebSocketFrame);
         break;
       }
       case "frameReceived": {
@@ -172,17 +164,17 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
         }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), opCode == 2);
-        listeners.notify(EventType.FRAMERECEIVED, WebSocketFrame);
+        emit(Events.WebSocket.FRAME_RECEIVED, WebSocketFrame);
         break;
       }
       case "socketError": {
         String error = parameters.get("error").getAsString();
-        listeners.notify(EventType.SOCKETERROR, error);
+        emit(Events.WebSocket.ERROR, error);
         break;
       }
       case "close": {
         isClosed = true;
-        listeners.notify(EventType.CLOSE, this);
+        emit(Events.WebSocket.CLOSE, this);
         break;
       }
       default: {

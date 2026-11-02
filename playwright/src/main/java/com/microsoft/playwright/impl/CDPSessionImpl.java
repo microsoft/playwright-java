@@ -21,16 +21,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.CDPSession;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class CDPSessionImpl extends ChannelOwner implements CDPSession {
-  private final ListenerCollection<String> listeners = new ListenerCollection<>(new HashMap<>(), this);
-  private final ListenerCollection<EventType> typedListeners = new ListenerCollection<>(new HashMap<>(), this);
-
-  enum EventType {
-    CLOSE,
-  }
 
   final CDPSessionChannel channel = new CDPSessionChannel(this);
 
@@ -47,21 +40,21 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
       if (parameters.has("params")) {
         params = parameters.get("params").getAsJsonObject();
       }
-      listeners.notify(method, params);
-      listeners.notify("event", parameters);
+      emit(method, params);
+      emit("event", parameters);
     } else if ("close".equals(event)) {
-      typedListeners.notify(EventType.CLOSE, this);
+      emit(Events.CDPSession.CLOSE, this);
     }
   }
 
   @Override
   public void onClose(Consumer<CDPSession> handler) {
-    typedListeners.add(EventType.CLOSE, handler);
+    on(Events.CDPSession.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<CDPSession> handler) {
-    typedListeners.remove(EventType.CLOSE, handler);
+    off(Events.CDPSession.CLOSE, handler);
   }
 
   public JsonObject send(String method) {
@@ -83,13 +76,13 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
   @Override
   @SuppressWarnings("rawtypes")
   public void on(String event, Consumer handler) {
-    listeners.add(event, handler);
+    super.on(event, handler);
   }
 
   @Override
   @SuppressWarnings("rawtypes")
   public void off(String event, Consumer handler) {
-    listeners.remove(event, handler);
+    off(event, handler);
   }
 
   @Override

@@ -55,55 +55,33 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final Router routes = new Router();
   final WebSocketRouter webSocketRoutes = new WebSocketRouter();
   private boolean closingOrClosed;
-  private final WaitableEvent<EventType, ?> closePromise;
+  private final WaitableEvent<?> closePromise;
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
   private String closeReason;
 
-  private static final Map<EventType, String> eventSubscriptions() {
-    Map<EventType, String> result = new HashMap<>();
-    result.put(EventType.CONSOLE, "console");
-    result.put(EventType.DIALOG, "dialog");
-    result.put(EventType.DIALOGCLOSED, "dialogClosed");
-    result.put(EventType.REQUEST, "request");
-    result.put(EventType.RESPONSE, "response");
-    result.put(EventType.REQUESTFINISHED, "requestFinished");
-    result.put(EventType.REQUESTFAILED, "requestFailed");
-    return result;
-  }
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>(eventSubscriptions(), this);
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
-
-  enum EventType {
-    CLOSE,
-    CONSOLE,
-    DIALOG,
-    DIALOGCLOSED,
-    DOWNLOAD,
-    FRAMEATTACHED,
-    FRAMEDETACHED,
-    FRAMENAVIGATED,
-    PAGE,
-    PAGECLOSE,
-    PAGELOAD,
-    WEBERROR,
-    REQUEST,
-    REQUESTFAILED,
-    REQUESTFINISHED,
-    RESPONSE,
-  }
 
   final BrowserContextChannel channel = new BrowserContextChannel(this);
 
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    Map<String, String> mapping = new HashMap<>();
+    mapping.put(Events.BrowserContext.CONSOLE, "console");
+    mapping.put(Events.BrowserContext.DIALOG, "dialog");
+    mapping.put(Events.BrowserContext.DIALOG_CLOSED, "dialogClosed");
+    mapping.put(Events.BrowserContext.REQUEST, "request");
+    mapping.put(Events.BrowserContext.RESPONSE, "response");
+    mapping.put(Events.BrowserContext.REQUEST_FINISHED, "requestFinished");
+    mapping.put(Events.BrowserContext.REQUEST_FAILED, "requestFailed");
+    setEventToSubscriptionMapping(mapping);
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     debugger = connection.getExistingObject(initializer.getAsJsonObject("debugger").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
     request.timeoutSettings = timeoutSettings;
     clock = new ClockImpl(this);
     credentials = new CredentialsImpl(this);
-    closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
+    closePromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
   }
 
   Path videosDir() {
@@ -145,186 +123,186 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void onDownload(Consumer<Download> handler) {
-    listeners.add(EventType.DOWNLOAD, handler);
+    on(Events.BrowserContext.DOWNLOAD, handler);
   }
 
   @Override
   public void offDownload(Consumer<Download> handler) {
-    listeners.remove(EventType.DOWNLOAD, handler);
+    off(Events.BrowserContext.DOWNLOAD, handler);
   }
 
   void notifyDownload(Download download) {
-    listeners.notify(EventType.DOWNLOAD, download);
+    emit(Events.BrowserContext.DOWNLOAD, download);
   }
 
   @Override
   public void onClose(Consumer<BrowserContext> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.BrowserContext.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<BrowserContext> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.BrowserContext.CLOSE, handler);
   }
 
   @Override
   public void onConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.add(EventType.CONSOLE, handler);
+    on(Events.BrowserContext.CONSOLE, handler);
   }
 
   @Override
   public void offConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.remove(EventType.CONSOLE, handler);
+    off(Events.BrowserContext.CONSOLE, handler);
   }
 
   @Override
   public void onDialog(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOG, handler);
+    on(Events.BrowserContext.DIALOG, handler);
   }
 
   @Override
   public void offDialog(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOG, handler);
+    off(Events.BrowserContext.DIALOG, handler);
   }
 
   @Override
   public void onDialogClosed(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOGCLOSED, handler);
+    on(Events.BrowserContext.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void offDialogClosed(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOGCLOSED, handler);
+    off(Events.BrowserContext.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void onPage(Consumer<Page> handler) {
-    listeners.add(EventType.PAGE, handler);
+    on(Events.BrowserContext.PAGE, handler);
   }
 
   @Override
   public void offPage(Consumer<Page> handler) {
-    listeners.remove(EventType.PAGE, handler);
+    off(Events.BrowserContext.PAGE, handler);
   }
 
   @Override
   public void onFrameAttached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEATTACHED, handler);
+    on(Events.BrowserContext.FRAME_ATTACHED, handler);
   }
 
   @Override
   public void offFrameAttached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEATTACHED, handler);
+    off(Events.BrowserContext.FRAME_ATTACHED, handler);
   }
 
   void notifyFrameAttached(FrameImpl frame) {
-    listeners.notify(EventType.FRAMEATTACHED, frame);
+    emit(Events.BrowserContext.FRAME_ATTACHED, frame);
   }
 
   @Override
   public void onFrameDetached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEDETACHED, handler);
+    on(Events.BrowserContext.FRAME_DETACHED, handler);
   }
 
   @Override
   public void offFrameDetached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEDETACHED, handler);
+    off(Events.BrowserContext.FRAME_DETACHED, handler);
   }
 
   void notifyFrameDetached(FrameImpl frame) {
-    listeners.notify(EventType.FRAMEDETACHED, frame);
+    emit(Events.BrowserContext.FRAME_DETACHED, frame);
   }
 
   @Override
   public void onFrameNavigated(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMENAVIGATED, handler);
+    on(Events.BrowserContext.FRAME_NAVIGATED, handler);
   }
 
   @Override
   public void offFrameNavigated(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMENAVIGATED, handler);
+    off(Events.BrowserContext.FRAME_NAVIGATED, handler);
   }
 
   void notifyFrameNavigated(FrameImpl frame) {
-    listeners.notify(EventType.FRAMENAVIGATED, frame);
+    emit(Events.BrowserContext.FRAME_NAVIGATED, frame);
   }
 
   @Override
   public void onPageClose(Consumer<Page> handler) {
-    listeners.add(EventType.PAGECLOSE, handler);
+    on(Events.BrowserContext.PAGE_CLOSE, handler);
   }
 
   @Override
   public void offPageClose(Consumer<Page> handler) {
-    listeners.remove(EventType.PAGECLOSE, handler);
+    off(Events.BrowserContext.PAGE_CLOSE, handler);
   }
 
   void notifyPageClose(PageImpl page) {
-    listeners.notify(EventType.PAGECLOSE, page);
+    emit(Events.BrowserContext.PAGE_CLOSE, page);
   }
 
   @Override
   public void onPageLoad(Consumer<Page> handler) {
-    listeners.add(EventType.PAGELOAD, handler);
+    on(Events.BrowserContext.PAGE_LOAD, handler);
   }
 
   @Override
   public void offPageLoad(Consumer<Page> handler) {
-    listeners.remove(EventType.PAGELOAD, handler);
+    off(Events.BrowserContext.PAGE_LOAD, handler);
   }
 
   void notifyPageLoad(PageImpl page) {
-    listeners.notify(EventType.PAGELOAD, page);
+    emit(Events.BrowserContext.PAGE_LOAD, page);
   }
 
   @Override
   public void onWebError(Consumer<WebError> handler) {
-    listeners.add(EventType.WEBERROR, handler);
+    on(Events.BrowserContext.WEB_ERROR, handler);
   }
 
   @Override
   public void offWebError(Consumer<WebError> handler) {
-    listeners.remove(EventType.WEBERROR, handler);
+    off(Events.BrowserContext.WEB_ERROR, handler);
   }
 
   @Override
   public void onRequest(Consumer<Request> handler) {
-    listeners.add(EventType.REQUEST, handler);
+    on(Events.BrowserContext.REQUEST, handler);
   }
 
   @Override
   public void offRequest(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUEST, handler);
+    off(Events.BrowserContext.REQUEST, handler);
   }
 
   @Override
   public void onRequestFailed(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFAILED, handler);
+    on(Events.BrowserContext.REQUEST_FAILED, handler);
   }
 
   @Override
   public void offRequestFailed(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFAILED, handler);
+    off(Events.BrowserContext.REQUEST_FAILED, handler);
   }
 
   @Override
   public void onRequestFinished(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFINISHED, handler);
+    on(Events.BrowserContext.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void offRequestFinished(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFINISHED, handler);
+    off(Events.BrowserContext.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void onResponse(Consumer<Response> handler) {
-    listeners.add(EventType.RESPONSE, handler);
+    on(Events.BrowserContext.RESPONSE, handler);
   }
 
   @Override
   public void offResponse(Consumer<Response> handler) {
-    listeners.remove(EventType.RESPONSE, handler);
+    off(Events.BrowserContext.RESPONSE, handler);
   }
 
   @Override
@@ -337,9 +315,9 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return credentials;
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
+  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
+    waitables.add(new WaitableEvent<>(this, eventType, predicate));
     waitables.add(new WaitableContextClose<>());
     waitables.add(timeoutSettings.createWaitable(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -354,7 +332,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new WaitForPageOptions();
     }
-    return waitForEventWithTimeout(EventType.PAGE, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.BrowserContext.PAGE, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -712,12 +690,12 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.BrowserContext.CONSOLE, code, options.predicate, options.timeout);
   }
 
-  private class WaitableContextClose<R> extends WaitableEvent<EventType, R> {
+  private class WaitableContextClose<R> extends WaitableEvent<R> {
     WaitableContextClose() {
-      super(BrowserContextImpl.this.listeners, EventType.CLOSE);
+      super(BrowserContextImpl.this, Events.BrowserContext.CLOSE);
     }
 
     @Override
@@ -774,15 +752,15 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
       DialogImpl dialog = connection.getExistingObject(guid);
       boolean hasListeners = false;
-      if (listeners.hasListeners(EventType.DIALOG)) {
+      if (listenerCount(Events.BrowserContext.DIALOG) > 0) {
         hasListeners = true;
-        listeners.notify(EventType.DIALOG, dialog);
+        emit(Events.BrowserContext.DIALOG, dialog);
       }
       PageImpl page = dialog.page();
       if (page != null) {
-        if (page.listeners.hasListeners(PageImpl.EventType.DIALOG)) {
+        if (page.listenerCount(Events.Page.DIALOG) > 0) {
           hasListeners = true;
-          page.listeners.notify(PageImpl.EventType.DIALOG, dialog);
+          page.emit(Events.Page.DIALOG, dialog);
         }
       }
       // Although we do similar handling on the server side, we still need this logic
@@ -801,10 +779,10 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     } else if ("dialogClosed".equals(event)) {
       DialogImpl dialog = connection.getExistingObject(params.getAsJsonObject("dialog").get("guid").getAsString());
-      listeners.notify(EventType.DIALOGCLOSED, dialog);
+      emit(Events.BrowserContext.DIALOG_CLOSED, dialog);
       PageImpl page = dialog.page();
       if (page != null) {
-        page.listeners.notify(PageImpl.EventType.DIALOGCLOSED, dialog);
+        page.emit(Events.Page.DIALOG_CLOSED, dialog);
       }
     } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
@@ -816,7 +794,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
       pages.add(page);
-      listeners.notify(EventType.PAGE, page);
+      emit(Events.BrowserContext.PAGE, page);
       if (page.opener() != null && !page.opener().isClosed()) {
         page.opener().notifyPopup(page);
       }
@@ -831,20 +809,20 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       PageImpl page = consoleEvent.page;
       WorkerImpl worker = consoleEvent.worker;
       ConsoleMessageImpl message = new ConsoleMessageImpl(consoleEvent);
-      listeners.notify(BrowserContextImpl.EventType.CONSOLE, message);
+      emit(Events.BrowserContext.CONSOLE, message);
       if (worker != null) {
-        worker.listeners.notify(WorkerImpl.EventType.CONSOLE, message);
+        worker.emit(Events.Worker.CONSOLE, message);
       }
       if (page != null) {
-        page.listeners.notify(PageImpl.EventType.CONSOLE, message);
+        page.emit(Events.Page.CONSOLE, message);
       }
     } else if ("request".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       RequestImpl request = connection.getExistingObject(guid);
-      listeners.notify(EventType.REQUEST, request);
+      emit(Events.BrowserContext.REQUEST, request);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.listeners.notify(PageImpl.EventType.REQUEST, request);
+        page.emit(Events.Page.REQUEST, request);
       }
     } else if ("requestFailed".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
@@ -856,10 +834,10 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (request.timing != null) {
         request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
       }
-      listeners.notify(EventType.REQUESTFAILED, request);
+      emit(Events.BrowserContext.REQUEST_FAILED, request);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.listeners.notify(PageImpl.EventType.REQUESTFAILED, request);
+        page.emit(Events.Page.REQUEST_FAILED, request);
       }
     } else if ("requestFinished".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
@@ -868,18 +846,18 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (request.timing != null) {
         request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
       }
-      listeners.notify(EventType.REQUESTFINISHED, request);
+      emit(Events.BrowserContext.REQUEST_FINISHED, request);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.listeners.notify(PageImpl.EventType.REQUESTFINISHED, request);
+        page.emit(Events.Page.REQUEST_FINISHED, request);
       }
     } else if ("response".equals(event)) {
       String guid = params.getAsJsonObject("response").get("guid").getAsString();
       ResponseImpl response = connection.getExistingObject(guid);
-      listeners.notify(EventType.RESPONSE, response);
+      emit(Events.BrowserContext.RESPONSE, response);
       if (params.has("page")) {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.listeners.notify(PageImpl.EventType.RESPONSE, response);
+        page.emit(Events.Page.RESPONSE, response);
       }
     } else if ("pageError".equals(event)) {
       String errorStr = parseError(params.getAsJsonObject("error"));
@@ -893,9 +871,9 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (params.has("location")) {
         location = gson().fromJson(params.getAsJsonObject("location"), WebErrorLocation.class);
       }
-      listeners.notify(BrowserContextImpl.EventType.WEBERROR, new WebErrorImpl(page, errorStr, location));
+      emit(Events.BrowserContext.WEB_ERROR, new WebErrorImpl(page, errorStr, location));
       if (page != null) {
-        page.listeners.notify(PageImpl.EventType.PAGEERROR, errorStr);
+        page.emit(Events.Page.PAGE_ERROR, errorStr);
       }
     } else if ("close".equals(event)) {
       didClose();
@@ -910,7 +888,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     tracing.resetStackCounter();
     request.tracing().resetStackCounter();
-    listeners.notify(EventType.CLOSE, this);
+    emit(Events.BrowserContext.CLOSE, this);
   }
 
   protected void initializeHarFromOptions(Browser.NewContextOptions options) {

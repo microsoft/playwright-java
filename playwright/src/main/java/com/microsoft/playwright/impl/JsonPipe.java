@@ -31,8 +31,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class JsonPipe extends ChannelOwner implements Transport {
   private final Queue<JsonObject> incoming = new LinkedList<>();
-  private ListenerCollection<EventType> listeners = new ListenerCollection<>();
-  private enum EventType { CLOSE }
   private boolean isClosed;
   private String closeReason = "Browser has been closed";
 
@@ -91,11 +89,11 @@ public class JsonPipe extends ChannelOwner implements Transport {
   }
 
   void onClose(Consumer<JsonPipe> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.JsonPipe.CLOSE, handler);
   }
 
   void offClose(Consumer<JsonPipe> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.JsonPipe.CLOSE, handler);
   }
 
 
@@ -111,7 +109,7 @@ public class JsonPipe extends ChannelOwner implements Transport {
           closeReason = reason;
         }
       }
-      listeners.notify(EventType.CLOSE, this);
+      emit(Events.JsonPipe.CLOSE, this);
     }
   }
 

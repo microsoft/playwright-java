@@ -32,13 +32,7 @@ import java.util.function.Predicate;
 import static com.microsoft.playwright.impl.Serialization.*;
 
 public class WorkerImpl extends ChannelOwner implements Worker {
-  final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   PageImpl page;
-
-  enum EventType {
-    CLOSE,
-    CONSOLE,
-  }
 
   final WorkerChannel channel = new WorkerChannel(this);
 
@@ -48,27 +42,27 @@ public class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public void onClose(Consumer<Worker> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.Worker.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<Worker> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.Worker.CLOSE, handler);
   }
 
   @Override
   public void onConsole(Consumer<ConsoleMessage> handler) {
-    listeners.add(EventType.CONSOLE, handler);
+    on(Events.Worker.CONSOLE, handler);
   }
 
   @Override
   public void offConsole(Consumer<ConsoleMessage> handler) {
-    listeners.remove(EventType.CONSOLE, handler);
+    off(Events.Worker.CONSOLE, handler);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
+  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
+    waitables.add(new WaitableEvent<>(this, eventType, predicate));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -88,14 +82,14 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Worker.CONSOLE, code, options.predicate, options.timeout);
   }
 
   private Worker waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(EventType.CLOSE, code, null, options.timeout);
+    return waitForEventWithTimeout(Events.Worker.CLOSE, code, null, options.timeout);
   }
 
   @Override
@@ -125,7 +119,7 @@ public class WorkerImpl extends ChannelOwner implements Worker {
       if (page != null) {
         page.workers.remove(this);
       }
-      listeners.notify(EventType.CLOSE, this);
+      emit(Events.Worker.CLOSE, this);
     }
   }
 }

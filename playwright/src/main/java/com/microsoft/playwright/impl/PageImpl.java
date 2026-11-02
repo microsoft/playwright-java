@@ -84,19 +84,6 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private static final Map<EventType, String> eventSubscriptions() {
-    Map<EventType, String> result = new HashMap<>();
-    result.put(EventType.CONSOLE, "console");
-    result.put(EventType.DIALOG, "dialog");
-    result.put(EventType.DIALOGCLOSED, "dialogClosed");
-    result.put(EventType.REQUEST, "request");
-    result.put(EventType.RESPONSE, "response");
-    result.put(EventType.REQUESTFINISHED, "requestFinished");
-    result.put(EventType.REQUESTFAILED, "requestFailed");
-    result.put(EventType.FILECHOOSER, "fileChooser");
-    return result;
-  }
-  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>(eventSubscriptions(), this);
   final Map<String, BindingCallback> bindings = new HashMap<>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
@@ -106,31 +93,18 @@ public class PageImpl extends ChannelOwner implements Page {
   private final PageImpl opener;
   private String closeReason;
 
-  enum EventType {
-    CLOSE,
-    CONSOLE,
-    CRASH,
-    DIALOG,
-    DIALOGCLOSED,
-    DOMCONTENTLOADED,
-    DOWNLOAD,
-    FILECHOOSER,
-    FRAMEATTACHED,
-    FRAMEDETACHED,
-    FRAMENAVIGATED,
-    LOAD,
-    PAGEERROR,
-    POPUP,
-    REQUEST,
-    REQUESTFAILED,
-    REQUESTFINISHED,
-    RESPONSE,
-    WEBSOCKET,
-    WORKER,
-  }
-
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    Map<String, String> mapping = new HashMap<>();
+    mapping.put(Events.Page.CONSOLE, "console");
+    mapping.put(Events.Page.DIALOG, "dialog");
+    mapping.put(Events.Page.DIALOG_CLOSED, "dialogClosed");
+    mapping.put(Events.Page.REQUEST, "request");
+    mapping.put(Events.Page.RESPONSE, "response");
+    mapping.put(Events.Page.REQUEST_FINISHED, "requestFinished");
+    mapping.put(Events.Page.REQUEST_FAILED, "requestFailed");
+    mapping.put(Events.Page.FILE_CHOOSER, "fileChooser");
+    setEventToSubscriptionMapping(mapping);
     browserContext = (BrowserContextImpl) parent;
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
@@ -169,22 +143,22 @@ public class PageImpl extends ChannelOwner implements Page {
       WorkerImpl worker = connection.getExistingObject(guid);
       worker.page = this;
       workers.add(worker);
-      listeners.notify(EventType.WORKER, worker);
+      emit(Events.Page.WORKER, worker);
     } else if ("webSocket".equals(event)) {
       String guid = params.getAsJsonObject("webSocket").get("guid").getAsString();
       WebSocketImpl webSocket = connection.getExistingObject(guid);
-      listeners.notify(EventType.WEBSOCKET, webSocket);
+      emit(Events.Page.WEB_SOCKET, webSocket);
     } else if ("download".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
       DownloadImpl download = new DownloadImpl(this, artifact, params);
-      listeners.notify(EventType.DOWNLOAD, download);
+      emit(Events.Page.DOWNLOAD, download);
       browserContext.notifyDownload(download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
       ElementHandleImpl elementHandle = connection.getExistingObject(guid);
       FileChooser fileChooser = new FileChooserImpl(this, elementHandle, params.get("isMultiple").getAsBoolean());
-      listeners.notify(EventType.FILECHOOSER, fileChooser);
+      emit(Events.Page.FILE_CHOOSER, fileChooser);
     } else if ("bindingCall".equals(event)) {
       String guid = params.getAsJsonObject("binding").get("guid").getAsString();
       BindingCall bindingCall = connection.getExistingObject(guid);
@@ -209,7 +183,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.add(frame);
       }
-      listeners.notify(EventType.FRAMEATTACHED, frame);
+      emit(Events.Page.FRAME_ATTACHED, frame);
       browserContext.notifyFrameAttached(frame);
     } else if ("frameDetached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
@@ -219,7 +193,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.remove(frame);
       }
-      listeners.notify(EventType.FRAMEDETACHED, frame);
+      emit(Events.Page.FRAME_DETACHED, frame);
       browserContext.notifyFrameDetached(frame);
     } else if ("locatorHandlerTriggered".equals(event)) {
       int uid = params.get("uid").getAsInt();
@@ -247,7 +221,7 @@ public class PageImpl extends ChannelOwner implements Page {
         browserContext.handleWebSocketRoute(route);
       }
     } else if ("crash".equals(event)) {
-      listeners.notify(EventType.CRASH, this);
+      emit(Events.Page.CRASH, this);
     } else if ("close".equals(event)) {
       didClose();
     } else if ("screencastFrame".equals(event)) {
@@ -256,13 +230,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   void notifyPopup(PageImpl popup) {
-    listeners.notify(EventType.POPUP, popup);
+    emit(Events.Page.POPUP, popup);
   }
 
   void didClose() {
     isClosed = true;
     browserContext.pages.remove(this);
-    listeners.notify(EventType.CLOSE, this);
+    emit(Events.Page.CLOSE, this);
     browserContext.notifyPageClose(this);
   }
 
@@ -275,202 +249,202 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void onClose(Consumer<Page> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.Page.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<Page> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.Page.CLOSE, handler);
   }
 
   @Override
   public void onConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.add(EventType.CONSOLE, handler);
+    on(Events.Page.CONSOLE, handler);
   }
 
   @Override
   public void offConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.remove(EventType.CONSOLE, handler);
+    off(Events.Page.CONSOLE, handler);
   }
 
   @Override
   public void onCrash(Consumer<Page> handler) {
-    listeners.add(EventType.CRASH, handler);
+    on(Events.Page.CRASH, handler);
   }
 
   @Override
   public void offCrash(Consumer<Page> handler) {
-    listeners.remove(EventType.CRASH, handler);
+    off(Events.Page.CRASH, handler);
   }
 
   @Override
   public void onDialog(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOG, handler);
+    on(Events.Page.DIALOG, handler);
   }
 
   @Override
   public void offDialog(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOG, handler);
+    off(Events.Page.DIALOG, handler);
   }
 
   @Override
   public void onDialogClosed(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOGCLOSED, handler);
+    on(Events.Page.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void offDialogClosed(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOGCLOSED, handler);
+    off(Events.Page.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void onDOMContentLoaded(Consumer<Page> handler) {
-    listeners.add(EventType.DOMCONTENTLOADED, handler);
+    on(Events.Page.DOM_CONTENT_LOADED, handler);
   }
 
   @Override
   public void offDOMContentLoaded(Consumer<Page> handler) {
-    listeners.remove(EventType.DOMCONTENTLOADED, handler);
+    off(Events.Page.DOM_CONTENT_LOADED, handler);
   }
 
   @Override
   public void onDownload(Consumer<Download> handler) {
-    listeners.add(EventType.DOWNLOAD, handler);
+    on(Events.Page.DOWNLOAD, handler);
   }
 
   @Override
   public void offDownload(Consumer<Download> handler) {
-    listeners.remove(EventType.DOWNLOAD, handler);
+    off(Events.Page.DOWNLOAD, handler);
   }
 
   @Override
   public void onFileChooser(Consumer<FileChooser> handler) {
-    listeners.add(EventType.FILECHOOSER, handler);
+    on(Events.Page.FILE_CHOOSER, handler);
   }
 
   @Override
   public void offFileChooser(Consumer<FileChooser> handler) {
-    listeners.remove(EventType.FILECHOOSER, handler);
+    off(Events.Page.FILE_CHOOSER, handler);
   }
 
   @Override
   public void onFrameAttached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEATTACHED, handler);
+    on(Events.Page.FRAME_ATTACHED, handler);
   }
 
   @Override
   public void offFrameAttached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEATTACHED, handler);
+    off(Events.Page.FRAME_ATTACHED, handler);
   }
 
   @Override
   public void onFrameDetached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEDETACHED, handler);
+    on(Events.Page.FRAME_DETACHED, handler);
   }
 
   @Override
   public void offFrameDetached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEDETACHED, handler);
+    off(Events.Page.FRAME_DETACHED, handler);
   }
 
   @Override
   public void onFrameNavigated(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMENAVIGATED, handler);
+    on(Events.Page.FRAME_NAVIGATED, handler);
   }
 
   @Override
   public void offFrameNavigated(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMENAVIGATED, handler);
+    off(Events.Page.FRAME_NAVIGATED, handler);
   }
 
   @Override
   public void onLoad(Consumer<Page> handler) {
-    listeners.add(EventType.LOAD, handler);
+    on(Events.Page.LOAD, handler);
   }
 
   @Override
   public void offLoad(Consumer<Page> handler) {
-    listeners.remove(EventType.LOAD, handler);
+    off(Events.Page.LOAD, handler);
   }
 
   @Override
   public void onPageError(Consumer<String> handler) {
-    listeners.add(EventType.PAGEERROR, handler);
+    on(Events.Page.PAGE_ERROR, handler);
   }
 
   @Override
   public void offPageError(Consumer<String> handler) {
-    listeners.remove(EventType.PAGEERROR, handler);
+    off(Events.Page.PAGE_ERROR, handler);
   }
 
   @Override
   public void onPopup(Consumer<Page> handler) {
-    listeners.add(EventType.POPUP, handler);
+    on(Events.Page.POPUP, handler);
   }
 
   @Override
   public void offPopup(Consumer<Page> handler) {
-    listeners.remove(EventType.POPUP, handler);
+    off(Events.Page.POPUP, handler);
   }
 
   @Override
   public void onRequest(Consumer<Request> handler) {
-    listeners.add(EventType.REQUEST, handler);
+    on(Events.Page.REQUEST, handler);
   }
 
   @Override
   public void offRequest(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUEST, handler);
+    off(Events.Page.REQUEST, handler);
   }
 
   @Override
   public void onRequestFailed(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFAILED, handler);
+    on(Events.Page.REQUEST_FAILED, handler);
   }
 
   @Override
   public void offRequestFailed(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFAILED, handler);
+    off(Events.Page.REQUEST_FAILED, handler);
   }
 
   @Override
   public void onRequestFinished(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFINISHED, handler);
+    on(Events.Page.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void offRequestFinished(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFINISHED, handler);
+    off(Events.Page.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void onResponse(Consumer<Response> handler) {
-    listeners.add(EventType.RESPONSE, handler);
+    on(Events.Page.RESPONSE, handler);
   }
 
   @Override
   public void offResponse(Consumer<Response> handler) {
-    listeners.remove(EventType.RESPONSE, handler);
+    off(Events.Page.RESPONSE, handler);
   }
 
   @Override
   public void onWebSocket(Consumer<WebSocket> handler) {
-    listeners.add(EventType.WEBSOCKET, handler);
+    on(Events.Page.WEB_SOCKET, handler);
   }
 
   @Override
   public void offWebSocket(Consumer<WebSocket> handler) {
-    listeners.remove(EventType.WEBSOCKET, handler);
+    off(Events.Page.WEB_SOCKET, handler);
   }
 
   @Override
   public void onWorker(Consumer<Worker> handler) {
-    listeners.add(EventType.WORKER, handler);
+    on(Events.Page.WORKER, handler);
   }
 
   @Override
   public void offWorker(Consumer<Worker> handler) {
-    listeners.remove(EventType.WORKER, handler);
+    off(Events.Page.WORKER, handler);
   }
 
   @Override
@@ -487,7 +461,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(EventType.CLOSE, code, null, options.timeout);
+    return waitForEventWithTimeout(Events.Page.CLOSE, code, null, options.timeout);
   }
 
   @Override
@@ -499,7 +473,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.CONSOLE, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -511,7 +485,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
-    return waitForEventWithTimeout(EventType.DOWNLOAD, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.DOWNLOAD, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -524,7 +498,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForFileChooserOptions();
     }
-    return waitForEventWithTimeout(EventType.FILECHOOSER, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.FILE_CHOOSER, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -536,7 +510,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
-    return waitForEventWithTimeout(EventType.POPUP, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.POPUP, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -548,7 +522,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
-    return waitForEventWithTimeout(EventType.WEBSOCKET, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.WEB_SOCKET, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -560,12 +534,12 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
-    return waitForEventWithTimeout(EventType.WORKER, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.WORKER, code, options.predicate, options.timeout);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
+  private <T> T waitForEventWithTimeout(String eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
+    waitables.add(new WaitableEvent<>(this, eventType, predicate));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1481,13 +1455,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   void frameNavigated(FrameImpl frame) {
-    listeners.notify(EventType.FRAMENAVIGATED, frame);
+    emit(Events.Page.FRAME_NAVIGATED, frame);
     browserContext.notifyFrameNavigated(frame);
   }
 
-  private class WaitableFrameDetach extends WaitableEvent<EventType, Frame> {
+  private class WaitableFrameDetach extends WaitableEvent<Frame> {
     WaitableFrameDetach(Frame frameArg) {
-      super(PageImpl.this.listeners, EventType.FRAMEDETACHED, detachedFrame -> frameArg.equals(detachedFrame));
+      super(PageImpl.this, Events.Page.FRAME_DETACHED, detachedFrame -> frameArg.equals(detachedFrame));
     }
 
     @Override
@@ -1511,11 +1485,11 @@ public class PageImpl extends ChannelOwner implements Page {
     return new WaitableRace<T>(asList(new WaitablePageClose(rejectIfClosed && isClosed), new WaitablePageCrash()));
   }
 
-  private class WaitablePageClose<T> extends WaitableEvent<EventType, T> {
+  private class WaitablePageClose<T> extends WaitableEvent<T> {
     private final boolean closedBefore;
 
     WaitablePageClose(boolean closedBefore) {
-      super(PageImpl.this.listeners, EventType.CLOSE);
+      super(PageImpl.this, Events.Page.CLOSE);
       this.closedBefore = closedBefore;
     }
 
@@ -1530,9 +1504,9 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitablePageCrash<T> extends WaitableEvent<EventType, T> {
+  private class WaitablePageCrash<T> extends WaitableEvent<T> {
     WaitablePageCrash() {
-      super(PageImpl.this.listeners, EventType.CRASH);
+      super(PageImpl.this, Events.Page.CRASH);
     }
 
     @Override
@@ -1571,7 +1545,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
-    return waitForEventWithTimeout(EventType.REQUEST, code, predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.REQUEST, code, predicate, options.timeout);
   }
 
   @Override
@@ -1583,7 +1557,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForRequestFinishedOptions();
     }
-    return waitForEventWithTimeout(EventType.REQUESTFINISHED, code, options.predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.REQUEST_FINISHED, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -1616,7 +1590,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
-    return waitForEventWithTimeout(EventType.RESPONSE, code, predicate, options.timeout);
+    return waitForEventWithTimeout(Events.Page.RESPONSE, code, predicate, options.timeout);
   }
 
   @Override
