@@ -300,7 +300,7 @@ public class ChannelOwner extends EventEmitter {
 }
 
 class ApiZone {
-  final String title;
+  String title;
   final boolean internal;
   boolean reported;
 
