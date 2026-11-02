@@ -51,7 +51,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       options = new LaunchOptions();
     }
     BrowserTypeLaunchParams params = toProtocol(options, BrowserTypeLaunchParams.class);
-    BrowserImpl browser = channel.launch(params, TimeoutSettings.launchTimeout(options.timeout)).browser;
+    BrowserImpl browser = channel.launch(params, new TimeoutSettings().launchTimeout(options.timeout)).browser;
     browser.browserType = this;
     browser.launchOptions = options;
     return browser;
@@ -124,7 +124,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
     BrowserTypeConnectOverCDPParams params = toProtocol(options, BrowserTypeConnectOverCDPParams.class);
     params.endpointURL = endpointURL;
-    BrowserImpl browser = channel.connectOverCDP(params, TimeoutSettings.launchTimeout(options.timeout)).browser;
+    BrowserImpl browser = channel.connectOverCDP(params, new TimeoutSettings().launchTimeout(options.timeout)).browser;
     browser.connectToBrowserType(this, null);
     return browser;
   }
@@ -206,7 +206,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
     params.selectorEngines = new ArrayList<>(playwright.selectors.selectorEngines);
     params.testIdAttributeName = playwright.selectors.testIdAttributeName;
-    BrowserTypeLaunchPersistentContextResult result = channel.launchPersistentContext(params, TimeoutSettings.launchTimeout(options.timeout));
+    BrowserTypeLaunchPersistentContextResult result = channel.launchPersistentContext(params, new TimeoutSettings().launchTimeout(options.timeout));
     BrowserImpl browser = result.browser;
     browser.connectToBrowserType(this, options.tracesDir);
     BrowserContextImpl context = result.context;
