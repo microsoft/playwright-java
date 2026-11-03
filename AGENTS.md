@@ -7,7 +7,7 @@ Project checkouts (including the upstream `playwright` repo) live in the parent 
 ## Build and test
 
 ```bash
-scripts/download_driver.sh                           # the driver, once per DRIVER_VERSION
+scripts/download_driver.sh                           # the driver, once per DRIVER_VERSION and NODE_VERSION
 mvn -B install -D skipTests --no-transfer-progress   # build and install every module
 mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
 BROWSER=chromium mvn test -f playwright/pom.xml -D test=TestPageScreenshot --no-transfer-progress

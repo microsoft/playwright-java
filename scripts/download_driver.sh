@@ -10,10 +10,10 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo ""
   echo "This script downloads and assembles the Playwright driver for all platforms."
   echo "The platform-independent 'playwright-core' npm package is assembled once into the driver"
-  echo "module ('driver/src/main/resources/driver/package'), and the matching Node.js binary from"
-  echo "https://nodejs.org for each platform goes into the driver-bundle module"
-  echo "('driver-bundle/src/main/resources/driver/<platform>'), the same way the upstream"
-  echo "Playwright build does it."
+  echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary of the version"
+  echo "pinned in scripts/NODE_VERSION from https://nodejs.org for each platform goes into the"
+  echo "driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'), the same way"
+  echo "the upstream Playwright build does it."
   echo ""
   echo "Usage: scripts/download_driver.sh [option]"
   echo ""
@@ -46,15 +46,8 @@ npm_at_root() {
   (cd "$ROOT" && npm "$@")
 }
 
-# The Node.js version used to be pinned in the upstream driver build script. The script was
-# removed in microsoft/playwright#41518, so we follow the same policy it had: the latest
-# Node.js LTS (see upstream utils/build/update-playwright-node.mjs).
-NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
-  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1)))")
-if [[ -z "$NODE_VERSION" ]]; then
-  echo "Failed to determine the latest Node.js LTS version"
-  exit 1
-fi
+# roll_driver.sh moves the pin to the latest Node.js LTS.
+NODE_VERSION=$(head -1 ./NODE_VERSION)
 
 echo "Driver version:  $DRIVER_VERSION"
 echo "Node.js version: $NODE_VERSION"
