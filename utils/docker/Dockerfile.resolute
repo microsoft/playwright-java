@@ -3,7 +3,6 @@ FROM ${ACR_CACHE_PREFIX}ubuntu:resolute AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=America/Los_Angeles
-ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-resolute"
 ARG UBUNTU_MIRROR_PREFIX
 
 ENV LANG=C.UTF-8
@@ -51,6 +50,8 @@ RUN --mount=type=bind,source=.,target=/tmp/pw-java,rw \
 # === BAKE BROWSERS INTO IMAGE ===
 
 FROM base
+
+ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-resolute"
 
 # Browsers will remain downloaded in `/ms-playwright`.
 # Note: make sure to set 777 to the registry so that any user can access
