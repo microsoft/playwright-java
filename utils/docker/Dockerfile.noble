@@ -19,6 +19,8 @@ RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
     wget \
     # Install utilities required for downloading driver
     unzip \
+    # The Node.js binary of the driver links against libatomic (since Node.js 25)
+    libatomic1 \
     # For the MSEdge install script
     gpg && \
     rm -rf /var/lib/apt/lists/* && \
