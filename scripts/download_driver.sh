@@ -46,9 +46,8 @@ npm_at_root() {
   (cd "$ROOT" && npm "$@")
 }
 
-# scripts/NODE_VERSION pins the Node.js major version, like the upstream Docker images do;
-# roll_driver.sh moves it to the major version of the latest Node.js LTS. Use the latest
-# release of that major version.
+# scripts/NODE_VERSION pins the Node.js major version and is bumped manually, like
+# ARG NODE_VERSION in the upstream Docker images. Use the latest release of that major version.
 NODE_MAJOR_VERSION=$(head -1 ./NODE_VERSION)
 NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
   | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log((JSON.parse(s).find(r=>r.version.startsWith('v$NODE_MAJOR_VERSION.'))||{version:'v'}).version.slice(1)))")

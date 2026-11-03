@@ -138,7 +138,7 @@ Common patterns:
 
 ## Rebuilding the driver-bundle after a roll
 
-`./scripts/roll_driver.sh` does the whole roll pipeline end-to-end: bumps `DRIVER_VERSION`, moves `NODE_VERSION` to the major version of the latest Node.js LTS (the policy of the upstream Docker images), downloads new driver files into `driver-bundle/src/main/resources/driver/<platform>/`, regenerates `api.json` and the Java interfaces, and updates the README. When all of that succeeds, the next `mvn` invocation that touches `driver-bundle` will pick up the new files and you don't need to think about it.
+`./scripts/roll_driver.sh` does the whole roll pipeline end-to-end: bumps `DRIVER_VERSION`, downloads new driver files into `driver-bundle/src/main/resources/driver/<platform>/`, regenerates `api.json` and the Java interfaces, and updates the README. When all of that succeeds, the next `mvn` invocation that touches `driver-bundle` will pick up the new files and you don't need to think about it.
 
 But if any step in the pipeline fails (the very common case is the API generator throwing on a new type — see *Fixing generator and compilation errors*), the run aborts before `driver-bundle/target/classes/` has been refreshed. From that point on, until you manually rebuild `driver-bundle`, the test JVM will load the **old** driver from the cached `target/classes`/installed jar even though the source resources have already been swapped to the new version.
 
