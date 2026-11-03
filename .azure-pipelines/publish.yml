@@ -36,6 +36,10 @@ extends:
             path: $(Build.ArtifactStagingDirectory)/esrp-build
             artifact: esrp-build
         steps:
+        - checkout: self
+          persistCredentials: false
+          displayName: "Checkout code"
+
         - bash: |
             if [[ ! "$CURRENT_BRANCH" =~ ^v1\..* ]]; then
               echo "Can only publish from a release tag branch (v1.*)."
