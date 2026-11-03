@@ -24,12 +24,11 @@ fi
 CURRENT_VERSION=$(head -1 ./DRIVER_VERSION)
 echo "Rolling driver from $CURRENT_VERSION to $NEW_VERSION"
 
-# The Node.js version used to be pinned in the upstream driver build script. The script was
-# removed in microsoft/playwright#41518, so we follow the same policy it had: the latest
-# Node.js LTS (see upstream utils/build/update-playwright-node.mjs).
+# Pin the major version of the latest Node.js LTS, the policy of the upstream Docker images
+# (see upstream utils/build/update-playwright-node.mjs).
 CURRENT_NODE_VERSION=$(head -1 ./NODE_VERSION)
 NEW_NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
-  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1)))")
+  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).find(r=>r.lts).version.slice(1).split('.')[0]))")
 if [[ -z "$NEW_NODE_VERSION" ]]; then
   echo "Failed to determine the latest Node.js LTS version"
   exit 1

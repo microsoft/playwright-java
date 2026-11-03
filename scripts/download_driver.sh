@@ -10,10 +10,10 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo ""
   echo "This script downloads and assembles the Playwright driver for all platforms."
   echo "The platform-independent 'playwright-core' npm package is assembled once into the driver"
-  echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary of the version"
-  echo "pinned in scripts/NODE_VERSION from https://nodejs.org for each platform goes into the"
-  echo "driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'), the same way"
-  echo "the upstream Playwright build does it."
+  echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary of the latest"
+  echo "release of the major version pinned in scripts/NODE_VERSION from https://nodejs.org for each"
+  echo "platform goes into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'),"
+  echo "the same way the upstream Playwright build does it."
   echo ""
   echo "Usage: scripts/download_driver.sh [option]"
   echo ""
@@ -46,8 +46,16 @@ npm_at_root() {
   (cd "$ROOT" && npm "$@")
 }
 
-# roll_driver.sh moves the pin to the latest Node.js LTS.
-NODE_VERSION=$(head -1 ./NODE_VERSION)
+# scripts/NODE_VERSION pins the Node.js major version, like the upstream Docker images do;
+# roll_driver.sh moves it to the major version of the latest Node.js LTS. Use the latest
+# release of that major version.
+NODE_MAJOR_VERSION=$(head -1 ./NODE_VERSION)
+NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
+  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log((JSON.parse(s).find(r=>r.version.startsWith('v$NODE_MAJOR_VERSION.'))||{version:'v'}).version.slice(1)))")
+if [[ -z "$NODE_VERSION" ]]; then
+  echo "Failed to determine the latest Node.js $NODE_MAJOR_VERSION.x version"
+  exit 1
+fi
 
 echo "Driver version:  $DRIVER_VERSION"
 echo "Node.js version: $NODE_VERSION"
