@@ -12,6 +12,7 @@ on:
       - .github/workflows/test_docker.yml
       - '**/Dockerfile*'
       - scripts/DRIVER_VERSION
+      - scripts/NODE_VERSION
       - '**/pom.xml'
     branches:
       - main

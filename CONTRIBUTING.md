@@ -41,7 +41,7 @@ cd playwright-java
 scripts/download_driver.sh
 ```
 
-Each driver is assembled from the [`playwright-core`](https://www.npmjs.com/package/playwright-core) npm package (version pinned in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION)) and the matching Node.js binary from https://nodejs.org, the same way the upstream Playwright build does it.
+Each driver is assembled from the [`playwright-core`](https://www.npmjs.com/package/playwright-core) npm package (version pinned in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION)) and the latest Node.js binary of the major version pinned in [scripts/NODE_VERSION](scripts/NODE_VERSION) from https://nodejs.org, the same way the upstream Playwright build does it.
 
 ### Building and running the tests with Maven
 
