@@ -48,6 +48,7 @@ extends:
         steps:
         - checkout: self
           displayName: "Checkout code"
+          persistCredentials: false
 
         - task: UseNode@1
           inputs:
