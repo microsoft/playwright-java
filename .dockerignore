@@ -1,5 +1,8 @@
-# The repository root is the Docker build context (see utils/docker/build.sh).
-# Keep registry credentials written by the release pipeline out of the images.
+# The repository root is the Docker build context (see utils/docker/build.sh),
+# and the image build copies all of it. Keep VCS metadata, registry credentials
+# and local environment files out of the build context.
+**/.git
 **/.npmrc
+**/.env*
 # Downloaded by publish_docker.sh after the first push.
 utils/docker/oras
