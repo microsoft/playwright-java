@@ -1,7 +1,8 @@
 # The repository root is the Docker build context (see utils/docker/build.sh).
-# Keep VCS metadata and the registry credentials written by the release pipeline
-# out of the build context.
+# Keep VCS metadata, build output and the registry credentials written by the
+# release pipeline out of the build context.
 .git
+**/target
 **/.npmrc
 # Downloaded by publish_docker.sh after the first push.
 utils/docker/oras

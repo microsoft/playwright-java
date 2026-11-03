@@ -45,7 +45,11 @@ ENV PLAYWRIGHT_DRIVER_DIR=/ms-playwright-driver
 RUN mkdir /ms-playwright && \
     mkdir /tmp/pw-java
 
-COPY . /tmp/pw-java
+# The build reads only the root POM and the Maven modules of the driver and the client.
+COPY pom.xml /tmp/pw-java/
+COPY driver /tmp/pw-java/driver
+COPY driver-bundle /tmp/pw-java/driver-bundle
+COPY playwright /tmp/pw-java/playwright
 
 # The optional Maven settings secret routes dependency resolution through a mirror
 # (see .azure-pipelines/publish-docker.yml).
