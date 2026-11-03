@@ -34,8 +34,8 @@ fi
 
 PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 
-# Assemble the driver on the host where npm is available; the Dockerfile picks
-# it up via `COPY . /tmp/pw-java`.
+# Assemble the driver on the host where npm is available; the builder stage of the
+# Dockerfile picks it up from the build context.
 ../../scripts/download_driver.sh
 
 # The jammy and noble images install this Maven (see the Dockerfiles). Fetch it with the
