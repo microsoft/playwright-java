@@ -10,10 +10,10 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo ""
   echo "This script downloads and assembles the Playwright driver for all platforms."
   echo "The platform-independent 'playwright-core' npm package is assembled once into the driver"
-  echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary of the latest"
-  echo "release of the major version pinned in scripts/NODE_VERSION from https://nodejs.org for each"
-  echo "platform goes into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'),"
-  echo "the same way the upstream Playwright build does it."
+  echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary from"
+  echo "https://nodejs.org (major version pinned in scripts/NODE_VERSION) for each platform goes"
+  echo "into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'), the"
+  echo "same way the upstream Playwright build does it."
   echo ""
   echo "Usage: scripts/download_driver.sh [option]"
   echo ""
@@ -46,11 +46,14 @@ npm_at_root() {
   (cd "$ROOT" && npm "$@")
 }
 
-# scripts/NODE_VERSION pins the Node.js major version and is bumped manually, like
-# ARG NODE_VERSION in the upstream Docker images. Use the latest release of that major version.
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+# scripts/NODE_VERSION pins the Node.js major version, like ARG NODE_VERSION in the upstream
+# Docker images. Use the latest release of that major version.
 NODE_MAJOR_VERSION=$(head -1 ./NODE_VERSION)
-NODE_VERSION=$(curl -fsSL "https://nodejs.org/dist/index.json" \
-  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log((JSON.parse(s).find(r=>r.version.startsWith('v$NODE_MAJOR_VERSION.'))||{version:'v'}).version.slice(1)))")
+download "https://nodejs.org/dist/latest-v$NODE_MAJOR_VERSION.x/SHASUMS256.txt" "$TMP_DIR/SHASUMS256.txt"
+NODE_VERSION=$(grep -om1 "node-v$NODE_MAJOR_VERSION\.[0-9.]*[0-9]" "$TMP_DIR/SHASUMS256.txt" | cut -c7-)
 if [[ -z "$NODE_VERSION" ]]; then
   echo "Failed to determine the latest Node.js $NODE_MAJOR_VERSION.x version"
   exit 1
@@ -63,9 +66,6 @@ echo "Node.js version: $NODE_VERSION"
 # the Node.js binary for each platform is assembled into the driver-bundle module. See issue #1196.
 CORE_DEST="$ROOT/driver/src/main/resources/driver"
 NODE_DEST="$ROOT/driver-bundle/src/main/resources/driver"
-
-TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
 
 # 1. playwright-core package -> driver module (once, shared by every platform).
 echo "Assembling playwright-core package to $CORE_DEST/package"
