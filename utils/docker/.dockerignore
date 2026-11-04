@@ -4,3 +4,8 @@
 *
 !dist
 !maven
+# Should the build context ever grow, keep VCS metadata, registry credentials and local
+# environment files out of it regardless.
+**/.git
+**/.npmrc
+**/.env*
