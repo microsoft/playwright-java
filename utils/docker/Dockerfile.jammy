@@ -50,12 +50,9 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 # it into /tmp on every launch. See https://github.com/microsoft/playwright-java/issues/1268.
 ENV PLAYWRIGHT_DRIVER_DIR=/ms-playwright-driver
 
-# The playwright-java artifacts built by build.sh go into the local Maven repository so
-# that Maven projects built in the image resolve them without downloading.
-COPY dist/m2 /root/.m2/repository
-
-# The CLI runs from the jars staged by build.sh; the mount leaves nothing in the image.
-RUN --mount=type=bind,source=dist/cli,target=/tmp/pw-java \
+# The client jar and its runtime dependencies, staged by build.sh, are only mounted to
+# run the CLI; they do not go into the image.
+RUN --mount=type=bind,source=dist,target=/tmp/pw-java \
     mkdir /ms-playwright && \
     java -cp '/tmp/pw-java/*' com.microsoft.playwright.CLI install-driver && \
     java -cp '/tmp/pw-java/*' com.microsoft.playwright.CLI install --with-deps && \

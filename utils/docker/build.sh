@@ -11,7 +11,7 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
   echo "  docker run --rm -it playwright:localbuild-noble /bin/bash"
   echo ""
   echo "NOTE: this requires a JDK, Maven and npm on the host: the client is built here"
-  echo "and the image only installs the result."
+  echo "and the image only runs it to install the browsers."
   echo ""
   exit 0
 fi
@@ -40,32 +40,22 @@ PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 MVN=(mvn --no-transfer-progress)
 
 # Like the other language ports, build the client on the host, where npm, a JDK and
-# Maven are available, and stage what the Dockerfile copies into the image under dist/.
-# The build context is this directory, so nothing else reaches the image.
+# Maven are available, and stage the client jar and its runtime dependencies under
+# dist/. The Dockerfile runs the CLI from there to install the browsers and their
+# dependencies. The build context is this directory, so nothing else reaches the image.
 ../../scripts/download_driver.sh
 "${MVN[@]}" -B install -D skipTests -f ../../pom.xml
 
-if ! PW_INFO=$("${MVN[@]}" -q -N -f ../../pom.xml exec:exec -D exec.executable=echo \
-    -D exec.args='${project.version} ${settings.localRepository}'); then
+if ! PW_VERSION=$("${MVN[@]}" -q -N -f ../../pom.xml exec:exec -D exec.executable=echo \
+    -D exec.args='${project.version}'); then
   # With -q Maven prints its errors to stdout, which was captured above.
-  echo "ERROR: failed to read the project version and the local repository: ${PW_INFO}"
+  echo "ERROR: failed to read the project version: ${PW_VERSION}"
   exit 1
 fi
-read -r PW_VERSION LOCAL_REPO <<< "$PW_INFO"
 rm -rf dist
-
-# dist/m2: the playwright-java artifacts of this build, for the local Maven repository of
-# the image. Projects built in the image then resolve them without downloading.
-for MODULE in parent-pom driver driver-bundle playwright; do
-  mkdir -p "dist/m2/com/microsoft/playwright/$MODULE"
-  cp -R "$LOCAL_REPO/com/microsoft/playwright/$MODULE/$PW_VERSION" "dist/m2/com/microsoft/playwright/$MODULE/"
-done
-
-# dist/cli: the client jar and its runtime dependencies, which the Dockerfile runs the
-# CLI from to install the driver, the browsers and their dependencies.
 "${MVN[@]}" -q -f ../../playwright/pom.xml dependency:copy-dependencies \
-  -D includeScope=runtime -D outputDirectory="$PWD/dist/cli"
-cp "../../playwright/target/playwright-$PW_VERSION.jar" dist/cli/
+  -D includeScope=runtime -D outputDirectory="$PWD/dist"
+cp "../../playwright/target/playwright-$PW_VERSION.jar" dist/
 
 # The jammy and noble images install this Maven (see the Dockerfiles).
 MAVEN_VERSION=3.9.12

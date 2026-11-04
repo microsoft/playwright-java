@@ -57,13 +57,11 @@ jobs:
       - name: Copy repository inside docker container
         run: |
             docker cp . "$CONTAINER_ID":/home/pwuser/playwright
-            # /root/.m2 was populated as root during image build; move it to
-            # pwuser so the locally-installed SNAPSHOT artifacts resolve.
-            docker exec --user root "$CONTAINER_ID" bash -c '
-              chown -R pwuser /home/pwuser/playwright
-              mv /root/.m2 /home/pwuser/.m2
-              chown -R pwuser /home/pwuser/.m2
-            '
+            # build.sh installed the SNAPSHOT artifacts into the local Maven repository
+            # of the runner; give them to pwuser so the test projects resolve them.
+            docker exec "$CONTAINER_ID" mkdir -p /home/pwuser/.m2/repository/com/microsoft
+            docker cp ~/.m2/repository/com/microsoft/playwright "$CONTAINER_ID":/home/pwuser/.m2/repository/com/microsoft/playwright
+            docker exec --user root "$CONTAINER_ID" chown -R pwuser /home/pwuser/playwright /home/pwuser/.m2
 
       - name: Run smoke tests in container
         run: |
