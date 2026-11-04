@@ -10,13 +10,14 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
   echo ""
   echo "  docker run --rm -it playwright:localbuild-noble /bin/bash"
   echo ""
-  echo "NOTE: this requires on Playwright PIP dependencies to be installed"
+  echo "NOTE: this requires a JDK, Maven and npm on the host: the client is built here"
+  echo "and the image only installs the result."
   echo ""
   exit 0
 fi
 
 function cleanup() {
-  :
+  rm -rf dist
 }
 
 trap "cleanup; cd $(pwd -P)" EXIT
@@ -34,21 +35,40 @@ fi
 
 PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 
-# Assemble the driver on the host where npm is available; the builder stage of the
-# Dockerfile picks it up from the build context.
-../../scripts/download_driver.sh
-
-# The jammy and noble images install this Maven (see the Dockerfiles). Fetch it with the
-# host's Maven so that it resolves through the configured mirror: the release pipeline
-# cannot reach Maven Central directly (see .azure-pipelines/settings.xml).
-MAVEN_VERSION=3.9.12
-mvn dependency:copy -Dartifact="org.apache.maven:apache-maven:${MAVEN_VERSION}:tar.gz:bin" \
-  -DoutputDirectory=maven --no-transfer-progress -q
-
-SECRET_ARGS=()
+# The release pipeline cannot reach Maven Central directly: it provides a settings.xml
+# that mirrors it to an internal feed (see .azure-pipelines/publish-docker.yml).
+MVN=(mvn --no-transfer-progress)
 if [[ -n "${MAVEN_SETTINGS_SECRET:-}" ]]; then
-  SECRET_ARGS+=(--secret "id=mavensettings,src=${MAVEN_SETTINGS_SECRET}")
+  MVN+=(-s "${MAVEN_SETTINGS_SECRET}")
 fi
+
+# Like the other language ports, build the client on the host, where npm, a JDK and
+# Maven are available, and stage what the Dockerfile copies into the image under dist/.
+# The build context is this directory, so nothing else reaches the image.
+../../scripts/download_driver.sh
+"${MVN[@]}" -B install -D skipTests -f ../../pom.xml
+
+PW_VERSION=$("${MVN[@]}" -q -f ../../pom.xml help:evaluate -D expression=project.version -D forceStdout)
+LOCAL_REPO=$("${MVN[@]}" -q -f ../../pom.xml help:evaluate -D expression=settings.localRepository -D forceStdout)
+rm -rf dist
+
+# dist/m2: the playwright-java artifacts of this build, for the local Maven repository of
+# the image. Projects built in the image then resolve them without downloading.
+for MODULE in parent-pom driver driver-bundle playwright; do
+  mkdir -p "dist/m2/com/microsoft/playwright/$MODULE"
+  cp -R "$LOCAL_REPO/com/microsoft/playwright/$MODULE/$PW_VERSION" "dist/m2/com/microsoft/playwright/$MODULE/"
+done
+
+# dist/cli: the client jar and its runtime dependencies, which the Dockerfile runs the
+# CLI from to install the driver, the browsers and their dependencies.
+"${MVN[@]}" -q -f ../../playwright/pom.xml dependency:copy-dependencies \
+  -D includeScope=runtime -D outputDirectory="$PWD/dist/cli"
+cp "../../playwright/target/playwright-$PW_VERSION.jar" dist/cli/
+
+# The jammy and noble images install this Maven (see the Dockerfiles).
+MAVEN_VERSION=3.9.12
+"${MVN[@]}" -q dependency:copy -D artifact="org.apache.maven:apache-maven:${MAVEN_VERSION}:tar.gz:bin" \
+  -D outputDirectory=maven
 
 # Keep each arch image a plain single-platform manifest without the unknown/unknown platform entry.
 export BUILDX_NO_DEFAULT_ATTESTATIONS=1
@@ -69,8 +89,7 @@ for ((attempt = 1; attempt <= MAX_ATTEMPTS; attempt++)); do
       --build-arg "MAVEN_VERSION=${MAVEN_VERSION}" \
       --build-arg ACR_CACHE_PREFIX="${ACR_CACHE_PREFIX}" \
       --build-arg UBUNTU_MIRROR_PREFIX="${UBUNTU_MIRROR_PREFIX}" \
-      "${SECRET_ARGS[@]}" \
-      -t "$3" -f "Dockerfile.$2" ../../; then
+      -t "$3" -f "Dockerfile.$2" .; then
     exit 0
   fi
   if (( attempt < MAX_ATTEMPTS )); then
