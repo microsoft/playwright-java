@@ -35,12 +35,9 @@ fi
 
 PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 
-# The release pipeline cannot reach Maven Central directly: it provides a settings.xml
-# that mirrors it to an internal feed (see .azure-pipelines/publish-docker.yml).
+# The host Maven settings (~/.m2/settings.xml) route dependency resolution through the
+# mirror of the release pipeline, which cannot reach Maven Central directly.
 MVN=(mvn --no-transfer-progress)
-if [[ -n "${MAVEN_SETTINGS_SECRET:-}" ]]; then
-  MVN+=(-s "${MAVEN_SETTINGS_SECRET}")
-fi
 
 # Like the other language ports, build the client on the host, where npm, a JDK and
 # Maven are available, and stage what the Dockerfile copies into the image under dist/.
@@ -48,8 +45,13 @@ fi
 ../../scripts/download_driver.sh
 "${MVN[@]}" -B install -D skipTests -f ../../pom.xml
 
-PW_VERSION=$("${MVN[@]}" -q -f ../../pom.xml help:evaluate -D expression=project.version -D forceStdout)
-LOCAL_REPO=$("${MVN[@]}" -q -f ../../pom.xml help:evaluate -D expression=settings.localRepository -D forceStdout)
+if ! PW_INFO=$("${MVN[@]}" -q -N -f ../../pom.xml exec:exec -D exec.executable=echo \
+    -D exec.args='${project.version} ${settings.localRepository}'); then
+  # With -q Maven prints its errors to stdout, which was captured above.
+  echo "ERROR: failed to read the project version and the local repository: ${PW_INFO}"
+  exit 1
+fi
+read -r PW_VERSION LOCAL_REPO <<< "$PW_INFO"
 rm -rf dist
 
 # dist/m2: the playwright-java artifacts of this build, for the local Maven repository of

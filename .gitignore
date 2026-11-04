@@ -22,6 +22,3 @@ target/
 *.iml
 
 .npmrc
-
-# Staged by utils/docker/build.sh for the Docker build context
-utils/docker/dist/

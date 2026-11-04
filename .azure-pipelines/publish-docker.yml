@@ -115,9 +115,9 @@ extends:
           displayName: "Build & publish Docker images"
           inputs:
             targetType: "inline"
-            # build.sh builds the client on the host with the authenticated settings.xml so
-            # that it also resolves from DevDiv_PublicPackages.
-            script: MAVEN_SETTINGS_SECRET="$HOME/.m2/settings.xml" ./utils/docker/publish_docker.sh ${{ parameters.releaseChannel }}
+            # build.sh builds the client on the host, where ~/.m2/settings.xml mirrors Maven
+            # Central to DevDiv_PublicPackages.
+            script: ./utils/docker/publish_docker.sh ${{ parameters.releaseChannel }}
           env:
             ACR_CACHE_PREFIX: "playwright.azurecr.io/cached/"
             UBUNTU_MIRROR_PREFIX: "azure."
