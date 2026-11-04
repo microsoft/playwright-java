@@ -44,24 +44,12 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 # it into /tmp on every launch. See https://github.com/microsoft/playwright-java/issues/1268.
 ENV PLAYWRIGHT_DRIVER_DIR=/ms-playwright-driver
 
-RUN mkdir /ms-playwright && \
-    mkdir /tmp/pw-java
-
-COPY . /tmp/pw-java
-
-# The optional Maven settings secret routes dependency resolution through a mirror
-# (see .azure-pipelines/publish-docker.yml).
-RUN --mount=type=secret,id=mavensettings,target=/root/.m2/settings.xml,required=false \
-    cd /tmp/pw-java && \
-    mvn install -D skipTests --no-transfer-progress && \
-    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
-                     -D exec.args="install-driver" -f playwright/pom.xml --no-transfer-progress && \
-    DEBIAN_FRONTEND=noninteractive mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
-                     -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
-    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
-                     -D exec.args="install" -f playwright/pom.xml --no-transfer-progress && \
-    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
-                     -D exec.args="mark-docker-image '${DOCKER_IMAGE_NAME_TEMPLATE}'" -f playwright/pom.xml --no-transfer-progress && \
-    rm -rf /tmp/pw-java && \
+# The client jar and its runtime dependencies, staged by build.sh, are only mounted to
+# run the CLI; they do not go into the image.
+RUN --mount=type=bind,source=dist,target=/tmp/pw-java \
+    mkdir /ms-playwright && \
+    java -cp '/tmp/pw-java/*' com.microsoft.playwright.CLI install-driver && \
+    java -cp '/tmp/pw-java/*' com.microsoft.playwright.CLI install --with-deps && \
+    java -cp '/tmp/pw-java/*' com.microsoft.playwright.CLI mark-docker-image "${DOCKER_IMAGE_NAME_TEMPLATE}" && \
     chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH && \
     chmod -R 777 $PLAYWRIGHT_DRIVER_DIR

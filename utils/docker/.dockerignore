@@ -1,0 +1,11 @@
+# This directory is the Docker build context (see build.sh). The image build reads only
+# the client jars staged in dist/ and the Maven tarball in maven/; keep everything else,
+# such as the oras download of publish_docker.sh, out of the build context.
+*
+!dist
+!maven
+# Should the build context ever grow, keep VCS metadata, registry credentials and local
+# environment files out of it regardless.
+**/.git
+**/.npmrc
+**/.env*
