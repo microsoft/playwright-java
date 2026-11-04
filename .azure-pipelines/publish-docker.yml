@@ -115,8 +115,8 @@ extends:
           displayName: "Build & publish Docker images"
           inputs:
             targetType: "inline"
-            # build.sh builds the client on the host, where ~/.m2/settings.xml mirrors Maven
-            # Central to DevDiv_PublicPackages.
+            # build.sh builds the client on the host, where ~/.m2/settings.xml routes all Maven
+            # downloads through the DevDiv_PublicPackages feed instead of Maven Central.
             script: ./utils/docker/publish_docker.sh ${{ parameters.releaseChannel }}
           env:
             ACR_CACHE_PREFIX: "playwright.azurecr.io/cached/"

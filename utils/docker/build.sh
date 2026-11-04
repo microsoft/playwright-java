@@ -35,8 +35,8 @@ fi
 
 PW_TARGET_ARCH=$(echo $1 | cut -c3-)
 
-# The host Maven settings (~/.m2/settings.xml) route dependency resolution through the
-# mirror of the release pipeline, which cannot reach Maven Central directly.
+# In the release pipeline ~/.m2/settings.xml routes all Maven downloads through the
+# DevDiv_PublicPackages feed instead of Maven Central, which the agent cannot reach.
 MVN=(mvn --no-transfer-progress)
 
 # Like the other language ports, build the client on the host, where npm, a JDK and
