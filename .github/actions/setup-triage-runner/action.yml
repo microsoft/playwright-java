@@ -8,7 +8,7 @@ description: >
 runs:
   using: composite
   steps:
-  - uses: microsoft/playwright/.github/actions/ci-env@main
+  - uses: microsoft/playwright/.github/actions/ci-env@d1518e3e3fca90352c4390814943cced496fd7e4 # main
   - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
     with:
       distribution: zulu
