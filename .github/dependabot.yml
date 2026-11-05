@@ -17,6 +17,8 @@ updates:
     allow:
       - dependency-type: "direct" # Optional: Only update direct dependencies
       - dependency-type: "indirect" # Optional: Only update indirect (transitive) dependencies
+    cooldown:
+      default-days: 7
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
