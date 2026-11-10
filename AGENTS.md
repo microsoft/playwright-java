@@ -1,8 +1,15 @@
 # Playwright Java
 
-The Java client is a port of the JavaScript client in `../playwright/packages/playwright-core/src/client/`. When implementing or changing a method, read the corresponding JS file first and mirror its logic.
+The Java client is a port of the JavaScript client in `~/code/playwright/packages/playwright-core/src/client/`. When implementing or changing a method, read the corresponding JS file first and mirror its logic.
 
-Project checkouts (including the upstream `playwright` repo) live in the parent directory (`../`). Use the `gh` cli to interact with GitHub.
+Paths such as `~/code/playwright` in this file assume that you check the repos out in `~/code`. Use the `gh` cli to interact with GitHub.
+
+## How this repo depends on Playwright
+
+- **The driver.** The Java client talks to the Node.js driver that `microsoft/playwright` publishes: the `playwright-core` npm package, which `scripts/download_driver.sh` unpacks into `driver/src/main/resources/driver/package/`. `scripts/DRIVER_VERSION` names its version, and `npm view playwright@<version> gitHead` prints its upstream commit. Upstream `main` is close to it. Release `1.X.0` bundles the driver of `scripts/DRIVER_VERSION` at tag `v1.X.0`.
+- **Upstream code.** In `~/code/playwright`: the client in `packages/playwright-core/src/client/`, the API docs in `docs/src/api/`, the tests in `tests/page/` and `tests/library/`. Its `AGENTS.md` says how to build it and run a test.
+- **Where a bug is.** When the same calls fail in a Node.js test upstream too, the cause is in the driver or a browser, and the fix lands in `microsoft/playwright`. When Node.js passes, the bug is in the Java client: compare the `*Impl.java` with its JavaScript counterpart, and fix it here.
+- **The generated API.** `scripts/generate_api.sh` runs upstream's `utils/doclint/generateApiJson.js` at the commit of the driver, and `tools/api-generator` writes every interface and options class in `playwright/src/main/java/com/microsoft/playwright/`, `options/` and `assertions/`. Only `CLI.java`, `PlaywrightException.java`, `TimeoutError.java`, `assertions/PlaywrightAssertions.java` and the `package-info.java` files there are written by hand. Never edit a generated file: the next roll reverts it. A missing method or option is a change to `docs/src/api/` upstream.
 
 ## Build and test
 
@@ -72,4 +79,4 @@ Branch naming for issue fixes: `fix-<issue-number>`.
 
 - **playwright-roll** (`.claude/skills/playwright-roll/SKILL.md`) — roll Playwright Java to a new upstream version: bump the driver, regenerate the API, and port relevant upstream changes.
 - **playwright-java-release** (`.claude/skills/playwright-java-release/SKILL.md`) — prepare a release after the rolling PR merges: cut the release branch, mark the Maven version, and draft the GitHub release.
-- **playwright-cherry-pick** (upstream, `../playwright/.claude/skills/playwright-cherry-pick/SKILL.md`) — cherry-pick a merged PR into a `release-1.X` branch as `cherry-pick(#<pr>): <original title>`. Use the same rules for this repo's release branches.
+- **playwright-cherry-pick** (upstream, `~/code/playwright/.claude/skills/playwright-cherry-pick/SKILL.md`) — cherry-pick a merged PR into a `release-1.X` branch as `cherry-pick(#<pr>): <original title>`. Use the same rules for this repo's release branches.
