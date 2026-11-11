@@ -42,6 +42,7 @@ public class TestFixtureDeviceOption {
     // TODO: failing since 1.57 roll.
     // assertEquals(3, page.evaluate("window.devicePixelRatio"));
     assertEquals(980, page.evaluate("window.innerWidth"));
-    assertEquals(1668, page.evaluate("window.innerHeight"));
+    // The layout height is 980 * 664 / 390 = 1668.5, WebKit rounds it either way depending on the platform.
+    assertEquals(1668.5, ((Number) page.evaluate("window.innerHeight")).doubleValue(), 0.5);
   }
 }
