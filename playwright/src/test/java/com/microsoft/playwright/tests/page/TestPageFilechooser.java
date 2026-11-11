@@ -408,7 +408,6 @@ public class TestPageFilechooser {
 
     @PlaywrightTest
     @DisplayName("FC-026 should not open file chooser without user activation")
-    @Fixme(value = "driver: the driver (1.64.1) predates the user activation check for file choosers: Firefox emits a filechooser event without user activation (choosers expected: <0> but was: <1>)", browsers = BrowserName.FIREFOX)
     @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: WebKit opens the file chooser from input.click() without user activation")
     void shouldNotOpenFileChooserWithoutUserActivation(Page page, TestServer server, BrowserName browserName) {
       AtomicInteger choosers = new AtomicInteger();
@@ -445,7 +444,6 @@ public class TestPageFilechooser {
 
     @PlaywrightTest
     @DisplayName("FC-028 should consume user activation when opening file chooser")
-    @Fixme(value = "driver: the driver (1.64.1) predates the user activation check for file choosers: Firefox opens the chooser twice for two input.click() calls (choosers expected: <1> but was: <2>)", browsers = BrowserName.FIREFOX)
     @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: WebKit does not consume user activation when opening the file chooser")
     void shouldConsumeUserActivationWhenOpeningFileChooser(Page page, TestServer server, BrowserName browserName) {
       AtomicInteger choosers = new AtomicInteger();

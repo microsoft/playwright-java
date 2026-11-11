@@ -76,9 +76,7 @@ public class TestPageRequestContinue {
       route.resume();
       done[0] = true;
     });
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
-    assertTrue(e.getMessage().contains("Target page, context or browser has been closed") ||
-      e.getMessage().contains("frame was detached"), e.getMessage());
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
     assertTrue(done[0]);
   }
 

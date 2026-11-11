@@ -158,7 +158,6 @@ public class TestTracing {
 
   @PlaywrightTest
   @DisplayName("TR-003 should not store secrets in context options")
-  @Fixme("driver: the context-options event of driver 1.64.1 contains extraHTTPHeaders and httpCredentials (was: {viewport, userAgent, extraHTTPHeaders:[{name:x-secret,value:secret-header}], httpCredentials:[...], ...}); upstream fix(tracing): do not store secrets in trace context options (#43220) is not in the driver")
   void shouldNotStoreSecretsInContextOptions(Browser browser, TestServer server, TestInfo testInfo) throws Exception {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setBaseURL(server.PREFIX)

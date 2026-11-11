@@ -55,6 +55,19 @@ public class TestTracingOverConnect {
   }
 
   @PlaywrightTest
+  void shouldNotCollectStacksAfterContextWithTracingIsClosed(Browser browser, BrowserContext context, @TempDir Path tempDir) throws IOException {
+    BrowserContext other = browser.newContext();
+    other.tracing().start(new Tracing.StartOptions().setSources(true));
+    other.close();
+
+    context.tracing().start(new Tracing.StartOptions().setSources(true));
+    Path trace = tempDir.resolve("trace.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+    Map<String, byte[]> resources = parseZip(trace);
+    assertEquals(0, resources.keySet().stream().filter(name -> name.startsWith("src/")).count());
+  }
+
+  @PlaywrightTest
   void shouldRecordSourcesForBrowserFromConnect(Page page, BrowserContext context, Server server, @TempDir Path tmpDir) throws IOException {
     context.tracing().start(new Tracing.StartOptions().setSources(true));
     page.navigate(server.EMPTY_PAGE);

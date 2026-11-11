@@ -97,7 +97,6 @@ public class TestPageSetInputFiles {
 
   @PlaywrightTest
   @DisplayName("IF-003 should upload a folder via label")
-  @Fixme("driver: times out with 'Timeout 30000ms exceeded' (waiting for getByText(\"Folder\"), locator resolved to <label for=\"folder\">Folder</label>); the driver 1.64.1 predates upstream's fix for setInputFiles on a label of a folder input")
   void shouldUploadAFolderViaLabel(Page page, TestInfo testInfo) throws Exception {
     page.setContent("<label for=\"folder\">Folder</label><input id=\"folder\" type=\"file\" webkitdirectory>");
     Path dir = testInfo.outputDir().resolve("file-upload-test");

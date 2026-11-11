@@ -174,7 +174,7 @@ public class TestBrowserContextStorageState {
       "  origin: 'http://localhost:" + server.PORT + "',\n" +
       "  localStorage: [{\n" +
       "    name: 'foo',\n" +
-      "    value: '" + (char)65533 + "'\n" +
+      "    value: '" + (char)55934 + "'\n" +
       "  }]\n" +
       "}]}", new Gson().fromJson(storageState, JsonObject.class));
   }

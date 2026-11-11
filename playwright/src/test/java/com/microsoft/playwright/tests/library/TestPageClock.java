@@ -660,7 +660,6 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-045 should stay paused on the next page when an init script reads the time")
-    @Fixme(value = "driver: Date.now() is 2061 instead of 2000 after the second navigation, the fix is upstream #43224, newer than driver 1.64.1", browsers = BrowserName.CHROMIUM)
     void shouldStayPausedOnTheNextPageWhenAnInitScriptReadsTheTime(Page page, TestServer server) {
       // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43214' } }
       page.clock().install(new com.microsoft.playwright.Clock.InstallOptions().setTime(0));
@@ -677,7 +676,6 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-046 should not advance performance.now() before the first clock call on a new page")
-    @Fixme("driver: performance.now() and Date.now() are [503, 1000] instead of [0, 1000], the fix is upstream #43224, newer than driver 1.64.1")
     void shouldNotAdvancePerformanceNowBeforeTheFirstClockCallOnANewPage(Page page, TestServer server) {
       // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43214' } }
       page.clock().pauseAt(1000);

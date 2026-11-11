@@ -241,7 +241,6 @@ public class TestPageFocus {
 
   @PlaywrightTest
   @DisplayName("FO-011 should move focus from an iframe to its parent")
-  @Fixme(value = "driver: the focus stays in the iframe: toBeFocused on #outer gets unexpected value \"inactive\" until timeout", browsers = BrowserName.FIREFOX)
   void shouldMoveFocusFromAnIframeToItsParent(Page page, TestServer server) {
     server.setRoute("/frame.html", (req, res) -> {
       res.setHeader("content-type", "text/html");
@@ -258,7 +257,6 @@ public class TestPageFocus {
 
   @PlaywrightTest
   @DisplayName("FO-012 should tab from an iframe to its parent")
-  @Fixme(value = "driver: the focus stays in the iframe: toBeFocused on #outer gets unexpected value \"inactive\" until timeout", browsers = BrowserName.FIREFOX)
   void shouldTabFromAnIframeToItsParent(Page page, TestServer server) {
     server.setRoute("/frame.html", (req, res) -> {
       res.setHeader("content-type", "text/html");

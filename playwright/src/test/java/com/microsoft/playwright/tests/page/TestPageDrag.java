@@ -230,7 +230,6 @@ public class TestPageDrag {
 
     @PlaywrightTest
     @DisplayName("DD-008 should respect the drop effect")
-    @Fixme(value = "driver: the WebKit of driver 1.64.1 on macOS and Windows drops with effectAllowed 'copy' and dropEffect 'move' (expected: <false> but was: <true>)", browsers = BrowserName.WEBKIT, os = {OS.MAC, OS.WINDOWS})
     void shouldRespectTheDropEffect(Page page, BrowserName browserName) {
       assumeFalse(browserName == BrowserName.WEBKIT && Env.isLinux && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");
       assumeFalse(browserName == BrowserName.CHROMIUM && !Env.isMac && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");
@@ -286,7 +285,6 @@ public class TestPageDrag {
 
     @PlaywrightTest
     @DisplayName("DD-028 should report the default drop effect from effectAllowed")
-    @Fixme(value = "driver: the bundled WebKit reports the dropEffect 'copyMove' instead of 'move' (expected: <move> but was: <copyMove>)", browsers = BrowserName.WEBKIT)
     void shouldReportTheDefaultDropEffectFromEffectAllowed(Page page, BrowserName browserName) {
       assumeFalse(browserName == BrowserName.WEBKIT && Env.isLinux && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");
 

@@ -1388,12 +1388,12 @@ public interface BrowserContext extends AutoCloseable {
    * and examples.
    * <pre>{@code
    * context.routeWebSocket("/ws", ws -> {
-   *   ws.routeSend(message -> {
-   *     if ("to-be-blocked".equals(message))
+   *   WebSocketRoute server = ws.connectToServer();
+   *   ws.onMessage(frame -> {
+   *     if ("to-be-blocked".equals(frame.text()))
    *       return;
-   *     ws.send(message);
+   *     server.send(frame.text());
    *   });
-   *   ws.connect();
    * });
    * }</pre>
    *
@@ -1415,12 +1415,12 @@ public interface BrowserContext extends AutoCloseable {
    * and examples.
    * <pre>{@code
    * context.routeWebSocket("/ws", ws -> {
-   *   ws.routeSend(message -> {
-   *     if ("to-be-blocked".equals(message))
+   *   WebSocketRoute server = ws.connectToServer();
+   *   ws.onMessage(frame -> {
+   *     if ("to-be-blocked".equals(frame.text()))
    *       return;
-   *     ws.send(message);
+   *     server.send(frame.text());
    *   });
-   *   ws.connect();
    * });
    * }</pre>
    *
@@ -1442,12 +1442,12 @@ public interface BrowserContext extends AutoCloseable {
    * and examples.
    * <pre>{@code
    * context.routeWebSocket("/ws", ws -> {
-   *   ws.routeSend(message -> {
-   *     if ("to-be-blocked".equals(message))
+   *   WebSocketRoute server = ws.connectToServer();
+   *   ws.onMessage(frame -> {
+   *     if ("to-be-blocked".equals(frame.text()))
    *       return;
-   *     ws.send(message);
+   *     server.send(frame.text());
    *   });
-   *   ws.connect();
    * });
    * }</pre>
    *

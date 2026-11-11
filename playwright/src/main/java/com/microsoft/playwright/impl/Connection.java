@@ -89,6 +89,7 @@ public class Connection {
     PlaywrightImpl initialize() {
       JsonObject params = new JsonObject();
       params.addProperty("sdkLanguage", "java");
+      params.addProperty("supportsLoneSurrogates", true);
       JsonElement result = sendMessage("initialize", params.getAsJsonObject(), NO_TIMEOUT);
       return this.connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("playwright").get("guid").getAsString());
     }

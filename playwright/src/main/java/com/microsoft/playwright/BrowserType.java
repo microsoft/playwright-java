@@ -140,11 +140,11 @@ public interface BrowserType {
     public @Nullable Boolean isLocal;
     /**
      * When true, Playwright will not apply its default overrides to the existing default browser context. Specifically, {@code
-     * acceptDownloads} is left at the browser's setting, focus emulation is not enabled, and media emulation options (such as
-     * {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are not applied. Useful when
-     * attaching to a user's daily-driver browser where these overrides would interfere with existing browser state. New
-     * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
-     * to {@code false}.
+     * acceptDownloads} and font families are left at the browser's settings, focus emulation is not enabled, and media
+     * emulation options (such as {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are
+     * not applied. Useful when attaching to a user's daily-driver browser where these overrides would interfere with existing
+     * browser state. New contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not
+     * affected. Defaults to {@code false}.
      */
     public @Nullable Boolean noDefaults;
     /**
@@ -182,11 +182,11 @@ public interface BrowserType {
     }
     /**
      * When true, Playwright will not apply its default overrides to the existing default browser context. Specifically, {@code
-     * acceptDownloads} is left at the browser's setting, focus emulation is not enabled, and media emulation options (such as
-     * {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are not applied. Useful when
-     * attaching to a user's daily-driver browser where these overrides would interfere with existing browser state. New
-     * contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not affected. Defaults
-     * to {@code false}.
+     * acceptDownloads} and font families are left at the browser's settings, focus emulation is not enabled, and media
+     * emulation options (such as {@code colorScheme}, {@code reducedMotion}, {@code forcedColors}, and {@code contrast}) are
+     * not applied. Useful when attaching to a user's daily-driver browser where these overrides would interfere with existing
+     * browser state. New contexts created via {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} are not
+     * affected. Defaults to {@code false}.
      */
     public ConnectOverCDPOptions setNoDefaults(boolean noDefaults) {
       this.noDefaults = noDefaults;
@@ -1360,6 +1360,11 @@ public interface BrowserType {
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
    * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   *
+   * <p> Alternatively, a browser channel name such as {@code chrome} or {@code msedge} to connect to a browser with remote
+   * debugging enabled in its default user data directory. On Linux, Playwright uses {@code CHROME_USER_DATA_DIR} when set.
+   * Otherwise, it uses {@code CHROME_CONFIG_HOME}, then {@code XDG_CONFIG_HOME}, then {@code ~/.config} to locate that
+   * directory.
    * @since v1.9
    */
   default Browser connectOverCDP(String endpointURL) {
@@ -1389,6 +1394,11 @@ public interface BrowserType {
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
    * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   *
+   * <p> Alternatively, a browser channel name such as {@code chrome} or {@code msedge} to connect to a browser with remote
+   * debugging enabled in its default user data directory. On Linux, Playwright uses {@code CHROME_USER_DATA_DIR} when set.
+   * Otherwise, it uses {@code CHROME_CONFIG_HOME}, then {@code XDG_CONFIG_HOME}, then {@code ~/.config} to locate that
+   * directory.
    * @since v1.9
    */
   Browser connectOverCDP(String endpointURL, @Nullable ConnectOverCDPOptions options);

@@ -163,7 +163,6 @@ public class TestBrowsercontextCsp {
 
   @PlaywrightTest
   @DisplayName("CS-005 should not crash on javascript: navigation")
-  @Fixme(value = "driver: page.click('#a') on a javascript: link times out in firefox: 'Timeout 30000ms exceeded' while 'waiting for scheduled navigations to finish'; test added by upstream #43457, newer than driver 1.64.1", browsers = BrowserName.FIREFOX)
   void shouldNotCrashOnJavascriptNavigation(Browser browser, TestServer server) {
     // it.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43213' });
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setBypassCSP(true));

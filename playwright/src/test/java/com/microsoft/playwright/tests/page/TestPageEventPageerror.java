@@ -67,7 +67,6 @@ public class TestPageEventPageerror {
 
   @PlaywrightTest
   @DisplayName("ER-001 should fire")
-  @Fixme(value = "java: the bundled driver 1.64.1 reports zero-based locations for the cross-origin script error (error.js:13:10 instead of error.js:14:11); fixed upstream in microsoft/playwright#43468", browsers = BrowserName.CHROMIUM)
   void shouldFire(Page page, TestServer server, BrowserName browserName) {
     String url = server.PREFIX + "/error.html";
     PageError error = waitForPageError(page, () -> page.navigate(url));

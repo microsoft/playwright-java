@@ -478,7 +478,6 @@ public class TestBrowsercontextStorageState {
 
   @PlaywrightTest
   @DisplayName("ST-011 should serialize storageState with lone surrogates")
-  @Fixme("driver: 1.64.1 replaces lone surrogates with U+FFFD for non-JavaScript clients; the client declares support with supportsLoneSurrogates since microsoft/playwright#43548, the Java client got \"\\uFFFD\" instead of \"\\uDA7E\"")
   void shouldSerializeStorageStateWithLoneSurrogates(Page page, BrowserContext context, TestServer server) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => window.localStorage.setItem('foo', String.fromCharCode(55934))");

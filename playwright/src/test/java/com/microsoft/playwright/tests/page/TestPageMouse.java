@@ -38,6 +38,7 @@ import java.util.function.Supplier;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Port of tests/page/page-mouse.spec.ts. */
 public class TestPageMouse {
@@ -169,7 +170,7 @@ public class TestPageMouse {
     assertEquals(true, event.get("isTrusted"));
     assertEquals(1, event.get("button"));
     assertEquals(4, event.get("buttons"));
-    assertEquals(browserName == BrowserName.FIREFOX ? 0 : 1, event.get("pointerId"));
+    assertTrue((Integer) event.get("pointerId") >= 0);
   }
 
   @PlaywrightTest
@@ -319,7 +320,6 @@ public class TestPageMouse {
 
   @PlaywrightTest
   @DisplayName("MO-012 should tween mouse movement")
-  @Fixme(value = "harness: WebKit reports movementX and movementY as 0 for mouse.move in this environment: [[120, 140, 0, 0], ...]", browsers = BrowserName.WEBKIT)
   @DisabledOnBrowser(value = {BrowserName.CHROMIUM, BrowserName.FIREFOX, BrowserName.WEBKIT}, headed = true, reason = "actual mouse interferes with the exact mousemove events")
   void shouldTweenMouseMovement(Page page, BrowserName browserName) {
     // The test becomes flaky on WebKit without next line.

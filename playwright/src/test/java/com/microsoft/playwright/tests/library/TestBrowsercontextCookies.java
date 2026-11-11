@@ -277,7 +277,6 @@ public class TestBrowsercontextCookies {
 
   @PlaywrightTest
   @DisplayName("CO-011 should only return cookies that apply to the url")
-  @Fixme("driver: context.cookies(url) returns [hostonly, subdomains] for http://foo.com/apiv2, the RFC 6265 domain and path matching is upstream #43148, newer than driver 1.64.1")
   void shouldOnlyReturnCookiesThatApplyToTheUrl(BrowserContext context) {
     // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43078' } }
     context.addCookies(Arrays.asList(

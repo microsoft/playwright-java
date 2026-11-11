@@ -65,8 +65,8 @@ public interface Clock {
    * page.clock().fastForward("30:00");
    * }</pre>
    *
-   * @param ticks Time may be the number of milliseconds to advance the clock by or a human-readable string. Valid string formats are "08"
-   * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
+   * @param ticks Time may be a finite number of milliseconds to advance the clock by or a human-readable string. Valid string formats are
+   * "08" for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
   void fastForward(long ticks);
@@ -80,8 +80,8 @@ public interface Clock {
    * page.clock().fastForward("30:00");
    * }</pre>
    *
-   * @param ticks Time may be the number of milliseconds to advance the clock by or a human-readable string. Valid string formats are "08"
-   * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
+   * @param ticks Time may be a finite number of milliseconds to advance the clock by or a human-readable string. Valid string formats are
+   * "08" for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
   void fastForward(String ticks);
@@ -142,8 +142,8 @@ public interface Clock {
    * page.clock().runFor("30:00");
    * }</pre>
    *
-   * @param ticks Time may be the number of milliseconds to advance the clock by or a human-readable string. Valid string formats are "08"
-   * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
+   * @param ticks Time may be a finite number of milliseconds to advance the clock by or a human-readable string. Valid string formats are
+   * "08" for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
   void runFor(long ticks);
@@ -156,8 +156,8 @@ public interface Clock {
    * page.clock().runFor("30:00");
    * }</pre>
    *
-   * @param ticks Time may be the number of milliseconds to advance the clock by or a human-readable string. Valid string formats are "08"
-   * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
+   * @param ticks Time may be a finite number of milliseconds to advance the clock by or a human-readable string. Valid string formats are
+   * "08" for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
   void runFor(String ticks);

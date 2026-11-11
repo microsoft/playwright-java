@@ -180,7 +180,6 @@ public class TestGlobalFetchCookie {
 
   @PlaywrightTest
   @DisplayName("FE-058 cookies should only return cookies that apply to the url")
-  @Fixme("driver: 1.64.1 request.cookies(url) returns hostonly and subdomains for http://one.com/apiv2 (no RFC 6265 path matching); fixed by microsoft/playwright#43148 (fix(cookies): follow RFC 6265 domain and path matching in cookies(urls))")
   void cookiesShouldOnlyReturnCookiesThatApplyToTheUrl() {
     request.addCookies(Arrays.asList(
       new Cookie("hostonly", "v").setDomain("one.com").setPath("/api"),
@@ -293,7 +292,6 @@ public class TestGlobalFetchCookie {
 
   @PlaywrightTest
   @DisplayName("FE-064 should send nameless cookies as value only")
-  @Fixme("driver: 1.64.1 sends a nameless cookie as '=nameless' instead of 'nameless'; fixed by microsoft/playwright#43168 (fix(fetch): serialize and parse nameless cookies per RFC 6265bis)")
   void shouldSendNamelessCookiesAsValueOnly(TestServer server) throws Exception {
     request.addCookies(Arrays.asList(
       new Cookie("", "nameless").setUrl(server.EMPTY_PAGE),
@@ -306,7 +304,6 @@ public class TestGlobalFetchCookie {
 
   @PlaywrightTest
   @DisplayName("FE-065 should store Set-Cookie without equals sign as nameless cookie")
-  @Fixme("driver: 1.64.1 stores a Set-Cookie without equals sign as name=token, value= instead of a nameless cookie; fixed by microsoft/playwright#43168 (fix(fetch): serialize and parse nameless cookies per RFC 6265bis)")
   void shouldStoreSetCookieWithoutEqualsSignAsNamelessCookie(TestServer server) throws Exception {
     server.setRoute("/setcookie.html", (req, res) -> {
       res.setHeader("Set-Cookie", Arrays.asList("token; path=/", "a=; path=/"));

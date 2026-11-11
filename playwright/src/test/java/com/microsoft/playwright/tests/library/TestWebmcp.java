@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -190,7 +191,7 @@ public class TestWebmcp {
 
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.webmcp().callTool("throwing"));
     // Chromium does not report the error that the tool threw.
-    assertTrue(error.getMessage().contains(browserName == BrowserName.CHROMIUM ? "the invocation failed" : "boom"));
+    assertTrue(Pattern.compile(browserName == BrowserName.CHROMIUM ? "the invocation failed|Tool execution failed" : "boom").matcher(error.getMessage()).find());
   }
 
   @PlaywrightTest

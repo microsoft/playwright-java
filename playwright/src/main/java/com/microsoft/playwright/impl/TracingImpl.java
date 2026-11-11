@@ -59,11 +59,15 @@ class TracingImpl extends ChannelOwner implements Tracing {
     super(parent, type, guid, initializer);
   }
 
-  private void stopChunkImpl(Path path) {
+  void resetStackCounter() {
     if (isTracing) {
       isTracing = false;
       connection.setIsTracing(false);
     }
+  }
+
+  private void stopChunkImpl(Path path) {
+    resetStackCounter();
 
     List<String> capturedAdditionalSources = new ArrayList<>(additionalSources);
     additionalSources.clear();
@@ -231,7 +235,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options == null) {
       options = new StartHarOptions();
     }
-    boolean isZip = path.toString().endsWith(".zip");
+    boolean isZip = isZip(path);
     HarContentPolicy contentPolicy = options.content != null
       ? options.content
       : (isZip ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED);
@@ -250,6 +254,10 @@ class TracingImpl extends ChannelOwner implements Tracing {
     exportHar(harId);
   }
 
+  static boolean isZip(Path path) {
+    return path.toString().toLowerCase().endsWith(".zip");
+  }
+
   String recordIntoHar(PageImpl page, Path har, Object urlFilter, HarContentPolicy contentPolicy, HarMode mode, Path resourcesDir) {
     if (contentPolicy == null) {
       contentPolicy = HarContentPolicy.ATTACH;
@@ -263,14 +271,14 @@ class TracingImpl extends ChannelOwner implements Tracing {
       params.add("page", page.toProtocolRef());
     }
     JsonObject recordHarArgs = new JsonObject();
-    recordHarArgs.addProperty("zip", har.toString().endsWith(".zip"));
+    recordHarArgs.addProperty("zip", isZip(har));
     recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
     recordHarArgs.addProperty("mode", mode.name().toLowerCase());
     addHarUrlFilter(recordHarArgs, urlFilter);
     if (resourcesDir != null) {
       recordHarArgs.addProperty("resourcesDir", resourcesDir.toString());
     }
-    if (!har.toString().endsWith(".zip")) {
+    if (!isZip(har)) {
       recordHarArgs.addProperty("harPath", har.toString());
     }
 
@@ -287,7 +295,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
       return;
     }
     boolean isLocal = !connection.isRemote;
-    boolean isZip = harParams.path.toString().endsWith(".zip");
+    boolean isZip = isZip(harParams.path);
 
     JsonObject params = new JsonObject();
     params.addProperty("harId", harId);

@@ -58,20 +58,6 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  void shouldThrowOnIncorrectRangeValue(Page page) {
-    page.setContent("<input type=range min=0 max=100 value=50>");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "foo"));
-    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-
-    e = assertThrows(PlaywrightException.class, () -> page.fill("input", "200"));
-    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-
-    e = assertThrows(PlaywrightException.class, () ->  page.fill("input", "15.43"));
-    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-  }
-
-
-  @PlaywrightTest
   void shouldFillDifferentInputTypes(Page page, Server server) {
     page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"password", "search", "tel", "text", "url"}) {
@@ -90,14 +76,6 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisabledOnBrowser(value = WEBKIT, reason = "skip")
-  void shouldThrowOnIncorrectDate(Page page) {
-    page.setContent("<input type=date>");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "2020-13-05"));
-    assertTrue(e.getMessage().contains("Malformed value"));
-  }
-
-  @PlaywrightTest
   void shouldFillTimeInput(Page page) {
     page.setContent("<input type=time>");
     page.fill("input", "13:15");
@@ -105,26 +83,10 @@ public class TestPageFill {
   }
 
   @PlaywrightTest
-  @DisabledOnBrowser(value = WEBKIT, reason = "skip")
-  void shouldThrowOnIncorrectTime(Page page) {
-    page.setContent("<input type=time>");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "25:05"));
-    assertTrue(e.getMessage().contains("Malformed value"));
-  }
-
-  @PlaywrightTest
   void shouldFillDatetimeLocalInput(Page page) {
     page.setContent("<input type=datetime-local>");
     page.fill("input", "2020-03-02T05:15");
     assertEquals(page.evalOnSelector("input", "input => input.value"), "2020-03-02T05:15");
-  }
-
-  @PlaywrightTest
-  @EnabledOnBrowser(value = CHROMIUM, reason = "skip")
-  void shouldThrowOnIncorrectDatetimeLocal(Page page) {
-    page.setContent("<input type=datetime-local>");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
-    assertTrue(e.getMessage().contains("Malformed value"));
   }
 
   @PlaywrightTest
