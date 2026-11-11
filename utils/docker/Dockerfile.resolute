@@ -14,6 +14,8 @@ ENV LC_ALL=C.UTF-8
 RUN find /etc/apt -type f \( -name '*.list' -o -name '*.sources' \) \
       -exec sed -i "s|http://archive.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}archive.ubuntu.com|g; s|http://ports.ubuntu.com|http://${UBUNTU_MIRROR_PREFIX}ports.ubuntu.com|g" {} + && \
     apt-get update && \
+    # Pick up security fixes that the base image does not have yet.
+    apt-get upgrade -y -o Acquire::Retries=0 && \
     apt-get install -y --no-install-recommends openjdk-25-jdk \
     # Ubuntu 26.04 ships Maven 3.9.12
     maven \
