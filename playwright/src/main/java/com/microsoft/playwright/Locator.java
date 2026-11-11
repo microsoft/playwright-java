@@ -2586,7 +2586,9 @@ public interface Locator {
    * <p> An AI-optimized snapshot, controlled by {@code mode}, is different from a default snapshot:
    * <ol>
    * <li> Includes element references {@code [ref=e2]}. 2. Does not wait for an element matching the locator, and throws when no
-   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target.</li>
+   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target. 4. Can omit names that repeat printed
+   * descendants, such as a heading containing a link. Names that identify dialogs, landmarks, groups, tables and table
+   * headers are retained.</li>
    * </ol>
    *
    * @since v1.49
@@ -2623,7 +2625,9 @@ public interface Locator {
    * <p> An AI-optimized snapshot, controlled by {@code mode}, is different from a default snapshot:
    * <ol>
    * <li> Includes element references {@code [ref=e2]}. 2. Does not wait for an element matching the locator, and throws when no
-   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target.</li>
+   * elements match. 3. Includes snapshots of {@code <iframe>}s inside the target. 4. Can omit names that repeat printed
+   * descendants, such as a heading containing a link. Names that identify dialogs, landmarks, groups, tables and table
+   * headers are retained.</li>
    * </ol>
    *
    * @since v1.49

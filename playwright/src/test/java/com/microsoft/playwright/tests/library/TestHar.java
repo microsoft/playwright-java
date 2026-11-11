@@ -307,7 +307,6 @@ public class TestHar {
 
   @PlaywrightTest
   @DisplayName("HA-015 should include set-cookies without equals sign as nameless")
-  @Fixme("driver: the HAR has {\"name\":\"token\",\"value\":\"\"} for the cookie \"token; HttpOnly\"; the fix for https://github.com/microsoft/playwright/issues/43155 is newer than the bundled driver 1.64.1")
   void shouldIncludeSetCookiesWithoutEqualsSignAsNameless(PageWithHar pageWithHar, TestServer server) {
     PageWithHar.Result harSession = pageWithHar.create();
     server.setRoute("/empty.html", (req, res) -> {
@@ -432,7 +431,6 @@ public class TestHar {
 
   @PlaywrightTest
   @DisplayName("HA-113 should store binary content with a textual mime type as base64")
-  @Fixme("driver: response.content has no \"encoding\": \"base64\" for a binary body with a textual mime type; the fix for https://github.com/microsoft/playwright/issues/43493 is newer than the bundled driver 1.64.1")
   @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: WebKit decodes the body of a textual resource before it gets to us")
   void shouldStoreBinaryContentWithATextualMimeTypeAsBase64(PageWithHar pageWithHar, TestServer server, BrowserName browserName) {
     byte[] body = new byte[]{(byte) 0x80, (byte) 0xc3, 0x28, (byte) 0xff, 0x41};
@@ -993,7 +991,6 @@ public class TestHar {
 
   @PlaywrightTest
   @DisplayName("HA-052 should record nameless API request cookies")
-  @Fixme("driver: the API request HAR has {\"name\":\"nameless\",\"value\":\"\"} for the cookie header \"nameless; other=val\"; the fix for https://github.com/microsoft/playwright/issues/43155 is newer than the bundled driver 1.64.1")
   void shouldRecordNamelessAPIRequestCookies(ContextFactory contextFactory, TestServer server, TestInfo testInfo) throws IOException {
     BrowserContext context = contextFactory.newContext();
     Path harPath = testInfo.outputPath("request.har");

@@ -912,6 +912,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       browser.contexts.remove(this);
       browser.browserType.playwright.selectors.contextsForSelectors.remove(this);
     }
+    tracing.resetStackCounter();
+    request.tracing().resetStackCounter();
     listeners.notify(EventType.CLOSE, this);
   }
 
@@ -945,7 +947,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       contentPolicy = HarContentPolicy.OMIT;
     }
     if (contentPolicy == null) {
-      contentPolicy = options.recordHarPath.toString().endsWith(".zip") ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+      contentPolicy = TracingImpl.isZip(options.recordHarPath) ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
     }
     RouteFromHAROptions routeFromHAROptions = new RouteFromHAROptions();
 

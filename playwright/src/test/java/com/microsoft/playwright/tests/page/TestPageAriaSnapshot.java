@@ -150,7 +150,6 @@ public class TestPageAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-008 should not snapshot text directly inside closed details")
-  @Fixme("driver: the bundled driver includes text inside closed details, snapshot is - group: Summary Details")
   void shouldNotSnapshotTextDirectlyInsideClosedDetails(Page page) {
 
     page.setContent("\n" +
@@ -172,7 +171,6 @@ public class TestPageAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-009 should not snapshot text that is not assigned to a slot")
-  @Fixme("driver: the bundled driver includes text not assigned to a slot, snapshot is - button \"Light Shadow\": - text: Light - paragraph: Shadow")
   void shouldNotSnapshotTextThatIsNotAssignedToASlot(Page page) {
 
     page.setContent("\n" +
@@ -729,7 +727,6 @@ public class TestPageAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-031 should escape special yaml values")
-  @Fixme("driver: the bundled driver does not quote the special yaml values ~ and .NaN, it prints - text: ~ and - text: .NaN")
   void shouldEscapeSpecialYamlValues(Page page) {
     page.setContent("\n" +
         "    <a href=\"#\">true</a>False\n" +

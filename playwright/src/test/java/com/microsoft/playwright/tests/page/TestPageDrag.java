@@ -286,7 +286,6 @@ public class TestPageDrag {
 
     @PlaywrightTest
     @DisplayName("DD-028 should report the default drop effect from effectAllowed")
-    @Fixme(value = "driver: the bundled WebKit reports the dropEffect 'copyMove' instead of 'move' (expected: <move> but was: <copyMove>)", browsers = BrowserName.WEBKIT)
     void shouldReportTheDefaultDropEffectFromEffectAllowed(Page page, BrowserName browserName) {
       assumeFalse(browserName == BrowserName.WEBKIT && Env.isLinux && Env.headed(), "fixme: https://github.com/microsoft/playwright/issues/21646");
 

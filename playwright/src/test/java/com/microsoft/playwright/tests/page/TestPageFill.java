@@ -83,7 +83,6 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-005 should fill range input")
-  @Fixme(value = "driver: the driver (1.64.1) predates the upstream fix of issue 43328: page.fill(\"input\", \"42.0\") on input[type=range] fails with \"Error: Malformed value\"", browsers = {BrowserName.CHROMIUM, BrowserName.WEBKIT})
   void shouldFillRangeInput(Page page) {
     page.setContent("<input type=range min=0 max=100 value=50>");
     page.fill("input", "42");
@@ -205,8 +204,6 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-013 should fill datetime-local input")
-  @Fixme(value = "driver: the driver (1.64.1) predates the upstream fix of issue 43370: page.fill on input[type=datetime-local] fails with \"Error: Malformed value\"", browsers = {BrowserName.CHROMIUM, BrowserName.FIREFOX})
-  @Fixme(value = "driver: the driver (1.64.1) predates the upstream fix of issue 43370: page.fill on input[type=datetime-local] fails with \"Error: Malformed value\"", browsers = BrowserName.WEBKIT, os = {OS.LINUX, OS.MAC})
   void shouldFillDatetimeLocalInput(Page page, TestServer server, BrowserName browserName) {
     page.setContent("<input type=datetime-local>");
     page.fill("input", "2020-03-02T05:15");
@@ -324,7 +321,6 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-025 should be able to fill when focus is in the wrong frame")
-  @Fixme("driver: the driver (1.64.1) predates the upstream fix of issue 43483: after page.focus(iframe) the fill of the paragraph in the frame leaves the text \"old\" (expected \"new\")")
   void shouldBeAbleToFillWhenFocusIsInTheWrongFrame(Page page) {
     page.setContent("\n" +
       "    <div contentEditable=\"true\"></div>\n" +
@@ -425,7 +421,6 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-036 should fail with a nice error on inert element")
-  @Fixme("driver: the driver (1.64.1) predates the upstream fix of issue 42967: page.fill on an inert element does not time out")
   void shouldFailWithANiceErrorOnInertElement(Page page) {
     page.setContent("<div inert><input></div>");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.fill("input", "some value", new Page.FillOptions().setTimeout(1000)));

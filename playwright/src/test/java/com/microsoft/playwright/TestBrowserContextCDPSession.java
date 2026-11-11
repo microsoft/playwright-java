@@ -46,6 +46,23 @@ public class TestBrowserContextCDPSession {
   }
 
   @PlaywrightTest
+  void shouldRespectTimeoutOption(Page page) {
+    CDPSession cdpSession = page.context().newCDPSession(page);
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", "1 + 2");
+    params.addProperty("returnByValue", true);
+    JsonObject response = cdpSession.send("Runtime.evaluate", params, new CDPSession.SendOptions().setTimeout(5000));
+    assertEquals(3, response.getAsJsonObject("result").get("value").getAsInt());
+
+    JsonObject pending = new JsonObject();
+    pending.addProperty("expression", "new Promise(() => {})");
+    pending.addProperty("awaitPromise", true);
+    TimeoutError error = assertThrows(TimeoutError.class,
+      () -> cdpSession.send("Runtime.evaluate", pending, new CDPSession.SendOptions().setTimeout(500)));
+    assertTrue(error.getMessage().contains("Timeout 500ms exceeded"), error.getMessage());
+  }
+
+  @PlaywrightTest
   void shouldSendEvents(Page page, Server server) {
     CDPSession cdpSession = page.context().newCDPSession(page);
     cdpSession.send("Network.enable");

@@ -396,7 +396,6 @@ public class TestPageClick {
 
   @PlaywrightTest
   @DisplayName("CL-033 should not wait for navigation after clicking a link answered with 204")
-  @Fixme(value = "driver: the bundled driver 1.64.1 waits for scheduled navigations after the click and fails with 'Timeout 5000ms exceeded.' (upstream issue 43279)", browsers = BrowserName.CHROMIUM)
   void shouldNotWaitForNavigationAfterClickingALinkAnsweredWith204(Page page, TestServer server) {
     server.setRoute("/204", (req, res) -> {
       res.statusCode = 204;

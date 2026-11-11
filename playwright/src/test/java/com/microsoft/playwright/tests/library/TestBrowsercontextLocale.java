@@ -198,7 +198,6 @@ public class TestBrowsercontextLocale {
 
   @PlaywrightTest
   @DisplayName("LC-010 should propagate locale to workers")
-  @Fixme(value = "driver: 1.64.1 does not apply the locale to dedicated workers in Chromium (navigator.languages is 'languages:en-US' instead of 'languages:ru-RU'), fixed by microsoft/playwright#43488", browsers = BrowserName.CHROMIUM)
   void shouldPropagateLocaleToWorkers(Browser browser, BrowserName browserName, TestServer server) throws Exception {
     // issue: https://github.com/microsoft/playwright/issues/43484
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("ru-RU"));

@@ -93,7 +93,6 @@ public class TestEmulationCoop {
   class EmulationWithCOOP {
     @PlaywrightTest
     @DisplayName("EM-025 should preserve context options")
-    @Fixme(value = "driver: Firefox 157 of driver 1.64.1 loses the emulation overrides after a COOP navigation (the /coop.html result differs from /plain.html), fixed by the Firefox roll to r1564, microsoft/playwright#43494", browsers = BrowserName.FIREFOX)
     void shouldPreserveContextOptions(Browser browser, TestServer server) {
       setupRoutes(server);
       Browser.NewContextOptions options = new Browser.NewContextOptions()
@@ -123,7 +122,6 @@ public class TestEmulationCoop {
 
     @PlaywrightTest
     @DisplayName("EM-026 should preserve page.emulateMedia")
-    @Fixme(value = "driver: Firefox 157 of driver 1.64.1 loses the emulation overrides after a COOP navigation (the /coop.html result differs from /plain.html), fixed by the Firefox roll to r1564, microsoft/playwright#43494", browsers = BrowserName.FIREFOX)
     void shouldPreservePageEmulateMedia(Browser browser, TestServer server) {
       setupRoutes(server);
       Page.EmulateMediaOptions media = new Page.EmulateMediaOptions()
@@ -144,7 +142,6 @@ public class TestEmulationCoop {
 
     @PlaywrightTest
     @DisplayName("EM-027 should preserve mobile emulation")
-    @Fixme(value = "driver: Firefox 157 of driver 1.64.1 loses the emulation overrides after a COOP navigation (the /coop.html result differs from /plain.html), fixed by the Firefox roll to r1564, microsoft/playwright#43494", browsers = BrowserName.FIREFOX)
     void shouldPreserveMobileEmulation(Browser browser, TestServer server) {
       setupRoutes(server);
       Browser.NewContextOptions options = new Browser.NewContextOptions()

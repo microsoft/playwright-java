@@ -214,7 +214,7 @@ public class TestGlobalFetch {
     request.addCookies(asList(
       new Cookie("a", "b").setDomain("localhost").setPath("/"),
       new Cookie("c", "d").setDomain("localhost").setPath("/input"),
-      new Cookie("e", "f").setDomain("one.com").setPath("/"),
+      new Cookie("e", "f").setDomain(".one.com").setPath("/"),
       new Cookie("g", "h").setDomain("two.com").setPath("/").setSecure(true)));
     assertEquals(asList("a", "c", "e", "g"), cookieNames(request.cookies()));
     assertEquals(asList("a"), cookieNames(request.cookies(server.EMPTY_PAGE)));

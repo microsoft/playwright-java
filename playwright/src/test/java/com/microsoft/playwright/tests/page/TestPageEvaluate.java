@@ -358,7 +358,6 @@ public class TestPageEvaluate {
 
   @PlaywrightTest
   @DisplayName("EV-037 should work with overwritten Promise")
-  @Fixme(value = "java: evaluateHandle of a promise of the overwritten Promise class is not awaited, jsonValue() is <{_promise={}}> instead of 42", browsers = {BrowserName.FIREFOX, BrowserName.WEBKIT})
   void shouldWorkWithOverwrittenPromise(Page page) {
     page.evaluate("() => {\n" +
       "    const originalPromise = window.Promise;\n" +

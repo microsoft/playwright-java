@@ -462,7 +462,6 @@ public class TestPageAriaSnapshotAi {
 
   @PlaywrightTest
   @DisplayName("AR-063 should keep the name when the contributing wrapper collapses into repeating text")
-  @Fixme("driver: the bundled driver drops the names of the buttons, snapshot has - button [ref=e7] and - button [ref=e10] instead of \"New survey\" and \"Edit survey\"")
   void shouldKeepTheNameWhenTheContributingWrapperCollapsesIntoRepeatingText(Page page) {
     // The outer span is marked as represented while it still wraps the icon. Once the nameless
     // image is dropped, the span collapses into a lone text repeating the button's name and removes

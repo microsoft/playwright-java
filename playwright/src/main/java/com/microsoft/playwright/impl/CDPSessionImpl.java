@@ -65,13 +65,15 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     return send(method, null);
   }
 
-  public JsonObject send(String method, JsonObject params) {
+  @Override
+  public JsonObject send(String method, JsonObject params, SendOptions options) {
     JsonObject args = new JsonObject();
     if (params != null) {
       args.add("params", params);
     }
     args.addProperty("method", method);
-    JsonElement response = connection.sendMessage(guid, "send", args);
+    Double timeout = options == null || options.timeout == null ? Double.valueOf(0) : options.timeout;
+    JsonElement response = connection.sendMessage(guid, "send", args, timeout);
     if (response == null) return null;
     else return response.getAsJsonObject().get("result").getAsJsonObject();
   }

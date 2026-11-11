@@ -203,7 +203,6 @@ public class TestPageEventRequest {
 
   @PlaywrightTest
   @DisplayName("NE-103 should fail 204 navigation request")
-  @Fixme(value = "driver: the driver 1.64.1 reports requestfinished for the 204 navigation request, the test expects requestfailed", browsers = BrowserName.CHROMIUM)
   void shouldFail204NavigationRequest(Page page, TestServer server) throws Exception {
     server.setRoute("/204", (req, res) -> {
       res.statusCode = 204;

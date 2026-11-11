@@ -459,7 +459,7 @@ CR-034      Calls browserType.launchServer(), which is not in the Java API.
 CR-043      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
 CR-044      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
 # library/chromium/session
-CD-038      Passes the timeout and signal (AbortController) options to cdpSession.send(), which the Java CDPSession.send() does not have.
+CD-038      Passes the signal (AbortController) option to cdpSession.send(), which the Java CDPSession.send() does not have; TestBrowserContextCDPSession covers the timeout option.
 CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.
 CD-041      page.coverage (startJSCoverage/stopJSCoverage) is JavaScript-only; it is not in the Java API.
 CD-043      Checks error.stack, the Node.js stack of the error, for the calling function name.

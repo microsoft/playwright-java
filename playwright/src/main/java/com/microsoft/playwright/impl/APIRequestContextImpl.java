@@ -100,6 +100,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     disposeReason = options.reason;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("dispose", params, NO_TIMEOUT);
+    tracing.resetStackCounter();
   }
 
   @Override
@@ -200,7 +201,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     }
     for (Map.Entry<String, String> e : headers.entrySet()) {
       if ("content-type".equalsIgnoreCase(e.getKey())) {
-        return "application/json".equals(e.getValue());
+        return "application/json".equals(e.getValue().split(";", -1)[0].trim().toLowerCase());
       }
     }
     return false;

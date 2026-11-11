@@ -307,7 +307,6 @@ public class TestBrowsercontextHar {
 
   @PlaywrightTest
   @DisplayName("HA-085 should round-trip har.zip")
-  @Fixme("driver: a record HAR path with the upper case extension .ZIP is written as JSON instead of a zip; the fix for https://github.com/microsoft/playwright/issues/43503 is newer than the bundled driver 1.64.1")
   void shouldRoundTripHarZip(ContextFactory contextFactory, TestServer server, TestInfo testInfo) throws IOException {
     Path harPath = testInfo.outputPath("har.ZIP");
     BrowserContext context1 = contextFactory.newContext(new Browser.NewContextOptions().setRecordHarMode(HarMode.MINIMAL).setRecordHarPath(harPath));

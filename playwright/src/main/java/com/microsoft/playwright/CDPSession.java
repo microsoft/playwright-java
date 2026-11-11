@@ -59,6 +59,20 @@ public interface CDPSession {
    */
   void offClose(Consumer<CDPSession> handler);
 
+  class SendOptions {
+    /**
+     * Maximum time in milliseconds to wait for the response. Defaults to {@code 0} - no timeout.
+     */
+    public @Nullable Double timeout;
+
+    /**
+     * Maximum time in milliseconds to wait for the response. Defaults to {@code 0} - no timeout.
+     */
+    public SendOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   /**
    * Detaches the CDPSession from the target. Once detached, the CDPSession object won't emit any events and can't be used to
    * send messages.
@@ -66,6 +80,16 @@ public interface CDPSession {
    * @since v1.8
    */
   void detach();
+  /**
+   *
+   *
+   * @param method Protocol method name.
+   * @param args Optional method parameters.
+   * @since v1.8
+   */
+  default JsonObject send(String method, @Nullable JsonObject args) {
+    return send(method, args, null);
+  }
   /**
    *
    *
@@ -82,7 +106,7 @@ public interface CDPSession {
    * @param args Optional method parameters.
    * @since v1.8
    */
-  JsonObject send(String method, @Nullable JsonObject args);
+  JsonObject send(String method, @Nullable JsonObject args, @Nullable SendOptions options);
   /**
    * Register an event handler for events with the specified event name. The given handler will be called for every event
    * with the given name.

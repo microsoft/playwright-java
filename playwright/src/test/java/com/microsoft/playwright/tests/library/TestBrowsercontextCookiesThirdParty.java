@@ -377,7 +377,6 @@ public class TestBrowsercontextCookiesThirdParty {
 
   @PlaywrightTest
   @DisplayName("CO-054 third party 'Partitioned;' cookies")
-  @Fixme(value = "driver: the Firefox build of the bundled driver partitions the third-party cookie, upstream expects the Juggler build not to", browsers = BrowserName.FIREFOX)
   void thirdPartyPartitionedCookies(Page page, BrowserName browserName, HttpsTestServer httpsServer, WebkitPartitions webkitPartitions, TestUrls urls) {
     runPartitionedTest(page, httpsServer, browserName, Env.isMac, webkitPartitions.value, Env.isBidi(), urls);
   }
@@ -608,7 +607,7 @@ public class TestBrowsercontextCookiesThirdParty {
 
   @PlaywrightTest
   @DisplayName("CO-058 top level 'Partitioned;' cookie and same origin iframe")
-  @Fixme(value = "chromium: java: the Cookie class has no _crHasCrossSiteAncestor property, so the cookies() / addCookies() round trip gives 'Received cookie: top-level-non-partitioned=value' instead of '...; top-level=value'; firefox: driver: firefox r1555 of driver 1.64.1 does not send the top-level 'Partitioned' cookie to the nested iframe (expects r1564, upstream #43494): 'Received cookie: top-level-non-partitioned=value'", browsers = {BrowserName.CHROMIUM, BrowserName.FIREFOX})
+  @Fixme(value = "java: the Cookie class has no _crHasCrossSiteAncestor property, so the cookies() / addCookies() round trip gives 'Received cookie: top-level-non-partitioned=value' instead of '...; top-level=value'", browsers = BrowserName.CHROMIUM)
   void topLevelPartitionedCookieAndSameOriginIframe(Page page, BrowserName browserName, HttpsTestServer httpsServer, Browser browser, ContextFactory contextFactory, TestUrls urls) {
     boolean isBidi = Env.isBidi();
     addCommonCookieHandlers(httpsServer, urls);
