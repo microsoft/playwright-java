@@ -25,8 +25,8 @@ CURRENT_VERSION=$(head -1 ./DRIVER_VERSION)
 echo "Rolling driver from $CURRENT_VERSION to $NEW_VERSION"
 
 echo $NEW_VERSION > ./DRIVER_VERSION
-# Download even when the driver version is unchanged: the driver bundles the latest release
-# of the Node.js major version pinned in NODE_VERSION.
+# Each roll also moves the driver to the latest Node.js release of the pinned major version.
+./roll_node.sh
 ./download_driver.sh
 
 ./generate_api.sh

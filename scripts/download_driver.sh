@@ -11,7 +11,7 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo "This script downloads and assembles the Playwright driver for all platforms."
   echo "The platform-independent 'playwright-core' npm package is assembled once into the driver"
   echo "module ('driver/src/main/resources/driver/package'), and the Node.js binary from"
-  echo "https://nodejs.org (major version pinned in scripts/NODE_VERSION) for each platform goes"
+  echo "https://nodejs.org (version pinned in scripts/NODE_VERSION) for each platform goes"
   echo "into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>'), the"
   echo "same way the upstream Playwright build does it."
   echo ""
@@ -49,18 +49,8 @@ npm_at_root() {
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-# scripts/NODE_VERSION pins the Node.js major version, like ARG NODE_VERSION in the upstream
-# Docker images. Use the latest release of that major version.
-NODE_MAJOR_VERSION=$(head -1 ./NODE_VERSION)
-# The checksum list of the latest release names every file after the release, e.g.
-#   d38bd5e5...  node-v26.13.0-darwin-arm64.tar.gz
-SHASUMS="$TMP_DIR/SHASUMS256.txt"
-download "https://nodejs.org/dist/latest-v$NODE_MAJOR_VERSION.x/SHASUMS256.txt" "$SHASUMS"
-NODE_VERSION=$(sed -nE 's/.*node-v([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/p' "$SHASUMS" | head -1)
-if [[ -z "$NODE_VERSION" ]]; then
-  echo "Failed to determine the latest Node.js $NODE_MAJOR_VERSION.x version"
-  exit 1
-fi
+# scripts/NODE_VERSION pins the exact Node.js version. scripts/roll_node.sh updates it.
+NODE_VERSION=$(head -1 ./NODE_VERSION)
 
 echo "Driver version:  $DRIVER_VERSION"
 echo "Node.js version: $NODE_VERSION"
