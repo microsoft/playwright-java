@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,6 +42,7 @@ import static java.util.Arrays.asList;
 public class PageImpl extends ChannelOwner implements Page {
   final BrowserContextImpl browserContext;
   private final FrameImpl mainFrame;
+  final PageChannel channel;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
@@ -135,6 +137,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (initializer.has("viewportSize")) {
       viewport = gson().fromJson(initializer.get("viewportSize"), ViewportSize.class);
     }
+    channel = new PageChannel(this);
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
@@ -577,13 +580,11 @@ public class PageImpl extends ChannelOwner implements Page {
       if (ownedContext != null) {
         ownedContext.close();
       } else if (options.runBeforeUnload != null && options.runBeforeUnload) {
-        sendMessage("runBeforeUnload", new JsonObject(), NO_TIMEOUT);
+        channel.runBeforeUnload(NO_TIMEOUT);
       } else {
-        JsonObject params = new JsonObject();
-        if (options.reason != null) {
-          params.addProperty("reason", options.reason);
-        }
-        sendMessage("close", params, NO_TIMEOUT);
+        PageCloseParams params = new PageCloseParams();
+        params.reason = options.reason;
+        channel.close(params, NO_TIMEOUT);
       }
     } catch (PlaywrightException exception) {
       if (isSafeCloseError(exception) && (options.runBeforeUnload == null || !options.runBeforeUnload)) {
@@ -606,13 +607,8 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<Request> requests() {
-    JsonObject json = sendMessage("requests", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    JsonArray requests = json.getAsJsonArray("requests");
-    List<Request> result = new ArrayList<>();
-    for (JsonElement item : requests) {
-      result.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
-    }
-    return result;
+    PageRequestsResult json = channel.requests(NO_TIMEOUT);
+    return new ArrayList<Request>(json.requests);
   }
 
   @Override
@@ -628,14 +624,13 @@ public class PageImpl extends ChannelOwner implements Page {
       return;
     }
     AddLocatorHandlerOptions finalOptions = options;
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", locatorImpl.selector);
+    PageRegisterLocatorHandlerParams params = new PageRegisterLocatorHandlerParams();
+    params.selector = locatorImpl.selector;
     if (finalOptions.noWaitAfter != null && finalOptions.noWaitAfter) {
-      params.addProperty("noWaitAfter", true);
+      params.noWaitAfter = true;
     }
-    params.addProperty("selector", locatorImpl.selector);
-    JsonObject json = (JsonObject) sendMessage("registerLocatorHandler", params, NO_TIMEOUT);
-    int uid = json.get("uid").getAsInt();
+    PageRegisterLocatorHandlerResult json = channel.registerLocatorHandler(params, NO_TIMEOUT);
+    int uid = json.uid;
     locatorHandlers.put(uid, new LocatorHandler(locator, handler, finalOptions.times));
   }
 
@@ -644,10 +639,10 @@ public class PageImpl extends ChannelOwner implements Page {
     for (Map.Entry<Integer, LocatorHandler> entry: locatorHandlers.entrySet()) {
       if (entry.getValue().locator.equals(locator)) {
         locatorHandlers.remove(locator);
-        JsonObject params = new JsonObject();
-        params.addProperty("uid", entry.getKey());
+        PageUnregisterLocatorHandlerParams params = new PageUnregisterLocatorHandlerParams();
+        params.uid = entry.getKey();
         try {
-          sendMessage("unregisterLocatorHandler", params, NO_TIMEOUT);
+          channel.unregisterLocatorHandler(params, NO_TIMEOUT);
         } catch (PlaywrightException e) {
         }
       }
@@ -663,9 +658,9 @@ public class PageImpl extends ChannelOwner implements Page {
       if (remove) {
         locatorHandlers.remove(uid);
       }
-      JsonObject params = new JsonObject();
-      params.addProperty("uid", uid);
-      params.addProperty("remove", remove);
+      PageResolveLocatorHandlerNoReplyParams params = new PageResolveLocatorHandlerNoReplyParams();
+      params.uid = uid;
+      params.remove = remove;
       sendMessageAsync("resolveLocatorHandlerNoReply", params);
     }
   }
@@ -675,9 +670,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject result = mainFrame.sendMessage("ariaSnapshot", params, mainFrame.timeout(options.timeout)).getAsJsonObject();
-    return result.get("snapshot").getAsString();
+    FrameAriaSnapshotParams params = toProtocol(options, FrameAriaSnapshotParams.class);
+    return mainFrame.channel.ariaSnapshot(params, mainFrame.timeout(options.timeout)).snapshot;
   }
 
   @Override
@@ -708,10 +702,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private AutoCloseable addInitScriptImpl(String script) {
-    JsonObject params = new JsonObject();
-    params.addProperty("source", script);
-    JsonObject result = sendMessage("addInitScript", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    PageAddInitScriptParams params = new PageAddInitScriptParams();
+    params.source = script;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -726,7 +719,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void bringToFront() {
-    sendMessage("bringToFront");
+    channel.bringToFront(NO_TIMEOUT);
   }
 
   @Override
@@ -768,8 +761,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new EmulateMediaOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("emulateMedia", params, NO_TIMEOUT);
+    PageEmulateMediaParams params = toProtocol(options, PageEmulateMediaParams.class);
+    channel.emulateMedia(params, NO_TIMEOUT);
   }
 
   @Override
@@ -796,10 +789,9 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     bindings.put(name, playwrightBinding);
 
-    JsonObject params = new JsonObject();
-    params.addProperty("name", name);
-    JsonObject result = sendMessage("exposeBinding", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("disposable").get("guid").getAsString());
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    return channel.exposeBinding(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -945,12 +937,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoBackOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("goBack", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageGoBackParams params = toProtocol(options, PageGoBackParams.class);
+    return channel.goBack(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
@@ -962,17 +950,13 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoForwardOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("goForward", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageGoForwardParams params = toProtocol(options, PageGoForwardParams.class);
+    return channel.goForward(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
   public void requestGC() {
-    sendMessage("requestGC");
+    channel.requestGC(NO_TIMEOUT);
   }
 
   @Override
@@ -1050,33 +1034,37 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options) {
-    JsonObject params = options != null ? gson().toJsonTree(options).getAsJsonObject() : new JsonObject();
-    JsonObject json = sendMessage("consoleMessages", params, NO_TIMEOUT).getAsJsonObject();
-    JsonArray messages = json.getAsJsonArray("messages");
+    PageConsoleMessagesParams params = toProtocol(options, PageConsoleMessagesParams.class);
+    PageConsoleMessagesResult json = channel.consoleMessages(params, NO_TIMEOUT);
     List<ConsoleMessage> result = new ArrayList<>();
-    for (JsonElement item : messages) {
-      result.add(new ConsoleMessageImpl(connection, item.getAsJsonObject(), this, null));
+    for (PageConsoleMessagesResult.PageConsoleMessagesResultMessages item : json.messages) {
+      result.add(new ConsoleMessageImpl(this, item));
     }
     return result;
   }
 
   @Override
   public void clearConsoleMessages() {
-    sendMessage("clearConsoleMessages", new JsonObject(), NO_TIMEOUT);
+    channel.clearConsoleMessages(NO_TIMEOUT);
   }
 
   @Override
   public void clearPageErrors() {
-    sendMessage("clearPageErrors", new JsonObject(), NO_TIMEOUT);
+    channel.clearPageErrors(NO_TIMEOUT);
   }
 
   @Override
   public List<String> pageErrors() {
-    JsonObject json = sendMessage("pageErrors", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    JsonArray errors = json.getAsJsonArray("errors");
+    PagePageErrorsResult json = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
     List<String> result = new ArrayList<>();
-    for (JsonElement item : errors) {
-      String errorStr = parseError(item.getAsJsonObject());
+    for (SerializedError item : json.errors) {
+      String errorStr = "";
+      if (item.error != null) {
+        errorStr = item.error.name + ": " + item.error.message;
+        if (item.error.stack != null && !item.error.stack.isEmpty()) {
+          errorStr += "\n" + item.error.stack;
+        }
+      }
       result.add(errorStr);
     }
     return result;
@@ -1099,7 +1087,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void hideHighlight() {
-    sendMessage("hideHighlight", new JsonObject(), NO_TIMEOUT);
+    channel.hideHighlight(NO_TIMEOUT);
   }
 
   @Override
@@ -1117,13 +1105,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void cancelPickLocator() {
-    sendMessage("cancelPickLocator", new JsonObject(), NO_TIMEOUT);
+    channel.cancelPickLocator(NO_TIMEOUT);
   }
 
   @Override
   public Locator pickLocator() {
-    JsonObject result = sendMessage("pickLocator", new JsonObject(), NO_TIMEOUT).getAsJsonObject();
-    return new LocatorImpl(mainFrame, result.get("selector").getAsString(), null);
+    PagePickLocatorResult result = channel.pickLocator(NO_TIMEOUT);
+    return new LocatorImpl(mainFrame, result.selector, null);
   }
 
   @Override
@@ -1150,10 +1138,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new PdfOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonObject json = sendMessage("pdf", params, NO_TIMEOUT).getAsJsonObject();
-    byte[] buffer = Base64.getDecoder().decode(json.get("pdf").getAsString());
+    PagePdfParams params = toProtocol(options, PagePdfParams.class);
+    byte[] buffer = channel.pdf(params, NO_TIMEOUT).pdf;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);
     }
@@ -1179,12 +1165,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = sendMessage("reload", params, timeoutSettings.navigationTimeout(options.timeout)).getAsJsonObject();
-    if (json.has("response")) {
-      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
-    }
-    return null;
+    PageReloadParams params = toProtocol(options, PageReloadParams.class);
+    return channel.reload(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
   @Override
@@ -1280,11 +1262,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options.type == null && options.path != null) {
       options.type = Utils.screenshotTypeForPath(options.path);
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonObject json = sendMessage("screenshot", params, timeoutSettings.timeout(options.timeout)).getAsJsonObject();
-
-    byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());
+    PageScreenshotParams params = toProtocol(this, options, PageScreenshotParams.class);
+    byte[] buffer = channel.screenshot(params, timeoutSettings.timeout(options.timeout)).binary;
     if (options.path != null) {
       Utils.writeToFile(buffer, options.path);
     }
@@ -1323,16 +1302,15 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    JsonObject params = new JsonObject();
-    JsonArray jsonHeaders = new JsonArray();
+    PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
+    params.headers = new ArrayList<>();
     for (Map.Entry<String, String> e : headers.entrySet()) {
-      JsonObject header = new JsonObject();
-      header.addProperty("name", e.getKey());
-      header.addProperty("value", e.getValue());
-      jsonHeaders.add(header);
+      NameValue header = new NameValue();
+      header.name = e.getKey();
+      header.value = e.getValue();
+      params.headers.add(header);
     }
-    params.add("headers", jsonHeaders);
-    sendMessage("setExtraHTTPHeaders", params, NO_TIMEOUT);
+    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
   @Override
@@ -1358,9 +1336,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void setViewportSize(int width, int height) {
     viewport = new ViewportSize(width, height);
-    JsonObject params = new JsonObject();
-    params.add("viewportSize", gson().toJsonTree(viewport));
-    sendMessage("setViewportSize", params, NO_TIMEOUT);
+    PageSetViewportSizeParams params = new PageSetViewportSizeParams();
+    params.viewportSize = new PageSetViewportSizeParams.PageSetViewportSizeParamsViewportSize();
+    params.viewportSize.width = width;
+    params.viewportSize.height = height;
+    channel.setViewportSize(params, NO_TIMEOUT);
   }
 
   @Override
@@ -1435,11 +1415,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void updateInterceptionPatterns() {
-    sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns(), NO_TIMEOUT);
+    channel.setNetworkInterceptionPatterns(
+      connection.protocolGson().fromJson(routes.interceptionPatterns(), PageSetNetworkInterceptionPatternsParams.class), NO_TIMEOUT);
   }
 
   private void updateWebSocketInterceptionPatterns() {
-    sendMessage("setWebSocketInterceptionPatterns", webSocketRoutes.interceptionPatterns(), NO_TIMEOUT);
+    channel.setWebSocketInterceptionPatterns(
+      connection.protocolGson().fromJson(webSocketRoutes.interceptionPatterns(), PageSetWebSocketInterceptionPatternsParams.class), NO_TIMEOUT);
   }
 
   @Override

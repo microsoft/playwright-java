@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
@@ -31,7 +32,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SelectorsImpl extends LoggingSupport implements Selectors {
   protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
-  protected final List<JsonObject> selectorEngines = new ArrayList<>();
+  protected final List<SelectorEngine> selectorEngines = new ArrayList<>();
 
   String testIdAttributeName = "data-testid";
 
@@ -43,8 +44,8 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
     testIdAttributeName = attributeName;
     for (BrowserContextImpl context : contextsForSelectors) {
       try {
-        JsonObject params = new JsonObject();
-        params.addProperty("testIdAttributeName", attributeName);
+        BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
+        params.testIdAttributeName = attributeName;
         context.sendMessageAsync("setTestIdAttributeName", params);
       } catch (PlaywrightException e) {
       }
@@ -68,20 +69,20 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
   }
 
   private void registerImpl(String name, String script, RegisterOptions options) {
-    if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.get("name").getAsString()))) {
+    if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.name))) {
       throw new PlaywrightException("selectors.register: \"" + name + "\" selector engine has been already registered");
     }
 
-    JsonObject engine = new JsonObject();
-    engine.addProperty("name", name);
-    engine.addProperty("source", script);
-    if (options != null && options.contentScript != null) {
-      engine.addProperty("contentScript", options.contentScript);
+    SelectorEngine engine = new SelectorEngine();
+    engine.name = name;
+    engine.source = script;
+    if (options != null) {
+      engine.contentScript = options.contentScript;
     }
     for (BrowserContextImpl context : contextsForSelectors) {
-      JsonObject params = new JsonObject();
-      params.add("selectorEngine", engine);
-      context.sendMessage("registerSelectorEngine", params, NO_TIMEOUT);
+      BrowserContextRegisterSelectorEngineParams params = new BrowserContextRegisterSelectorEngineParams();
+      params.selectorEngine = engine;
+      context.channel.registerSelectorEngine(params, NO_TIMEOUT);
     }
     selectorEngines.add(engine);
   }

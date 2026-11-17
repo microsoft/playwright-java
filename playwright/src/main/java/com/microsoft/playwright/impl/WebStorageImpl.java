@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.WebStorage;
 import com.microsoft.playwright.options.WebStorageItem;
 
@@ -35,43 +35,43 @@ class WebStorageImpl implements WebStorage {
     this.kind = kind;
   }
 
-  private JsonObject createParams() {
-    JsonObject params = new JsonObject();
-    params.addProperty("kind", kind);
-    return params;
-  }
-
   @Override
   public List<WebStorageItem> items() {
-    JsonObject json = page.sendMessage("webStorageItems", createParams(), NO_TIMEOUT).getAsJsonObject();
-    return asList(gson().fromJson(json.getAsJsonArray("items"), WebStorageItem[].class));
+    PageWebStorageItemsParams params = new PageWebStorageItemsParams();
+    params.kind = kind;
+    PageWebStorageItemsResult result = page.channel.webStorageItems(params, NO_TIMEOUT);
+    return asList(gson().fromJson(gson().toJsonTree(result.items), WebStorageItem[].class));
   }
 
   @Override
   public String getItem(String name) {
-    JsonObject params = createParams();
-    params.addProperty("name", name);
-    JsonObject json = page.sendMessage("webStorageGetItem", params, NO_TIMEOUT).getAsJsonObject();
-    return json.has("value") ? json.get("value").getAsString() : null;
+    PageWebStorageGetItemParams params = new PageWebStorageGetItemParams();
+    params.kind = kind;
+    params.name = name;
+    return page.channel.webStorageGetItem(params, NO_TIMEOUT).value;
   }
 
   @Override
   public void setItem(String name, String value) {
-    JsonObject params = createParams();
-    params.addProperty("name", name);
-    params.addProperty("value", value);
-    page.sendMessage("webStorageSetItem", params, NO_TIMEOUT);
+    PageWebStorageSetItemParams params = new PageWebStorageSetItemParams();
+    params.kind = kind;
+    params.name = name;
+    params.value = value;
+    page.channel.webStorageSetItem(params, NO_TIMEOUT);
   }
 
   @Override
   public void removeItem(String name) {
-    JsonObject params = createParams();
-    params.addProperty("name", name);
-    page.sendMessage("webStorageRemoveItem", params, NO_TIMEOUT);
+    PageWebStorageRemoveItemParams params = new PageWebStorageRemoveItemParams();
+    params.kind = kind;
+    params.name = name;
+    page.channel.webStorageRemoveItem(params, NO_TIMEOUT);
   }
 
   @Override
   public void clear() {
-    page.sendMessage("webStorageClear", createParams(), NO_TIMEOUT);
+    PageWebStorageClearParams params = new PageWebStorageClearParams();
+    params.kind = kind;
+    page.channel.webStorageClear(params, NO_TIMEOUT);
   }
 }

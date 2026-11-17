@@ -16,8 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Worker;
@@ -26,25 +25,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConsoleMessageImpl implements ConsoleMessage {
-  private final Connection connection;
   private final PageImpl page;
   private final WorkerImpl worker;
-  private final JsonObject initializer;
+  private final String type;
+  private final String text;
+  private final List<JSHandleImpl> args;
+  private final String url;
+  private final int lineNumber;
+  private final int columnNumber;
+  private final double timestamp;
 
-  public ConsoleMessageImpl(Connection connection, JsonObject initializer, PageImpl page, WorkerImpl worker) {
-    this.connection = connection;
+  ConsoleMessageImpl(BrowserContextConsoleEvent event) {
+    this(event.page, event.worker, event.type, event.text, event.args,
+      event.location.url, event.location.lineNumber, event.location.columnNumber, event.timestamp);
+  }
+
+  ConsoleMessageImpl(PageImpl page, PageConsoleMessagesResult.PageConsoleMessagesResultMessages message) {
+    this(page, null, message.type, message.text, message.args,
+      message.location.url, message.location.lineNumber, message.location.columnNumber, message.timestamp);
+  }
+
+  private ConsoleMessageImpl(PageImpl page, WorkerImpl worker, String type, String text, List<JSHandleImpl> args,
+                             String url, int lineNumber, int columnNumber, double timestamp) {
     this.page = page;
     this.worker = worker;
-    this.initializer = initializer;
+    this.type = type;
+    this.text = text;
+    this.args = args;
+    this.url = url;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+    this.timestamp = timestamp;
   }
 
   @Override
   public double timestamp() {
-    return initializer.get("timestamp").getAsDouble();
+    return timestamp;
   }
 
   public String type() {
-    return initializer.get("type").getAsString();
+    return type;
   }
 
   @Override
@@ -53,24 +73,17 @@ public class ConsoleMessageImpl implements ConsoleMessage {
   }
 
   public String text() {
-    return initializer.get("text").getAsString();
+    return text;
   }
 
   @Override
   public List<JSHandle> args() {
-    List<JSHandle> result = new ArrayList<>();
-    for (JsonElement item : initializer.getAsJsonArray("args")) {
-      result.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
-    }
-    return result;
+    return new ArrayList<JSHandle>(args);
   }
 
   @Override
   public String location() {
-    JsonObject location = initializer.getAsJsonObject("location");
-    return location.get("url").getAsString() + ":" +
-      location.get("lineNumber").getAsNumber() + ":" +
-      location.get("columnNumber").getAsNumber();
+    return url + ":" + lineNumber + ":" + columnNumber;
   }
 
   @Override

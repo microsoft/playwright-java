@@ -16,8 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
@@ -32,11 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class TracingImpl extends ChannelOwner implements Tracing {
+public class TracingImpl extends ChannelOwner implements Tracing {
   private boolean includeSources;
   private Path tracesDir;
   private boolean isTracing;
@@ -54,6 +53,8 @@ class TracingImpl extends ChannelOwner implements Tracing {
     }
   }
 
+
+  final TracingChannel channel = new TracingChannel(this);
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -89,11 +90,11 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   private void saveChunk(Path path, String stacksId, List<String> capturedAdditionalSources) {
-    JsonObject params = new JsonObject();
+    TracingTracingStopChunkParams params = new TracingTracingStopChunkParams();
     // Not interested in artifacts.
     if (path == null) {
-      params.addProperty("mode", "discard");
-      sendMessage("tracingStopChunk", params, NO_TIMEOUT);
+      params.mode = "discard";
+      channel.tracingStopChunk(params, NO_TIMEOUT);
       if (stacksId != null) {
         connection.localUtils().traceDiscarded(stacksId);
       }
@@ -102,23 +103,22 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
     boolean isLocal = !connection.isRemote;
     if (isLocal) {
-      params.addProperty("mode", "entries");
-      JsonObject json = sendMessage("tracingStopChunk", params, NO_TIMEOUT).getAsJsonObject();
-      JsonArray entries = json.getAsJsonArray("entries");
-      connection.localUtils.zip(path, entries, stacksId, false, includeSources, capturedAdditionalSources);
+      params.mode = "entries";
+      TracingTracingStopChunkResult result = channel.tracingStopChunk(params, NO_TIMEOUT);
+      connection.localUtils.zip(path, result.entries, stacksId, false, includeSources, capturedAdditionalSources);
       return;
     }
 
-    params.addProperty("mode", "archive");
-    JsonObject json = sendMessage("tracingStopChunk", params, NO_TIMEOUT).getAsJsonObject();
+    params.mode = "archive";
+    TracingTracingStopChunkResult json = channel.tracingStopChunk(params, NO_TIMEOUT);
     // The artifact may be missing if the browser closed while stopping tracing.
-    if (!json.has("artifact")) {
+    if (json.artifact == null) {
       if (stacksId != null) {
         connection.localUtils().traceDiscarded(stacksId);
       }
       return;
     }
-    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
+    ArtifactImpl artifact = json.artifact;
     try {
       artifact.saveAs(path);
     } catch (RuntimeException e) {
@@ -131,7 +131,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     }
     artifact.delete();
 
-    connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources, capturedAdditionalSources);
+    connection.localUtils.zip(path, new ArrayList<>(), stacksId, true, includeSources, capturedAdditionalSources);
   }
 
   @Override
@@ -156,26 +156,22 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options.location != null) {
       additionalSources.add(options.location.file);
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("name", name);
-    sendMessage("tracingGroup", params, NO_TIMEOUT);
+    TracingTracingGroupParams params = toProtocol(options, TracingTracingGroupParams.class);
+    params.name = name;
+    channel.tracingGroup(params, NO_TIMEOUT);
   }
 
   @Override
   public void groupEnd() {
-    sendMessage("tracingGroupEnd");
+    channel.tracingGroupEnd(NO_TIMEOUT);
   }
 
   private void tracingStartChunk(String name, String title) {
-    JsonObject params = new JsonObject();
-    if (name != null) {
-      params.addProperty("name", name);
-    }
-    if (title != null) {
-      params.addProperty("title", title);
-    }
-    JsonObject result = sendMessage("tracingStartChunk", params, NO_TIMEOUT).getAsJsonObject();
-    startCollectingStacks(result.get("traceName").getAsString());
+    TracingTracingStartChunkParams params = new TracingTracingStartChunkParams();
+    params.name = name;
+    params.title = title;
+    TracingTracingStartChunkResult result = channel.tracingStartChunk(params, NO_TIMEOUT);
+    startCollectingStacks(result.traceName);
   }
 
   private void startCollectingStacks(String traceName) {
@@ -192,14 +188,12 @@ class TracingImpl extends ChannelOwner implements Tracing {
       options = new StartOptions();
     }
     includeSources = options.sources != null && options.sources;
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("sources");
-    params.remove("title");
-    renameProperty(params, "snapshots", "snapshotDom");
-    renameProperty(params, "ariaSnapshots", "snapshotAria");
-    renameProperty(params, "screenSnapshots", "snapshotScreen");
-    renameProperty(params, "screenshots", "screencast");
-    sendMessage("tracingStart", params, NO_TIMEOUT);
+    TracingTracingStartParams params = toProtocol(options, TracingTracingStartParams.class);
+    params.snapshotDom = options.snapshots;
+    params.snapshotAria = options.ariaSnapshots;
+    params.snapshotScreen = options.screenSnapshots;
+    params.screencast = options.screenshots;
+    channel.tracingStart(params, NO_TIMEOUT);
     tracingStartChunk(options.name, options.title);
     return new DisposableStub(this::stop);
   }
@@ -209,14 +203,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     try {
       stopChunkImpl(options == null ? null : options.path);
     } finally {
-      sendMessage("tracingStop");
-    }
-  }
-
-  private static void renameProperty(JsonObject params, String from, String to) {
-    JsonElement value = params.remove(from);
-    if (value != null) {
-      params.add(to, value);
+      channel.tracingStop(NO_TIMEOUT);
     }
   }
 
@@ -266,25 +253,28 @@ class TracingImpl extends ChannelOwner implements Tracing {
       mode = HarMode.MINIMAL;
     }
 
-    JsonObject params = new JsonObject();
-    if (page != null) {
-      params.add("page", page.toProtocolRef());
+    TracingHarStartParams params = new TracingHarStartParams();
+    params.page = page;
+    // The old "zip" key is not part of the protocol anymore (the generated RecordHarOptions has no such field).
+    RecordHarOptions recordHarArgs = new RecordHarOptions();
+    recordHarArgs.content = contentPolicy.name().toLowerCase();
+    recordHarArgs.mode = mode.name().toLowerCase();
+    if (urlFilter instanceof String) {
+      recordHarArgs.urlGlob = (String) urlFilter;
+    } else if (urlFilter instanceof Pattern) {
+      Pattern pattern = (Pattern) urlFilter;
+      recordHarArgs.urlRegexSource = pattern.pattern();
+      recordHarArgs.urlRegexFlags = Utils.toJsRegexFlags(pattern);
     }
-    JsonObject recordHarArgs = new JsonObject();
-    recordHarArgs.addProperty("zip", isZip(har));
-    recordHarArgs.addProperty("content", contentPolicy.name().toLowerCase());
-    recordHarArgs.addProperty("mode", mode.name().toLowerCase());
-    addHarUrlFilter(recordHarArgs, urlFilter);
     if (resourcesDir != null) {
-      recordHarArgs.addProperty("resourcesDir", resourcesDir.toString());
+      recordHarArgs.resourcesDir = resourcesDir.toString();
     }
     if (!isZip(har)) {
-      recordHarArgs.addProperty("harPath", har.toString());
+      recordHarArgs.harPath = har.toString();
     }
 
-    params.add("options", recordHarArgs);
-    JsonObject json = sendMessage("harStart", params, NO_TIMEOUT).getAsJsonObject();
-    String harId = json.get("harId").getAsString();
+    params.options = recordHarArgs;
+    String harId = channel.harStart(params, NO_TIMEOUT).harId;
     harRecorders.put(harId, new HarRecorder(har, contentPolicy));
     return harId;
   }
@@ -297,22 +287,21 @@ class TracingImpl extends ChannelOwner implements Tracing {
     boolean isLocal = !connection.isRemote;
     boolean isZip = isZip(harParams.path);
 
-    JsonObject params = new JsonObject();
-    params.addProperty("harId", harId);
+    TracingHarExportParams params = new TracingHarExportParams();
+    params.harId = harId;
     if (isLocal) {
-      params.addProperty("mode", "entries");
-      JsonObject json = sendMessage("harExport", params, NO_TIMEOUT).getAsJsonObject();
+      params.mode = "entries";
+      TracingHarExportResult json = channel.harExport(params, NO_TIMEOUT);
       if (!isZip) {
         return;
       }
-      JsonArray entries = json.getAsJsonArray("entries");
-      connection.localUtils.zip(harParams.path, entries, null, false, false, java.util.Collections.emptyList());
+      connection.localUtils.zip(harParams.path, json.entries, null, false, false, java.util.Collections.emptyList());
       return;
     }
 
-    params.addProperty("mode", "archive");
-    JsonObject json = sendMessage("harExport", params, NO_TIMEOUT).getAsJsonObject();
-    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
+    params.mode = "archive";
+    TracingHarExportResult json = channel.harExport(params, NO_TIMEOUT);
+    ArtifactImpl artifact = json.artifact;
     if (isZip) {
       artifact.saveAs(harParams.path);
       artifact.delete();
@@ -320,10 +309,10 @@ class TracingImpl extends ChannelOwner implements Tracing {
     }
     String tmpPath = harParams.path + ".tmp";
     artifact.saveAs(Paths.get(tmpPath));
-    JsonObject unzipParams = new JsonObject();
-    unzipParams.addProperty("zipFile", tmpPath);
-    unzipParams.addProperty("harFile", harParams.path.toString());
-    connection.localUtils.sendMessage("harUnzip", unzipParams, NO_TIMEOUT);
+    LocalUtilsHarUnzipParams unzipParams = new LocalUtilsHarUnzipParams();
+    unzipParams.zipFile = tmpPath;
+    unzipParams.harFile = harParams.path.toString();
+    connection.localUtils.channel.harUnzip(unzipParams, NO_TIMEOUT);
     artifact.delete();
   }
 

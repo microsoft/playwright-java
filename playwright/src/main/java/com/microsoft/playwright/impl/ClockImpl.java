@@ -1,6 +1,6 @@
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Clock;
 
 import java.util.Date;
@@ -8,129 +8,121 @@ import java.util.Date;
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 
 class ClockImpl implements Clock {
-  private final ChannelOwner browserContext;
+  private final BrowserContextImpl browserContext;
 
   ClockImpl(BrowserContextImpl browserContext) {
     this.browserContext = browserContext;
   }
 
-  private void sendMessageWithLogging(String method, JsonObject params) {
-    String capitalizedMethod = method.substring(0, 1).toUpperCase() + method.substring(1);
-    browserContext.sendMessage("clock" + capitalizedMethod, params, NO_TIMEOUT);
-  }
-
   @Override
   public void fastForward(long ticks) {
-    JsonObject params = new JsonObject();
-    params.addProperty("ticksNumber", ticks);
-    sendMessageWithLogging("fastForward", params);
+    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
+    params.ticksNumber = (double) ticks;
+    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
   }
 
   @Override
   public void fastForward(String ticks) {
-    JsonObject params = new JsonObject();
-    params.addProperty("ticksString", ticks);
-    sendMessageWithLogging("fastForward", params);
+    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
+    params.ticksString = ticks;
+    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
   }
 
   @Override
   public void install(InstallOptions options) {
-    JsonObject params = new JsonObject();
+    BrowserContextClockInstallParams params = new BrowserContextClockInstallParams();
     if (options != null) {
-      parseTime(options.time, params);
+      Object time = options.time;
+      if (time instanceof Long) {
+        params.timeNumber = (double) (Long) time;
+      } else if (time instanceof Date) {
+        params.timeNumber = (double) ((Date) time).getTime();
+      } else if (time instanceof String) {
+        params.timeString = (String) time;
+      }
     }
-    sendMessageWithLogging("install", params);
+    browserContext.channel.clockInstall(params, NO_TIMEOUT);
   }
 
   @Override
   public void runFor(long ticks) {
-    JsonObject params = new JsonObject();
-    params.addProperty("ticksNumber", ticks);
-    sendMessageWithLogging("runFor", params);
+    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+    params.ticksNumber = (double) ticks;
+    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
   }
 
   @Override
   public void runFor(String ticks) {
-    JsonObject params = new JsonObject();
-    params.addProperty("ticksString", ticks);
-    sendMessageWithLogging("runFor", params);
+    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+    params.ticksString = ticks;
+    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
   }
 
   @Override
   public void pauseAt(long time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time);
-    sendMessageWithLogging("pauseAt", params);
+    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
+    params.timeNumber = (double) time;
+    browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
   }
 
   @Override
   public void pauseAt(String time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeString", time);
-    sendMessageWithLogging("pauseAt", params);
+    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
+    params.timeString = time;
+    browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
   }
 
   @Override
   public void pauseAt(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("pauseAt", params);
+    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
+    params.timeNumber = (double) time.getTime();
+    browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
   }
 
   @Override
   public void resume() {
-    sendMessageWithLogging("resume", new JsonObject());
+    browserContext.channel.clockResume(NO_TIMEOUT);
   }
 
   @Override
   public void setFixedTime(long time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time);
-    sendMessageWithLogging("setFixedTime", params);
+    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
+    params.timeNumber = (double) time;
+    browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setFixedTime(String time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeString", time);
-    sendMessageWithLogging("setFixedTime", params);
+    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
+    params.timeString = time;
+    browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setFixedTime(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("setFixedTime", params);
+    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
+    params.timeNumber = (double) time.getTime();
+    browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setSystemTime(long time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time);
-    sendMessageWithLogging("setSystemTime", params);
+    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
+    params.timeNumber = (double) time;
+    browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setSystemTime(String time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeString", time);
-    sendMessageWithLogging("setSystemTime", params);
+    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
+    params.timeString = time;
+    browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setSystemTime(Date time) {
-    JsonObject params = new JsonObject();
-    params.addProperty("timeNumber", time.getTime());
-    sendMessageWithLogging("setSystemTime", params);
-  }
-
-  private static void parseTime(Object time, JsonObject params) {
-    if (time instanceof Long) {
-      params.addProperty("timeNumber", (Long) time);
-    } else if (time instanceof Date) {
-      params.addProperty("timeNumber", ((Date) time).getTime());
-    } else if (time instanceof String) {
-      params.addProperty("timeString", (String) time);
-    }
+    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
+    params.timeNumber = (double) time.getTime();
+    browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
   }
 }

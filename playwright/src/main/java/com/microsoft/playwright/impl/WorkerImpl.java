@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
@@ -30,7 +31,7 @@ import java.util.function.Predicate;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
-class WorkerImpl extends ChannelOwner implements Worker {
+public class WorkerImpl extends ChannelOwner implements Worker {
   final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   PageImpl page;
 
@@ -38,6 +39,8 @@ class WorkerImpl extends ChannelOwner implements Worker {
     CLOSE,
     CONSOLE,
   }
+
+  final WorkerChannel channel = new WorkerChannel(this);
 
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -97,21 +100,18 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params, NO_TIMEOUT);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    WorkerEvaluateExpressionParams params = new WorkerEvaluateExpressionParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params, NO_TIMEOUT);
-    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
+    WorkerEvaluateExpressionHandleParams params = new WorkerEvaluateExpressionHandleParams();
+    params.expression = pageFunction;
+    params.arg = serializeArgument(arg);
+    return channel.evaluateExpressionHandle(params, NO_TIMEOUT).handle;
   }
 
   @Override

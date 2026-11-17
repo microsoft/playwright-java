@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
@@ -25,11 +26,13 @@ import com.microsoft.playwright.options.Sizes;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.toHeadersMap;
 import static java.util.Arrays.asList;
 
@@ -51,6 +54,8 @@ public class RequestImpl extends ChannelOwner implements Request {
     byte[] postData;
     Map<String, String> headers;
   }
+
+  final RequestChannel channel = new RequestChannel(this);
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -158,11 +163,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public ResponseImpl response() {
-    JsonObject result = sendMessage("response").getAsJsonObject();
-    if (!result.has("response")) {
-      return null;
-    }
-    return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
+    return channel.response(NO_TIMEOUT).response;
   }
 
   @Override
@@ -171,8 +172,13 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (response == null) {
       throw new PlaywrightException("Unable to fetch sizes for failed request");
     }
-    JsonObject json = response.sendMessage("sizes").getAsJsonObject();
-    return gson().fromJson(json.getAsJsonObject("sizes"), Sizes.class);
+    RequestSizes s = response.channel.sizes(NO_TIMEOUT).sizes;
+    Sizes result = new Sizes();
+    result.requestBodySize = s.requestBodySize;
+    result.requestHeadersSize = s.requestHeadersSize;
+    result.responseBodySize = s.responseBodySize;
+    result.responseHeadersSize = s.responseHeadersSize;
+    return result;
   }
 
   @Override
@@ -199,11 +205,16 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (rawHeaders != null) {
       return rawHeaders;
     }
-    JsonObject result = sendMessage("rawRequestHeaders").getAsJsonObject();
-    JsonArray rawHeadersJson = result.getAsJsonArray("headers");
+    List<HttpHeader> headers = new ArrayList<>();
+    for (NameValue nv : channel.rawRequestHeaders(NO_TIMEOUT).headers) {
+      HttpHeader h = new HttpHeader();
+      h.name = nv.name;
+      h.value = nv.value;
+      headers.add(h);
+    }
 
     // The field may have been initialized in a nested call but it is ok.
-    rawHeaders = new RawHeaders(asList(gson().fromJson(rawHeadersJson, HttpHeader[].class)));
+    rawHeaders = new RawHeaders(headers);
     return rawHeaders;
   }
 

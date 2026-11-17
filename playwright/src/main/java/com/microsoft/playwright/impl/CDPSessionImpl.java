@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.CDPSession;
@@ -30,6 +31,8 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
   enum EventType {
     CLOSE,
   }
+
+  final CDPSessionChannel channel = new CDPSessionChannel(this);
 
   protected CDPSessionImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -67,15 +70,13 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
 
   @Override
   public JsonObject send(String method, JsonObject params, SendOptions options) {
-    JsonObject args = new JsonObject();
-    if (params != null) {
-      args.add("params", params);
-    }
-    args.addProperty("method", method);
+    CDPSessionSendParams args = new CDPSessionSendParams();
+    args.params = params;
+    args.method = method;
     Double timeout = options == null || options.timeout == null ? Double.valueOf(0) : options.timeout;
-    JsonElement response = connection.sendMessage(guid, "send", args, timeout);
+    CDPSessionSendResult response = channel.send(args, timeout);
     if (response == null) return null;
-    else return response.getAsJsonObject().get("result").getAsJsonObject();
+    else return response.result.getAsJsonObject();
   }
 
   @Override
@@ -90,6 +91,6 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
 
   @Override
   public void detach() {
-    sendMessage("detach");
+    channel.detach(NO_TIMEOUT);
   }
 }

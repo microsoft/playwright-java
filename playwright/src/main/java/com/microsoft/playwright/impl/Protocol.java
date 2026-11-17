@@ -16,89 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import java.util.List;
-
-class Channel {
-  String guid;
-}
-
-class SerializedValue{
-  Number n;
-  Boolean b;
-  String s;
-  // Possible values: { 'null, 'undefined, 'NaN, 'Infinity, '-Infinity, '-0 }
-  String v;
-  String d;
-  String u;
-  String bi;
-  public static class E {
-    String m;
-    String n;
-    String s;
-  }
-  E e;
-  public static class R {
-    String p;
-    String f;
-  }
-  R r;
-  SerializedValue[] a;
-  public static class O {
-    String k;
-    SerializedValue v;
-  }
-  O[] o;
-  Number h;
-  Integer id;
-  Integer ref;
-  // JS representation of Map: [[key1, value1], [key2, value2], ...].
-  SerializedValue m;
-  // JS representation of Set: [item1, item2, ...].
-  SerializedValue se;
-}
-
-class SerializedArgument{
-  SerializedValue value;
-  Channel[] handles;
-}
-
-class SerializedError{
-  public static class Error {
-    String message;
-    String name;
-    String stack;
-
-    @Override
-    public String toString() {
-      return "Error {\n" +
-        "  message='" + message + '\n' +
-        "  name='" + name + '\n' +
-        "  stack='" + stack + '\n' +
-        '}';
-    }
-  }
-  Error error;
-  SerializedValue value;
-
-  @Override
-  public String toString() {
-    if (error != null) {
-      return error.toString();
-    }
-    return "SerializedError{" +
-      "value=" + value +
-      '}';
-  }
-}
-
-class ExpectedTextValue {
-  String string;
-  String regexSource;
-  String regexFlags;
-  Boolean ignoreCase;
-  Boolean matchSubstring;
-  Boolean normalizeWhiteSpace;
-}
 
 class FrameExpectOptions {
   Object expressionArg;
@@ -111,21 +30,10 @@ class FrameExpectOptions {
   Double timeout;
 }
 
+// Client-side outcome of Frame.expect: the command has no result, a mismatch arrives as an error with FrameExpectErrorDetails.
 class FrameExpectResult {
-  static class Received {
-    SerializedValue value;
-    String ariaSnapshot;
-  }
   boolean matches;
-  Received received;
+  FrameExpectErrorDetails.FrameExpectErrorDetailsReceived received;
   String errorMessage;
   List<String> log;
 }
-
-class FrameExpectErrorDetails {
-  FrameExpectResult.Received received;
-  Boolean timedOut;
-  String customErrorMessage;
-}
-
-

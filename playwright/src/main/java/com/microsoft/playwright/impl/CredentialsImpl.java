@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Credentials;
 import com.microsoft.playwright.options.VirtualCredential;
 
@@ -24,6 +24,7 @@ import java.util.List;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 import static java.util.Arrays.asList;
 
 class CredentialsImpl implements Credentials {
@@ -35,28 +36,28 @@ class CredentialsImpl implements Credentials {
 
   @Override
   public void install() {
-    context.sendMessage("credentialsInstall", new JsonObject(), NO_TIMEOUT);
+    context.channel.credentialsInstall(NO_TIMEOUT);
   }
 
   @Override
   public VirtualCredential create(String rpId, CreateOptions options) {
-    JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("rpId", rpId);
-    JsonObject json = context.sendMessage("credentialsCreate", params, NO_TIMEOUT).getAsJsonObject();
-    return gson().fromJson(json.get("credential"), VirtualCredential.class);
+    BrowserContextCredentialsCreateParams params = toProtocol(options, BrowserContextCredentialsCreateParams.class);
+    params.rpId = rpId;
+    BrowserContextCredentialsCreateResult result = context.channel.credentialsCreate(params, NO_TIMEOUT);
+    return gson().fromJson(gson().toJsonTree(result.credential), VirtualCredential.class);
   }
 
   @Override
   public void delete(String id) {
-    JsonObject params = new JsonObject();
-    params.addProperty("id", id);
-    context.sendMessage("credentialsDelete", params, NO_TIMEOUT);
+    BrowserContextCredentialsDeleteParams params = new BrowserContextCredentialsDeleteParams();
+    params.id = id;
+    context.channel.credentialsDelete(params, NO_TIMEOUT);
   }
 
   @Override
   public List<VirtualCredential> get(GetOptions options) {
-    JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
-    JsonObject json = context.sendMessage("credentialsGet", params, NO_TIMEOUT).getAsJsonObject();
-    return asList(gson().fromJson(json.getAsJsonArray("credentials"), VirtualCredential[].class));
+    BrowserContextCredentialsGetParams params = toProtocol(options, BrowserContextCredentialsGetParams.class);
+    BrowserContextCredentialsGetResult result = context.channel.credentialsGet(params, NO_TIMEOUT);
+    return asList(gson().fromJson(gson().toJsonTree(result.credentials), VirtualCredential[].class));
   }
 }

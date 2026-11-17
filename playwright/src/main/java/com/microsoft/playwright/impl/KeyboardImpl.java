@@ -16,31 +16,31 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Keyboard;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 class KeyboardImpl implements Keyboard {
-  private final ChannelOwner page;
+  private final PageImpl page;
 
-  KeyboardImpl(ChannelOwner page) {
+  KeyboardImpl(PageImpl page) {
     this.page = page;
   }
 
   @Override
   public void down(String key) {
-    JsonObject params = new JsonObject();
-    params.addProperty("key", key);
-    page.sendMessage("keyboardDown", params, NO_TIMEOUT);
+    PageKeyboardDownParams params = new PageKeyboardDownParams();
+    params.key = key;
+    page.channel.keyboardDown(params, NO_TIMEOUT);
   }
 
   @Override
   public void insertText(String text) {
-    JsonObject params = new JsonObject();
-    params.addProperty("text", text);
-    page.sendMessage("keyboardInsertText", params, NO_TIMEOUT);
+    PageKeyboardInsertTextParams params = new PageKeyboardInsertTextParams();
+    params.text = text;
+    page.channel.keyboardInsertText(params, NO_TIMEOUT);
   }
 
   @Override
@@ -49,32 +49,26 @@ class KeyboardImpl implements Keyboard {
   }
 
   private void pressImpl(String key, PressOptions options) {
-    if (options == null) {
-      options = new PressOptions();
-    }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("key", key);
-    page.sendMessage("keyboardPress", params, NO_TIMEOUT);
+    PageKeyboardPressParams params = toProtocol(options, PageKeyboardPressParams.class);
+    params.key = key;
+    page.channel.keyboardPress(params, NO_TIMEOUT);
   }
 
-    @Override
+  @Override
   public void type(String text, TypeOptions options) {
     typeImpl(text, options);
   }
 
   private void typeImpl(String text, TypeOptions options) {
-    if (options == null) {
-      options = new TypeOptions();
-    }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("text", text);
-    page.sendMessage("keyboardType", params, NO_TIMEOUT);
+    PageKeyboardTypeParams params = toProtocol(options, PageKeyboardTypeParams.class);
+    params.text = text;
+    page.channel.keyboardType(params, NO_TIMEOUT);
   }
 
   @Override
   public void up(String key) {
-    JsonObject params = new JsonObject();
-    params.addProperty("key", key);
-    page.sendMessage("keyboardUp", params, NO_TIMEOUT);
+    PageKeyboardUpParams params = new PageKeyboardUpParams();
+    params.key = key;
+    page.channel.keyboardUp(params, NO_TIMEOUT);
   }
 }

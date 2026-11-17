@@ -16,15 +16,19 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.options.RequestOptions;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Utils.convertType;
@@ -36,6 +40,8 @@ public class RouteImpl extends ChannelOwner implements Route {
   boolean fallbackCalled;
   boolean shouldResumeIfFallbackIsCalled;
 
+  final RouteChannel channel = new RouteChannel(this);
+
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
@@ -44,8 +50,8 @@ public class RouteImpl extends ChannelOwner implements Route {
   @Override
   public void abort(String errorCode) {
     startHandling();
-    JsonObject params = new JsonObject();
-    params.addProperty("errorCode", errorCode);
+    RouteAbortParams params = new RouteAbortParams();
+    params.errorCode = errorCode;
     sendMessageAsync("abort", params);
   }
 
@@ -116,24 +122,31 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   private void resumeImpl(RequestImpl.FallbackOverrides options, boolean isFallback) {
-    JsonObject params = new JsonObject();
+    RouteContinueParams params = new RouteContinueParams();
     if (options != null) {
-      if (options.url != null) {
-        params.addProperty("url", options.url);
-      }
-      if (options.method != null) {
-        params.addProperty("method", options.method);
-      }
+      params.url = options.url;
+      params.method = options.method;
       if (options.headers != null) {
-        params.add("headers", Serialization.toProtocol(options.headers));
+        params.headers = toNameValues(options.headers);
       }
-      if (options.postData != null) {
-        String base64 = Base64.getEncoder().encodeToString(options.postData);
-        params.addProperty("postData", base64);
-      }
+      params.postData = options.postData;
     }
-    params.addProperty("isFallback", isFallback);
+    params.isFallback = isFallback;
     sendMessageAsync("continue", params);
+  }
+
+  private static List<NameValue> toNameValues(Map<String, String> map) {
+    List<NameValue> result = new ArrayList<>();
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      if (e.getValue() == null) {
+        throw new PlaywrightException("Value cannot be null");
+      }
+      NameValue nv = new NameValue();
+      nv.name = e.getKey();
+      nv.value = e.getValue();
+      result.add(nv);
+    }
+    return result;
   }
 
   private static byte[] getPostDataBytes(Object postData) {
@@ -219,14 +232,12 @@ public class RouteImpl extends ChannelOwner implements Route {
     if (length != 0 && !headers.containsKey("content-length")) {
       headers.put("content-length", Integer.toString(length));
     }
-    JsonObject params = new JsonObject();
-    params.addProperty("status", status);
-    params.add("headers", Serialization.toProtocol(headers));
-    params.addProperty("isBase64", isBase64);
-    params.addProperty("body", body);
-    if (fetchResponseUid != null) {
-      params.addProperty("fetchResponseUid", fetchResponseUid);
-    }
+    RouteFulfillParams params = new RouteFulfillParams();
+    params.status = status;
+    params.headers = toNameValues(headers);
+    params.isBase64 = isBase64;
+    params.body = body;
+    params.fetchResponseUid = fetchResponseUid;
     sendMessageAsync("fulfill", params);
   }
 
@@ -237,8 +248,8 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   void redirectNavigationRequest(String redirectURL) {
     startHandling();
-    JsonObject params = new JsonObject();
-    params.addProperty("url", redirectURL);
+    RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
+    params.url = redirectURL;
     // TODO: _raceWithPageClose ?
     sendMessageAsync("redirectNavigationRequest", params);
   }

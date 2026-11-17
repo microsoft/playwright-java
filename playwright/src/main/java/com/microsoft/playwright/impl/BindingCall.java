@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
@@ -29,7 +30,7 @@ import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
-class BindingCall extends ChannelOwner {
+public class BindingCall extends ChannelOwner {
   private static class SourceImpl implements BindingCallback.Source {
     private final Frame frame;
 
@@ -53,6 +54,8 @@ class BindingCall extends ChannelOwner {
     }
   }
 
+  final BindingCallChannel channel = new BindingCallChannel(this);
+
   BindingCall(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -63,12 +66,16 @@ class BindingCall extends ChannelOwner {
 
   void call(BindingCallback binding) {
     String method;
-    JsonObject params = new JsonObject();
+    Object params;
     try {
-      params.add("result", gson().toJsonTree(serializeArgument(invoke(binding))));
+      BindingCallResolveParams resolveParams = new BindingCallResolveParams();
+      resolveParams.result = serializeArgument(invoke(binding));
+      params = resolveParams;
       method = "resolve";
     } catch (RuntimeException exception) {
-      params.add("error", gson().toJsonTree(serializeError(exception)));
+      BindingCallRejectParams rejectParams = new BindingCallRejectParams();
+      rejectParams.error = serializeError(exception);
+      params = rejectParams;
       method = "reject";
     }
     // Like the Node client, do not fail when the page was closed before the result arrived.

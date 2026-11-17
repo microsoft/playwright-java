@@ -16,9 +16,16 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.TypeAdapter;
+import com.google.gson.Gson;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.ClientCertificate;
 import com.microsoft.playwright.options.FilePayload;
@@ -39,7 +46,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 import static java.nio.file.Files.readAllBytes;
 
 public class Utils {
@@ -86,6 +92,60 @@ public class Utils {
     }
   }
 
+  /**
+   * Copies public API options into a generated protocol params class with the same Gson that serializes them
+   * on the wire. Params that carry channel references (a locator mask holds a frame) must be built with the
+   * overload that takes the owner, which resolves the references through its connection (tChannelImplFromWire
+   * upstream): this variant refuses to read them.
+   */
+  static <T> T toProtocol(Object options, Class<T> paramsClass) {
+    return toProtocol(noChannelReadsGson, options, paramsClass);
+  }
+
+  static <T> T toProtocol(ChannelOwner owner, Object options, Class<T> paramsClass) {
+    return toProtocol(owner.connection.protocolGson(), options, paramsClass);
+  }
+
+  private static <T> T toProtocol(Gson reader, Object options, Class<T> paramsClass) {
+    if (options == null) {
+      try {
+        return paramsClass.getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        throw new PlaywrightException("Internal error", e);
+      }
+    }
+    return reader.fromJson(Serialization.gson().toJsonTree(options), paramsClass);
+  }
+
+  private static final Gson noChannelReadsGson = Serialization.gson().newBuilder()
+    .registerTypeAdapterFactory(new TypeAdapterFactory() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (!ChannelOwner.class.isAssignableFrom(type.getRawType())) {
+          return null;
+        }
+        return (TypeAdapter<T>) new TypeAdapter<ChannelOwner>() {
+          @Override
+          public void write(JsonWriter out, ChannelOwner value) throws IOException {
+            if (value == null) {
+              out.nullValue();
+              return;
+            }
+            out.beginObject();
+            out.name("guid");
+            out.value(value.guid);
+            out.endObject();
+          }
+
+          @Override
+          public ChannelOwner read(JsonReader in) {
+            throw new PlaywrightException("Internal error: params with channel references must be built with Utils.toProtocol(owner, options, paramsClass)");
+          }
+        };
+      }
+    }).create();
+
   public static <T> T clone(T f) {
     if (f == null) {
       return f;
@@ -106,32 +166,45 @@ public class Utils {
     return mimeType;
   }
 
-  static void addFilePathUploadParams(Path[] items, JsonObject params, BrowserContextImpl context) {
+  /** Upload fields shared by the set-input-files and drop params; each call site copies them into its own params class. */
+  static class UploadParams {
+    boolean emptyPayloads;
+    List<String> localPaths;
+    List<WritableStream> streams;
+    String localDirectory;
+    WritableStream directoryStream;
+  }
+
+  static UploadParams addFilePathUploadParams(Path[] items, BrowserContextImpl context) {
+    UploadParams upload = new UploadParams();
     List<Path> localPaths = new ArrayList<>();
     Path localDirectory = resolvePathsAndDirectoryForInputFiles(items, localPaths);
     if (items.length == 0) {
       // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
-      params.add("payloads", new JsonArray());
+      upload.emptyPayloads = true;
     } else if (context.connection.isRemote) {
       if (localDirectory != null) {
         localPaths = collectFiles(localDirectory);
       }
-      JsonObject json = createTempFiles(context, localDirectory, localPaths);
-      JsonArray writableStreams = json.getAsJsonArray("writableStreams");
-      JsonArray jsonStreams = copyLocalToTempFiles(context, localPaths, writableStreams);
-      if (json.has("rootDir")) {
-        params.add("directoryStream", json.get("rootDir"));
+      BrowserContextCreateTempFilesResult result = createTempFiles(context, localDirectory, localPaths);
+      List<WritableStream> streams = copyLocalToTempFiles(localPaths, result.writableStreams);
+      if (result.rootDir != null) {
+        upload.directoryStream = result.rootDir;
       } else {
-        params.add("streams", jsonStreams);
+        upload.streams = streams;
       }
     } else {
       if (!localPaths.isEmpty()) {
-        params.add("localPaths", toJsonArray(localPaths.toArray(new Path[0])));
+        upload.localPaths = new ArrayList<>();
+        for (Path p : localPaths) {
+          upload.localPaths.add(p.toAbsolutePath().toString());
+        }
       }
       if (localDirectory != null) {
-        params.addProperty("localDirectory", localDirectory.toString());
+        upload.localDirectory = localDirectory.toString();
       }
     }
+    return upload;
   }
 
   private static Path resolvePathsAndDirectoryForInputFiles(Path[] items, List<Path> outLocalPaths) {
@@ -164,27 +237,26 @@ public class Utils {
     }
   }
 
-  private static JsonArray copyLocalToTempFiles(BrowserContextImpl context, List<Path> localPaths, JsonArray writableStreams) {
-    JsonArray jsonStreams = new JsonArray();
+  private static List<WritableStream> copyLocalToTempFiles(List<Path> localPaths, List<WritableStream> writableStreams) {
+    List<WritableStream> streams = new ArrayList<>();
     for (int i = 0; i < localPaths.size(); i++) {
-      JsonObject jsonStream = writableStreams.get(i).getAsJsonObject();
-      WritableStream temp = context.connection.getExistingObject(jsonStream.get("guid").getAsString());
+      WritableStream temp = writableStreams.get(i);
       try (OutputStream out = temp.stream()) {
         Files.copy(localPaths.get(i), out);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to copy file to remote server.", e);
       }
-      jsonStreams.add(temp.toProtocolRef());
+      streams.add(temp);
     }
-    return jsonStreams;
+    return streams;
   }
 
-  private static JsonObject createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
-    JsonObject tempFilesParams = new JsonObject();
+  private static BrowserContextCreateTempFilesResult createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
+    BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
     if (localDirectory != null) {
-      tempFilesParams.addProperty("rootDirName", localDirectory.getFileName().toString());
+      params.rootDirName = localDirectory.getFileName().toString();
     }
-    JsonArray items = new JsonArray();
+    params.items = new ArrayList<>();
     for (Path path : localPaths) {
       long lastModifiedMs;
       try {
@@ -198,13 +270,12 @@ public class Utils {
       } else {
         name = localDirectory.relativize(path);
       }
-      JsonObject item = new JsonObject();
-      item.addProperty("name", name.toString());
-      item.addProperty("lastModifiedMs", lastModifiedMs);
-      items.add(item);
+      BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems item = new BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems();
+      item.name = name.toString();
+      item.lastModifiedMs = (double) lastModifiedMs;
+      params.items.add(item);
     }
-    tempFilesParams.add("items", items);
-    return context.sendMessage("createTempFiles", tempFilesParams, NO_TIMEOUT).getAsJsonObject();
+    return context.channel.createTempFiles(params, NO_TIMEOUT);
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {
@@ -357,66 +428,6 @@ public class Utils {
 
   static String addSourceUrlToScript(String source, Path path) {
     return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
-  }
-
-  static void addToProtocol(JsonObject params, List<ClientCertificate> clientCertificateList) {
-    if (clientCertificateList == null) {
-      return;
-    }
-    JsonArray clientCertificates = new JsonArray();
-    for (ClientCertificate cert: clientCertificateList) {
-      JsonObject jsonCert = new JsonObject();
-      jsonCert.addProperty("origin", cert.origin);
-      try {
-        String certBase64 = base64Buffer(cert.cert, cert.certPath);
-        if (certBase64 != null) {
-          jsonCert.addProperty("cert",  certBase64);
-        }
-        String keyBase64 = base64Buffer(cert.key, cert.keyPath);
-        if (keyBase64 != null) {
-          jsonCert.addProperty("key", keyBase64);
-        }
-        String pfxBase64 = base64Buffer(cert.pfx, cert.pfxPath);
-        if (pfxBase64 != null) {
-          jsonCert.addProperty("pfx", pfxBase64);
-        }
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file", e);
-      }
-      if (cert.passphrase != null) {
-        jsonCert.addProperty("passphrase", cert.passphrase);
-      }
-      clientCertificates.add(jsonCert);
-    }
-    params.remove("clientCertificates");
-    params.add("clientCertificates", clientCertificates);
-  }
-
-  // Mirrors toHttpCredentialsProtocol() in the JS client: the protocol always takes a list.
-  static void addHttpCredentialsToProtocol(JsonObject params) {
-    JsonElement credentials = params.remove("httpCredentials");
-    if (credentials == null) {
-      return;
-    }
-    JsonArray list = new JsonArray();
-    if (credentials.isJsonArray()) {
-      list.addAll(credentials.getAsJsonArray());
-    } else {
-      list.add(credentials);
-    }
-    if (list.size() > 0) {
-      params.add("httpCredentials", list);
-    }
-  }
-
-  private static String base64Buffer(byte[] bytes, Path path) throws IOException {
-    if (path != null) {
-      bytes = readAllBytes(path);
-    }
-    if (bytes == null) {
-      return null;
-    }
-    return Base64.getEncoder().encodeToString(bytes);
   }
 
   static JsonObject interceptionPatterns(List<UrlMatcher> matchers) {

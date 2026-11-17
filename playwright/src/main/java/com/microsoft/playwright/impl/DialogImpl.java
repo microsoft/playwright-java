@@ -16,11 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Page;
 
-class DialogImpl extends ChannelOwner implements Dialog {
+public class DialogImpl extends ChannelOwner implements Dialog {
+  final DialogChannel channel = new DialogChannel(this);
   private PageImpl page;
 
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -34,17 +36,15 @@ class DialogImpl extends ChannelOwner implements Dialog {
 
   @Override
   public void accept(String promptText) {
-    JsonObject params = new JsonObject();
-    if (promptText != null) {
-      params.addProperty("promptText", promptText);
-    }
-    sendMessage("accept", params, NO_TIMEOUT);
+    DialogAcceptParams params = new DialogAcceptParams();
+    params.promptText = promptText;
+    channel.accept(params, NO_TIMEOUT);
   }
 
   @Override
   public void dismiss() {
     try {
-      sendMessage("dismiss");
+      channel.dismiss(NO_TIMEOUT);
     } catch (TargetClosedError e) {
       // Swallow TargetClosedErrors for beforeunload dialogs.
     }

@@ -16,11 +16,15 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.BindResult;
+import com.microsoft.playwright.options.ClientCertificate;
+import com.microsoft.playwright.options.HttpCredentials;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +36,7 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
 
-class BrowserImpl extends ChannelOwner implements Browser {
+public class BrowserImpl extends ChannelOwner implements Browser {
   // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.
   final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
@@ -47,6 +51,8 @@ class BrowserImpl extends ChannelOwner implements Browser {
     CONTEXT,
     DISCONNECTED,
   }
+
+  final BrowserChannel channel = new BrowserChannel(this);
 
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -92,7 +98,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       return;
     }
     try {
-      sendMessage("close");
+      channel.close(new BrowserCloseParams(), NO_TIMEOUT);
     } catch (PlaywrightException e) {
       if (!isSafeCloseError(e)) {
         throw e;
@@ -146,28 +152,30 @@ class BrowserImpl extends ChannelOwner implements Browser {
         throw new PlaywrightException("Failed to read storage state from file", e);
       }
     }
-    JsonObject storageState = null;
+    BrowserNewContextParams.BrowserNewContextParamsStorageState storageState = null;
     if (options.storageState != null) {
-      storageState = new Gson().fromJson(options.storageState, JsonObject.class);
+      storageState = connection.protocolGson().fromJson(options.storageState, BrowserNewContextParams.BrowserNewContextParamsStorageState.class);
       options.storageState = null;
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (storageState != null) {
-      params.add("storageState", storageState);
-    }
+    // These two are converted below, their option types differ from the protocol ones.
+    Object httpCredentials = options.httpCredentials;
+    options.httpCredentials = null;
+    List<ClientCertificate> clientCertificates = options.clientCertificates;
+    options.clientCertificates = null;
+    BrowserNewContextParams params = toProtocol(options, BrowserNewContextParams.class);
+    params.storageState = storageState;
     if (options.recordVideoDir != null) {
-      JsonObject recordVideo = new JsonObject();
-      recordVideo.addProperty("dir", options.recordVideoDir.toAbsolutePath().toString());
+      BrowserNewContextParams.BrowserNewContextParamsRecordVideo recordVideo = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo();
+      recordVideo.dir = options.recordVideoDir.toAbsolutePath().toString();
       if (options.recordVideoSize != null) {
-        recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
+        recordVideo.size = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo.BrowserNewContextParamsRecordVideoSize();
+        recordVideo.size.width = options.recordVideoSize.width;
+        recordVideo.size.height = options.recordVideoSize.height;
       }
       if (options.recordVideoFps != null) {
-        recordVideo.addProperty("fps", options.recordVideoFps);
+        recordVideo.fps = options.recordVideoFps;
       }
-      params.remove("recordVideoDir");
-      params.remove("recordVideoSize");
-      params.remove("recordVideoFps");
-      params.add("recordVideo", recordVideo);
+      params.recordVideo = recordVideo;
     } else if (options.recordVideoSize != null) {
       throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
     } else if (options.recordVideoFps != null) {
@@ -175,29 +183,24 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
     if (options.viewportSize != null) {
       if (options.viewportSize.isPresent()) {
-        JsonElement size = params.get("viewportSize");
-        params.remove("viewportSize");
-        params.add("viewport", size);
+        params.viewport = new BrowserNewContextParams.BrowserNewContextParamsViewport();
+        params.viewport.width = options.viewportSize.get().width;
+        params.viewport.height = options.viewportSize.get().height;
       } else {
-        params.remove("viewportSize");
-        params.addProperty("noDefaultViewport", true);
+        params.noDefaultViewport = true;
       }
     }
     if (options.screenSize != null) {
-      JsonElement size = params.get("screenSize");
-      params.remove("screenSize");
-      params.add("screen", size);
+      params.screen = new BrowserNewContextParams.BrowserNewContextParamsScreen();
+      params.screen.width = options.screenSize.width;
+      params.screen.height = options.screenSize.height;
     }
-    addToProtocol(params, options.clientCertificates);
-    addHttpCredentialsToProtocol(params);
-    params.remove("acceptDownloads");
-    if (options.acceptDownloads != null) {
-      params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
-    }
-    params.add("selectorEngines", gson().toJsonTree(browserType.playwright.selectors.selectorEngines));
-    params.addProperty("testIdAttributeName", browserType.playwright.selectors.testIdAttributeName);
-    JsonElement result = sendMessage("newContext", params, NO_TIMEOUT);
-    BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
+    params.clientCertificates = clientCertificatesToProtocol(clientCertificates);
+    params.httpCredentials = httpCredentialsToProtocol(httpCredentials);
+    params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
+    params.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
+    params.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
+    BrowserContextImpl context = channel.newContext(params, NO_TIMEOUT).context;
     context.initializeHarFromOptions(harOptions);
     return context;
   }
@@ -213,43 +216,31 @@ class BrowserImpl extends ChannelOwner implements Browser {
       options = new StartTracingOptions();
     }
     tracePath = options.path;
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    BrowserStartTracingParams params = toProtocol(options, BrowserStartTracingParams.class);
     if (page != null) {
-      params.add("page", ((PageImpl) page).toProtocolRef());
+      params.page = (PageImpl) page;
     }
-    sendMessage("startTracing", params, NO_TIMEOUT);
+    channel.startTracing(params, NO_TIMEOUT);
   }
 
   @Override
   public BindResult bind(String title, BindOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("title", title);
-    if (options != null) {
-      if (options.host != null) {
-        params.addProperty("host", options.host);
-      }
-      if (options.port != null) {
-        params.addProperty("port", options.port);
-      }
-      if (options.workspaceDir != null) {
-        params.addProperty("workspaceDir", options.workspaceDir);
-      }
-    }
-    JsonObject result = sendMessage("startServer", params, NO_TIMEOUT).getAsJsonObject();
+    BrowserStartServerParams params = toProtocol(options, BrowserStartServerParams.class);
+    params.title = title;
+    BrowserStartServerResult result = channel.startServer(params, NO_TIMEOUT);
     BindResult bindResult = new BindResult();
-    bindResult.endpoint = result.get("endpoint").getAsString();
+    bindResult.endpoint = result.endpoint;
     return bindResult;
   }
 
   @Override
   public void unbind() {
-    sendMessage("stopServer", new JsonObject(), NO_TIMEOUT);
+    channel.stopServer(NO_TIMEOUT);
   }
 
   @Override
   public byte[] stopTracing() {
-    JsonObject json = sendMessage("stopTracing").getAsJsonObject();
-    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("artifact").get("guid").getAsString());
+    ArtifactImpl artifact = channel.stopTracing(NO_TIMEOUT).artifact;
     byte[] data = artifact.readAllBytes();
     artifact.delete();
     if (tracePath != null) {
@@ -263,6 +254,54 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
     }
     return data;
+  }
+
+  // The protocol takes a list of http credentials, the option is a single value or a list.
+  @SuppressWarnings("unchecked")
+  static List<com.microsoft.playwright.impl.protocol.HttpCredentials> httpCredentialsToProtocol(Object httpCredentials) {
+    if (httpCredentials == null) {
+      return null;
+    }
+    List<HttpCredentials> list = new ArrayList<>();
+    if (httpCredentials instanceof List) {
+      list.addAll((List<HttpCredentials>) httpCredentials);
+    } else {
+      list.add((HttpCredentials) httpCredentials);
+    }
+    if (list.isEmpty()) {
+      return null;
+    }
+    List<com.microsoft.playwright.impl.protocol.HttpCredentials> result = new ArrayList<>();
+    for (HttpCredentials credentials : list) {
+      com.microsoft.playwright.impl.protocol.HttpCredentials c = new com.microsoft.playwright.impl.protocol.HttpCredentials();
+      c.username = credentials.username;
+      c.password = credentials.password;
+      c.origin = credentials.origin;
+      c.send = credentials.send == null ? null : credentials.send.name().toLowerCase();
+      result.add(c);
+    }
+    return result;
+  }
+
+  static List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> clientCertificatesToProtocol(List<ClientCertificate> clientCertificates) {
+    if (clientCertificates == null) {
+      return null;
+    }
+    List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> result = new ArrayList<>();
+    for (ClientCertificate cert : clientCertificates) {
+      BrowserNewContextParams.BrowserNewContextParamsClientCertificates c = new BrowserNewContextParams.BrowserNewContextParamsClientCertificates();
+      c.origin = cert.origin;
+      try {
+        c.cert = cert.certPath != null ? Files.readAllBytes(cert.certPath) : cert.cert;
+        c.key = cert.keyPath != null ? Files.readAllBytes(cert.keyPath) : cert.key;
+        c.pfx = cert.pfxPath != null ? Files.readAllBytes(cert.pfxPath) : cert.pfx;
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read from file", e);
+      }
+      c.passphrase = cert.passphrase;
+      result.add(c);
+    }
+    return result;
   }
 
   private Page newPageImpl(NewPageOptions options) {
@@ -300,9 +339,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public CDPSession newBrowserCDPSession() {
-    JsonObject params = new JsonObject();
-    JsonObject result = sendMessage("newBrowserCDPSession", params, NO_TIMEOUT).getAsJsonObject();
-    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+    return channel.newBrowserCDPSession(NO_TIMEOUT).session;
   }
 
   protected void connectToBrowserType(BrowserTypeImpl browserType, Path tracesDir){

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
@@ -27,15 +28,15 @@ import java.nio.file.Path;
 
 import static com.microsoft.playwright.impl.Utils.writeToFile;
 
-class ArtifactImpl extends ChannelOwner {
+public class ArtifactImpl extends ChannelOwner {
+  final ArtifactChannel channel = new ArtifactChannel(this);
+
   public ArtifactImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
   public InputStream createReadStream() {
-    JsonObject result = sendMessage("stream").getAsJsonObject();
-    Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
-    return stream.stream();
+    return channel.stream(NO_TIMEOUT).stream.stream();
   }
 
   byte[] readAllBytes() {
@@ -53,39 +54,33 @@ class ArtifactImpl extends ChannelOwner {
   }
 
   public void cancel() {
-    sendMessage("cancel");
+    channel.cancel(NO_TIMEOUT);
   }
 
   public void delete() {
-    sendMessage("delete");
+    channel.delete(NO_TIMEOUT);
   }
 
   public String failure() {
-    JsonObject result = sendMessage("failure").getAsJsonObject();
-    if (result.has("error")) {
-      return result.get("error").getAsString();
-    }
-    return null;
+    return channel.failure(NO_TIMEOUT).error;
   }
 
   public Path pathAfterFinished() {
     if (connection.isRemote) {
       throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
     }
-    JsonObject json = sendMessage("pathAfterFinished").getAsJsonObject();
-    return FileSystems.getDefault().getPath(json.get("value").getAsString());
+    return FileSystems.getDefault().getPath(channel.pathAfterFinished(NO_TIMEOUT).value);
   }
 
   public void saveAs(Path path) {
     if (connection.isRemote) {
-      JsonObject jsonObject = sendMessage("saveAsStream").getAsJsonObject();
-      Stream stream = connection.getExistingObject(jsonObject.getAsJsonObject("stream").get("guid").getAsString());
+      Stream stream = channel.saveAsStream(NO_TIMEOUT).stream;
       writeToFile(stream.stream(), path);
       return;
     }
 
-    JsonObject params = new JsonObject();
-    params.addProperty("path", path.toString());
-    sendMessage("saveAs", params, NO_TIMEOUT);
+    ArtifactSaveAsParams params = new ArtifactSaveAsParams();
+    params.path = path.toString();
+    channel.saveAs(params, NO_TIMEOUT);
   }
 }
