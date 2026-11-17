@@ -39,6 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_DRIVER_DIR;
 import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_NODEJS_PATH;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -180,6 +181,19 @@ public class TestInstall {
     assertTrue(p.waitFor(1, TimeUnit.MINUTES), "Timed out waiting for version to be printed");
     String stdout = new String(Files.readAllBytes(out), StandardCharsets.UTF_8);
     assertTrue(stdout.contains("Version "), stdout);
+  }
+
+  @Test
+  void canUseTheDriverDirectoryOfEachCall(@TempDir Path tmpDir) throws Exception {
+    // https://github.com/microsoft/playwright-java/issues/2050
+    Path driverDir = tmpDir.resolve("driver");
+    Path otherDriverDir = tmpDir.resolve("other-driver");
+
+    Driver driver = Driver.ensureDriverInstalled(singletonMap(PLAYWRIGHT_DRIVER_DIR, driverDir.toString()), false);
+    assertEquals(driverDir, driver.driverDir());
+    Driver otherDriver = Driver.ensureDriverInstalled(singletonMap(PLAYWRIGHT_DRIVER_DIR, otherDriverDir.toString()), false);
+    assertEquals(otherDriverDir, otherDriver.driverDir());
+    assertNotEquals(driverDir, Driver.ensureDriverInstalled(Collections.emptyMap(), false).driverDir());
   }
 
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
