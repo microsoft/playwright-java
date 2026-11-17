@@ -60,14 +60,6 @@ public class TestPlaywrightCreate {
     }
   }
 
-  @PlaywrightTest
-  void shouldUseTheDriverDirOfEachInstance(Playwright playwright, @TempDir Path driverDir) {
-    // https://github.com/microsoft/playwright-java/issues/2050
-    Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_DRIVER_DIR", driverDir.toString()));
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> Playwright.create(options));
-    assertTrue(e.getMessage().contains("Failed to launch driver"), e.getMessage());
-  }
-
   // This test is too slow, so we don't run it.
   void shouldSupportEnvBrowsersPath(@TempDir Path browsersDir) throws IOException {
     Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString());

@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl.driver.jar;
 
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -194,6 +196,15 @@ public class TestInstall {
     Driver otherDriver = Driver.ensureDriverInstalled(singletonMap(PLAYWRIGHT_DRIVER_DIR, otherDriverDir.toString()), false);
     assertEquals(otherDriverDir, otherDriver.driverDir());
     assertNotEquals(driverDir, Driver.ensureDriverInstalled(Collections.emptyMap(), false).driverDir());
+  }
+
+  @Test
+  void canUseTheDriverDirectoryOfEachPlaywrightInstance(@TempDir Path driverDir) {
+    // https://github.com/microsoft/playwright-java/issues/2050
+    Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+    Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(singletonMap(PLAYWRIGHT_DRIVER_DIR, driverDir.toString()));
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> Playwright.create(options));
+    assertTrue(e.getMessage().contains("Failed to launch driver"), e.getMessage());
   }
 
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
