@@ -35,6 +35,7 @@ class RootInitializer {
 
 class RootInitializeParams {
   String sdkLanguage;
+  Boolean supportsLoneSurrogates;
 }
 
 class RootInitializeResult {
