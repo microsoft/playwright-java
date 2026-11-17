@@ -140,7 +140,7 @@ public class Utils {
 
           @Override
           public ChannelOwner read(JsonReader in) {
-            throw new PlaywrightException("Internal error: params with channel references must be built with ChannelOwner.toProtocol");
+            throw new PlaywrightException("Internal error: params with channel references must be built with Utils.toProtocol(owner, options, paramsClass)");
           }
         };
       }

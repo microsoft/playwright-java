@@ -1168,7 +1168,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   FrameExpectResult expect(String expression, FrameExpectOptions options) {
-    FrameExpectParams params = toProtocol(options, FrameExpectParams.class);
+    FrameExpectParams params = toProtocol(this, options, FrameExpectParams.class);
     params.expression = expression;
     FrameExpectResult result = new FrameExpectResult();
     try {
