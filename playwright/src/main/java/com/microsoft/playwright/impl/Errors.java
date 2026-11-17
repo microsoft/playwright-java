@@ -17,6 +17,7 @@
 // Port of packages/playwright-core/src/client/errors.ts
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
