@@ -16,9 +16,10 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 
-class DisposableObject extends ChannelOwner implements AutoCloseable {
+public class DisposableObject extends ChannelOwner implements AutoCloseable {
   final DisposableChannel channel = new DisposableChannel(this);
 
   DisposableObject(ChannelOwner parent, String type, String guid, JsonObject initializer) {

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIRequestContext;
@@ -41,7 +42,7 @@ import static com.microsoft.playwright.impl.Utils.toFilePayload;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 import static java.util.Arrays.asList;
 
-class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
+public class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   private final TracingImpl tracing;
   private String disposeReason;
 

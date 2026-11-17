@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-class ChannelOwner extends LoggingSupport {
+public class ChannelOwner extends LoggingSupport {
   final Connection connection;
   private ChannelOwner parent;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
@@ -167,7 +167,7 @@ class ChannelOwner extends LoggingSupport {
    * {@code resultClass}. {@code null} params mean an empty object, {@code null} or {@code Void.class}
    * result class discards the reply.
    */
-  <R> R sendMessage(String method, Object params, Class<R> resultClass, Double timeout) {
+  public <R> R sendMessage(String method, Object params, Class<R> resultClass, Double timeout) {
     JsonObject paramsJson = params == null ? new JsonObject() : connection.protocolGson().toJsonTree(params).getAsJsonObject();
     JsonElement result = sendMessage(method, paramsJson, timeout);
     if (resultClass == null || resultClass == Void.class || result == null || result.isJsonNull()) {
@@ -176,7 +176,7 @@ class ChannelOwner extends LoggingSupport {
     return connection.protocolGson().fromJson(result, resultClass);
   }
 
-  void sendMessage(String method, Object params, Double timeout) {
+  public void sendMessage(String method, Object params, Double timeout) {
     sendMessage(method, params, Void.class, timeout);
   }
 

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
@@ -35,7 +36,7 @@ import static com.microsoft.playwright.impl.BrowserImpl.httpCredentialsToProtoco
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class BrowserTypeImpl extends ChannelOwner implements BrowserType {
+public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   protected PlaywrightImpl playwright;
 
   final BrowserTypeChannel channel = new BrowserTypeChannel(this);

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Debugger;
 import com.microsoft.playwright.options.Location;
@@ -27,7 +28,7 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class DebuggerImpl extends ChannelOwner implements Debugger {
+public class DebuggerImpl extends ChannelOwner implements Debugger {
   private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
   private DebuggerPausedDetails pausedDetails;
 

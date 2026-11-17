@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.WebSocket;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-class WebSocketImpl extends ChannelOwner implements WebSocket {
+public class WebSocketImpl extends ChannelOwner implements WebSocket {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private final PageImpl page;
   private boolean isClosed;

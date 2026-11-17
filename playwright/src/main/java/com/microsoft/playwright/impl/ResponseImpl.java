@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Response;
@@ -126,7 +127,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public SecurityDetails securityDetails() {
-    ProtocolSecurityDetails value = channel.securityDetails(NO_TIMEOUT).value;
+    com.microsoft.playwright.impl.protocol.SecurityDetails value = channel.securityDetails(NO_TIMEOUT).value;
     if (value == null) {
       return null;
     }

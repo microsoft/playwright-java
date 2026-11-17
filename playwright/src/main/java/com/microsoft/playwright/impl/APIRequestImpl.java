@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -98,7 +99,7 @@ class APIRequestImpl implements APIRequest {
         list.add(credentials);
       }
       if (list.size() > 0) {
-        params.httpCredentials = gson().fromJson(list, new TypeToken<List<ProtocolHttpCredentials>>() {}.getType());
+        params.httpCredentials = gson().fromJson(list, new TypeToken<List<HttpCredentials>>() {}.getType());
       }
     }
     APIRequestContextImpl context = playwright.channel.newRequest(params, NO_TIMEOUT).request;

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-class WritableStream extends ChannelOwner {
+public class WritableStream extends ChannelOwner {
   final WritableStreamChannel channel = new WritableStreamChannel(this);
 
   WritableStream(ChannelOwner parent, String type, String guid, JsonObject initializer) {

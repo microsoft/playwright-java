@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
@@ -29,7 +30,7 @@ import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
-class BindingCall extends ChannelOwner {
+public class BindingCall extends ChannelOwner {
   private static class SourceImpl implements BindingCallback.Source {
     private final Frame frame;
 

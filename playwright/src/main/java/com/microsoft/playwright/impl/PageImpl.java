@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -1056,7 +1057,7 @@ public class PageImpl extends ChannelOwner implements Page {
   public List<String> pageErrors() {
     PagePageErrorsResult json = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
     List<String> result = new ArrayList<>();
-    for (com.microsoft.playwright.impl.SerializedError item : json.errors) {
+    for (SerializedError item : json.errors) {
       String errorStr = "";
       if (item.error != null) {
         errorStr = item.error.name + ": " + item.error.message;

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class TracingImpl extends ChannelOwner implements Tracing {
+public class TracingImpl extends ChannelOwner implements Tracing {
   private boolean includeSources;
   private Path tracesDir;
   private boolean isTracing;

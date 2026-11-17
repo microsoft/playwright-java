@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;

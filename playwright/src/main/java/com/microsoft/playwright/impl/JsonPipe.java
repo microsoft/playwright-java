@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class JsonPipe extends ChannelOwner implements Transport {
+public class JsonPipe extends ChannelOwner implements Transport {
   private final Queue<JsonObject> incoming = new LinkedList<>();
   private ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private enum EventType { CLOSE }

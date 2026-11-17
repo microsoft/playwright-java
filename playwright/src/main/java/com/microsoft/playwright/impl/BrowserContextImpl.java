@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,7 +42,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 
-class BrowserContextImpl extends ChannelOwner implements BrowserContext {
+public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   protected BrowserImpl browser;
   private final TracingImpl tracing;
   private final DebuggerImpl debugger;

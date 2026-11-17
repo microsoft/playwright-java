@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
@@ -30,7 +31,7 @@ import java.util.function.Predicate;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
-class WorkerImpl extends ChannelOwner implements Worker {
+public class WorkerImpl extends ChannelOwner implements Worker {
   final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   PageImpl page;
 

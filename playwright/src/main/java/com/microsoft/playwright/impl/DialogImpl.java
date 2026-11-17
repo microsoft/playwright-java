@@ -16,11 +16,12 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.Page;
 
-class DialogImpl extends ChannelOwner implements Dialog {
+public class DialogImpl extends ChannelOwner implements Dialog {
   final DialogChannel channel = new DialogChannel(this);
   private PageImpl page;
 

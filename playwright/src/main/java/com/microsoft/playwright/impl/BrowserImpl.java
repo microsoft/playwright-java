@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -35,7 +36,7 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
 
-class BrowserImpl extends ChannelOwner implements Browser {
+public class BrowserImpl extends ChannelOwner implements Browser {
   // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.
   final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
@@ -51,7 +52,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     DISCONNECTED,
   }
 
-  final ProtocolBrowserChannel channel = new ProtocolBrowserChannel(this);
+  final BrowserChannel channel = new BrowserChannel(this);
 
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -257,7 +258,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   // The protocol takes a list of http credentials, the option is a single value or a list.
   @SuppressWarnings("unchecked")
-  static List<ProtocolHttpCredentials> httpCredentialsToProtocol(Object httpCredentials) {
+  static List<com.microsoft.playwright.impl.protocol.HttpCredentials> httpCredentialsToProtocol(Object httpCredentials) {
     if (httpCredentials == null) {
       return null;
     }
@@ -270,9 +271,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (list.isEmpty()) {
       return null;
     }
-    List<ProtocolHttpCredentials> result = new ArrayList<>();
+    List<com.microsoft.playwright.impl.protocol.HttpCredentials> result = new ArrayList<>();
     for (HttpCredentials credentials : list) {
-      ProtocolHttpCredentials c = new ProtocolHttpCredentials();
+      com.microsoft.playwright.impl.protocol.HttpCredentials c = new com.microsoft.playwright.impl.protocol.HttpCredentials();
       c.username = credentials.username;
       c.password = credentials.password;
       c.origin = credentials.origin;

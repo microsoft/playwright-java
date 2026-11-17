@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -23,6 +24,8 @@ import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.*;
+import com.microsoft.playwright.options.BrowserChannel;
+import com.microsoft.playwright.options.ConsoleMessagesFilter;
 
 import java.io.*;
 import java.lang.reflect.Type;

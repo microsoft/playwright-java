@@ -1,5 +1,6 @@
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
+public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
   private Consumer<WebSocketFrame> onPageMessage;
   private BiConsumer<Integer, String> onPageClose;

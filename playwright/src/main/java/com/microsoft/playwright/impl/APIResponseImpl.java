@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -39,10 +40,10 @@ import static java.util.Arrays.asList;
 
 class APIResponseImpl implements APIResponse {
   final APIRequestContextImpl context;
-  private final ProtocolAPIResponse response;
+  private final com.microsoft.playwright.impl.protocol.APIResponse response;
   private final RawHeaders headers;
 
-  APIResponseImpl(APIRequestContextImpl apiRequestContext, ProtocolAPIResponse response) {
+  APIResponseImpl(APIRequestContextImpl apiRequestContext, com.microsoft.playwright.impl.protocol.APIResponse response) {
     context = apiRequestContext;
     this.response = response;
     List<HttpHeader> headerList = new ArrayList<>();
@@ -98,7 +99,7 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public SecurityDetails securityDetails() {
-    ProtocolSecurityDetails d = response.securityDetails;
+    com.microsoft.playwright.impl.protocol.SecurityDetails d = response.securityDetails;
     if (d == null) {
       return null;
     }
