@@ -79,8 +79,11 @@ extends:
           inputs:
             workingFile: .npmrc
 
-        - bash: ./scripts/download_driver.sh
-          displayName: 'Download driver'
+        # Clones microsoft/playwright into .upstream/ at the commit in scripts/DRIVER_VERSION
+        # and builds the driver from it with `npm ci`, which picks up the registry and
+        # the credentials from the .npmrc above.
+        - bash: ./scripts/build_driver.sh
+          displayName: 'Build the driver'
 
         # Must run before MavenAuthenticate@0 so the credentials it injects into
         # ~/.m2/settings.xml are not overwritten by the copy.

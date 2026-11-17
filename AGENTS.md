@@ -6,15 +6,15 @@ Paths such as `~/code/playwright` in this file assume that you check the repos o
 
 ## How this repo depends on Playwright
 
-- **The driver.** The Java client talks to the Node.js driver that `microsoft/playwright` publishes: the `playwright-core` npm package, which `scripts/download_driver.sh` unpacks into `driver/src/main/resources/driver/package/`. `scripts/DRIVER_VERSION` names its version, and `npm view playwright@<version> gitHead` prints its upstream commit. Upstream `main` is close to it. Release `1.X.0` bundles the driver of `scripts/DRIVER_VERSION` at tag `v1.X.0`.
-- **Upstream code.** In `~/code/playwright`: the client in `packages/playwright-core/src/client/`, the API docs in `docs/src/api/`, the tests in `tests/page/` and `tests/library/`. Its `AGENTS.md` says how to build it and run a test.
+- **The driver.** The Java client talks to the Node.js driver, the `playwright-core` package of `microsoft/playwright`, built from source at the commit in `scripts/DRIVER_VERSION`. `scripts/build_driver.sh` clones `microsoft/playwright` into `.upstream/` (gitignored), checks that commit out, builds it and unpacks the package into `driver/src/main/resources/driver/package/`. Do not edit, commit or switch branches in `.upstream/`. `git show v1.X.0:scripts/DRIVER_VERSION` prints the upstream commit of a release, or, for releases up to 1.65, the `playwright-core` version of its driver.
+- **Upstream code.** In `.upstream/`, at the commit of the driver, or in `~/code/playwright`, which may be ahead of it: the client in `packages/playwright-core/src/client/`, the API docs in `docs/src/api/`, the tests in `tests/page/` and `tests/library/`. Its `AGENTS.md` says how to build it and run a test.
 - **Where a bug is.** When the same calls fail in a Node.js test upstream too, the cause is in the driver or a browser, and the fix lands in `microsoft/playwright`. When Node.js passes, the bug is in the Java client: compare the `*Impl.java` with its JavaScript counterpart, and fix it here.
-- **The generated API.** `scripts/generate_api.sh` runs upstream's `utils/doclint/generateApiJson.js` at the commit of the driver, and `tools/api-generator` writes every interface and options class in `playwright/src/main/java/com/microsoft/playwright/`, `options/` and `assertions/`. Only `CLI.java`, `PlaywrightException.java`, `TimeoutError.java`, `assertions/PlaywrightAssertions.java` and the `package-info.java` files there are written by hand. Never edit a generated file: the next roll reverts it. A missing method or option is a change to `docs/src/api/` upstream.
+- **The generated API.** `scripts/generate_api.sh` runs `utils/doclint/generateApiJson.js` of `.upstream/`, and `tools/api-generator` writes every interface and options class in `playwright/src/main/java/com/microsoft/playwright/`, `options/` and `assertions/`. Only `CLI.java`, `PlaywrightException.java`, `TimeoutError.java`, `assertions/PlaywrightAssertions.java` and the `package-info.java` files there are written by hand. Never edit a generated file: the next roll reverts it. A missing method or option is a change to `docs/src/api/` upstream.
 
 ## Build and test
 
 ```bash
-scripts/download_driver.sh                           # the driver, once per DRIVER_VERSION
+scripts/build_driver.sh                              # the driver, once per DRIVER_VERSION; needs git and Node.js
 mvn -B install -D skipTests --no-transfer-progress   # build and install every module
 mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps" -f playwright/pom.xml --no-transfer-progress
 BROWSER=chromium mvn test -f playwright/pom.xml -D test=TestPageScreenshot --no-transfer-progress

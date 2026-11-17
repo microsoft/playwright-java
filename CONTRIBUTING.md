@@ -35,13 +35,13 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Run the following script to download and assemble the Playwright driver. The platform-independent `playwright-core` package is assembled once into `driver/src/main/resources/driver/package/`, and the Node.js binary for each platform into `driver-bundle/src/main/resources/driver/<platform>/` (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
+2. Run the following script to build and assemble the Playwright driver; it needs git and Node.js with npm. The platform-independent `playwright-core` package is assembled once into `driver/src/main/resources/driver/package/`, and the Node.js binary for each platform into `driver-bundle/src/main/resources/driver/<platform>/` (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
 
 ```bash
-scripts/download_driver.sh
+scripts/build_driver.sh
 ```
 
-Each driver is assembled from the [`playwright-core`](https://www.npmjs.com/package/playwright-core) npm package (version pinned in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION)) and the Node.js binary of the version pinned in [scripts/NODE_VERSION](scripts/NODE_VERSION) from https://nodejs.org, the same way the upstream Playwright build does it. `scripts/roll_driver.sh` updates the pinned Node.js version to the latest release of the same major version on each roll. To update only Node.js, run `scripts/roll_node.sh` and then `scripts/download_driver.sh`.
+The driver is built from source: the script clones [microsoft/playwright](https://github.com/microsoft/playwright) into `.upstream/` (gitignored), checks out the commit pinned in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION) and builds the `playwright-core` package from it (`npm ci`, `npm run build`, `npm pack`). The build of `.upstream/` is reused until the commit changes. Each driver also gets the Node.js binary of the version pinned in [scripts/NODE_VERSION](scripts/NODE_VERSION) from https://nodejs.org, the same way the upstream Playwright build does it. Run the script again when `scripts/DRIVER_VERSION` or `scripts/NODE_VERSION` changes, for example after a pull. `scripts/roll_driver.sh` updates the pinned Node.js version to the latest release of the same major version on each roll. To update only Node.js, run `scripts/roll_node.sh` and then `scripts/build_driver.sh`.
 
 ### Building and running the tests with Maven
 
@@ -96,7 +96,7 @@ with a `@Fixture` method reading its `@Parameter` field to run the same tests wi
 
 ### Generating API
 
-Public Java API is generated from api.json, which is generated from the upstream Playwright source at the exact commit that produced the driver version in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION) (resolved via `npm view playwright@<version> gitHead`). `scripts/generate_api.sh` fetches a minimal upstream checkout automatically; set `PW_SRC_DIR` to reuse an existing `microsoft/playwright` checkout instead. To regenerate Java interfaces for the current driver run:
+Public Java API is generated from api.json, which is generated from `.upstream/`, the `microsoft/playwright` checkout at the commit in [scripts/DRIVER_VERSION](scripts/DRIVER_VERSION) that the driver is built from (run `scripts/build_driver.sh` first). Set `PW_SRC_DIR` to generate from another `microsoft/playwright` checkout instead, to try a change to the upstream docs; the committed files must come from `.upstream/`. To regenerate Java interfaces for the current driver run:
 
 ```bash
 ./scripts/generate_api.sh
@@ -104,11 +104,13 @@ Public Java API is generated from api.json, which is generated from the upstream
 
 #### Updating driver version
 
-Versions of published driver archives can be found in [publish canary](https://github.com/microsoft/playwright/actions/workflows/publish_canary.yml) and [publish release](https://github.com/microsoft/playwright/actions/workflows/publish_release_driver.yml) actions logs. To update the driver to a particular version run the following command:
+To roll the driver to a branch (`main`, `release-1.66`), a tag (`v1.66.0`) or a commit of `microsoft/playwright` run the following command; the default is the tip of `main`:
 
 ```bash
-scripts/roll_driver.sh [version]
+scripts/roll_driver.sh [ref]
 ```
+
+It pins the commit in `scripts/DRIVER_VERSION`, builds the driver from it and regenerates the API. The driver reports the version of `packages/playwright-core/package.json` at that commit: `1.66.0` on a release tag, `1.67.0-next` on `main`.
 
 ### Code Style
 

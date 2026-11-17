@@ -69,8 +69,9 @@ extends:
               echo '{ "data-root": "/mnt/docker" }' | sudo tee /etc/docker/daemon.json
               sudo service docker start
 
-        # Used by scripts/download_driver.sh on the host. The Docker build context is
-        # utils/docker (see build.sh), so this file never reaches the images.
+        # scripts/build_driver.sh builds the driver from .upstream/ on the host with `npm ci`,
+        # which picks up the registry and the credentials from this .npmrc. The Docker build
+        # context is utils/docker (see build.sh), so this file never reaches the images.
         - task: Bash@3
           displayName: "setup .npmrc"
           inputs:

@@ -9,7 +9,7 @@ cd "$(dirname $0)"
 if [ "$#" -gt 0 ]; then
   echo ""
   echo "Updates scripts/NODE_VERSION to the latest Node.js release of the same major version."
-  echo "Run scripts/download_driver.sh after that to download the new Node.js binaries."
+  echo "Run scripts/build_driver.sh after that to download the new Node.js binaries."
   echo ""
   echo "Usage: scripts/roll_node.sh"
   echo ""
