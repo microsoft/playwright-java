@@ -8,10 +8,11 @@ cd "$(dirname "$0")/.."
 
 DRIVER_VERSION=$(head -1 ./scripts/DRIVER_VERSION)
 
-# api.json is generated from .upstream/, the microsoft/playwright checkout at the commit in
-# scripts/DRIVER_VERSION that the driver is built from (scripts/build_driver.sh). PW_SRC_DIR
-# generates it from another checkout, to try a change to the docs or to the generator. The
-# committed files must come from .upstream/: CI generates them again and fails when they differ.
+# The script generates api.json from .upstream/. This is the microsoft/playwright checkout
+# at the commit in scripts/DRIVER_VERSION. scripts/build_driver.sh makes it.
+# To try a change to the upstream docs or to the generator, set PW_SRC_DIR to a different
+# checkout. Do not commit files that come from PW_SRC_DIR: CI generates the files again
+# from .upstream/ and fails if they are different.
 if [[ -n "$PW_SRC_DIR" ]]; then
   UPSTREAM_DIR="$PW_SRC_DIR"
   echo "Generating from $UPSTREAM_DIR (PW_SRC_DIR), not from .upstream/"

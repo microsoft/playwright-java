@@ -104,13 +104,13 @@ Public Java API is generated from api.json, which is generated from `.upstream/`
 
 #### Updating driver version
 
-To roll the driver to a branch (`main`, `release-1.66`), a tag (`v1.66.0`) or a commit of `microsoft/playwright` run the following command; the default is the tip of `main`:
+The driver does not depend on a published Playwright version. To roll the driver to a newer commit of `microsoft/playwright`, run the following command:
 
 ```bash
-scripts/roll_driver.sh [ref]
+scripts/roll_driver.sh [main|release-1.<minor>|<commit>]
 ```
 
-It pins the commit in `scripts/DRIVER_VERSION`, builds the driver from it and regenerates the API. The driver reports the version of `packages/playwright-core/package.json` at that commit: `1.66.0` on a release tag, `1.67.0-next` on `main`.
+`main` (the default) is the tip of upstream `main`, `release-1.<minor>` is the tip of that upstream release branch, and `<commit>` is a full commit hash. The script writes the commit to `scripts/DRIVER_VERSION`, builds the driver from it and regenerates the API. The driver reports the version of `packages/playwright-core/package.json` at that commit: `1.67.0-next` on `main`, `1.66.0` on `release-1.66`.
 
 ### Code Style
 

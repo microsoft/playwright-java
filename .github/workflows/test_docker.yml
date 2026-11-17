@@ -60,7 +60,7 @@ jobs:
 
       - name: Copy repository inside docker container
         run: |
-            # The driver is built already; the microsoft/playwright checkout it was built from is large.
+            # The container does not need .upstream/, and it is large.
             rm -rf .upstream
             docker cp . "$CONTAINER_ID":/home/pwuser/playwright
             # build.sh installed the SNAPSHOT artifacts into the local Maven repository

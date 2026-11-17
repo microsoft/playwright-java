@@ -8,15 +8,17 @@ cd "$(dirname $0)"
 
 if [[ ($1 == '-h') || ($1 == '--help') ]]; then
   echo ""
-  echo "This script builds the Playwright driver from source and assembles it for all platforms."
-  echo "It clones microsoft/playwright into '.upstream/' (gitignored), checks out the commit"
-  echo "pinned in scripts/DRIVER_VERSION and builds the 'playwright-core' npm package from it."
-  echo "The platform-independent package is assembled once into the driver module"
-  echo "('driver/src/main/resources/driver/package'), and the Node.js binary from"
-  echo "https://nodejs.org (version pinned in scripts/NODE_VERSION) for each platform goes"
-  echo "into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>')."
+  echo "This script builds the Playwright driver from source for all platforms."
   echo ""
-  echo "Requires git and Node.js with npm."
+  echo "1. It clones microsoft/playwright into '.upstream/' (gitignored)."
+  echo "2. It checks out the commit in scripts/DRIVER_VERSION."
+  echo "3. It builds the 'playwright-core' package and puts it into the driver module"
+  echo "   ('driver/src/main/resources/driver/package'). All platforms use this package."
+  echo "4. It downloads the Node.js binary of each platform from https://nodejs.org and puts"
+  echo "   it into the driver-bundle module ('driver-bundle/src/main/resources/driver/<platform>')."
+  echo "   scripts/NODE_VERSION holds the Node.js version."
+  echo ""
+  echo "The script needs git and Node.js with npm."
   echo ""
   echo "Usage: scripts/build_driver.sh [option]"
   echo ""
@@ -43,21 +45,21 @@ ROOT="$(cd .. && pwd)"
 UPSTREAM_URL="https://github.com/microsoft/playwright.git"
 UPSTREAM_DIR="$ROOT/.upstream"
 
-# scripts/DRIVER_VERSION pins the microsoft/playwright commit. scripts/roll_driver.sh updates it.
+# scripts/DRIVER_VERSION holds the microsoft/playwright commit. scripts/roll_driver.sh updates it.
 DRIVER_VERSION=$(head -1 ./DRIVER_VERSION)
 if [[ ! "$DRIVER_VERSION" =~ ^[0-9a-f]{40}$ ]]; then
   echo "scripts/DRIVER_VERSION must hold one microsoft/playwright commit (40 hex digits), got '$DRIVER_VERSION'"
   exit 1
 fi
-# scripts/NODE_VERSION pins the exact Node.js version. scripts/roll_node.sh updates it.
+# scripts/NODE_VERSION holds the exact Node.js version. scripts/roll_node.sh updates it.
 NODE_VERSION=$(head -1 ./NODE_VERSION)
 
 echo "Driver commit:   $DRIVER_VERSION"
 echo "Node.js version: $NODE_VERSION"
 
-# npm uses the registry and the credentials of a root-level .npmrc when there is one (e.g.
-# the one the release pipeline writes to point at the internal Azure Artifacts feed).
-# Locally, NPM_CONFIG_REGISTRY=<url> can be used to the same effect.
+# Runs npm in a directory. If the repository root has an .npmrc file, npm uses its registry
+# and its credentials. The release pipeline writes this file to use the internal Azure
+# Artifacts feed. On your computer, set NPM_CONFIG_REGISTRY=<url> to use a different registry.
 npm_in() {
   local dir=$1
   shift
@@ -76,11 +78,12 @@ upstream_has_local_changes() {
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-# 1. .upstream/ at the commit in scripts/DRIVER_VERSION.
+# 1. Check out the commit of scripts/DRIVER_VERSION in .upstream/.
 CLONED=""
 if [[ ! -e "$UPSTREAM_DIR/.git" ]]; then
   echo "Cloning $UPSTREAM_URL into $UPSTREAM_DIR"
-  # The whole history, for listing the changes of a roll; file contents are fetched on demand.
+  # The clone has the full history, which a roll uses to list the upstream changes.
+  # Git downloads the file contents only when it needs them.
   git clone --quiet --filter=blob:none --no-checkout "$UPSTREAM_URL" "$UPSTREAM_DIR"
   CLONED=1
 fi
@@ -91,7 +94,7 @@ if [[ -n "$CLONED" || "$(git -C "$UPSTREAM_DIR" rev-parse HEAD)" != "$DRIVER_VER
   fi
   if ! git -C "$UPSTREAM_DIR" cat-file -e "$DRIVER_VERSION^{commit}" 2> /dev/null; then
     git -C "$UPSTREAM_DIR" fetch --quiet --tags origin
-    # A commit that no branch or tag reaches any more, for example on a deleted branch.
+    # If the commit is not on a branch or a tag, fetch it by its hash.
     git -C "$UPSTREAM_DIR" cat-file -e "$DRIVER_VERSION^{commit}" 2> /dev/null \
       || git -C "$UPSTREAM_DIR" fetch --quiet origin "$DRIVER_VERSION"
   fi
@@ -99,13 +102,13 @@ if [[ -n "$CLONED" || "$(git -C "$UPSTREAM_DIR" rev-parse HEAD)" != "$DRIVER_VER
 fi
 echo "$UPSTREAM_DIR is at $DRIVER_VERSION"
 
-# 2. Build it, once per commit.
+# 2. Build .upstream/. Do this only one time for each commit.
 if upstream_has_local_changes; then
-  echo "$UPSTREAM_DIR has local changes. The driver is pinned to a commit, so build it from a clean checkout."
+  echo "$UPSTREAM_DIR has local changes. Discard them: the driver must come from the commit in scripts/DRIVER_VERSION."
   exit 1
 fi
 UPSTREAM_CORE_DIR="$UPSTREAM_DIR/packages/playwright-core"
-# npm ci removes node_modules, and the stamp with it.
+# The stamp file holds the commit of the last build. `npm ci` deletes node_modules and the stamp.
 STAMP="$UPSTREAM_DIR/node_modules/.playwright-java-build"
 if [[ "$(cat "$STAMP" 2> /dev/null)" != "$DRIVER_VERSION" || ! -d "$UPSTREAM_CORE_DIR/lib" ]]; then
   npm_in "$UPSTREAM_DIR" ci --no-audit --no-fund
@@ -113,24 +116,24 @@ if [[ "$(cat "$STAMP" 2> /dev/null)" != "$DRIVER_VERSION" || ! -d "$UPSTREAM_COR
   echo "$DRIVER_VERSION" > "$STAMP"
 fi
 
-# The platform-independent driver code (playwright-core) is assembled once into the driver module;
-# the Node.js binary for each platform is assembled into the driver-bundle module. See issue #1196.
+# The playwright-core package is the same on all platforms. It goes into the driver module.
+# The Node.js binary of each platform goes into the driver-bundle module. See issue #1196.
 CORE_DEST="$ROOT/driver/src/main/resources/driver"
 NODE_DEST="$ROOT/driver-bundle/src/main/resources/driver"
 
-# 3. playwright-core package -> driver module (once, shared by every platform).
+# 3. Put the playwright-core package into the driver module.
 echo "Assembling playwright-core package to $CORE_DEST/package"
 npm_in "$UPSTREAM_CORE_DIR" pack --pack-destination "$TMP_DIR" --silent > /dev/null
 CORE_TGZ=$(ls "$TMP_DIR"/playwright-core-*.tgz)
 rm -rf "$CORE_DEST/package"
 mkdir -p "$CORE_DEST"
-# The npm tarball has a top-level package/ directory, so this creates $CORE_DEST/package.
+# The npm tarball has a top-level package/ directory. This command creates $CORE_DEST/package.
 tar -xzf "$CORE_TGZ" -C "$CORE_DEST"
 rm -f "$CORE_TGZ"
-# Upstream copies these into the package before it publishes it (LICENCE_FILES in utils/workspace.js).
+# The upstream release copies these files into the package (LICENCE_FILES in utils/workspace.js).
 cp "$UPSTREAM_DIR/NOTICE" "$UPSTREAM_DIR/LICENSE" "$CORE_DEST/package/"
 
-# 4. Node.js binary for each platform -> driver-bundle module.
+# 4. Put the Node.js binary of each platform into the driver-bundle module.
 # <java platform dir>:<nodejs platform suffix>:<archive extension>
 for ENTRY in \
   "mac:darwin-x64:tar.gz" \
@@ -145,7 +148,7 @@ do
   rm -rf "$DEST"
   mkdir -p "$DEST"
 
-  # Node.js binary and its license from the official Node.js distribution.
+  # Download the Node.js binary and its license from the official Node.js distribution.
   NODE_DIR="node-v$NODE_VERSION-$NODE_SUFFIX"
   NODE_ARCHIVE="$TMP_DIR/$NODE_DIR.$ARCHIVE"
   download "https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIR.$ARCHIVE" "$NODE_ARCHIVE"
@@ -161,5 +164,5 @@ done
 
 UPSTREAM_VERSION=$(cd "$UPSTREAM_CORE_DIR" && node -p "require('./package.json').version")
 echo ""
-echo "The driver has been built from microsoft/playwright $DRIVER_VERSION; it reports version $UPSTREAM_VERSION."
+echo "Built the driver from microsoft/playwright $DRIVER_VERSION. The driver reports version $UPSTREAM_VERSION."
 echo ""

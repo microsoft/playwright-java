@@ -79,9 +79,9 @@ extends:
           inputs:
             workingFile: .npmrc
 
-        # Clones microsoft/playwright into .upstream/ at the commit in scripts/DRIVER_VERSION
-        # and builds the driver from it with `npm ci`, which picks up the registry and
-        # the credentials from the .npmrc above.
+        # The script clones microsoft/playwright into .upstream/ at the commit in
+        # scripts/DRIVER_VERSION and builds the driver from it. `npm ci` uses the registry
+        # and the credentials of the .npmrc file above.
         - bash: ./scripts/build_driver.sh
           displayName: 'Build the driver'
 

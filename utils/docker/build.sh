@@ -10,7 +10,7 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
   echo ""
   echo "  docker run --rm -it playwright:localbuild-noble /bin/bash"
   echo ""
-  echo "NOTE: this requires git, a JDK, Maven and Node.js with npm on the host: the driver and the client are built here"
+  echo "NOTE: the host must have git, a JDK, Maven and Node.js with npm: the script builds the driver and the client here"
   echo "and the image only runs it to install the browsers."
   echo ""
   exit 0
