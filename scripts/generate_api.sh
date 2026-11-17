@@ -32,3 +32,19 @@ mvn compile -f ./tools/api-generator --no-transfer-progress
 
 echo "Regenerating Java interfaces"
 mvn exec:java --f ./tools/api-generator -D exec.mainClass=com.microsoft.playwright.tools.ApiGenerator
+
+# The protocol types are generated last: they avoid names of the public API types generated above.
+# utils/protocol_spec.js needs the 'yaml' package. .upstream/ has it after scripts/build_driver.sh.
+# A PW_SRC_DIR checkout without node_modules does not have it: install it in a temporary directory.
+echo "Generating protocol channel types"
+YAML_DIR=""
+if [[ ! -d "$UPSTREAM_DIR/node_modules/yaml" ]]; then
+  YAML_DIR=$(mktemp -d)
+  npm install --prefix "$YAML_DIR" --no-audit --no-fund --silent yaml@2.9.0
+  export NODE_PATH="$YAML_DIR/node_modules${NODE_PATH:+:$NODE_PATH}"
+fi
+node ./scripts/generate_java_channels.js "$UPSTREAM_DIR"
+
+if [[ -n "$YAML_DIR" ]]; then
+  rm -rf "$YAML_DIR"
+fi

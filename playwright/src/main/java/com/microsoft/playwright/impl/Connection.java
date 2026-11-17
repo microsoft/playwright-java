@@ -15,7 +15,14 @@
  */
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +32,7 @@ import com.microsoft.playwright.TimeoutError;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +60,7 @@ class Message {
       ", method='" + method + '\'' +
       ", params=" + (params == null ? null : "<...>") +
       ", result='" + result + '\'' +
-      ", error='" + error + '\'' +
+      ", error='" + Connection.errorToString(error) + '\'' +
       '}';
   }
 }
@@ -61,6 +69,10 @@ class Message {
 public class Connection {
   private final Transport transport;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
+  private final Gson protocolGson = gson().newBuilder()
+    .registerTypeAdapterFactory(new ChannelOwnerAdapterFactory())
+    .registerTypeAdapter(byte[].class, new Base64Adapter().nullSafe())
+    .create();
   private final Root root;
   final boolean isRemote;
   private int lastId = 0;
@@ -87,11 +99,10 @@ public class Connection {
     }
 
     PlaywrightImpl initialize() {
-      JsonObject params = new JsonObject();
-      params.addProperty("sdkLanguage", "java");
-      params.addProperty("supportsLoneSurrogates", true);
-      JsonElement result = sendMessage("initialize", params.getAsJsonObject(), NO_TIMEOUT);
-      return this.connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("playwright").get("guid").getAsString());
+      RootInitializeParams params = new RootInitializeParams();
+      params.sdkLanguage = "java";
+      params.supportsLoneSurrogates = true;
+      return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
     }
   }
 
@@ -236,6 +247,11 @@ public class Connection {
     return localUtils;
   }
 
+  /** Gson that serializes channel owners as {guid} and resolves them back through this connection (see channelOwner.ts, connection.ts upstream). */
+  Gson protocolGson() {
+    return protocolGson;
+  }
+
   public <T> T getExistingObject(String guid) {
     @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
     if (result == null)
@@ -260,6 +276,79 @@ public class Connection {
     Message messageObj = gson.fromJson(message, Message.class);
     dispatch(messageObj);
     return true;
+  }
+
+  private class ChannelOwnerAdapterFactory implements TypeAdapterFactory {
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      if (!ChannelOwner.class.isAssignableFrom(type.getRawType())) {
+        return null;
+      }
+      return (TypeAdapter<T>) new TypeAdapter<ChannelOwner>() {
+        @Override
+        public void write(JsonWriter out, ChannelOwner value) throws IOException {
+          if (value == null) {
+            out.nullValue();
+            return;
+          }
+          out.beginObject();
+          out.name("guid");
+          out.value(value.guid);
+          out.endObject();
+        }
+
+        @Override
+        public ChannelOwner read(JsonReader in) throws IOException {
+          if (in.peek() == JsonToken.NULL) {
+            in.nextNull();
+            return null;
+          }
+          String guid = null;
+          in.beginObject();
+          while (in.hasNext()) {
+            String name = in.nextName();
+            if ("guid".equals(name)) {
+              guid = in.nextString();
+            } else {
+              in.skipValue();
+            }
+          }
+          in.endObject();
+          return getExistingObject(guid);
+        }
+      };
+    }
+  }
+
+  private static class Base64Adapter extends TypeAdapter<byte[]> {
+    @Override
+    public void write(JsonWriter out, byte[] value) throws IOException {
+      out.value(Base64.getEncoder().encodeToString(value));
+    }
+
+    @Override
+    public byte[] read(JsonReader in) throws IOException {
+      return Base64.getDecoder().decode(in.nextString());
+    }
+  }
+
+  // Format of the driver error message; tests match on it.
+  static String errorToString(SerializedError.SerializedErrorError error) {
+    return "Error {\n" +
+      "  message='" + error.message + '\n' +
+      "  name='" + error.name + '\n' +
+      "  stack='" + error.stack + '\n' +
+      '}';
+  }
+
+  static String errorToString(SerializedError error) {
+    if (error.error != null) {
+      return errorToString(error.error);
+    }
+    return "SerializedError{" +
+      "value=" + error.value +
+      '}';
   }
 
   private static String formatCallLog(JsonArray log) {
@@ -301,13 +390,13 @@ public class Connection {
         String callLog = formatCallLog(message.log);
         PlaywrightException exception;
         if (message.error.error == null) {
-          exception = new PlaywrightException(message.error + callLog);
+          exception = new PlaywrightException(errorToString(message.error) + callLog);
         } else if ("TimeoutError".equals(message.error.error.name)) {
-          exception = new TimeoutError(message.error.error + callLog);
+          exception = new TimeoutError(errorToString(message.error.error) + callLog);
         } else if ("TargetClosedError".equals(message.error.error.name)) {
-          exception = new TargetClosedError(message.error.error + callLog);
+          exception = new TargetClosedError(errorToString(message.error.error) + callLog);
         } else {
-          exception = new DriverException(message.error.error + callLog);
+          exception = new DriverException(errorToString(message.error.error) + callLog);
         }
         if (message.errorDetails != null) {
           exception = new ServerErrorWithDetails(exception, message.errorDetails, message.log);

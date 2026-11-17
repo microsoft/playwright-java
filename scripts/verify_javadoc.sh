@@ -42,9 +42,9 @@ for page in \
   fi
 done
 
-IMPL_PAGES=$(echo "$ENTRIES" | grep -E '^com/microsoft/playwright/impl/[^/]+\.html$' || true)
+IMPL_PAGES=$(echo "$ENTRIES" | grep -E '^com/microsoft/playwright/impl/' || true)
 if [[ -n "$IMPL_PAGES" ]]; then
-  echo "ERROR: com.microsoft.playwright.impl should be excluded, found:"
+  echo "ERROR: com.microsoft.playwright.impl and its subpackages should be excluded, found:"
   echo "$IMPL_PAGES"
   FAILED=1
 fi

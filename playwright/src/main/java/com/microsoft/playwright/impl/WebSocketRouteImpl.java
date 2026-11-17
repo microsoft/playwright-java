@@ -1,5 +1,6 @@
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
@@ -12,9 +13,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
+public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
   private Consumer<WebSocketFrame> onPageMessage;
   private BiConsumer<Integer, String> onPageClose;
@@ -27,8 +28,8 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (options == null) {
         options = new CloseOptions();
       }
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      params.addProperty("wasClean", true);
+      WebSocketRouteCloseServerParams params = toProtocol(options, WebSocketRouteCloseServerParams.class);
+      params.wasClean = true;
       sendMessageAsync("closeServer", params);
     }
 
@@ -49,18 +50,17 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
     @Override
     public void send(String message) {
-      JsonObject params = new JsonObject();
-      params.addProperty("message", message);
-      params.addProperty("isBase64", false);
+      WebSocketRouteSendToServerParams params = new WebSocketRouteSendToServerParams();
+      params.message = message;
+      params.isBase64 = false;
       sendMessageAsync("sendToServer", params);
     }
 
     @Override
     public void send(byte[] message) {
-      JsonObject params = new JsonObject();
-      String base64 = Base64.getEncoder().encodeToString(message);
-      params.addProperty("message", base64);
-      params.addProperty("isBase64", true);
+      WebSocketRouteSendToServerParams params = new WebSocketRouteSendToServerParams();
+      params.message = Base64.getEncoder().encodeToString(message);
+      params.isBase64 = true;
       sendMessageAsync("sendToServer", params);
     }
 
@@ -75,6 +75,8 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     }
   };
 
+  final WebSocketRouteChannel channel = new WebSocketRouteChannel(this);
+
   WebSocketRouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -84,8 +86,8 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (options == null) {
         options = new CloseOptions();
       }
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      params.addProperty("wasClean", true);
+      WebSocketRouteClosePageParams params = toProtocol(options, WebSocketRouteClosePageParams.class);
+      params.wasClean = true;
       sendMessageAsync("closePage", params);
   }
 
@@ -95,7 +97,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       throw new PlaywrightException("Already connected to the server");
     }
     connected = true;
-    sendMessageAsync("connect");
+    sendMessageAsync("connect", new WebSocketRouteConnectParams());
     return server;
   }
 
@@ -111,18 +113,17 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
   @Override
   public void send(String message) {
-    JsonObject params = new JsonObject();
-    params.addProperty("message", message);
-    params.addProperty("isBase64", false);
+    WebSocketRouteSendToPageParams params = new WebSocketRouteSendToPageParams();
+    params.message = message;
+    params.isBase64 = false;
     sendMessageAsync("sendToPage", params);
   }
 
   @Override
   public void send(byte[] message) {
-    JsonObject params = new JsonObject();
-    String base64 = Base64.getEncoder().encodeToString(message);
-    params.addProperty("message", base64);
-    params.addProperty("isBase64", true);
+    WebSocketRouteSendToPageParams params = new WebSocketRouteSendToPageParams();
+    params.message = Base64.getEncoder().encodeToString(message);
+    params.isBase64 = true;
     sendMessageAsync("sendToPage", params);
   }
 
@@ -153,7 +154,7 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
     }
     // Ensure that websocket is "open" and can send messages without an actual server connection.
     try {
-      sendMessageAsync("ensureOpened");
+      sendMessageAsync("ensureOpened", new WebSocketRouteEnsureOpenedParams());
     } catch (PlaywrightException e) {
       // If this happens after the page has been closed, ignore the error.
     }
@@ -167,9 +168,9 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (onPageMessage != null) {
         onPageMessage.accept(new WebSocketFrameImpl(message, isBase64));
       } else if (connected) {
-        JsonObject messageParams = new JsonObject();
-        messageParams.addProperty("message", message);
-        messageParams.addProperty("isBase64", isBase64);
+        WebSocketRouteSendToServerParams messageParams = new WebSocketRouteSendToServerParams();
+        messageParams.message = message;
+        messageParams.isBase64 = isBase64;
         sendMessageAsync("sendToServer", messageParams);
       }
     } else if ("messageFromServer".equals(event)) {
@@ -178,9 +179,9 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (onServerMessage != null) {
         onServerMessage.accept(new WebSocketFrameImpl(message, isBase64));
       } else {
-        JsonObject messageParams = new JsonObject();
-        messageParams.addProperty("message", message);
-        messageParams.addProperty("isBase64", isBase64);
+        WebSocketRouteSendToPageParams messageParams = new WebSocketRouteSendToPageParams();
+        messageParams.message = message;
+        messageParams.isBase64 = isBase64;
         sendMessageAsync("sendToPage", messageParams);
       }
     } else if ("closePage".equals(event)) {
@@ -190,10 +191,10 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (onPageClose != null) {
         onPageClose.accept(code, reason);
       } else {
-        JsonObject closeParams = new JsonObject();
-        closeParams.addProperty("code", code);
-        closeParams.addProperty("reason", reason);
-        closeParams.addProperty("wasClean", wasClean);
+        WebSocketRouteCloseServerParams closeParams = new WebSocketRouteCloseServerParams();
+        closeParams.code = code;
+        closeParams.reason = reason;
+        closeParams.wasClean = wasClean;
         sendMessageAsync("closeServer", closeParams);
       }
     } else if ("closeServer".equals(event)) {
@@ -203,10 +204,10 @@ class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
       if (onServerClose != null) {
         onServerClose.accept(code, reason);
       } else {
-        JsonObject closeParams = new JsonObject();
-        closeParams.addProperty("code", code);
-        closeParams.addProperty("reason", reason);
-        closeParams.addProperty("wasClean", wasClean);
+        WebSocketRouteClosePageParams closeParams = new WebSocketRouteClosePageParams();
+        closeParams.code = code;
+        closeParams.reason = reason;
+        closeParams.wasClean = wasClean;
         sendMessageAsync("closePage", closeParams);
       }
     }

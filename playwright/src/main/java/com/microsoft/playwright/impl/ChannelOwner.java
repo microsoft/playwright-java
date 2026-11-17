@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-class ChannelOwner extends LoggingSupport {
+public class ChannelOwner extends LoggingSupport {
   final Connection connection;
   private ChannelOwner parent;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
@@ -119,6 +119,25 @@ class ChannelOwner extends LoggingSupport {
     return connection.sendMessageAsync(guid, method, params);
   }
 
+  /** Typed counterpart of {@link #sendMessageAsync(String, JsonObject)}; {@code null} params mean an empty object. */
+  WaitableResult<JsonElement> sendMessageAsync(String method, Object params) {
+    return sendMessageAsync(method, paramsToJson(params));
+  }
+
+  /** Typed counterpart of {@link #sendMessageNoReply(String, JsonObject)}. */
+  void sendMessageNoReply(String method, Object params) {
+    sendMessageNoReply(method, paramsToJson(params));
+  }
+
+  private JsonObject paramsToJson(Object params) {
+    if (params == null) {
+      return new JsonObject();
+    }
+    JsonObject json = connection.protocolGson().toJsonTree(params).getAsJsonObject();
+    json.remove("timeout");
+    return json;
+  }
+
   // Fire-and-forget: silently drop if the object was collected.
   void sendMessageNoReply(String method, JsonObject params) {
     if (wasCollected) {
@@ -140,6 +159,25 @@ class ChannelOwner extends LoggingSupport {
       throw new PlaywrightException("Internal error: timeout must be passed explicitly.");
     }
     return connection.sendMessage(guid, method, params, timeout);
+  }
+
+  /**
+   * Typed counterpart of {@link #sendMessage(String, JsonObject, Double)}: {@code params} is serialized
+   * with the connection's Gson (channel owners travel as {@code {guid}}), the reply is deserialized into
+   * {@code resultClass}. {@code null} params mean an empty object, {@code null} or {@code Void.class}
+   * result class discards the reply.
+   */
+  public <R> R sendMessage(String method, Object params, Class<R> resultClass, Double timeout) {
+    JsonObject paramsJson = params == null ? new JsonObject() : connection.protocolGson().toJsonTree(params).getAsJsonObject();
+    JsonElement result = sendMessage(method, paramsJson, timeout);
+    if (resultClass == null || resultClass == Void.class || result == null || result.isJsonNull()) {
+      return null;
+    }
+    return connection.protocolGson().fromJson(result, resultClass);
+  }
+
+  public void sendMessage(String method, Object params, Double timeout) {
+    sendMessage(method, params, Void.class, timeout);
   }
 
   private void checkNotCollected() {

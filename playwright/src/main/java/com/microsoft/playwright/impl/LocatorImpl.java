@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -112,13 +113,13 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator normalize() {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("sdkLanguage", "java");
-    JsonObject result = frame.sendMessage("resolveSelector", params, ChannelOwner.NO_TIMEOUT).getAsJsonObject();
-    LocatorImpl locator = new LocatorImpl(frame, result.get("resolvedSelector").getAsString(), null);
-    if (result.has("locatorCode")) {
-      locator.stringRepresentation = result.get("locatorCode").getAsString();
+    FrameResolveSelectorParams params = new FrameResolveSelectorParams();
+    params.selector = selector;
+    params.sdkLanguage = "java";
+    FrameResolveSelectorResult result = frame.channel.resolveSelector(params, ChannelOwner.NO_TIMEOUT);
+    LocatorImpl locator = new LocatorImpl(frame, result.resolvedSelector, null);
+    if (result.locatorCode != null) {
+      locator.stringRepresentation = result.locatorCode;
     }
     return locator;
   }
@@ -136,10 +137,9 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new AriaSnapshotOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("selector", selector);
-    JsonObject result = frame.sendMessage("ariaSnapshot", params, frame.timeout(options.timeout)).getAsJsonObject();
-    return result.get("snapshot").getAsString();
+    FrameAriaSnapshotParams params = Utils.toProtocol(options, FrameAriaSnapshotParams.class);
+    params.selector = selector;
+    return frame.channel.ariaSnapshot(params, frame.timeout(options.timeout)).snapshot;
   }
 
   @Override
@@ -147,10 +147,10 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new BlurOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("strict", true);
-    frame.sendMessage("blur", params, frame.timeout(options.timeout));
+    FrameBlurParams params = Utils.toProtocol(options, FrameBlurParams.class);
+    params.selector = selector;
+    params.strict = true;
+    frame.channel.blur(params, frame.timeout(options.timeout));
   }
 
   @Override
@@ -680,12 +680,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public void waitForFunction(String expression, Object arg, WaitForFunctionOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("selector", selector);
-    params.addProperty("strict", true);
-    params.addProperty("expression", expression);
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    frame.sendMessage("waitForFunction", params, frame.timeout(options == null ? null : options.timeout));
+    FrameWaitForFunctionParams params = new FrameWaitForFunctionParams();
+    params.selector = selector;
+    params.strict = true;
+    params.expression = expression;
+    params.arg = serializeArgument(arg);
+    frame.channel.waitForFunction(params, frame.timeout(options == null ? null : options.timeout));
   }
 
   @Override

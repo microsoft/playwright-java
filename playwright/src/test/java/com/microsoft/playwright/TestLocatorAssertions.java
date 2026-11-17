@@ -462,6 +462,15 @@ public class TestLocatorAssertions {
   }
 
   @PlaywrightTest
+  void hasJSPropertyHandlePass(Page page) {
+    // https://github.com/microsoft/playwright-java/pull/2049
+    page.setContent("<div id=a>hi</div>");
+    JSHandle body = page.evaluateHandle("document.body");
+    page.evaluate("b => { document.querySelector('#a').foo = b; }", body);
+    assertThat(page.locator("#a")).hasJSProperty("foo", body);
+  }
+
+  @PlaywrightTest
   void hasJSPropertyNumberFail(Page page) {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");

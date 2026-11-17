@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -23,6 +24,8 @@ import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.*;
+import com.microsoft.playwright.options.BrowserChannel;
+import com.microsoft.playwright.options.ConsoleMessagesFilter;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -69,6 +72,7 @@ class Serialization {
     .registerTypeAdapter((new TypeToken<List<KeyboardModifier>>(){}).getType(), new KeyboardModifiersSerializer())
     .registerTypeAdapter(Optional.class, new OptionalSerializer())
     .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
+    .registerTypeHierarchyAdapter(ChannelOwner.class, new ChannelOwnerSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
     .registerTypeAdapter(LocatorImpl.class, new LocatorImplSerializer())
@@ -87,7 +91,7 @@ class Serialization {
 
   static SerializedError serializeError(Throwable e) {
     SerializedError result = new SerializedError();
-    result.error = new SerializedError.Error();
+    result.error = new SerializedError.SerializedErrorError();
     result.error.message = e.getMessage();
     result.error.name = e.getClass().getName();
 
@@ -128,13 +132,7 @@ class Serialization {
     SerializedArgument toSerializedArgument() {
       SerializedArgument result = new SerializedArgument();
       result.value = serializedValue;
-      result.handles = new Channel[handles.size()];
-      int i = 0;
-      for (JSHandleImpl handle : handles) {
-        result.handles[i] = new Channel();
-        result.handles[i].guid = handle.guid;
-        ++i;
-      }
+      result.handles = new ArrayList<>(handles);
       return result;
     }
 
@@ -163,7 +161,7 @@ class Serialization {
       } else if (value instanceof Boolean) {
         result.b = (Boolean) value;
       } else if (value instanceof Integer) {
-        result.n = (Integer) value;
+        result.n = ((Integer) value).doubleValue();
       } else if (value instanceof String) {
         result.s = (String) value;
       } else if (value instanceof Date) {
@@ -175,12 +173,12 @@ class Serialization {
       } else if (value instanceof BigInteger) {
         result.bi = ((BigInteger)value).toString();
       } else if (value instanceof Pattern) {
-        result.r = new SerializedValue.R();
+        result.r = new SerializedValue.SerializedValueR();
         result.r.p = ((Pattern)value).pattern();
         result.r.f = toJsRegexFlags(((Pattern)value));
       } else if (value instanceof Exception) {
         Exception exception = (Exception) value;
-        result.e = new SerializedValue.E();
+        result.e = new SerializedValue.SerializedValueE();
         result.e.m = exception.getMessage();
         result.e.n = exception.getClass().getSimpleName();
         StringWriter sw = new StringWriter();
@@ -199,24 +197,24 @@ class Serialization {
             for (Object o : (List<?>) value) {
               list.add(serializeValue(o));
             }
-            result.a = list.toArray(new SerializedValue[0]);
+            result.a = list;
           } else if (value instanceof Map) {
-            List<SerializedValue.O> list = new ArrayList<>();
+            List<SerializedValue.SerializedValueO> list = new ArrayList<>();
             @SuppressWarnings("unchecked")
             Map<String, ?> map = (Map<String, ?>) value;
             for (Map.Entry<String, ?> e : map.entrySet()) {
-              SerializedValue.O o = new SerializedValue.O();
+              SerializedValue.SerializedValueO o = new SerializedValue.SerializedValueO();
               o.k = e.getKey();
               o.v = serializeValue(e.getValue());
               list.add(o);
             }
-            result.o = list.toArray(new SerializedValue.O[0]);
+            result.o = list;
           } else if (value instanceof Object[]) {
             List<SerializedValue> list = new ArrayList<>();
             for (Object o : (Object[]) value) {
               list.add(serializeValue(o));
             }
-            result.a = list.toArray(new SerializedValue[0]);
+            result.a = list;
           } else {
             throw new PlaywrightException("Unsupported type of argument: " + value);
           }
@@ -295,19 +293,9 @@ class Serialization {
     if (value.o != null) {
       Map<String, Object> map = new LinkedHashMap<>();
       idToValue.put(value.id, map);
-      for (SerializedValue.O o : value.o) {
+      for (SerializedValue.SerializedValueO o : value.o) {
         map.put(o.k, deserialize(o.v, idToValue));
       }
-      return (T) map;
-    }
-    if (value.m != null) {
-      Map<?, ?> map = new LinkedHashMap<>();
-      idToValue.put(value.id, map);
-      return (T) map;
-    }
-    if (value.se != null) {
-      Map<?, ?> map = new LinkedHashMap<>();
-      idToValue.put(value.id, map);
       return (T) map;
     }
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
@@ -334,38 +322,6 @@ class Serialization {
       }
       return result;
     }
-  }
-
-  static JsonArray toJsonArray(Path[] files) {
-    JsonArray jsonFiles = new JsonArray();
-    for (Path p : files) {
-      jsonFiles.add(p.toAbsolutePath().toString());
-    }
-    return jsonFiles;
-  }
-
-  static JsonArray toJsonArray(FilePayload[] files) {
-    JsonArray jsonFiles = new JsonArray();
-    for (FilePayload p : files) {
-      jsonFiles.add(toProtocol(p));
-    }
-    return jsonFiles;
-  }
-
-  static JsonObject toProtocol(FilePayload p) {
-    JsonObject jsonFile = new JsonObject();
-    jsonFile.addProperty("name", p.name);
-    jsonFile.addProperty("mimeType", p.mimeType);
-    jsonFile.addProperty("buffer", Base64.getEncoder().encodeToString(p.buffer));
-    return jsonFile;
-  }
-
-  static JsonArray toProtocol(ElementHandle[] handles) {
-    JsonArray jsonElements = new JsonArray();
-    for (ElementHandle handle : handles) {
-      jsonElements.add(((ElementHandleImpl) handle).toProtocolRef());
-    }
-    return jsonElements;
   }
 
   static JsonArray toProtocol(Map<String, String> map) {
@@ -482,6 +438,14 @@ class Serialization {
   private static class HandleSerializer implements JsonSerializer<JSHandleImpl> {
     @Override
     public JsonElement serialize(JSHandleImpl src, Type typeOfSrc, JsonSerializationContext context) {
+      return src.toProtocolRef();
+    }
+  }
+
+  // Serialization only: a channel owner travels as {guid}. Deserialization needs a connection, see Connection.gson().
+  private static class ChannelOwnerSerializer implements JsonSerializer<ChannelOwner> {
+    @Override
+    public JsonElement serialize(ChannelOwner src, Type typeOfSrc, JsonSerializationContext context) {
       return src.toProtocolRef();
     }
   }

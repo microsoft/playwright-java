@@ -16,15 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.Arrays;
 
-class WritableStream extends ChannelOwner {
+public class WritableStream extends ChannelOwner {
+  final WritableStreamChannel channel = new WritableStreamChannel(this);
+
   WritableStream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -38,17 +41,15 @@ class WritableStream extends ChannelOwner {
 
       @Override
       public void write(byte[] b, int off, int len) throws IOException {
-        JsonObject params = new JsonObject();
-        ByteBuffer buffer = ByteBuffer.wrap(b, off, len);
-        ByteBuffer encoded = Base64.getEncoder().encode(buffer);
-        params.addProperty("binary", new String(encoded.array(), StandardCharsets.UTF_8));
-        sendMessage("write", params, NO_TIMEOUT);
+        WritableStreamWriteParams params = new WritableStreamWriteParams();
+        params.binary = Arrays.copyOfRange(b, off, off + len);
+        channel.write(params, NO_TIMEOUT);
       }
 
       @Override
       public void close() throws IOException {
         super.close();
-        sendMessage("close");
+        channel.close(NO_TIMEOUT);
       }
     };
   }

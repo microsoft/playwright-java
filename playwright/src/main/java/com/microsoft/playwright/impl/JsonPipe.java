@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
@@ -28,12 +29,14 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class JsonPipe extends ChannelOwner implements Transport {
+public class JsonPipe extends ChannelOwner implements Transport {
   private final Queue<JsonObject> incoming = new LinkedList<>();
   private ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private enum EventType { CLOSE }
   private boolean isClosed;
   private String closeReason = "Browser has been closed";
+
+  final JsonPipeChannel channel = new JsonPipeChannel(this);
 
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -42,9 +45,9 @@ class JsonPipe extends ChannelOwner implements Transport {
   @Override
   public void send(JsonObject message) {
     checkIfClosed();
-    JsonObject params = new JsonObject();
-    params.add("message", message);
-    sendMessage("send", params, NO_TIMEOUT);
+    JsonPipeSendParams params = new JsonPipeSendParams();
+    params.message = message;
+    channel.send(params, NO_TIMEOUT);
   }
 
   @Override
@@ -79,7 +82,7 @@ class JsonPipe extends ChannelOwner implements Transport {
   @Override
   public void close() throws IOException {
     if (!isClosed) {
-      sendMessage("close");
+      channel.close(NO_TIMEOUT);
     }
   }
 

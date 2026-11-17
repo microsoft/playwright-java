@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.ValueWrapper;
 

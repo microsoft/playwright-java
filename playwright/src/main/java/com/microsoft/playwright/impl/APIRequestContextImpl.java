@@ -16,7 +16,9 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
@@ -37,13 +39,16 @@ import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.toFilePayload;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 import static java.util.Arrays.asList;
 
-class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
+public class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   private final TracingImpl tracing;
   private String disposeReason;
 
   protected TimeoutSettings timeoutSettings = new TimeoutSettings();
+
+  final APIRequestContextChannel channel = new APIRequestContextChannel(this);
 
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -62,21 +67,21 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
-    JsonObject params = new JsonObject();
+    APIRequestContextCookiesParams params = new APIRequestContextCookiesParams();
     if (urls == null) {
       urls = new ArrayList<>();
     }
-    params.add("urls", gson().toJsonTree(urls));
-    JsonObject json = sendMessage("cookies", params, NO_TIMEOUT).getAsJsonObject();
-    Cookie[] cookies = gson().fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
+    params.urls = urls;
+    APIRequestContextCookiesResult result = channel.cookies(params, NO_TIMEOUT);
+    Cookie[] cookies = gson().fromJson(gson().toJsonTree(result.cookies), Cookie[].class);
     return asList(cookies);
   }
 
   @Override
   public void addCookies(List<Cookie> cookies) {
-    JsonObject params = new JsonObject();
-    params.add("cookies", gson().toJsonTree(cookies));
-    sendMessage("addCookies", params, NO_TIMEOUT);
+    APIRequestContextAddCookiesParams params = new APIRequestContextAddCookiesParams();
+    params.cookies = gson().fromJson(gson().toJsonTree(cookies), new TypeToken<List<SetNetworkCookie>>() {}.getType());
+    channel.addCookies(params, NO_TIMEOUT);
   }
 
   @Override
@@ -84,7 +89,9 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options == null) {
       options = new ClearCookiesOptions();
     }
-    sendMessage("clearCookies", toClearCookiesParams(options.name, options.domain, options.path), NO_TIMEOUT);
+    APIRequestContextClearCookiesParams params = gson().fromJson(
+      toClearCookiesParams(options.name, options.domain, options.path), APIRequestContextClearCookiesParams.class);
+    channel.clearCookies(params, NO_TIMEOUT);
   }
 
   @Override
@@ -98,8 +105,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       options = new DisposeOptions();
     }
     disposeReason = options.reason;
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("dispose", params, NO_TIMEOUT);
+    channel.dispose(toProtocol(options, APIRequestContextDisposeParams.class), NO_TIMEOUT);
     tracing.resetStackCounter();
   }
 
@@ -134,20 +140,18 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       options = new RequestOptionsImpl();
     }
     options.timeout = timeoutSettings.timeout(options.timeout);
-    JsonObject params = new JsonObject();
-    params.addProperty("url", url);
+    APIRequestContextFetchParams params = new APIRequestContextFetchParams();
+    params.url = url;
     if (options.params != null) {
       Map<String, String> queryParams = new LinkedHashMap<>();
       for (Map.Entry<String, ?> e : options.params.entrySet()) {
         queryParams.put(e.getKey(), "" + e.getValue());
       }
-      params.add("params", toNameValueArray(queryParams.entrySet()));
+      params.params = toNameValues(toNameValueArray(queryParams.entrySet()));
     }
-    if (options.method != null) {
-      params.addProperty("method", options.method);
-    }
+    params.method = options.method;
     if (options.headers != null) {
-      params.add("headers", toProtocol(options.headers));
+      params.headers = toNameValues(Serialization.toProtocol(options.headers));
     }
 
     if (options.data != null) {
@@ -161,38 +165,45 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
         }
       }
       if (bytes == null) {
-        params.addProperty("jsonData", jsonDataSerializer.toJson(options.data));
+        params.jsonData = jsonDataSerializer.toJson(options.data);
       } else {
-        String base64 = Base64.getEncoder().encodeToString(bytes);
-        params.addProperty("postData", base64);
+        params.postData = bytes;
       }
     }
     if (options.form != null) {
-      params.add("formData", toNameValueArray(options.form.fields));
+      params.formData = toNameValues(toNameValueArray(options.form.fields));
     }
     if (options.multipart != null) {
-      params.add("multipartData", serializeMultipartData(options.multipart.fields));
+      params.multipartData = serializeMultipartData(options.multipart.fields);
     }
-    if (options.failOnStatusCode != null) {
-      params.addProperty("failOnStatusCode", options.failOnStatusCode);
-    }
-    if (options.ignoreHTTPSErrors != null) {
-      params.addProperty("ignoreHTTPSErrors", options.ignoreHTTPSErrors);
-    }
+    params.failOnStatusCode = options.failOnStatusCode;
+    params.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
     if (options.maxRedirects != null) {
       if (options.maxRedirects < 0) {
         throw new PlaywrightException("'maxRedirects' should be greater than or equal to '0'");
       }
-      params.addProperty("maxRedirects", options.maxRedirects);
+      params.maxRedirects = options.maxRedirects;
     }
     if (options.maxRetries != null) {
       if (options.maxRetries < 0) {
         throw new PlaywrightException("'maxRetries' must be greater than or equal to '0'");
       }
-      params.addProperty("maxRetries", options.maxRetries);
+      params.maxRetries = options.maxRetries;
     }
-    JsonObject json = sendMessage("fetch", params, timeoutSettings.timeout(options.timeout)).getAsJsonObject();
-    return new APIResponseImpl(this, json.getAsJsonObject("response"));
+    APIRequestContextFetchResult result = channel.fetch(params, timeoutSettings.timeout(options.timeout));
+    return new APIResponseImpl(this, result.response);
+  }
+
+  private static List<NameValue> toNameValues(JsonArray array) {
+    List<NameValue> result = new ArrayList<>();
+    for (JsonElement element : array) {
+      JsonObject item = element.getAsJsonObject();
+      NameValue nv = new NameValue();
+      nv.name = item.get("name").getAsString();
+      nv.value = item.get("value").getAsString();
+      result.add(nv);
+    }
+    return result;
   }
 
   private static boolean isJsonContentType(Map<String, String> headers) {
@@ -207,8 +218,8 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     return false;
   }
 
-  private static JsonArray serializeMultipartData(List<? extends Map.Entry<String, Object>> data) {
-    JsonArray result = new JsonArray();
+  private static List<FormField> serializeMultipartData(List<? extends Map.Entry<String, Object>> data) {
+    List<FormField> result = new ArrayList<>();
     for (Map.Entry<String, ?> e : data) {
       FilePayload filePayload = null;
       if (e.getValue() instanceof FilePayload) {
@@ -218,12 +229,15 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       } else if (e.getValue() instanceof File) {
         filePayload = toFilePayload(((File) e.getValue()).toPath());
       }
-      JsonObject item = new JsonObject();
-      item.addProperty("name", e.getKey());
+      FormField item = new FormField();
+      item.name = e.getKey();
       if (filePayload == null) {
-        item.addProperty("value", "" + e.getValue());
+        item.value = "" + e.getValue();
       } else {
-        item.add("file", toProtocol(filePayload));
+        item.file = new FormField.FormFieldFile();
+        item.file.name = filePayload.name;
+        item.file.mimeType = filePayload.mimeType;
+        item.file.buffer = filePayload.buffer;
       }
       result.add(item);
     }
@@ -260,10 +274,10 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options == null) {
       options = new StorageStateOptions();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("path");
-    JsonElement json = sendMessage("storageState", params, NO_TIMEOUT);
-    String storageState = json.toString();
+    APIRequestContextStorageStateParams params = toProtocol(options, APIRequestContextStorageStateParams.class);
+    // Keep the raw reply: re-serializing the typed result would turn "expires":-1 into -1.0 and change the string
+    // that is compared with BrowserContext.storageState().
+    String storageState = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT).toString();
     if (options.path != null) {
       Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
     }
