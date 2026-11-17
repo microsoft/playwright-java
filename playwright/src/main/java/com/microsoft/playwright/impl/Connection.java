@@ -100,6 +100,7 @@ public class Connection {
     PlaywrightImpl initialize() {
       RootInitializeParams params = new RootInitializeParams();
       params.sdkLanguage = "java";
+      params.supportsLoneSurrogates = true;
       return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
     }
   }
