@@ -33,7 +33,7 @@
                makes the plugin pass "patch-module com.microsoft.playwright=null" and the javadoc jar ends up empty. -->
           <sourcepath>${project.build.sourceDirectory}</sourcepath>
           <subpackages>com.microsoft.playwright</subpackages>
-          <excludePackageNames>com.microsoft.playwright.impl,com.microsoft.playwright.impl.protocol</excludePackageNames>
+          <excludePackageNames>com.microsoft.playwright.impl:com.microsoft.playwright.impl.*</excludePackageNames>
         </configuration>
       </plugin>
       <plugin>
