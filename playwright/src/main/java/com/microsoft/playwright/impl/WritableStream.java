@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of writableStream.ts. java: the Writable is an OutputStream; _write becomes write(), _final becomes close().
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
