@@ -7,6 +7,7 @@ import java.util.Date;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 
+// Port of clock.ts.
 class ClockImpl implements Clock {
   private final BrowserContextImpl browserContext;
 
@@ -14,19 +15,7 @@ class ClockImpl implements Clock {
     this.browserContext = browserContext;
   }
 
-  @Override
-  public void fastForward(long ticks) {
-    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
-    params.ticksNumber = (double) ticks;
-    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void fastForward(String ticks) {
-    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
-    params.ticksString = ticks;
-    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
-  }
+  // java: parseTime/parseTicks are inlined into the typed overloads (long, String, Date) of the generated Clock interface.
 
   @Override
   public void install(InstallOptions options) {
@@ -45,17 +34,17 @@ class ClockImpl implements Clock {
   }
 
   @Override
-  public void runFor(long ticks) {
-    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+  public void fastForward(long ticks) {
+    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
     params.ticksNumber = (double) ticks;
-    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
+    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
   }
 
   @Override
-  public void runFor(String ticks) {
-    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+  public void fastForward(String ticks) {
+    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
     params.ticksString = ticks;
-    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
+    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
   }
 
   @Override
@@ -82,6 +71,20 @@ class ClockImpl implements Clock {
   @Override
   public void resume() {
     browserContext.channel.clockResume(NO_TIMEOUT);
+  }
+
+  @Override
+  public void runFor(long ticks) {
+    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+    params.ticksNumber = (double) ticks;
+    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void runFor(String ticks) {
+    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
+    params.ticksString = ticks;
+    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
   }
 
   @Override
