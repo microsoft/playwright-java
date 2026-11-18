@@ -75,7 +75,11 @@ public class ChannelOwner extends EventEmitter {
       JsonObject params = new JsonObject();
       params.addProperty("event", protocolEvent);
       params.addProperty("enabled", enabled);
-      sendMessageAsync("updateSubscription", params);
+      try {
+        sendMessageAsync("updateSubscription", params);
+      } catch (PlaywrightException e) {
+        // java: .catch(() => {}) upstream, the send throws synchronously when the connection is closed.
+      }
     }
   }
 

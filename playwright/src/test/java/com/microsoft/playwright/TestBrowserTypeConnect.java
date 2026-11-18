@@ -32,6 +32,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.*;
@@ -222,6 +223,21 @@ public class TestBrowserTypeConnect {
       page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
     });
     assertTrue(e.getMessage().contains("Browser has been closed"));
+  }
+
+  @PlaywrightTest
+  void shouldKeepCloseReasonInNetworkWaiterAndNotThrowOnOffAfterDisconnect(BrowserType browserType, Server server, BrowserServer browserServer) {
+    Browser remote = browserType.connect(browserServer.wsEndpoint);
+    Page page = remote.newPage();
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
+      page.waitForRequest(server.EMPTY_PAGE, () -> remote.close(new Browser.CloseOptions().setReason("custom reason")));
+    });
+    assertTrue(e.getMessage().contains("custom reason"), e.getMessage());
+
+    Consumer<Request> listener = r -> {};
+    page.onRequest(listener);
+    page.offRequest(listener);
   }
 
   @PlaywrightTest
