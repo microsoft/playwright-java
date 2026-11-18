@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.ClientCertificate;
 
 import java.io.IOException;
@@ -85,9 +86,24 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       timeout = 0.0;
     }
 
+    long deadline = timeout == 0 ? 0 : System.nanoTime() + (long) (timeout * 1_000_000);
     JsonPipe pipe = connection.localUtils().channel.connect(params, timeout).pipe;
     Connection connection = new Connection(pipe, this.connection.env, this.connection.localUtils());
-    PlaywrightImpl playwright = connection.initializePlaywright();
+    PlaywrightImpl playwright;
+    if (deadline == 0) {
+      playwright = connection.initializePlaywright();
+    } else {
+      try {
+        playwright = connection.initializePlaywright(deadline, timeout);
+      } catch (TimeoutError e) {
+        try {
+          connection.close();
+        } catch (IOException ioe) {
+          ioe.printStackTrace(System.err);
+        }
+        throw e;
+      }
+    }
     if (!playwright.initializer.has("preLaunchedBrowser")) {
       try {
         connection.close();

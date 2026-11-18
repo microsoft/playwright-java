@@ -34,6 +34,7 @@ import com.microsoft.playwright.TimeoutError;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,31 @@ class Root extends ChannelOwner {
     params.sdkLanguage = "java";
     params.supportsLoneSurrogates = true;
     return new RootChannel(this).initialize(params, NO_TIMEOUT).playwright;
+  }
+
+  // java: the deadline of raceAgainstDeadline in connect.ts, the wait pumps the connection until then.
+  PlaywrightImpl initialize(long deadlineNanos, double timeout) {
+    RootInitializeParams params = new RootInitializeParams();
+    params.sdkLanguage = "java";
+    params.supportsLoneSurrogates = true;
+    WaitableResult<JsonElement> result = sendMessageAsync("initialize", params);
+    Waitable<JsonElement> deadline = new Waitable<JsonElement>() {
+      @Override
+      public boolean isDone() {
+        return System.nanoTime() > deadlineNanos;
+      }
+
+      @Override
+      public JsonElement get() {
+        throw new TimeoutError("Timeout " + Waiter.formatTimeout(timeout) + "ms exceeded");
+      }
+
+      @Override
+      public void dispose() {
+      }
+    };
+    JsonElement json = runUntil(() -> {}, new WaitableRace<>(Arrays.asList(result, deadline)));
+    return connection.protocolGson().fromJson(json, RootInitializeResult.class).playwright;
   }
 }
 
@@ -186,6 +212,12 @@ public class Connection {
   public PlaywrightImpl initializePlaywright() {
     // java: also remembered for getByTestId, which needs the selectors of the Playwright object.
     playwright = rootObject.initialize();
+    return playwright;
+  }
+
+  // java: connect.ts races the initialization against the deadline of connect().
+  PlaywrightImpl initializePlaywright(long deadlineNanos, double timeout) {
+    playwright = rootObject.initialize(deadlineNanos, timeout);
     return playwright;
   }
 
