@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of consoleMessage.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -59,19 +60,21 @@ public class ConsoleMessageImpl implements ConsoleMessage {
   }
 
   @Override
-  public double timestamp() {
-    return timestamp;
+  public Worker worker() {
+    return worker;
   }
 
+  @Override
+  public PageImpl page() {
+    return page;
+  }
+
+  @Override
   public String type() {
     return type;
   }
 
   @Override
-  public Worker worker() {
-    return worker;
-  }
-
   public String text() {
     return text;
   }
@@ -83,11 +86,12 @@ public class ConsoleMessageImpl implements ConsoleMessage {
 
   @Override
   public String location() {
+    // java: the public API returns a formatted string, upstream returns { url, line, column }.
     return url + ":" + lineNumber + ":" + columnNumber;
   }
 
   @Override
-  public PageImpl page() {
-    return page;
+  public double timestamp() {
+    return timestamp;
   }
 }
