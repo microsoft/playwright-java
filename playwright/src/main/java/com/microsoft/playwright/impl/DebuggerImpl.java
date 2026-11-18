@@ -28,9 +28,11 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
+// Port of debugger.ts.
 public class DebuggerImpl extends ChannelOwner implements Debugger {
-  private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
   private DebuggerPausedDetails pausedDetails;
+  // java: handlers of onPausedStateChanged(Runnable); upstream emits Events.Debugger.PausedStateChanged. apiCallsUpdated has no Java API.
+  private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
 
   final DebuggerChannel channel = new DebuggerChannel(this);
 
@@ -38,6 +40,7 @@ public class DebuggerImpl extends ChannelOwner implements Debugger {
     super(parent, type, guid, initializer);
   }
 
+  // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
   @Override
   protected void handleEvent(String event, JsonObject params) {
     if ("pausedStateChanged".equals(event)) {
@@ -52,20 +55,7 @@ public class DebuggerImpl extends ChannelOwner implements Debugger {
     }
   }
 
-  @Override
-  public void onPausedStateChanged(Runnable handler) {
-    pausedStateChangedHandlers.add(handler);
-  }
-
-  @Override
-  public void offPausedStateChanged(Runnable handler) {
-    pausedStateChangedHandlers.remove(handler);
-  }
-
-  @Override
-  public DebuggerPausedDetails pausedDetails() {
-    return pausedDetails;
-  }
+  // java: _enable has no Java API.
 
   @Override
   public void requestPause() {
@@ -87,5 +77,20 @@ public class DebuggerImpl extends ChannelOwner implements Debugger {
     DebuggerRunToParams params = new DebuggerRunToParams();
     params.location = toProtocol(location, DebuggerRunToParams.DebuggerRunToParamsLocation.class);
     channel.runTo(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public DebuggerPausedDetails pausedDetails() {
+    return pausedDetails;
+  }
+
+  @Override
+  public void onPausedStateChanged(Runnable handler) {
+    pausedStateChangedHandlers.add(handler);
+  }
+
+  @Override
+  public void offPausedStateChanged(Runnable handler) {
+    pausedStateChangedHandlers.remove(handler);
   }
 }
