@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+// Port of dialog.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
-import com.microsoft.playwright.Page;
 
 public class DialogImpl extends ChannelOwner implements Dialog {
   final DialogChannel channel = new DialogChannel(this);
@@ -35,6 +35,26 @@ public class DialogImpl extends ChannelOwner implements Dialog {
   }
 
   @Override
+  public PageImpl page() {
+    return page;
+  }
+
+  @Override
+  public String type() {
+    return initializer.get("type").getAsString();
+  }
+
+  @Override
+  public String message() {
+    return initializer.get("message").getAsString();
+  }
+
+  @Override
+  public String defaultValue() {
+    return initializer.get("defaultValue").getAsString();
+  }
+
+  @Override
   public void accept(String promptText) {
     DialogAcceptParams params = new DialogAcceptParams();
     params.promptText = promptText;
@@ -46,27 +66,8 @@ public class DialogImpl extends ChannelOwner implements Dialog {
     try {
       channel.dismiss(NO_TIMEOUT);
     } catch (TargetClosedError e) {
-      // Swallow TargetClosedErrors for beforeunload dialogs.
+      // java: isTargetClosedError(e) is an instanceof check on TargetClosedError.
+      return;
     }
-  }
-
-  @Override
-  public String defaultValue() {
-    return initializer.get("defaultValue").getAsString();
-  }
-
-  @Override
-  public String message() {
-    return initializer.get("message").getAsString();
-  }
-
-  @Override
-  public PageImpl page() {
-    return page;
-  }
-
-  @Override
-  public String type() {
-    return initializer.get("type").getAsString();
   }
 }
