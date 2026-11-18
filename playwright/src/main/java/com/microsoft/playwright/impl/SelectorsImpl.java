@@ -30,33 +30,19 @@ import java.util.List;
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+// Port of selectors.ts.
 public class SelectorsImpl extends LoggingSupport implements Selectors {
-  protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
   protected final List<SelectorEngine> selectorEngines = new ArrayList<>();
-
+  // java: defaults to data-testid, upstream leaves it undefined until set.
   String testIdAttributeName = "data-testid";
-
-  @Override
-  public void setTestIdAttribute(String attributeName) {
-    if (attributeName == null) {
-      throw new PlaywrightException("Test id attribute cannot be null");
-    }
-    testIdAttributeName = attributeName;
-    for (BrowserContextImpl context : contextsForSelectors) {
-      try {
-        BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
-        params.testIdAttributeName = attributeName;
-        context.sendMessageAsync("setTestIdAttributeName", params);
-      } catch (PlaywrightException e) {
-      }
-    }
-  }
+  protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
 
   @Override
   public void register(String name, String script, RegisterOptions options) {
     registerImpl(name, script, options);
   }
 
+  // java: evaluationScript with a path, without the sourceURL suffix.
   @Override
   public void register(String name, Path path, RegisterOptions options) {
     byte[] buffer;
@@ -85,5 +71,21 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       context.channel.registerSelectorEngine(params, NO_TIMEOUT);
     }
     selectorEngines.add(engine);
+  }
+
+  @Override
+  public void setTestIdAttribute(String attributeName) {
+    if (attributeName == null) {
+      throw new PlaywrightException("Test id attribute cannot be null");
+    }
+    testIdAttributeName = attributeName;
+    for (BrowserContextImpl context : contextsForSelectors) {
+      try {
+        BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
+        params.testIdAttributeName = attributeName;
+        context.sendMessageAsync("setTestIdAttributeName", params);
+      } catch (PlaywrightException e) {
+      }
+    }
   }
 }
