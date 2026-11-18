@@ -36,6 +36,10 @@ jobs:
             arch: arm64
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
       - name: Build Docker image
         run: |
           bash utils/docker/build.sh --${{ matrix.arch }} ${{ matrix.flavor }} playwright-java:localbuild-${{ matrix.flavor }}
@@ -65,6 +69,8 @@ jobs:
 
       - name: Copy repository inside docker container
         run: |
+            # The container does not need .upstream/, and it is large.
+            rm -rf .upstream
             docker cp . "$CONTAINER_ID":/home/pwuser/playwright
             # build.sh installed the SNAPSHOT artifacts into the local Maven repository
             # of the runner; give them to pwuser so the test projects resolve them.

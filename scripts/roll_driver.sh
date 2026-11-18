@@ -6,38 +6,54 @@ set +x
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
 
-if [ "$#" -gt 1 ]; then
+usage() {
   echo ""
-  echo "Usage: scripts/roll_driver.sh [next|beta|<version>]"
+  echo "Rolls the driver to a commit of microsoft/playwright."
   echo ""
+  echo "Usage: scripts/roll_driver.sh [main|release-1.<minor>|<commit>]"
+  echo ""
+  echo "  main               the tip of the main branch (default)"
+  echo "  release-1.<minor>  the tip of a release branch, for example release-1.66"
+  echo "  <commit>           a full commit hash (40 hex digits)"
+  echo ""
+  echo "The script writes the commit to scripts/DRIVER_VERSION, rolls Node.js, builds the"
+  echo "driver from source and generates the API."
+  echo ""
+}
+
+if [[ "$#" -gt 1 || ($1 == '-h') || ($1 == '--help') ]]; then
+  usage
   exit 1
 fi
 
-ARG=${1:-next}
-if [[ "$ARG" == "next" ]]; then
-  NEW_VERSION=$(npm view playwright@next version)
-elif [[ "$ARG" == "beta" ]]; then
-  NEW_VERSION=$(npm view playwright@beta version)
+UPSTREAM_URL="https://github.com/microsoft/playwright.git"
+REF=${1:-main}
+if [[ "$REF" =~ ^[0-9a-f]{40}$ ]]; then
+  NEW_COMMIT=$REF
+elif [[ "$REF" == "main" || "$REF" =~ ^release-1\.[0-9]+$ ]]; then
+  NEW_COMMIT=$(git ls-remote "$UPSTREAM_URL" "refs/heads/$REF" | cut -f1)
+  if [[ -z "$NEW_COMMIT" ]]; then
+    echo "$UPSTREAM_URL has no branch $REF"
+    exit 1
+  fi
 else
-  NEW_VERSION=$ARG
+  echo "Unknown ref: $REF"
+  usage
+  exit 1
 fi
-CURRENT_VERSION=$(head -1 ./DRIVER_VERSION)
-echo "Rolling driver from $CURRENT_VERSION to $NEW_VERSION"
+OLD_COMMIT=$(head -1 ./DRIVER_VERSION)
+echo "Rolling the driver from $OLD_COMMIT to $NEW_COMMIT"
 
-echo $NEW_VERSION > ./DRIVER_VERSION
-# Each roll also moves the driver to the latest Node.js release of the pinned major version.
+echo $NEW_COMMIT > ./DRIVER_VERSION
+# Each roll also moves Node.js to the latest release of the pinned major version.
 ./roll_node.sh
-./download_driver.sh
+./build_driver.sh
 
 ./generate_api.sh
 ./update_readme.sh
 
-node -e "$(cat <<EOF
-  let [majorVersion, minorVersion] = process.argv[1].split('-')[0].split('.').map(part => parseInt(part, 10));
-  minorVersion[1]--;
-  const previousMajorVersion = majorVersion + '.' + minorVersion + '.0';
-  fs.writeFileSync('../examples/pom.xml', fs.readFileSync('../examples/pom.xml', 'utf8')
-    .replace(/<playwright\.version>.*<\/playwright\.version>/, '<playwright\.version>' + previousMajorVersion + '</playwright\.version>')
-  );
-EOF
-)" $NEW_VERSION
+echo ""
+echo "Rolled the driver from $OLD_COMMIT to $NEW_COMMIT."
+echo "To list the upstream commits of the roll, run:"
+echo "  git -C .upstream log --oneline --reverse $OLD_COMMIT..$NEW_COMMIT"
+echo ""

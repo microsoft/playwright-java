@@ -3,7 +3,18 @@ name: playwright-java-release
 description: Prepare a Playwright Java release after the rolling PR has merged — cut the release branch, mark the Maven version, add Java-specific changes to the release notes, draft the GitHub release, and tick the Java boxes in the internal checklist.
 ---
 
-Use this skill once the `chore: roll driver to 1.X.0` PR has merged into `main` and the upstream JS `v1.X.0` is published. The rolling work itself is covered by the [[playwright-roll]] skill.
+Use this skill after the roll PR for `1.X` is in `main`. The [[playwright-roll]] skill does the roll.
+
+First, check the driver. We build the driver from the `microsoft/playwright` commit in `scripts/DRIVER_VERSION`, not from a published npm package. For a release, that commit must be on the upstream `release-1.X` branch, and the driver must report `1.X.y`:
+
+```bash
+scripts/build_driver.sh
+git -C .upstream fetch origin release-1.X
+git -C .upstream merge-base --is-ancestor "$(cat scripts/DRIVER_VERSION)" FETCH_HEAD && echo "on release-1.X"
+git -C .upstream show "$(cat scripts/DRIVER_VERSION)":packages/playwright-core/package.json | grep '"version"'
+```
+
+If a check fails, tell the user, and roll with `scripts/roll_driver.sh release-1.X` (the tip of the branch) or `scripts/roll_driver.sh <commit>` (the commit that the user gives).
 
 Throughout this doc, replace `X` with the minor version (e.g. `60` for `1.60.0`) and `<user>` with the fork owner (`gh api user --jq .login`).
 

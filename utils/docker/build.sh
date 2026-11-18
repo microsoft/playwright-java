@@ -10,7 +10,7 @@ if [[ ($1 == '--help') || ($1 == '-h') || ($1 == '') || ($2 == '') ]]; then
   echo ""
   echo "  docker run --rm -it playwright:localbuild-noble /bin/bash"
   echo ""
-  echo "NOTE: this requires a JDK, Maven and npm on the host: the client is built here"
+  echo "NOTE: the host must have git, a JDK, Maven and Node.js with npm: the script builds the driver and the client here"
   echo "and the image only runs it to install the browsers."
   echo ""
   exit 0
@@ -43,7 +43,7 @@ MVN=(mvn --no-transfer-progress)
 # Maven are available, and stage the client jar and its runtime dependencies under
 # dist/. The Dockerfile runs the CLI from there to install the browsers and their
 # dependencies. The build context is this directory, so nothing else reaches the image.
-../../scripts/download_driver.sh
+../../scripts/build_driver.sh
 "${MVN[@]}" -B install -D skipTests -f ../../pom.xml
 
 if ! PW_VERSION=$("${MVN[@]}" -q -N -f ../../pom.xml exec:exec -D exec.executable=echo \

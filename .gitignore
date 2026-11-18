@@ -22,3 +22,6 @@ target/
 *.iml
 
 .npmrc
+
+# The microsoft/playwright checkout. scripts/build_driver.sh builds the driver from it.
+.upstream/

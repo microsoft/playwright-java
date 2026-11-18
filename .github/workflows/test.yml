@@ -30,9 +30,13 @@ jobs:
       with:
         distribution: zulu
         java-version: 8
-    - name: Download drivers
+    - name: Set up Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 24
+    - name: Build the driver
       shell: bash
-      run: scripts/download_driver.sh
+      run: scripts/build_driver.sh
     - name: Build & Install
       run: mvn -B install -D skipTests --no-transfer-progress
     - name: Install browsers
@@ -81,9 +85,13 @@ jobs:
         with:
           distribution: zulu
           java-version: 8
-      - name: Download drivers
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Build the driver
         shell: bash
-        run: scripts/download_driver.sh
+        run: scripts/build_driver.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Install browsers
@@ -109,9 +117,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
-      - name: Download drivers
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Build the driver
         shell: bash
-        run: scripts/download_driver.sh
+        run: scripts/build_driver.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       # Runs on JDK 25: with JDK 8 the javadoc plugin never uses the module path.

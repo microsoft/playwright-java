@@ -20,8 +20,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Download drivers
-        run: scripts/download_driver.sh
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Build the driver
+        run: scripts/build_driver.sh
       - name: Intall Playwright
         run: mvn install -D skipTests --no-transfer-progress
       - name: Test CLI
