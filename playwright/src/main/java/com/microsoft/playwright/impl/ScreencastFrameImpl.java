@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of the frame object that screencast.ts passes to onFrame (a plain object upstream).
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.ScreencastFrame;
