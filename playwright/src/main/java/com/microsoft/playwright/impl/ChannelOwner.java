@@ -270,7 +270,15 @@ public class ChannelOwner extends EventEmitter {
     try {
       code.run();
       while (!waitable.isDone()) {
-        connection.processOneMessage();
+        try {
+          connection.processOneMessage();
+        } catch (PlaywrightException e) {
+          // java: a closed pipe throws from the pump right after it dispatched the close events; the outcome
+          // of the waitable wins, as the promise settled by those events does upstream.
+          if (!waitable.isDone()) {
+            throw e;
+          }
+        }
       }
       return waitable.get();
     } finally {
