@@ -67,7 +67,7 @@ public class ArtifactImpl extends ChannelOwner {
 
   public Path pathAfterFinished() {
     if (connection.isRemote()) {
-      throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
+      throw new PlaywrightException("Path is not available when connecting remotely. Use saveAs() to save a local copy.");
     }
     return FileSystems.getDefault().getPath(channel.pathAfterFinished(NO_TIMEOUT).value);
   }
