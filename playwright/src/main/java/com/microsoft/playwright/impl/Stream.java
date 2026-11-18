@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of stream.ts. java: the Readable is an InputStream; _read becomes read(), _destroy becomes close().
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;

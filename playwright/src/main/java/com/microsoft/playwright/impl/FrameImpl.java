@@ -166,7 +166,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
         throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content = addSourceUrlToScript(content, options.path);
+      content = ClientHelper.addSourceUrlToScript(content, options.path);
       params.content = content;
     }
     return channel.addScriptTag(params, NO_TIMEOUT).element;

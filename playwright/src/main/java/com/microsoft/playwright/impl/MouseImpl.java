@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of input.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -31,27 +32,11 @@ class MouseImpl implements Mouse {
   }
 
   @Override
-  public void click(double x, double y, ClickOptions options) {
-    PageMouseClickParams params = toProtocol(options, PageMouseClickParams.class);
+  public void move(double x, double y, MoveOptions options) {
+    PageMouseMoveParams params = toProtocol(options, PageMouseMoveParams.class);
     params.x = x;
     params.y = y;
-    page.channel.mouseClick(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void dblclick(double x, double y, DblclickOptions options) {
-    page.withTitle("Double click", () -> dblclickImpl(x, y, options));
-  }
-
-  private void dblclickImpl(double x, double y, DblclickOptions options) {
-    ClickOptions clickOptions;
-    if (options == null) {
-      clickOptions = new ClickOptions();
-    } else {
-      clickOptions = convertType(options, ClickOptions.class);
-    }
-    clickOptions.clickCount = 2;
-    click(x, y, clickOptions);
+    page.channel.mouseMove(params, NO_TIMEOUT);
   }
 
   @Override
@@ -61,17 +46,32 @@ class MouseImpl implements Mouse {
   }
 
   @Override
-  public void move(double x, double y, MoveOptions options) {
-    PageMouseMoveParams params = toProtocol(options, PageMouseMoveParams.class);
-    params.x = x;
-    params.y = y;
-    page.channel.mouseMove(params, NO_TIMEOUT);
-  }
-
-  @Override
   public void up(UpOptions options) {
     PageMouseUpParams params = toProtocol(options, PageMouseUpParams.class);
     page.channel.mouseUp(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void click(double x, double y, ClickOptions options) {
+    PageMouseClickParams params = toProtocol(options, PageMouseClickParams.class);
+    params.x = x;
+    params.y = y;
+    page.channel.mouseClick(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void dblclick(double x, double y, DblclickOptions options) {
+    page.withTitle("Double click", () -> {
+      ClickOptions clickOptions;
+      if (options == null) {
+        // java: options is nullable, upstream defaults it to {}.
+        clickOptions = new ClickOptions();
+      } else {
+        clickOptions = convertType(options, ClickOptions.class);
+      }
+      clickOptions.clickCount = 2;
+      click(x, y, clickOptions);
+    });
   }
 
   @Override

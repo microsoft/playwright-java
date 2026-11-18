@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
+// Port of localUtils.ts.
 public class LocalUtils extends ChannelOwner {
   final LocalUtilsChannel channel = new LocalUtilsChannel(this);
 
@@ -33,6 +34,7 @@ public class LocalUtils extends ChannelOwner {
     super(parent, type, guid, initializer);
   }
 
+  // java: devices stay the raw initializer array, DeviceDescriptor is not a Java type.
   JsonArray deviceDescriptors() {
     return initializer.getAsJsonArray("deviceDescriptors");
   }
@@ -50,12 +52,6 @@ public class LocalUtils extends ChannelOwner {
     channel.zip(params, NO_TIMEOUT);
   }
 
-  void traceDiscarded(String stacksId) {
-    LocalUtilsTraceDiscardedParams params = new LocalUtilsTraceDiscardedParams();
-    params.stacksId = stacksId;
-    channel.traceDiscarded(params, NO_TIMEOUT);
-  }
-
   String tracingStarted(String tracesDir, String traceName) {
     LocalUtilsTracingStartedParams params = new LocalUtilsTracingStartedParams();
     if (tracesDir != null) {
@@ -65,6 +61,13 @@ public class LocalUtils extends ChannelOwner {
     return connection.localUtils().channel.tracingStarted(params, NO_TIMEOUT).stacksId;
   }
 
+  void traceDiscarded(String stacksId) {
+    LocalUtilsTraceDiscardedParams params = new LocalUtilsTraceDiscardedParams();
+    params.stacksId = stacksId;
+    channel.traceDiscarded(params, NO_TIMEOUT);
+  }
+
+  // java: no counterpart upstream, the Java API matches globs on the driver.
   public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     LocalUtilsGlobToRegexParams params = new LocalUtilsGlobToRegexParams();
     params.glob = glob;

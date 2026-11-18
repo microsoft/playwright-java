@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of video.ts. java: the video is created before its artifact is known, so the artifact is assigned later.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
@@ -36,14 +37,9 @@ class VideoImpl implements Video {
   }
 
   @Override
-  public void delete() {
-    if (artifact != null)
-      artifact.delete();
-  }
-
-  @Override
   public Path path() {
     if (page.connection.isRemote()) {
+      // java: the message names the Java API.
       throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
     }
     if (artifact == null)
@@ -56,5 +52,11 @@ class VideoImpl implements Video {
     if (artifact == null)
       throw new PlaywrightException("Video recording has not been started.");
     artifact.saveAs(path);
+  }
+
+  @Override
+  public void delete() {
+    if (artifact != null)
+      artifact.delete();
   }
 }

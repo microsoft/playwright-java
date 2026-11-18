@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of input.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -37,6 +38,13 @@ class KeyboardImpl implements Keyboard {
   }
 
   @Override
+  public void up(String key) {
+    PageKeyboardUpParams params = new PageKeyboardUpParams();
+    params.key = key;
+    page.channel.keyboardUp(params, NO_TIMEOUT);
+  }
+
+  @Override
   public void insertText(String text) {
     PageKeyboardInsertTextParams params = new PageKeyboardInsertTextParams();
     params.text = text;
@@ -44,31 +52,16 @@ class KeyboardImpl implements Keyboard {
   }
 
   @Override
-  public void press(String key, PressOptions options) {
-    pressImpl(key, options);
-  }
-
-  private void pressImpl(String key, PressOptions options) {
-    PageKeyboardPressParams params = toProtocol(options, PageKeyboardPressParams.class);
-    params.key = key;
-    page.channel.keyboardPress(params, NO_TIMEOUT);
-  }
-
-  @Override
   public void type(String text, TypeOptions options) {
-    typeImpl(text, options);
-  }
-
-  private void typeImpl(String text, TypeOptions options) {
     PageKeyboardTypeParams params = toProtocol(options, PageKeyboardTypeParams.class);
     params.text = text;
     page.channel.keyboardType(params, NO_TIMEOUT);
   }
 
   @Override
-  public void up(String key) {
-    PageKeyboardUpParams params = new PageKeyboardUpParams();
+  public void press(String key, PressOptions options) {
+    PageKeyboardPressParams params = toProtocol(options, PageKeyboardPressParams.class);
     params.key = key;
-    page.channel.keyboardUp(params, NO_TIMEOUT);
+    page.channel.keyboardPress(params, NO_TIMEOUT);
   }
 }

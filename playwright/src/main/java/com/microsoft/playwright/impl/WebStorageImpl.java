@@ -26,6 +26,7 @@ import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.util.Arrays.asList;
 
+// Port of webStorage.ts.
 class WebStorageImpl implements WebStorage {
   private final PageImpl page;
   private final String kind;

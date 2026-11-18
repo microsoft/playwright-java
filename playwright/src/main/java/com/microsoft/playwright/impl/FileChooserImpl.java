@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of fileChooser.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.ElementHandle;
@@ -51,6 +52,7 @@ class FileChooserImpl implements FileChooser {
     return page;
   }
 
+  // java: overloads for the public API; each delegates to ElementHandle.setInputFiles like upstream setFiles.
   @Override
   public void setFiles(Path files, SetFilesOptions options) {
     setFiles(new Path[]{files}, options);

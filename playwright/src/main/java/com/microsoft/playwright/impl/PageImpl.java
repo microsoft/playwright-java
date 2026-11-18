@@ -678,7 +678,7 @@ public class PageImpl extends ChannelOwner implements Page {
   public AutoCloseable addInitScript(Path path) {
     try {
       byte[] bytes = readAllBytes(path);
-      String script = addSourceUrlToScript(new String(bytes, UTF_8), path);
+      String script = ClientHelper.addSourceUrlToScript(new String(bytes, UTF_8), path);
       return addInitScriptImpl(script);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read script from file", e);
