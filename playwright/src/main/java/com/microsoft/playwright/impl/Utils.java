@@ -306,19 +306,6 @@ public class Utils {
     return new FilePayload(file.getFileName().toString(), null, buffer);
   }
 
-  static void mkParentDirs(Path file) {
-    Path dir = file.getParent();
-    if (dir != null) {
-      if (!Files.exists(dir)) {
-        try {
-          Files.createDirectories(dir);
-        } catch (IOException e) {
-          throw new PlaywrightException("Failed to create parent directory: " + dir, e);
-        }
-      }
-    }
-  }
-
   /** The screenshot type for a path when no type is given, from its extension, like the Node.js client. */
   static ScreenshotType screenshotTypeForPath(Path path) {
     String fileName = path.getFileName().toString();
@@ -335,7 +322,7 @@ public class Utils {
   }
 
   static void writeToFile(byte[] buffer, Path path) {
-    mkParentDirs(path);
+    FileUtils.mkdirIfNeeded(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       out.write(buffer);
     } catch (IOException e) {
@@ -344,7 +331,7 @@ public class Utils {
   }
 
   static void writeToFile(InputStream inputStream, Path path) {
-    mkParentDirs(path);
+    FileUtils.mkdirIfNeeded(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       byte[] buf = new byte[1024 * 1024];
       int length;
@@ -416,10 +403,6 @@ public class Utils {
       flags |= Pattern.MULTILINE;
     }
     return flags;
-  }
-
-  static String addSourceUrlToScript(String source, Path path) {
-    return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
   }
 
   static JsonObject interceptionPatterns(List<UrlMatcher> matchers) {
