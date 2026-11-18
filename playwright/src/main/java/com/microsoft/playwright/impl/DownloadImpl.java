@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of download.ts. java: url and suggestedFilename are read from the initializer.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
@@ -35,6 +36,11 @@ class DownloadImpl implements Download {
   }
 
   @Override
+  public Page page() {
+    return page;
+  }
+
+  @Override
   public String url() {
     return initializer.get("url").getAsString();
   }
@@ -45,18 +51,13 @@ class DownloadImpl implements Download {
   }
 
   @Override
-  public void cancel() {
-    artifact.cancel();
+  public Path path() {
+    return artifact.pathAfterFinished();
   }
 
   @Override
-  public InputStream createReadStream() {
-    return artifact.createReadStream();
-  }
-
-  @Override
-  public void delete() {
-    artifact.delete();
+  public void saveAs(Path path) {
+    artifact.saveAs(path);
   }
 
   @Override
@@ -65,17 +66,17 @@ class DownloadImpl implements Download {
   }
 
   @Override
-  public Page page() {
-    return page;
+  public InputStream createReadStream() {
+    return artifact.createReadStream();
   }
 
   @Override
-  public Path path() {
-    return artifact.pathAfterFinished();
+  public void cancel() {
+    artifact.cancel();
   }
 
   @Override
-  public void saveAs(Path path) {
-    artifact.saveAs(path);
+  public void delete() {
+    artifact.delete();
   }
 }
