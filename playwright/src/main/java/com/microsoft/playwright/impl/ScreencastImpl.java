@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of screencast.ts. java: onFrame receives a ScreencastFrame and the frame event arrives through handleScreencastFrame.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -100,6 +101,18 @@ class ScreencastImpl implements Screencast {
   }
 
   @Override
+  public AutoCloseable showActions(ShowActionsOptions options) {
+    PageScreencastShowActionsParams params = toProtocol(options, PageScreencastShowActionsParams.class);
+    page.channel.screencastShowActions(params, NO_TIMEOUT);
+    return new DisposableStub(this::hideActions);
+  }
+
+  @Override
+  public void hideActions() {
+    page.channel.screencastHideActions(NO_TIMEOUT);
+  }
+
+  @Override
   public AutoCloseable showOverlay(String html, ShowOverlayOptions options) {
     PageScreencastShowOverlayParams params = toProtocol(options, PageScreencastShowOverlayParams.class);
     params.html = html;
@@ -120,22 +133,10 @@ class ScreencastImpl implements Screencast {
   }
 
   @Override
-  public AutoCloseable showActions(ShowActionsOptions options) {
-    PageScreencastShowActionsParams params = toProtocol(options, PageScreencastShowActionsParams.class);
-    page.channel.screencastShowActions(params, NO_TIMEOUT);
-    return new DisposableStub(this::hideActions);
-  }
-
-  @Override
   public void showOverlays() {
     PageScreencastSetOverlayVisibleParams params = new PageScreencastSetOverlayVisibleParams();
     params.visible = true;
     page.channel.screencastSetOverlayVisible(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void hideActions() {
-    page.channel.screencastHideActions(NO_TIMEOUT);
   }
 
   @Override
