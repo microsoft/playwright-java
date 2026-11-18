@@ -84,7 +84,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   }
 
   public LocalUtils localUtils() {
-    return connection.localUtils;
+    return connection.localUtils();
   }
 
   public JsonArray deviceDescriptors() {

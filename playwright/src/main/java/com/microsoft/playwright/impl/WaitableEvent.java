@@ -19,21 +19,21 @@ package com.microsoft.playwright.impl;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-class WaitableEvent<EventType, T> implements Waitable<T>, Consumer<T> {
-  final ListenerCollection<EventType> listeners;
-  private final EventType type;
+class WaitableEvent<T> implements Waitable<T>, Consumer<T> {
+  final EventEmitter emitter;
+  private final String type;
   private final Predicate<T> predicate;
   private T eventArg;
 
-  WaitableEvent(ListenerCollection<EventType> listeners, EventType type) {
-    this(listeners, type, null);
+  WaitableEvent(EventEmitter emitter, String type) {
+    this(emitter, type, null);
   }
 
-  WaitableEvent(ListenerCollection<EventType> listeners, EventType type, Predicate<T> predicate) {
-    this.listeners = listeners;
+  WaitableEvent(EventEmitter emitter, String type, Predicate<T> predicate) {
+    this.emitter = emitter;
     this.type = type;
     this.predicate = predicate;
-    listeners.add(type, this);
+    emitter.on(type, this);
   }
 
   @Override
@@ -53,7 +53,7 @@ class WaitableEvent<EventType, T> implements Waitable<T>, Consumer<T> {
 
   @Override
   public void dispose() {
-    listeners.remove(type, this);
+    emitter.off(type, this);
   }
 
   @Override

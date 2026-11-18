@@ -16,26 +16,22 @@
 
 package com.microsoft.playwright.impl;
 
+// Port of timeoutSettings.ts. java: no AbortSignal and no PWDEBUG=inspector branch, a timeout is a Double
+// and 0 means no deadline.
 class TimeoutSettings {
-  private static final int DEFAULT_TIMEOUT_MS = 30_000;
-  private static final int DEFAULT_LAUNCH_TIMEOUT_MS = 180_000;
+  static final int DEFAULT_TIMEOUT = 30_000;
+  static final int DEFAULT_LAUNCH_TIMEOUT = 180_000;
 
   private final TimeoutSettings parent;
-  private Double defaultTimeout ;
+  private Double defaultTimeout;
   private Double defaultNavigationTimeout;
 
   TimeoutSettings() {
     this(null);
   }
+
   TimeoutSettings(TimeoutSettings parent) {
     this.parent = parent;
-  }
-
-  Double defaultTimeout() {
-    return defaultTimeout;
-  }
-  Double defaultNavigationTimeout() {
-    return defaultNavigationTimeout;
   }
 
   void setDefaultTimeout(Double timeout) {
@@ -46,17 +42,12 @@ class TimeoutSettings {
     defaultNavigationTimeout = timeout;
   }
 
-  double timeout(Double timeout) {
-    if (timeout != null) {
-      return timeout;
-    }
-    if (defaultTimeout != null) {
-      return defaultTimeout;
-    }
-    if (parent != null) {
-      return parent.timeout(timeout);
-    }
-    return DEFAULT_TIMEOUT_MS;
+  Double defaultNavigationTimeout() {
+    return defaultNavigationTimeout;
+  }
+
+  Double defaultTimeout() {
+    return defaultTimeout;
   }
 
   double navigationTimeout(Double timeout) {
@@ -72,20 +63,37 @@ class TimeoutSettings {
     if (parent != null) {
       return parent.navigationTimeout(timeout);
     }
-    return DEFAULT_TIMEOUT_MS;
+    return DEFAULT_TIMEOUT;
   }
 
+  double timeout(Double timeout) {
+    if (timeout != null) {
+      return timeout;
+    }
+    if (defaultTimeout != null) {
+      return defaultTimeout;
+    }
+    if (parent != null) {
+      return parent.timeout(timeout);
+    }
+    return DEFAULT_TIMEOUT;
+  }
+
+  double launchTimeout(Double timeout) {
+    if (timeout != null) {
+      return timeout;
+    }
+    if (parent != null) {
+      return parent.launchTimeout(timeout);
+    }
+    return DEFAULT_LAUNCH_TIMEOUT;
+  }
+
+  // java: removed once every wait goes through Waiter.
   <T> Waitable<T> createWaitable(Double timeout) {
     if (timeout != null && timeout == 0) {
       return new WaitableNever<>();
     }
     return new WaitableTimeout<>(timeout(timeout));
-  }
-
-  static double launchTimeout(Double timeout) {
-    if (timeout != null) {
-      return timeout;
-    }
-    return DEFAULT_LAUNCH_TIMEOUT_MS;
   }
 }

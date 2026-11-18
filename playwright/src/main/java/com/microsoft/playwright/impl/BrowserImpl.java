@@ -35,22 +35,17 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
+import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
 
 public class BrowserImpl extends ChannelOwner implements Browser {
   // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.
   final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
   BrowserTypeImpl browserType;
   BrowserType.LaunchOptions launchOptions;
   private Path tracePath;
   String closeReason;
-
-  enum EventType {
-    CONTEXT,
-    DISCONNECTED,
-  }
 
   final BrowserChannel channel = new BrowserChannel(this);
 
@@ -60,22 +55,22 @@ public class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void onContext(Consumer<BrowserContext> handler) {
-    listeners.add(EventType.CONTEXT, handler);
+    on(Events.Browser.CONTEXT, handler);
   }
 
   @Override
   public void offContext(Consumer<BrowserContext> handler) {
-    listeners.remove(EventType.CONTEXT, handler);
+    off(Events.Browser.CONTEXT, handler);
   }
 
   @Override
   public void onDisconnected(Consumer<Browser> handler) {
-    listeners.add(EventType.DISCONNECTED, handler);
+    on(Events.Browser.DISCONNECTED, handler);
   }
 
   @Override
   public void offDisconnected(Consumer<Browser> handler) {
-    listeners.remove(EventType.DISCONNECTED, handler);
+    off(Events.Browser.DISCONNECTED, handler);
   }
 
   @Override
@@ -91,7 +86,8 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     closeReason = options.reason;
     if (isConnectedOverWebSocket) {
       try {
-        connection.close();
+        // java: the message of a call that fails because of this, the default close reason of JsonPipe.
+        connection.close("Browser has been closed");
       } catch (IOException e) {
         throw new PlaywrightException("Failed to close browser connection", e);
       }
@@ -363,11 +359,11 @@ public class BrowserImpl extends ChannelOwner implements Browser {
       context.setTracesDir(tracePath);
       browserType.playwright.selectors.contextsForSelectors.add(context);
     }
-    listeners.notify(EventType.CONTEXT, context);
+    emit(Events.Browser.CONTEXT, context);
   }
 
   private void didClose() {
     isConnected = false;
-    listeners.notify(EventType.DISCONNECTED, this);
+    emit(Events.Browser.DISCONNECTED, this);
   }
 }

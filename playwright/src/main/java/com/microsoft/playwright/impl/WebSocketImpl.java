@@ -28,16 +28,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class WebSocketImpl extends ChannelOwner implements WebSocket {
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private final PageImpl page;
   private boolean isClosed;
-
-  enum EventType {
-    CLOSE,
-    FRAMERECEIVED,
-    FRAMESENT,
-    SOCKETERROR,
-  }
 
   final WebSocketChannel channel = new WebSocketChannel(this);
 
@@ -48,66 +40,58 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public void onClose(Consumer<WebSocket> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.WebSocket.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<WebSocket> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.WebSocket.CLOSE, handler);
   }
 
   @Override
   public void onFrameReceived(Consumer<WebSocketFrame> handler) {
-    listeners.add(EventType.FRAMERECEIVED, handler);
+    on(Events.WebSocket.FRAME_RECEIVED, handler);
   }
 
   @Override
   public void offFrameReceived(Consumer<WebSocketFrame> handler) {
-    listeners.remove(EventType.FRAMERECEIVED, handler);
+    off(Events.WebSocket.FRAME_RECEIVED, handler);
   }
 
   @Override
   public void onFrameSent(Consumer<WebSocketFrame> handler) {
-    listeners.add(EventType.FRAMESENT, handler);
+    on(Events.WebSocket.FRAME_SENT, handler);
   }
 
   @Override
   public void offFrameSent(Consumer<WebSocketFrame> handler) {
-    listeners.remove(EventType.FRAMESENT, handler);
+    off(Events.WebSocket.FRAME_SENT, handler);
   }
 
   @Override
   public void onSocketError(Consumer<String> handler) {
-    listeners.add(EventType.SOCKETERROR, handler);
+    on(Events.WebSocket.ERROR, handler);
   }
 
   @Override
   public void offSocketError(Consumer<String> handler) {
-    listeners.remove(EventType.SOCKETERROR, handler);
+    off(Events.WebSocket.ERROR, handler);
   }
 
   @Override
   public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable code) {
-    return withWaitLogging("WebSocket.waitForFrameReceived", "framereceived", logger -> waitForFrameReceivedImpl(options, code));
-  }
-
-  private WebSocketFrame waitForFrameReceivedImpl(WaitForFrameReceivedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMERECEIVED, code, options.predicate, options.timeout);
+    return waitForEvent(Events.WebSocket.FRAME_RECEIVED, options.predicate, options.timeout, code);
   }
 
   @Override
   public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable code) {
-    return withWaitLogging("WebSocket.waitForFrameSent", "framesent", logger -> waitForFrameSentImpl(options, code));
-  }
-
-  private WebSocketFrame waitForFrameSentImpl(WaitForFrameSentOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMESENT, code, options.predicate, options.timeout);
+    return waitForEvent(Events.WebSocket.FRAME_SENT, options.predicate, options.timeout, code);
   }
 
   @Override
@@ -120,36 +104,21 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     return initializer.get("url").getAsString();
   }
 
-  private class WaitableWebSocketClose<T> extends WaitableEvent<EventType, T> {
-    WaitableWebSocketClose() {
-      super(WebSocketImpl.this.listeners, EventType.CLOSE);
+  // waitForEvent in network.ts
+  private WebSocketFrame waitForEvent(String event, Predicate<WebSocketFrame> predicate, Double timeout, Runnable code) {
+    double timeoutMs = page.timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.WebSocket.ERROR.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.ERROR, () -> new PlaywrightException("Socket error"));
     }
-
-    @Override
-    public T get() {
-      throw new PlaywrightException("Socket closed");
+    if (!Events.WebSocket.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.CLOSE, () -> new PlaywrightException("Socket closed"));
     }
-  }
-
-  private class WaitableWebSocketError<T> extends WaitableEvent<EventType, T> {
-    WaitableWebSocketError() {
-      super(WebSocketImpl.this.listeners, EventType.SOCKETERROR);
-    }
-
-    @Override
-    public T get() {
-      throw new PlaywrightException("Socket error");
-    }
-  }
-
-  private WebSocketFrame waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
-    List<Waitable<WebSocketFrame>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
-    waitables.add(new WaitableWebSocketClose<>());
-    waitables.add(new WaitableWebSocketError<>());
-    waitables.add(page.createWaitForCloseHelper());
-    waitables.add(page.createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
+    waiter.rejectOnEvent(page, Events.Page.CLOSE, () -> page.closeErrorWithReason());
+    WebSocketFrame result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override
@@ -162,7 +131,7 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
         }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), opCode == 2);
-        listeners.notify(EventType.FRAMESENT, WebSocketFrame);
+        emit(Events.WebSocket.FRAME_SENT, WebSocketFrame);
         break;
       }
       case "frameReceived": {
@@ -172,17 +141,17 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
         }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), opCode == 2);
-        listeners.notify(EventType.FRAMERECEIVED, WebSocketFrame);
+        emit(Events.WebSocket.FRAME_RECEIVED, WebSocketFrame);
         break;
       }
       case "socketError": {
         String error = parameters.get("error").getAsString();
-        listeners.notify(EventType.SOCKETERROR, error);
+        emit(Events.WebSocket.ERROR, error);
         break;
       }
       case "close": {
         isClosed = true;
-        listeners.notify(EventType.CLOSE, this);
+        emit(Events.WebSocket.CLOSE, this);
         break;
       }
       default: {

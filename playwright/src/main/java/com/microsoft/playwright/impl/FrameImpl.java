@@ -44,8 +44,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<WaitUntilState> loadStates = new HashSet<>();
 
-  enum InternalEventType { NAVIGATED, LOADSTATE }
-  private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
   PageImpl page;
   boolean isDetached;
   private final WebMCPImpl webmcp = new WebMCPImpl(this);
@@ -822,166 +820,115 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return channel.waitForFunction(params, timeout(options.timeout)).handle;
   }
 
-  @Override
-  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    withWaitLogging("Frame.waitForLoadState", logger -> {
-      waitForLoadStateImpl(state, options, logger);
-      return null;
-    });
-  }
-
-  void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options, Logger logger) {
-    waitForLoadStateImpl(convertType(state, WaitUntilState.class), options, logger);
-  }
-
-  private void waitForLoadStateImpl(WaitUntilState state, WaitForLoadStateOptions options, Logger logger) {
-    if (options == null) {
-      options = new WaitForLoadStateOptions();
+  private Waiter setupNavigationWaiter(Double timeout) {
+    Waiter waiter = new Waiter(page, "");
+    if (page.isClosed()) {
+      waiter.rejectImmediately(page.closeErrorWithReason());
     }
-    if (state == null) {
-      state = LOAD;
-    }
-
-    List<Waitable<Void>> waitables = new ArrayList<>();
-    waitables.add(page.createWaitForCloseHelper(true));
-    waitables.add(new WaitForLoadStateHelper(state, logger));
-    waitables.add(page.createWaitableTimeout(options.timeout));
-    runUntil(() -> {}, new WaitableRace<>(waitables));
-  }
-
-  private class WaitForLoadStateHelper implements Waitable<Void>, Consumer<WaitUntilState> {
-    private final WaitUntilState expectedState;
-    private final Logger logger;
-    private boolean isDone;
-
-    WaitForLoadStateHelper(WaitUntilState state, Logger logger) {
-      expectedState = state;
-      this.logger = logger;
-      isDone = loadStates.contains(state);
-      if (!isDone) {
-        internalListeners.add(InternalEventType.LOADSTATE, this);
-      }
-    }
-
-    @Override
-    public void accept(WaitUntilState state) {
-      logger.log("  load state changed to " + state);
-      if (expectedState.equals(state)) {
-        isDone = true;
-        dispose();
-      }
-    }
-
-    public void dispose() {
-      internalListeners.remove(InternalEventType.LOADSTATE, this);
-    }
-
-    public boolean isDone() {
-      return isDone;
-    }
-
-    @Override
-    public Void get() {
-      return null;
-    }
-  }
-
-  private class WaitForNavigationHelper implements Waitable<Response>, Consumer<JsonObject> {
-    private final UrlMatcher matcher;
-    private final WaitUntilState expectedLoadState;
-    private final Logger logger;
-    private WaitForLoadStateHelper loadStateHelper;
-
-    private RequestImpl request;
-    private RuntimeException exception;
-
-    WaitForNavigationHelper(UrlMatcher matcher, WaitUntilState expectedLoadState, Logger logger) {
-      this.matcher = matcher;
-      this.expectedLoadState = expectedLoadState;
-      this.logger = logger;
-      internalListeners.add(InternalEventType.NAVIGATED, this);
-    }
-
-    @Override
-    public void accept(JsonObject params) {
-      String url = params.get("url").getAsString();
-      logger.log("  navigated to " + url);
-      if (!matcher.test(url)) {
-        return;
-      }
-      if (params.has("error")) {
-        exception = new PlaywrightException(params.get("error").getAsString());
-      } else {
-        if (params.has("newDocument")) {
-          JsonObject jsonReq = params.getAsJsonObject("newDocument").getAsJsonObject("request");
-          if (jsonReq != null) {
-            request = connection.getExistingObject(jsonReq.get("guid").getAsString());
-          }
-        }
-        loadStateHelper = new WaitForLoadStateHelper(expectedLoadState, logger);
-      }
-      internalListeners.remove(InternalEventType.NAVIGATED, this);
-    }
-
-    @Override
-    public void dispose() {
-      internalListeners.remove(InternalEventType.NAVIGATED, this);
-      if (loadStateHelper != null) {
-        loadStateHelper.dispose();
-      }
-    }
-
-    @Override
-    public boolean isDone() {
-      if (exception != null) {
-        return true;
-      }
-      if (loadStateHelper != null) {
-        return loadStateHelper.isDone();
-      }
-      return false;
-    }
-
-    @Override
-    public Response get() {
-      if (exception != null) {
-        throw exception;
-      }
-
-      if (request == null) {
-        return null;
-      }
-      return request.finalRequest().response();
-    }
+    waiter.rejectOnEvent(page, Events.Page.CLOSE, () -> page.closeErrorWithReason());
+    waiter.rejectOnEvent(page, Events.Page.CRASH, () -> new PlaywrightException("Navigation failed because page crashed!"));
+    waiter.<Frame>rejectOnEvent(page, Events.Page.FRAME_DETACHED, () -> new PlaywrightException("Navigating frame was detached!"), frame -> frame == this);
+    double timeoutMs = page.timeoutSettings.navigationTimeout(timeout);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded.");
+    return waiter;
   }
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withWaitLoggingTitled("Frame.waitForNavigation", "Wait for navigation", logger -> waitForNavigationImpl(logger, code, options, null));
-  }
-
-  Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
-    return waitForNavigationImpl(logger, code, options, null);
-  }
-
-  private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options, UrlMatcher matcher) {
     if (options == null) {
       options = new WaitForNavigationOptions();
     }
-    if (options.waitUntil == null) {
-      options.waitUntil = WaitUntilState.LOAD;
+    UrlMatcher matcher = UrlMatcher.forOneOf(page.context().baseUrl(), options.url, this.connection.localUtils(), false);
+    return waitForNavigation(matcher, options.url instanceof String ? (String) options.url : null, options.waitUntil, options.timeout, code);
+  }
+
+  private Response waitForNavigation(UrlMatcher matcher, String url, WaitUntilState waitUntil, Double timeout, Runnable code) {
+    if (waitUntil == null) {
+      waitUntil = LOAD;
+    }
+    final WaitUntilState expectedState = waitUntil;
+    // java: the code runs outside of the api zone, so that its calls are not hidden as internal.
+    Waiter waiter = withTitle("Wait for navigation", () -> setupNavigationWaiter(timeout));
+
+    String toUrl = url != null ? " to \"" + url + "\"" : "";
+    waiter.log("waiting for navigation" + toUrl + " until \"" + loadStateName(waitUntil) + "\"");
+
+    JsonObject navigatedEvent = waiter.<JsonObject>waitForEvent(this, Events.Frame.NAVIGATED, event -> {
+      // Any failed navigation results in a rejection.
+      if (event.has("error")) {
+        return true;
+      }
+      String eventUrl = event.get("url").getAsString();
+      waiter.log("  navigated to \"" + eventUrl + "\"");
+      return matcher.test(eventUrl);
+    }, code);
+    if (navigatedEvent.has("error")) {
+      WaitableResult<Object> failure = new WaitableResult<>();
+      failure.completeExceptionally(new PlaywrightException(navigatedEvent.get("error").getAsString()));
+      waiter.waitForPromise(failure);
     }
 
-    List<Waitable<Response>> waitables = new ArrayList<>();
-    if (matcher == null) {
-      matcher = UrlMatcher.forOneOf(page.context().baseUrl(), options.url, this.connection.localUtils, false);
+    if (!loadStates.contains(expectedState)) {
+      waiter.waitForPromise(waiter.<WaitUntilState>waitForEvent(this, Events.Frame.LOAD_STATE, s -> {
+        waiter.log("  \"" + loadStateName(s) + "\" event fired");
+        return s == expectedState;
+      }));
     }
-    logger.log("waiting for navigation " + matcher);
-    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil, logger));
-    waitables.add(page.createWaitForCloseHelper(true));
-    waitables.add(page.createWaitableFrameDetach(this));
-    waitables.add(page.createWaitableNavigationTimeout(options.timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
+
+    RequestImpl request = null;
+    if (navigatedEvent.has("newDocument")) {
+      JsonObject jsonReq = navigatedEvent.getAsJsonObject("newDocument").getAsJsonObject("request");
+      if (jsonReq != null) {
+        request = connection.getExistingObject(jsonReq.get("guid").getAsString());
+      }
+    }
+    Response response = null;
+    if (request != null) {
+      WaitableResult<Response> result = new WaitableResult<>();
+      try {
+        result.complete(request.finalRequest().response());
+      } catch (RuntimeException e) {
+        result.completeExceptionally(e);
+      }
+      response = waiter.waitForPromise(result);
+    }
+    waiter.dispose();
+    return response;
+  }
+
+  @Override
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    if (state == null) {
+      state = LoadState.LOAD;
+    }
+    waitForLoadState(convertType(state, WaitUntilState.class), options == null ? null : options.timeout);
+  }
+
+  private void waitForLoadState(WaitUntilState state, Double timeout) {
+    if (state == null) {
+      state = LOAD;
+    }
+    final WaitUntilState expectedState = state;
+    withTitle("Wait for load state \"" + loadStateName(state) + "\"", () -> {
+      Waiter waiter = setupNavigationWaiter(timeout);
+      try {
+        if (loadStates.contains(expectedState)) {
+          waiter.log("  not waiting, \"" + loadStateName(expectedState) + "\" event already fired");
+          waiter.throwIfImmediatelyRejected();
+        } else {
+          waiter.waitForPromise(waiter.<WaitUntilState>waitForEvent(this, Events.Frame.LOAD_STATE, s -> {
+            waiter.log("  \"" + loadStateName(s) + "\" event fired");
+            return s == expectedState;
+          }));
+        }
+      } finally {
+        waiter.dispose();
+      }
+    });
+  }
+
+  private static String loadStateName(WaitUntilState state) {
+    return state.name().toLowerCase();
   }
 
   @Override
@@ -1008,36 +955,28 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(UrlMatcher.forGlob(page.context().baseUrl(), url, this.connection.localUtils, false), options);
+    waitForURL(UrlMatcher.forGlob(page.context().baseUrl(), url, this.connection.localUtils(), false), url, options);
   }
 
   @Override
   public void waitForURL(Pattern url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(url), null, options);
   }
 
   @Override
   public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(url), null, options);
   }
 
-  private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withWaitLogging("Frame.waitForURL", logger -> {
-      waitForURLImpl(logger, matcher, options);
-      return null;
-    });
-  }
-
-  void waitForURLImpl(Logger logger, UrlMatcher matcher, WaitForURLOptions options) {
-    logger.log("waiting for url " + matcher);
+  private void waitForURL(UrlMatcher matcher, String url, WaitForURLOptions options) {
     if (options == null) {
       options = new WaitForURLOptions();
     }
     if (matcher.test(url())) {
-      waitForLoadStateImpl(options.waitUntil, convertType(options, WaitForLoadStateOptions.class), logger);
+      waitForLoadState(options.waitUntil, options.timeout);
       return;
     }
-    waitForNavigationImpl(logger, () -> {}, convertType(options, WaitForNavigationOptions.class), matcher);
+    waitForNavigation(matcher, url, options.waitUntil, options.timeout, () -> {});
   }
 
   int queryCount(String selector) {
@@ -1122,13 +1061,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
         loadStates.add(state);
         if (parentFrame == null && page != null) {
           if (state == LOAD) {
-            page.listeners.notify(PageImpl.EventType.LOAD, page);
+            page.emit(Events.Page.LOAD, page);
             page.browserContext.notifyPageLoad(page);
           } else if (state == DOMCONTENTLOADED) {
-            page.listeners.notify(PageImpl.EventType.DOMCONTENTLOADED, page);
+            page.emit(Events.Page.DOM_CONTENT_LOADED, page);
           }
         }
-        internalListeners.notify(InternalEventType.LOADSTATE, state);
+        emit(Events.Frame.LOAD_STATE, state);
       }
       JsonElement remove = params.get("remove");
       if (remove != null) {
@@ -1140,7 +1079,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       if (!params.has("error") && page != null) {
         page.frameNavigated(this);
       }
-      internalListeners.notify(InternalEventType.NAVIGATED, params);
+      emit(Events.Frame.NAVIGATED, params);
     }
   }
 

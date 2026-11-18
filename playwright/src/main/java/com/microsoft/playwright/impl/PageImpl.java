@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.parseError;
 import static com.microsoft.playwright.impl.Utils.*;
+import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -83,19 +84,6 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private static final Map<EventType, String> eventSubscriptions() {
-    Map<EventType, String> result = new HashMap<>();
-    result.put(EventType.CONSOLE, "console");
-    result.put(EventType.DIALOG, "dialog");
-    result.put(EventType.DIALOGCLOSED, "dialogClosed");
-    result.put(EventType.REQUEST, "request");
-    result.put(EventType.RESPONSE, "response");
-    result.put(EventType.REQUESTFINISHED, "requestFinished");
-    result.put(EventType.REQUESTFAILED, "requestFailed");
-    result.put(EventType.FILECHOOSER, "fileChooser");
-    return result;
-  }
-  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>(eventSubscriptions(), this);
   final Map<String, BindingCallback> bindings = new HashMap<>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
@@ -105,31 +93,18 @@ public class PageImpl extends ChannelOwner implements Page {
   private final PageImpl opener;
   private String closeReason;
 
-  enum EventType {
-    CLOSE,
-    CONSOLE,
-    CRASH,
-    DIALOG,
-    DIALOGCLOSED,
-    DOMCONTENTLOADED,
-    DOWNLOAD,
-    FILECHOOSER,
-    FRAMEATTACHED,
-    FRAMEDETACHED,
-    FRAMENAVIGATED,
-    LOAD,
-    PAGEERROR,
-    POPUP,
-    REQUEST,
-    REQUESTFAILED,
-    REQUESTFINISHED,
-    RESPONSE,
-    WEBSOCKET,
-    WORKER,
-  }
-
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    Map<String, String> mapping = new HashMap<>();
+    mapping.put(Events.Page.CONSOLE, "console");
+    mapping.put(Events.Page.DIALOG, "dialog");
+    mapping.put(Events.Page.DIALOG_CLOSED, "dialogClosed");
+    mapping.put(Events.Page.REQUEST, "request");
+    mapping.put(Events.Page.RESPONSE, "response");
+    mapping.put(Events.Page.REQUEST_FINISHED, "requestFinished");
+    mapping.put(Events.Page.REQUEST_FAILED, "requestFailed");
+    mapping.put(Events.Page.FILE_CHOOSER, "fileChooser");
+    setEventToSubscriptionMapping(mapping);
     browserContext = (BrowserContextImpl) parent;
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
@@ -168,22 +143,22 @@ public class PageImpl extends ChannelOwner implements Page {
       WorkerImpl worker = connection.getExistingObject(guid);
       worker.page = this;
       workers.add(worker);
-      listeners.notify(EventType.WORKER, worker);
+      emit(Events.Page.WORKER, worker);
     } else if ("webSocket".equals(event)) {
       String guid = params.getAsJsonObject("webSocket").get("guid").getAsString();
       WebSocketImpl webSocket = connection.getExistingObject(guid);
-      listeners.notify(EventType.WEBSOCKET, webSocket);
+      emit(Events.Page.WEB_SOCKET, webSocket);
     } else if ("download".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
       DownloadImpl download = new DownloadImpl(this, artifact, params);
-      listeners.notify(EventType.DOWNLOAD, download);
+      emit(Events.Page.DOWNLOAD, download);
       browserContext.notifyDownload(download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
       ElementHandleImpl elementHandle = connection.getExistingObject(guid);
       FileChooser fileChooser = new FileChooserImpl(this, elementHandle, params.get("isMultiple").getAsBoolean());
-      listeners.notify(EventType.FILECHOOSER, fileChooser);
+      emit(Events.Page.FILE_CHOOSER, fileChooser);
     } else if ("bindingCall".equals(event)) {
       String guid = params.getAsJsonObject("binding").get("guid").getAsString();
       BindingCall bindingCall = connection.getExistingObject(guid);
@@ -208,7 +183,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.add(frame);
       }
-      listeners.notify(EventType.FRAMEATTACHED, frame);
+      emit(Events.Page.FRAME_ATTACHED, frame);
       browserContext.notifyFrameAttached(frame);
     } else if ("frameDetached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
@@ -218,7 +193,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.remove(frame);
       }
-      listeners.notify(EventType.FRAMEDETACHED, frame);
+      emit(Events.Page.FRAME_DETACHED, frame);
       browserContext.notifyFrameDetached(frame);
     } else if ("locatorHandlerTriggered".equals(event)) {
       int uid = params.get("uid").getAsInt();
@@ -246,7 +221,7 @@ public class PageImpl extends ChannelOwner implements Page {
         browserContext.handleWebSocketRoute(route);
       }
     } else if ("crash".equals(event)) {
-      listeners.notify(EventType.CRASH, this);
+      emit(Events.Page.CRASH, this);
     } else if ("close".equals(event)) {
       didClose();
     } else if ("screencastFrame".equals(event)) {
@@ -255,13 +230,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   void notifyPopup(PageImpl popup) {
-    listeners.notify(EventType.POPUP, popup);
+    emit(Events.Page.POPUP, popup);
   }
 
   void didClose() {
     isClosed = true;
     browserContext.pages.remove(this);
-    listeners.notify(EventType.CLOSE, this);
+    emit(Events.Page.CLOSE, this);
     browserContext.notifyPageClose(this);
   }
 
@@ -272,204 +247,208 @@ public class PageImpl extends ChannelOwner implements Page {
     return browserContext.effectiveCloseReason();
   }
 
+  TargetClosedError closeErrorWithReason() {
+    return new TargetClosedError(effectiveCloseReason());
+  }
+
   @Override
   public void onClose(Consumer<Page> handler) {
-    listeners.add(EventType.CLOSE, handler);
+    on(Events.Page.CLOSE, handler);
   }
 
   @Override
   public void offClose(Consumer<Page> handler) {
-    listeners.remove(EventType.CLOSE, handler);
+    off(Events.Page.CLOSE, handler);
   }
 
   @Override
   public void onConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.add(EventType.CONSOLE, handler);
+    on(Events.Page.CONSOLE, handler);
   }
 
   @Override
   public void offConsoleMessage(Consumer<ConsoleMessage> handler) {
-    listeners.remove(EventType.CONSOLE, handler);
+    off(Events.Page.CONSOLE, handler);
   }
 
   @Override
   public void onCrash(Consumer<Page> handler) {
-    listeners.add(EventType.CRASH, handler);
+    on(Events.Page.CRASH, handler);
   }
 
   @Override
   public void offCrash(Consumer<Page> handler) {
-    listeners.remove(EventType.CRASH, handler);
+    off(Events.Page.CRASH, handler);
   }
 
   @Override
   public void onDialog(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOG, handler);
+    on(Events.Page.DIALOG, handler);
   }
 
   @Override
   public void offDialog(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOG, handler);
+    off(Events.Page.DIALOG, handler);
   }
 
   @Override
   public void onDialogClosed(Consumer<Dialog> handler) {
-    listeners.add(EventType.DIALOGCLOSED, handler);
+    on(Events.Page.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void offDialogClosed(Consumer<Dialog> handler) {
-    listeners.remove(EventType.DIALOGCLOSED, handler);
+    off(Events.Page.DIALOG_CLOSED, handler);
   }
 
   @Override
   public void onDOMContentLoaded(Consumer<Page> handler) {
-    listeners.add(EventType.DOMCONTENTLOADED, handler);
+    on(Events.Page.DOM_CONTENT_LOADED, handler);
   }
 
   @Override
   public void offDOMContentLoaded(Consumer<Page> handler) {
-    listeners.remove(EventType.DOMCONTENTLOADED, handler);
+    off(Events.Page.DOM_CONTENT_LOADED, handler);
   }
 
   @Override
   public void onDownload(Consumer<Download> handler) {
-    listeners.add(EventType.DOWNLOAD, handler);
+    on(Events.Page.DOWNLOAD, handler);
   }
 
   @Override
   public void offDownload(Consumer<Download> handler) {
-    listeners.remove(EventType.DOWNLOAD, handler);
+    off(Events.Page.DOWNLOAD, handler);
   }
 
   @Override
   public void onFileChooser(Consumer<FileChooser> handler) {
-    listeners.add(EventType.FILECHOOSER, handler);
+    on(Events.Page.FILE_CHOOSER, handler);
   }
 
   @Override
   public void offFileChooser(Consumer<FileChooser> handler) {
-    listeners.remove(EventType.FILECHOOSER, handler);
+    off(Events.Page.FILE_CHOOSER, handler);
   }
 
   @Override
   public void onFrameAttached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEATTACHED, handler);
+    on(Events.Page.FRAME_ATTACHED, handler);
   }
 
   @Override
   public void offFrameAttached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEATTACHED, handler);
+    off(Events.Page.FRAME_ATTACHED, handler);
   }
 
   @Override
   public void onFrameDetached(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMEDETACHED, handler);
+    on(Events.Page.FRAME_DETACHED, handler);
   }
 
   @Override
   public void offFrameDetached(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMEDETACHED, handler);
+    off(Events.Page.FRAME_DETACHED, handler);
   }
 
   @Override
   public void onFrameNavigated(Consumer<Frame> handler) {
-    listeners.add(EventType.FRAMENAVIGATED, handler);
+    on(Events.Page.FRAME_NAVIGATED, handler);
   }
 
   @Override
   public void offFrameNavigated(Consumer<Frame> handler) {
-    listeners.remove(EventType.FRAMENAVIGATED, handler);
+    off(Events.Page.FRAME_NAVIGATED, handler);
   }
 
   @Override
   public void onLoad(Consumer<Page> handler) {
-    listeners.add(EventType.LOAD, handler);
+    on(Events.Page.LOAD, handler);
   }
 
   @Override
   public void offLoad(Consumer<Page> handler) {
-    listeners.remove(EventType.LOAD, handler);
+    off(Events.Page.LOAD, handler);
   }
 
   @Override
   public void onPageError(Consumer<String> handler) {
-    listeners.add(EventType.PAGEERROR, handler);
+    on(Events.Page.PAGE_ERROR, handler);
   }
 
   @Override
   public void offPageError(Consumer<String> handler) {
-    listeners.remove(EventType.PAGEERROR, handler);
+    off(Events.Page.PAGE_ERROR, handler);
   }
 
   @Override
   public void onPopup(Consumer<Page> handler) {
-    listeners.add(EventType.POPUP, handler);
+    on(Events.Page.POPUP, handler);
   }
 
   @Override
   public void offPopup(Consumer<Page> handler) {
-    listeners.remove(EventType.POPUP, handler);
+    off(Events.Page.POPUP, handler);
   }
 
   @Override
   public void onRequest(Consumer<Request> handler) {
-    listeners.add(EventType.REQUEST, handler);
+    on(Events.Page.REQUEST, handler);
   }
 
   @Override
   public void offRequest(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUEST, handler);
+    off(Events.Page.REQUEST, handler);
   }
 
   @Override
   public void onRequestFailed(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFAILED, handler);
+    on(Events.Page.REQUEST_FAILED, handler);
   }
 
   @Override
   public void offRequestFailed(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFAILED, handler);
+    off(Events.Page.REQUEST_FAILED, handler);
   }
 
   @Override
   public void onRequestFinished(Consumer<Request> handler) {
-    listeners.add(EventType.REQUESTFINISHED, handler);
+    on(Events.Page.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void offRequestFinished(Consumer<Request> handler) {
-    listeners.remove(EventType.REQUESTFINISHED, handler);
+    off(Events.Page.REQUEST_FINISHED, handler);
   }
 
   @Override
   public void onResponse(Consumer<Response> handler) {
-    listeners.add(EventType.RESPONSE, handler);
+    on(Events.Page.RESPONSE, handler);
   }
 
   @Override
   public void offResponse(Consumer<Response> handler) {
-    listeners.remove(EventType.RESPONSE, handler);
+    off(Events.Page.RESPONSE, handler);
   }
 
   @Override
   public void onWebSocket(Consumer<WebSocket> handler) {
-    listeners.add(EventType.WEBSOCKET, handler);
+    on(Events.Page.WEB_SOCKET, handler);
   }
 
   @Override
   public void offWebSocket(Consumer<WebSocket> handler) {
-    listeners.remove(EventType.WEBSOCKET, handler);
+    off(Events.Page.WEB_SOCKET, handler);
   }
 
   @Override
   public void onWorker(Consumer<Worker> handler) {
-    listeners.add(EventType.WORKER, handler);
+    on(Events.Page.WORKER, handler);
   }
 
   @Override
   public void offWorker(Consumer<Worker> handler) {
-    listeners.remove(EventType.WORKER, handler);
+    off(Events.Page.WORKER, handler);
   }
 
   @Override
@@ -479,95 +458,100 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForClose", "close", logger -> waitForCloseImpl(options, code));
-  }
-
-  private Page waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(EventType.CLOSE, code, null, options.timeout);
+    return waitForEvent(Events.Page.CLOSE, null, options.timeout, "waiting for event \"close\"", code);
   }
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForConsoleMessage", "console", logger -> waitForConsoleMessageImpl(options, code));
-  }
-
-  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.CONSOLE, options.predicate, options.timeout, "waiting for event \"console\"", code);
   }
 
   @Override
   public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForDownload", "download", logger -> waitForDownloadImpl(options, code));
-  }
-
-  private Download waitForDownloadImpl(WaitForDownloadOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
-    return waitForEventWithTimeout(EventType.DOWNLOAD, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.DOWNLOAD, options.predicate, options.timeout, "waiting for event \"download\"", code);
   }
 
   @Override
   public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForFileChooser", "filechooser", logger -> waitForFileChooserImpl(options, code));
-  }
-
-  private FileChooser waitForFileChooserImpl(WaitForFileChooserOptions options, Runnable code) {
     // TODO: enable/disable file chooser interception
     if (options == null) {
       options = new WaitForFileChooserOptions();
     }
-    return waitForEventWithTimeout(EventType.FILECHOOSER, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.FILE_CHOOSER, options.predicate, options.timeout, "waiting for event \"filechooser\"", code);
   }
 
   @Override
   public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForPopup", "popup", logger -> waitForPopupImpl(options, code));
-  }
-
-  private Page waitForPopupImpl(WaitForPopupOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
-    return waitForEventWithTimeout(EventType.POPUP, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.POPUP, options.predicate, options.timeout, "waiting for event \"popup\"", code);
   }
 
   @Override
   public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWebSocket", "websocket", logger -> waitForWebSocketImpl(options, code));
-  }
-
-  private WebSocket waitForWebSocketImpl(WaitForWebSocketOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
-    return waitForEventWithTimeout(EventType.WEBSOCKET, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.WEB_SOCKET, options.predicate, options.timeout, "waiting for event \"websocket\"", code);
   }
 
   @Override
   public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWorker", "worker", logger -> waitForWorkerImpl(options, code));
-  }
-
-  private Worker waitForWorkerImpl(WaitForWorkerOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
-    return waitForEventWithTimeout(EventType.WORKER, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.WORKER, options.predicate, options.timeout, "waiting for event \"worker\"", code);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
-    waitables.add(createWaitForCloseHelper());
-    waitables.add(createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
+  private static String trimUrl(Object param) {
+    if (param instanceof Pattern) {
+      Pattern pattern = (Pattern) param;
+      return "/" + trimStringWithEllipsis(pattern.pattern(), 50) + "/" + Utils.toJsRegexFlags(pattern);
+    }
+    if (param instanceof String) {
+      return "\"" + trimStringWithEllipsis((String) param, 50) + "\"";
+    }
+    return null;
+  }
+
+  private static String trimStringWithEllipsis(String input, int cap) {
+    if (input.length() <= cap) {
+      return input;
+    }
+    int[] chars = input.codePoints().toArray();
+    if (chars.length > cap) {
+      return new String(chars, 0, cap - 1) + "\u2026";
+    }
+    return input;
+  }
+
+  // _waitForEvent in page.ts
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, String logLine, Runnable code) {
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    if (logLine != null) {
+      waiter.log(logLine);
+    }
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.Page.CRASH.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CRASH, () -> new PlaywrightException("Page crashed"));
+    }
+    if (!Events.Page.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CLOSE, () -> closeErrorWithReason());
+    }
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
   }
 
   @Override
@@ -821,7 +805,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Frame frameByUrl(String glob) {
-    return frameFor(UrlMatcher.forGlob(browserContext.baseUrl(), glob, this.connection.localUtils, false));
+    return frameFor(UrlMatcher.forGlob(browserContext.baseUrl(), glob, this.connection.localUtils(), false));
   }
 
   @Override
@@ -1171,7 +1155,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), handler, options);
+    route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler, options);
     return new DisposableStub(() -> unroute(url, handler));
   }
 
@@ -1196,8 +1180,8 @@ public class PageImpl extends ChannelOwner implements Page {
       browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class), null);
       return;
     }
-    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl(), options.url, this.connection.localUtils, false);
-    HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
+    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl(), options.url, this.connection.localUtils(), false);
+    HARRouter harRouter = new HARRouter(connection.localUtils(), har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
   }
@@ -1209,7 +1193,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
   public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, true), handler);
+    routeWebSocketImpl(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), true), handler);
   }
 
   @Override
@@ -1396,7 +1380,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), handler);
+    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler);
   }
 
   @Override
@@ -1440,10 +1424,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return viewport;
   }
 
-  <T> Waitable<T> createWaitableNavigationTimeout(Double timeout) {
-    return new WaitableTimeout<>(timeoutSettings.navigationTimeout(timeout));
-  }
-
   <T> Waitable<T> createWaitableTimeout(Double timeout) {
     return timeoutSettings.createWaitable(timeout);
   }
@@ -1455,83 +1435,43 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    final LoadState loadState = state == null ? LoadState.LOAD : state;
-    withTitle("Wait for load state \"" + loadState.toString().toLowerCase() + "\"", () -> {
-      withWaitLogging("Page.waitForLoadState", logger -> {
-        mainFrame.waitForLoadStateImpl(loadState, convertType(options, Frame.WaitForLoadStateOptions.class), logger);
-        return null;
-      });
-    });
+    mainFrame.waitForLoadState(state, convertType(options, Frame.WaitForLoadStateOptions.class));
   }
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withWaitLoggingTitled("Page.waitForNavigation", "Wait for navigation", logger -> waitForNavigationImpl(logger, code, options));
-  }
-
-  private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
     Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
       frameOptions.url = options.url;
     }
-    return mainFrame.waitForNavigationImpl(logger, code, frameOptions);
+    return mainFrame.waitForNavigation(frameOptions, code);
   }
 
   void frameNavigated(FrameImpl frame) {
-    listeners.notify(EventType.FRAMENAVIGATED, frame);
+    emit(Events.Page.FRAME_NAVIGATED, frame);
     browserContext.notifyFrameNavigated(frame);
   }
 
-  private class WaitableFrameDetach extends WaitableEvent<EventType, Frame> {
-    WaitableFrameDetach(Frame frameArg) {
-      super(PageImpl.this.listeners, EventType.FRAMEDETACHED, detachedFrame -> frameArg.equals(detachedFrame));
-    }
-
-    @Override
-    public Frame get() {
-      throw new PlaywrightException("Navigating frame was detached");
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  <T> Waitable<T> createWaitableFrameDetach(Frame frame) {
-    // It is safe to cast as WaitableFrameDetach.get() always throws.
-    return (Waitable<T>) new WaitableFrameDetach(frame);
-  }
-
   <T> Waitable<T> createWaitForCloseHelper() {
-    return createWaitForCloseHelper(false);
+    return new WaitableRace<T>(asList(new WaitablePageClose(), new WaitablePageCrash()));
   }
 
-  /** With {@code rejectIfClosed}, it is done at once when the page is already closed, like the navigation waiter of the Node.js client. */
-  <T> Waitable<T> createWaitForCloseHelper(boolean rejectIfClosed) {
-    return new WaitableRace<T>(asList(new WaitablePageClose(rejectIfClosed && isClosed), new WaitablePageCrash()));
-  }
-
-  private class WaitablePageClose<T> extends WaitableEvent<EventType, T> {
-    private final boolean closedBefore;
-
-    WaitablePageClose(boolean closedBefore) {
-      super(PageImpl.this.listeners, EventType.CLOSE);
-      this.closedBefore = closedBefore;
-    }
-
-    @Override
-    public boolean isDone() {
-      return closedBefore || super.isDone();
+  private class WaitablePageClose<T> extends WaitableEvent<T> {
+    WaitablePageClose() {
+      super(PageImpl.this, Events.Page.CLOSE);
     }
 
     @Override
     public T get() {
-      throw new TargetClosedError(effectiveCloseReason());
+      throw closeErrorWithReason();
     }
   }
 
-  private class WaitablePageCrash<T> extends WaitableEvent<EventType, T> {
+  private class WaitablePageCrash<T> extends WaitableEvent<T> {
     WaitablePageCrash() {
-      super(PageImpl.this.listeners, EventType.CRASH);
+      super(PageImpl.this, Events.Page.CRASH);
     }
 
     @Override
@@ -1542,80 +1482,58 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils, false), null, options, code);
+    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
   }
 
   @Override
   public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(new UrlMatcher(urlPattern), null, options, code);
+    return waitForRequest(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
   }
 
   @Override
   public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(null, predicate, options, code);
+    return waitForRequest(null, predicate, null, options, code);
   }
 
-  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequest", "request", logger -> {
-      logger.log("waiting for request " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
-      Predicate<Request> requestPredicate = predicate;
-      if (requestPredicate == null) {
-        requestPredicate = request -> urlMatcher.test(request.url());;
-      }
-      return waitForRequestImpl(requestPredicate, options, code);
-    });
-  }
-
-  private Request waitForRequestImpl(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
+  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, String trimmedUrl, WaitForRequestOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
-    return waitForEventWithTimeout(EventType.REQUEST, code, predicate, options.timeout);
+    Predicate<Request> requestPredicate = predicate != null ? predicate : request -> urlMatcher.test(request.url());
+    String logLine = trimmedUrl == null ? null : "waiting for request " + trimmedUrl;
+    return waitForEvent(Events.Page.REQUEST, requestPredicate, options.timeout, logLine, code);
   }
 
   @Override
   public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequestFinished", "requestfinished", logger -> waitForRequestFinishedImpl(options, code));
-  }
-
-  private Request waitForRequestFinishedImpl(WaitForRequestFinishedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestFinishedOptions();
     }
-    return waitForEventWithTimeout(EventType.REQUESTFINISHED, code, options.predicate, options.timeout);
+    return waitForEvent(Events.Page.REQUEST_FINISHED, options.predicate, options.timeout, "waiting for event \"requestfinished\"", code);
   }
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils, false), null, options, code);
+    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
   }
 
   @Override
   public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(new UrlMatcher(urlPattern), null, options, code);
+    return waitForResponse(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
   }
 
   @Override
   public Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(null, predicate, options, code);
+    return waitForResponse(null, predicate, null, options, code);
   }
 
-  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForResponse", "response", logger -> {
-      logger.log("waiting for response " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
-      Predicate<Response> responsePredicate = predicate;
-      if (responsePredicate == null) {
-        responsePredicate = response -> urlMatcher.test(response.url());;
-      }
-      return waitForResponseImpl(responsePredicate, options, code);
-    });
-  }
-
-  private Response waitForResponseImpl(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
+  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, String trimmedUrl, WaitForResponseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
-    return waitForEventWithTimeout(EventType.RESPONSE, code, predicate, options.timeout);
+    Predicate<Response> responsePredicate = predicate != null ? predicate : response -> urlMatcher.test(response.url());
+    String logLine = trimmedUrl == null ? null : "waiting for response " + trimmedUrl;
+    return waitForEvent(Events.Page.RESPONSE, responsePredicate, options.timeout, logLine, code);
   }
 
   @Override
@@ -1639,24 +1557,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils, false), options);
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override
   public void waitForURL(Pattern url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override
   public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
-  }
-
-  private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withWaitLogging("Page.waitForURL", logger -> {
-      mainFrame.waitForURLImpl(logger, matcher, convertType(options, Frame.WaitForURLOptions.class));
-      return null;
-    });
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
   }
 
   @Override

@@ -101,11 +101,11 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       return;
     }
 
-    boolean isLocal = !connection.isRemote;
+    boolean isLocal = !connection.isRemote();
     if (isLocal) {
       params.mode = "entries";
       TracingTracingStopChunkResult result = channel.tracingStopChunk(params, NO_TIMEOUT);
-      connection.localUtils.zip(path, result.entries, stacksId, false, includeSources, capturedAdditionalSources);
+      connection.localUtils().zip(path, result.entries, stacksId, false, includeSources, capturedAdditionalSources);
       return;
     }
 
@@ -131,7 +131,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     }
     artifact.delete();
 
-    connection.localUtils.zip(path, new ArrayList<>(), stacksId, true, includeSources, capturedAdditionalSources);
+    connection.localUtils().zip(path, new ArrayList<>(), stacksId, true, includeSources, capturedAdditionalSources);
   }
 
   @Override
@@ -284,7 +284,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     if (harParams == null) {
       return;
     }
-    boolean isLocal = !connection.isRemote;
+    boolean isLocal = !connection.isRemote();
     boolean isZip = isZip(harParams.path);
 
     TracingHarExportParams params = new TracingHarExportParams();
@@ -295,7 +295,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       if (!isZip) {
         return;
       }
-      connection.localUtils.zip(harParams.path, json.entries, null, false, false, java.util.Collections.emptyList());
+      connection.localUtils().zip(harParams.path, json.entries, null, false, false, java.util.Collections.emptyList());
       return;
     }
 
@@ -312,7 +312,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     LocalUtilsHarUnzipParams unzipParams = new LocalUtilsHarUnzipParams();
     unzipParams.zipFile = tmpPath;
     unzipParams.harFile = harParams.path.toString();
-    connection.localUtils.channel.harUnzip(unzipParams, NO_TIMEOUT);
+    connection.localUtils().channel.harUnzip(unzipParams, NO_TIMEOUT);
     artifact.delete();
   }
 

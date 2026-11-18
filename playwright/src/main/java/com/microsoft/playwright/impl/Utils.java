@@ -182,7 +182,7 @@ public class Utils {
     if (items.length == 0) {
       // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
       upload.emptyPayloads = true;
-    } else if (context.connection.isRemote) {
+    } else if (context.connection.isRemote()) {
       if (localDirectory != null) {
         localPaths = collectFiles(localDirectory);
       }
@@ -354,14 +354,6 @@ public class Utils {
     } catch (IOException e) {
       throw new PlaywrightException("Failed to write to file", e);
     }
-  }
-
-  static boolean isSafeCloseError(PlaywrightException exception) {
-    return isSafeCloseError(exception.getMessage());
-  }
-
-  static boolean isSafeCloseError(String error) {
-    return error.contains("Browser has been closed") || error.contains("Target page, context or browser has been closed");
   }
 
   static String createGuid() {

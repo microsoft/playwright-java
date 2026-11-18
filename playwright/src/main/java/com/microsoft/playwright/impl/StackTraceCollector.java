@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of packages/playwright-core/src/client/clientStackTrace.ts
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
@@ -27,6 +28,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// java: clientStackTrace.ts exports one function, captureLibraryStackTrace(), which returns the frames
+// outside of the library and the api name. The api name is not used here (the tracing titles come from
+// wrapApiCall), and the frames are mapped to source files of PLAYWRIGHT_JAVA_SRC; hence a class with state.
 class StackTraceCollector {
   static final String PLAYWRIGHT_JAVA_SRC = "PLAYWRIGHT_JAVA_SRC";
   private final List<Path> srcDirs;
@@ -97,7 +101,7 @@ class StackTraceCollector {
     return path;
   }
 
-  JsonArray currentStackTrace() {
+  JsonArray captureLibraryStackTrace() {
     StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 
     int index = 0;
