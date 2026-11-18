@@ -29,16 +29,18 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
+// Port of jsonPipe.ts.
 public class JsonPipe extends ChannelOwner implements Transport {
-  private final Queue<JsonObject> incoming = new LinkedList<>();
-  private boolean isClosed;
-  private String closeReason = "Browser has been closed";
-
   final JsonPipeChannel channel = new JsonPipeChannel(this);
 
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
+
+  // java: the members below have no counterpart in jsonPipe.ts, they implement Transport (connect.ts upstream).
+  private final Queue<JsonObject> incoming = new LinkedList<>();
+  private boolean isClosed;
+  private String closeReason = "Browser has been closed";
 
   @Override
   public void send(JsonObject message) {
@@ -95,7 +97,6 @@ public class JsonPipe extends ChannelOwner implements Transport {
   void offClose(Consumer<JsonPipe> handler) {
     off(Events.JsonPipe.CLOSE, handler);
   }
-
 
   @Override
   protected void handleEvent(String event, JsonObject params) {
