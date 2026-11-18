@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl.driver.jar;
 
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_DRIVER_DIR;
 import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_NODEJS_PATH;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -180,6 +183,28 @@ public class TestInstall {
     assertTrue(p.waitFor(1, TimeUnit.MINUTES), "Timed out waiting for version to be printed");
     String stdout = new String(Files.readAllBytes(out), StandardCharsets.UTF_8);
     assertTrue(stdout.contains("Version "), stdout);
+  }
+
+  @Test
+  void canUseTheDriverDirectoryOfEachCall(@TempDir Path tmpDir) throws Exception {
+    // https://github.com/microsoft/playwright-java/issues/2050
+    Path driverDir = tmpDir.resolve("driver");
+    Path otherDriverDir = tmpDir.resolve("other-driver");
+
+    Driver driver = Driver.ensureDriverInstalled(singletonMap(PLAYWRIGHT_DRIVER_DIR, driverDir.toString()), false);
+    assertEquals(driverDir, driver.driverDir());
+    Driver otherDriver = Driver.ensureDriverInstalled(singletonMap(PLAYWRIGHT_DRIVER_DIR, otherDriverDir.toString()), false);
+    assertEquals(otherDriverDir, otherDriver.driverDir());
+    assertNotEquals(driverDir, Driver.ensureDriverInstalled(Collections.emptyMap(), false).driverDir());
+  }
+
+  @Test
+  void canUseTheDriverDirectoryOfEachPlaywrightInstance(@TempDir Path driverDir) {
+    // https://github.com/microsoft/playwright-java/issues/2050
+    Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+    Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(singletonMap(PLAYWRIGHT_DRIVER_DIR, driverDir.toString()));
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> Playwright.create(options));
+    assertTrue(e.getMessage().contains("Failed to launch driver"), e.getMessage());
   }
 
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {

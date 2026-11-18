@@ -55,6 +55,9 @@ public abstract class Driver {
   }
 
   public static synchronized Driver ensureDriverInstalled(Map<String, String> env, Boolean installBrowsers) {
+    if (env.containsKey(PLAYWRIGHT_DRIVER_DIR)) {
+      return createAndInstall(env, installBrowsers);
+    }
     if (instance == null) {
       instance = createAndInstall(env, installBrowsers);
     }
@@ -98,7 +101,7 @@ public abstract class Driver {
   }
   public static Driver createAndInstall(Map<String, String> env, Boolean installBrowsers) {
     try {
-      Driver instance = newInstance();
+      Driver instance = newInstance(env);
       logMessage("initializing driver");
       instance.initialize(env, installBrowsers);
       logMessage("driver initialized.");
@@ -108,8 +111,11 @@ public abstract class Driver {
     }
   }
 
-  private static Driver newInstance() throws Exception {
+  private static Driver newInstance(Map<String, String> env) throws Exception {
     String driverDir = System.getProperty("playwright.cli.dir");
+    if (driverDir == null) {
+      driverDir = env.get(PLAYWRIGHT_DRIVER_DIR);
+    }
     if (driverDir == null) {
       driverDir = System.getenv(PLAYWRIGHT_DRIVER_DIR);
     }
