@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of artifact.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -35,10 +36,36 @@ public class ArtifactImpl extends ChannelOwner {
     super(parent, type, guid, initializer);
   }
 
+  public Path pathAfterFinished() {
+    if (connection.isRemote()) {
+      // java: the message names the Java API.
+      throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
+    }
+    return FileSystems.getDefault().getPath(channel.pathAfterFinished(NO_TIMEOUT).value);
+  }
+
+  public void saveAs(Path path) {
+    if (!connection.isRemote()) {
+      ArtifactSaveAsParams params = new ArtifactSaveAsParams();
+      params.path = path.toString();
+      channel.saveAs(params, NO_TIMEOUT);
+      return;
+    }
+
+    Stream stream = channel.saveAsStream(NO_TIMEOUT).stream;
+    // java: writeToFile creates the parent directories and pipes the stream, as mkdirIfNeeded and pipe do upstream.
+    writeToFile(stream.stream(), path);
+  }
+
+  public String failure() {
+    return channel.failure(NO_TIMEOUT).error;
+  }
+
   public InputStream createReadStream() {
     return channel.stream(NO_TIMEOUT).stream.stream();
   }
 
+  // java: upstream readIntoBuffer collects the 'data' chunks of the stream.
   byte[] readAllBytes() {
     final int bufLen = 1024 * 1024;
     byte[] buf = new byte[bufLen];
@@ -59,28 +86,5 @@ public class ArtifactImpl extends ChannelOwner {
 
   public void delete() {
     channel.delete(NO_TIMEOUT);
-  }
-
-  public String failure() {
-    return channel.failure(NO_TIMEOUT).error;
-  }
-
-  public Path pathAfterFinished() {
-    if (connection.isRemote()) {
-      throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
-    }
-    return FileSystems.getDefault().getPath(channel.pathAfterFinished(NO_TIMEOUT).value);
-  }
-
-  public void saveAs(Path path) {
-    if (connection.isRemote()) {
-      Stream stream = channel.saveAsStream(NO_TIMEOUT).stream;
-      writeToFile(stream.stream(), path);
-      return;
-    }
-
-    ArtifactSaveAsParams params = new ArtifactSaveAsParams();
-    params.path = path.toString();
-    channel.saveAs(params, NO_TIMEOUT);
   }
 }
