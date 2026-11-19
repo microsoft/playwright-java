@@ -22,7 +22,6 @@ import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.AriaRole;
@@ -37,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestLocatorHighlight {
   @PlaywrightTest
   @DisplayName("LO-193 highlight should accept a CSS string style")
-  void highlightShouldAcceptACSSStringStyle(Browser browser, TestServer server, BrowserName browserName) {
+  void highlightShouldAcceptACSSStringStyle(Browser browser, TestServer server) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/input/button.html");
@@ -48,13 +47,14 @@ public class TestLocatorHighlight {
     assertThat(highlight).isVisible();
     @SuppressWarnings("unchecked")
     Map<String, Object> style = (Map<String, Object>) highlight.evaluate("(el) => ({\n" +
-      "  outline: el.style.outline,\n" +
+      "  outlineWidth: el.style.outlineWidth,\n" +
+      "  outlineStyle: el.style.outlineStyle,\n" +
+      "  outlineColor: el.style.outlineColor,\n" +
       "  backgroundColor: el.style.backgroundColor,\n" +
       "})");
-    if (browserName == BrowserName.CHROMIUM || browserName == BrowserName.FIREFOX)
-      assertEquals("rgb(255, 0, 0) solid 3px", style.get("outline"));
-    else
-      assertEquals("3px solid rgb(255, 0, 0)", style.get("outline"));
+    assertEquals("3px", style.get("outlineWidth"));
+    assertEquals("solid", style.get("outlineStyle"));
+    assertEquals("rgb(255, 0, 0)", style.get("outlineColor"));
     assertEquals("rgba(0, 255, 0, 0.25)", style.get("backgroundColor"));
 
     context.close();
