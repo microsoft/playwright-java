@@ -29,7 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -82,14 +81,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     clock = new ClockImpl(this);
     credentials = new CredentialsImpl(this);
     closePromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
-  }
-
-  Path videosDir() {
-    JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
-    if (recordVideo == null) {
-      return null;
-    }
-    return Paths.get(recordVideo.get("dir").getAsString());
   }
 
   URL baseUrl() {
