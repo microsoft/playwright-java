@@ -1111,7 +1111,6 @@ public class TestPageRoute {
 
   @PlaywrightTest
   @DisplayName("RO-046 should work if handler with times parameter was removed from another handler")
-  @Fixme("java: the Router keeps iterating over the handlers it had before page.unroute() ran in a handler, so the removed handler still runs: expected: <[second]> but was: <[second, first]>")
   void shouldWorkIfHandlerWithTimesParameterWasRemovedFromAnotherHandler(Page page, TestServer server) {
     List<String> intercepted = new ArrayList<>();
     Consumer<Route> handler = route -> {

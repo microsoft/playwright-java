@@ -294,6 +294,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     }
     ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.options = new ArrayList<>();
       for (String value : values) {
         ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
@@ -318,6 +319,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     }
     ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.options = new ArrayList<>();
       for (SelectOption value : values) {
         ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
@@ -337,6 +339,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     }
     ElementHandleSelectOptionParams params = Utils.toProtocol(options, ElementHandleSelectOptionParams.class);
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.elements = new ArrayList<>();
       for (ElementHandle value : values) {
         params.elements.add((ElementHandleImpl) value);

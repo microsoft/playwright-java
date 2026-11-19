@@ -25,7 +25,9 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Worker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -38,6 +40,9 @@ public class WorkerImpl extends ChannelOwner implements Worker {
 
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    Map<String, String> mapping = new HashMap<>();
+    mapping.put(Events.Worker.CONSOLE, "console");
+    setEventToSubscriptionMapping(mapping);
   }
 
   @Override

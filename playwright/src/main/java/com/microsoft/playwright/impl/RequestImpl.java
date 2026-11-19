@@ -87,6 +87,14 @@ public class RequestImpl extends ChannelOwner implements Request {
     return failure;
   }
 
+  PageImpl safePage() {
+    if (!initializer.has("frame")) {
+      return null;
+    }
+    FrameImpl frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    return frame.page;
+  }
+
   @Override
   public FrameImpl frame() {
     FrameImpl frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
@@ -216,6 +224,13 @@ public class RequestImpl extends ChannelOwner implements Request {
     // The field may have been initialized in a nested call but it is ok.
     rawHeaders = new RawHeaders(headers);
     return rawHeaders;
+  }
+
+  void setResponseEndTiming(double responseEndTiming) {
+    timing.responseEnd = responseEndTiming;
+    if (timing.responseStart == -1) {
+      timing.responseStart = responseEndTiming;
+    }
   }
 
   void applyFallbackOverrides(FallbackOverrides overrides) {

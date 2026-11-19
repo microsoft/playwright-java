@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
+import com.microsoft.playwright.options.PseudoElement;
 import java.util.List;
 
 class FrameExpectOptions {
@@ -26,6 +27,7 @@ class FrameExpectOptions {
   Double expectedNumber;
   SerializedArgument expectedValue;
   Boolean useInnerText;
+  PseudoElement pseudo;
   boolean isNot;
   Double timeout;
 }

@@ -550,7 +550,6 @@ public class TestPageNetworkRequest {
 
   @PlaywrightTest
   @DisplayName("NE-027 should not allow to access frame on popup main request")
-  @Fixme(value = "java: response.finished() throws 'Frame for this navigation request is not available, because the request was issued before the frame is created.' (racy in WebKit, which passes sometimes)")
   void shouldNotAllowToAccessFrameOnPopupMainRequest(Page page, TestServer server) throws Exception {
     page.setContent("<a target=_blank href=\"" + server.EMPTY_PAGE + "\">click me</a>");
     // Java: context.waitForEvent('request') and context.waitForEvent('page') are futures completed by the

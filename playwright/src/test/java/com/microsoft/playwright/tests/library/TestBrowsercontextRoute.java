@@ -295,7 +295,6 @@ public class TestBrowsercontextRoute {
 
   @PlaywrightTest
   @DisplayName("RO-174 should work if handler with times parameter was removed from another handler")
-  @Fixme("java: Router.handle() iterates the handlers it started with and does not skip one that unroute() removed meanwhile (upstream checks this._routes.indexOf(routeHandler)); the intercepted list is [second, first]")
   void shouldWorkIfHandlerWithTimesParameterWasRemovedFromAnotherHandler(BrowserContext context, Page page, TestServer server) {
     List<String> intercepted = new ArrayList<>();
     Consumer<Route> handler = route -> {

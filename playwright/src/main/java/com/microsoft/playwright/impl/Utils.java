@@ -373,9 +373,20 @@ public class Utils {
     return map;
   }
 
+  static void assertNoNullItems(Object[] values) {
+    for (int i = 0; i < values.length; i++) {
+      if (values[i] == null) {
+        throw new PlaywrightException("options[" + i + "]: expected object, got null");
+      }
+    }
+  }
+
   static List<HttpHeader> toHeadersList(Map<String, String> headers) {
     List<HttpHeader> list = new ArrayList<>();
     for (Map.Entry<String, String> entry: headers.entrySet()) {
+      if (entry.getValue() == null) {
+        continue;
+      }
       HttpHeader header = new HttpHeader();
       header.name = entry.getKey();
       header.value = entry.getValue();

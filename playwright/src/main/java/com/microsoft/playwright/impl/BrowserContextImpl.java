@@ -84,6 +84,8 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     closePromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
   }
 
+  boolean recordVideo;
+
   Path videosDir() {
     JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
     if (recordVideo == null) {
@@ -632,7 +634,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
     String storageState = json.toString();
     if (options.path != null) {
-      Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
+      Utils.writeToFile(Serialization.toPrettyJson(storageState).getBytes(StandardCharsets.UTF_8), options.path);
     }
     return storageState;
   }
@@ -829,7 +831,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         request.failure = params.get("failureText").getAsString();
       }
       if (request.timing != null) {
-        request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
+        request.setResponseEndTiming(params.get("responseEndTiming").getAsDouble());
       }
       emit(Events.BrowserContext.REQUEST_FAILED, request);
       if (params.has("page")) {
@@ -841,7 +843,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       RequestImpl request = connection.getExistingObject(guid);
       request.didFailOrFinish = true;
       if (request.timing != null) {
-        request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
+        request.setResponseEndTiming(params.get("responseEndTiming").getAsDouble());
       }
       emit(Events.BrowserContext.REQUEST_FINISHED, request);
       if (params.has("page")) {

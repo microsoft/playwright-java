@@ -21,7 +21,6 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Route;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -74,13 +73,15 @@ class Router {
   enum HandleResult { NoMatchingHandler, Handled, Fallback, PendingHandler }
   HandleResult handle(RouteImpl route) {
     HandleResult result = HandleResult.NoMatchingHandler;
-    for (Iterator<RouteInfo> it = routes.iterator(); it.hasNext();) {
-      RouteInfo info = it.next();
+    for (RouteInfo info : new ArrayList<>(routes)) {
       if (!info.matcher.test(route.request().url())) {
         continue;
       }
+      if (!routes.contains(info)) {
+        continue;
+      }
       if (info.decrementRemainingCallCount()) {
-        it.remove();
+        routes.remove(info);
       }
       route.fallbackCalled = false;
       info.handle(route);

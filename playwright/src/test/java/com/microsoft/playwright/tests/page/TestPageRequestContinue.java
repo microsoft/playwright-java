@@ -99,7 +99,6 @@ public class TestPageRequestContinue {
 
   @PlaywrightTest
   @DisplayName("RO-060 should delete header with undefined value")
-  @Fixme("java: a null header value in route.resume() headers throws PlaywrightException 'Value cannot be null' instead of deleting the header")
   void shouldDeleteHeaderWithUndefinedValue(Page page, TestServer server, BrowserName browserName) throws Exception {
     page.navigate(server.PREFIX + "/empty.html");
     server.setRoute("/something", (request, response) -> {
@@ -654,7 +653,6 @@ public class TestPageRequestContinue {
 
   @PlaywrightTest
   @DisplayName("RO-086 continue should delete headers on redirects")
-  @Fixme("java: a null header value in route.resume() headers throws PlaywrightException 'Value cannot be null' instead of deleting the header")
   void continueShouldDeleteHeadersOnRedirects(Page page, TestServer server) throws Exception {
     page.navigate(server.PREFIX + "/empty.html");
     server.setRoute("/something", (request, response) -> {

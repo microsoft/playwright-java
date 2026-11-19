@@ -197,6 +197,7 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     params.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
     params.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
     BrowserContextImpl context = channel.newContext(params, NO_TIMEOUT).context;
+    context.recordVideo = params.recordVideo != null;
     context.initializeHarFromOptions(harOptions);
     return context;
   }

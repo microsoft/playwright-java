@@ -127,12 +127,22 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.url = options.url;
       params.method = options.method;
       if (options.headers != null) {
-        params.headers = toNameValues(options.headers);
+        params.headers = toNameValues(withoutNullValues(options.headers));
       }
       params.postData = options.postData;
     }
     params.isFallback = isFallback;
     sendMessageAsync("continue", params);
+  }
+
+  private static Map<String, String> withoutNullValues(Map<String, String> map) {
+    Map<String, String> result = new LinkedHashMap<>();
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      if (e.getValue() != null) {
+        result.put(e.getKey(), e.getValue());
+      }
+    }
+    return result;
   }
 
   private static List<NameValue> toNameValues(Map<String, String> map) {
@@ -161,8 +171,9 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fulfill(FulfillOptions options) {
-    startHandling();
+    checkNotHandled();
     fulfillImpl(options);
+    handled = true;
   }
 
   private void fulfillImpl(FulfillOptions options) {
@@ -254,10 +265,14 @@ public class RouteImpl extends ChannelOwner implements Route {
     sendMessageAsync("redirectNavigationRequest", params);
   }
 
-  private void startHandling() {
+  private void checkNotHandled() {
     if (handled) {
       throw new PlaywrightException("Route is already handled!");
     }
+  }
+
+  private void startHandling() {
+    checkNotHandled();
     handled = true;
   }
 }

@@ -105,7 +105,11 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
       options = new DisposeOptions();
     }
     disposeReason = options.reason;
-    channel.dispose(toProtocol(options, APIRequestContextDisposeParams.class), NO_TIMEOUT);
+    try {
+      channel.dispose(toProtocol(options, APIRequestContextDisposeParams.class), NO_TIMEOUT);
+    } catch (TargetClosedError e) {
+      return;
+    }
     tracing.resetStackCounter();
   }
 
@@ -279,7 +283,7 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     // that is compared with BrowserContext.storageState().
     String storageState = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT).toString();
     if (options.path != null) {
-      Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
+      Utils.writeToFile(Serialization.toPrettyJson(storageState).getBytes(StandardCharsets.UTF_8), options.path);
     }
     return storageState;
   }
@@ -296,6 +300,9 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
   }
 
   private static boolean isJsonParsable(String value) {
+    if (value.trim().isEmpty()) {
+      return false;
+    }
     try {
       JsonElement result = JsonParser.parseString(value);
       if (result != null && result.isJsonPrimitive()) {

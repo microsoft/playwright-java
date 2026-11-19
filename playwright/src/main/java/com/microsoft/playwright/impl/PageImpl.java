@@ -1416,6 +1416,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public VideoImpl video() {
+    if (!browserContext.recordVideo) {
+      return null;
+    }
     return video;
   }
 

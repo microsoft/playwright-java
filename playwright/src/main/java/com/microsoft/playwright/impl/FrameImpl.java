@@ -627,6 +627,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     FrameSelectOptionParams params = toProtocol(options, FrameSelectOptionParams.class);
     params.selector = selector;
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.options = new ArrayList<>();
       for (SelectOption value : values) {
         FrameSelectOptionParams.FrameSelectOptionParamsOptions option = new FrameSelectOptionParams.FrameSelectOptionParamsOptions();
@@ -646,6 +647,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     FrameSelectOptionParams params = toProtocol(options, FrameSelectOptionParams.class);
     params.selector = selector;
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.options = new ArrayList<>();
       for (String value : values) {
         FrameSelectOptionParams.FrameSelectOptionParamsOptions option = new FrameSelectOptionParams.FrameSelectOptionParamsOptions();
@@ -668,6 +670,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     FrameSelectOptionParams params = toProtocol(options, FrameSelectOptionParams.class);
     params.selector = selector;
     if (values != null) {
+      Utils.assertNoNullItems(values);
       params.elements = new ArrayList<>();
       for (ElementHandle handle : values) {
         params.elements.add((ElementHandleImpl) handle);

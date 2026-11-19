@@ -138,7 +138,6 @@ public class TestPageRequestFallback {
 
   @PlaywrightTest
   @DisplayName("RO-125 should fall back after exception")
-  @Fixme("java: route.fulfill() marks the route as handled before it validates the options, so route.fallback() after the exception throws PlaywrightException 'Route is already handled!'")
   void shouldFallBackAfterException(Page page, TestServer server) {
     page.route("**/empty.html", route -> {
       route.resume();
@@ -193,7 +192,6 @@ public class TestPageRequestFallback {
 
   @PlaywrightTest
   @DisplayName("RO-128 should delete header with undefined value")
-  @Fixme("java: a null header value in route.fallback() headers throws PlaywrightException 'Value cannot be null' instead of deleting the header")
   void shouldDeleteHeaderWithUndefinedValue(Page page, TestServer server, BrowserName browserName) throws Exception {
     page.navigate(server.PREFIX + "/empty.html");
     server.setRoute("/something", (request, response) -> {
