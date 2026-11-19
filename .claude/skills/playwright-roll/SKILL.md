@@ -32,7 +32,7 @@ new=$(cat scripts/DRIVER_VERSION)
 
 List the upstream commits between the two commits that changed a path the Java client depends on:
 
-- `docs/src/api/` — the source of `api.json`. A new or removed method or option, or a changed `langs:` filter, comes from here.
+- `docs/src/api/` — the input of the API generator. A new or removed method or option, or a changed `langs:` filter, comes from here.
 - `packages/playwright-core/src/client/` — the JS client. The Java client is a port of it.
 - `packages/isomorphic/` — selector engines, locator generation and parsing, and the aria snapshot code. The client and the server share this code. A change here can change client helpers such as `getByRoleSelector`.
 - `packages/playwright/src/matchers/matchers.ts` — the assertion methods. A change here is usually a new option of `LocatorAssertions` or `PageAssertions`.
@@ -108,26 +108,25 @@ Key translation rules:
 
 After running `./scripts/roll_driver.sh`, the build often fails because the generated Java interfaces reference new types or methods that the generator doesn't know how to handle yet, and the `*Impl` classes don't implement new interface methods.
 
-### ApiGenerator.java fixes (tools/api-generator/src/main/java/com/microsoft/playwright/tools/ApiGenerator.java)
+### API generator fixes (scripts/generate_java_api.mts)
 
-The generator has hardcoded lists that control which imports are added to each generated file. When new classes appear in the API, add them to the relevant lists in `Interface.writeTo`:
+The generator has hardcoded lists that control which imports are added to each generated file. When new classes appear in the API, add them to the relevant lists in `INTERFACE_IMPORTS`:
 - `options.*` import list — add new classes that use types from the options package
 - `java.util.*` import list — add new classes that use `List`, `Map`, etc.
 - `java.util.function.Consumer` list — add new classes with `Consumer`-typed event handlers
 
-Type mapping: when JS-only types (like `Disposable`) are used as return types in Java-compatible methods, add a mapping in `convertBuiltinType`. For example, `Disposable` → `AutoCloseable`.
+Type mapping: when JS-only types (like `Disposable`) are used as return types in Java-compatible methods, add a mapping in `BUILTIN_TYPES`. For example, `Disposable` → `AutoCloseable`.
 
 Event handler generation: events with `void` type generate invalid `Consumer<void>`. Handle this case in `Event.writeListenerMethods` by emitting `Runnable` instead.
 
 Type names: give every new object type an explicit alias upstream. When a roll brings in a new object type (an option or return value written as `<[Object]>` in `docs/src/api/`), it should usually have its own `* alias: <Name>` line. Without one, each language's generator makes up a name, and the Java one can be vague (e.g. `Style`) or differ between Java and .NET.
 - Prefer a plain `alias:` so every language gets the same name. Use `alias-java:` / `alias-csharp:` only when a language really needs a different name.
-- Add the aliases in a small upstream docs PR (e.g. microsoft/playwright#43164, `Style` → `ScreencastActionStyle`). Don't special-case names in `ApiGenerator`.
+- Add the aliases in a small upstream docs PR (e.g. microsoft/playwright#43164, `Style` → `ScreencastActionStyle`). Don't special-case names in the generator.
 - After the upstream change lands, roll to a driver that includes it. Don't hand-edit the generated files.
 
-After editing the generator, recompile and re-run it:
+After editing the generator, re-run it. Node.js runs the TypeScript file as is:
 ```
-mvn -f tools/api-generator/pom.xml compile -q
-mvn -f tools/api-generator/pom.xml exec:java -Dexec.mainClass=com.microsoft.playwright.tools.ApiGenerator
+node scripts/generate_java_api.mts .upstream
 ```
 
 ### Impl class fixes (playwright/src/main/java/com/microsoft/playwright/impl/)
@@ -161,7 +160,7 @@ Common patterns:
 
 ## Rebuilding the driver modules after a roll
 
-`./scripts/roll_driver.sh` does the full roll. It moves `scripts/DRIVER_VERSION` to the new commit. It builds the driver from `.upstream/` into `driver/src/main/resources/driver/package/` and `driver-bundle/src/main/resources/driver/<platform>/`. It generates `api.json` and the Java interfaces, and it updates the README. If all steps pass, the next `mvn` command uses the new driver.
+`./scripts/roll_driver.sh` does the full roll. It moves `scripts/DRIVER_VERSION` to the new commit. It builds the driver from `.upstream/` into `driver/src/main/resources/driver/package/` and `driver-bundle/src/main/resources/driver/<platform>/`. It generates the Java interfaces from the upstream docs, and it updates the README. If all steps pass, the next `mvn` command uses the new driver.
 
 If a step fails, the script stops before Maven installs the new driver. The most frequent cause is the API generator, which fails on a new type (see *Fixing generator and compilation errors*). After that, the test JVM loads the **old** driver from `target/classes` or from the installed jar, although the source resources already hold the new driver.
 

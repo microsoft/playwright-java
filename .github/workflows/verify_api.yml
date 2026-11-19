@@ -6,14 +6,12 @@ on:
       - release-*
     paths:
       - 'scripts/*'
-      - 'api-generator/*'
   pull_request:
     branches:
       - main
       - release-*
     paths:
       - 'scripts/**'
-      - 'api-generator/**'
 jobs:
   verify:
     timeout-minutes: 30
