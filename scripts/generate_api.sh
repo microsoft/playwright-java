@@ -24,6 +24,12 @@ else
   fi
 fi
 
+# Node.js runs the TypeScript file of the generator as is. Older versions cannot.
+if ! node -e 'process.exit(process.features.typescript ? 0 : 1)'; then
+  echo "The API generator needs Node.js 22.18 or newer, got $(node --version)"
+  exit 1
+fi
+
 echo "Regenerating Java interfaces from $UPSTREAM_DIR"
 node ./scripts/generate_java_api.mts "$UPSTREAM_DIR"
 

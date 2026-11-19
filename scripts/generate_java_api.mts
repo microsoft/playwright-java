@@ -66,6 +66,8 @@ type DocMember = {
   spec?: MarkdownNode[],
   since?: string,
   deprecated?: string,
+  // The class of a member of a class.
+  clazz?: DocClass,
 };
 
 type DocClass = {
@@ -76,12 +78,22 @@ type DocClass = {
   spec?: MarkdownNode[],
 };
 
-type LinkRenderer = (item: { clazz?: DocClass, param?: { alias: string }, option?: { alias: string } }) => string | undefined;
+type LinkRenderer = (item: { clazz?: DocClass, member?: DocMember, param?: { alias: string }, option?: { alias: string } }) => string | undefined;
 
 type Documentation = {
   classesArray: DocClass[],
   setLinkRenderer(renderer: LinkRenderer): void,
 };
+
+if (process.argv.length !== 3) {
+  console.error(`Usage: node ${path.relative(process.cwd(), process.argv[1])} <upstream-checkout-dir>`);
+  console.error('For example: node scripts/generate_java_api.mts .upstream');
+  process.exit(1);
+}
+const UPSTREAM_DIR = path.resolve(process.argv[2]);
+const require = createRequire(import.meta.url);
+const { parseApi } = require(path.join(UPSTREAM_DIR, 'utils', 'doclint', 'api_parser')) as { parseApi(apiDir: string): Documentation };
+const md = require(path.join(UPSTREAM_DIR, 'utils', 'markdown')) as { wrapText(text: string, options: { maxColumns: number }, prefix: string): string };
 
 const LANG = 'java';
 const ROOT_DIR = path.join(import.meta.dirname, '..');
@@ -109,10 +121,7 @@ const LICENSE_HEADER = `/*
 const HANDWRITTEN_CLASSES = ['PlaywrightException', 'TimeoutError'];
 // These interfaces go to the options package.
 const OPTIONS_PACKAGE_INTERFACES = ['RequestOptions', 'FormData'];
-const BASE_INTERFACES = ['Browser', 'JSHandle', 'BrowserContext'];
 const AUTO_CLOSEABLE_INTERFACES = ['Playwright', 'Browser', 'BrowserContext', 'Page'];
-// The interfaces with a static create() method that calls the implementation class.
-const FACTORY_INTERFACES = ['Playwright', 'FormData', 'RequestOptions'];
 const BROWSER_CHANNEL_OPTIONS = ['BrowserType.launch.options.channel', 'BrowserType.launchPersistentContext.options.channel'];
 
 // The imports of a generated interface, in the order of the output. When a roll brings in an
@@ -148,6 +157,17 @@ const CUSTOM_CLASS_IMPORTS: Record<string, string> = {
 // The static methods with a body. The key is the path of the method. A method with overloads
 // has an entry for the name of each overload in the docs.
 const STATIC_METHODS: Record<string, Record<string, string[]>> = {
+  'Playwright.create': {
+    create: [
+      'static Playwright create(@Nullable CreateOptions options) {',
+      '  return PlaywrightImpl.create(options);',
+      '}',
+      '',
+      'static Playwright create() {',
+      '  return create(null);',
+      '}',
+    ],
+  },
   'FormData.create': {
     create: [
       'static FormData create() {',
@@ -214,8 +234,10 @@ const BOXED_TYPES: Record<string, string> = {
   'boolean': 'Boolean',
 };
 
-// `Class.member` in the docs => `Class.alias`, for the members with a Java alias.
-const memberAliases = new Map<string, string>();
+// All types that go to files of their own, by name. The first definition of a type wins.
+const topLevelTypes = new Map<string, TypeDefinition>();
+// The names of the generated interfaces.
+const interfaceNames = new Set<string>();
 
 // ---------------------------------------------------------------------------------------------
 // Filtering the docs for Java.
@@ -255,17 +277,11 @@ function filterType(type: DocType) {
 function filterForJava(documentation: Documentation): DocClass[] {
   const classes = documentation.classesArray.filter(isSupported);
   for (const clazz of classes) {
-    const className = clazz.name;
     const alias = clazz.langs?.aliases?.[LANG];
     if (alias)
       clazz.name = alias;
     clazz.membersArray = clazz.membersArray.filter(isSupported);
-    for (const member of clazz.membersArray) {
-      const memberName = member.name;
-      filterMember(member);
-      if (member.name !== memberName)
-        memberAliases.set(`${className}.${memberName}`, `${className}.${member.name}`);
-    }
+    clazz.membersArray.forEach(filterMember);
   }
   return classes;
 }
@@ -300,18 +316,6 @@ function writeJavadoc(output: string[], offset: string, text: string) {
   output.push(offset + ' */');
 }
 
-function linkifyMemberRefs(paragraph: string): string {
-  return paragraph.replace(/\[`(event|property|method): ([^`]+)`]/g, (match, kind: string, ref: string) => {
-    let name = memberAliases.get(ref) ?? ref;
-    if (kind === 'event') {
-      const parts = name.split('.');
-      name = parts[0] + '.on' + toTitle(parts[1]);
-    }
-    const packagePrefix = isAssertionClass(name.split('.')[0]) ? `${API_PACKAGE}.assertions.` : `${API_PACKAGE}.`;
-    return `{@link ${packagePrefix}${name.replaceAll('.', '#')} ${name}()}`;
-  });
-}
-
 function updateExternalLinks(paragraph: string): string {
   return paragraph.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, (match, text: string, url: string) => {
     // ../actionability.md#editable => https://playwright.dev/java/docs/actionability#editable
@@ -324,46 +328,12 @@ function updateExternalLinks(paragraph: string): string {
   }).replaceAll('[Promise]', `<a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>`);
 }
 
-// Splits the text into words. A link in square brackets is not split.
-function tokenizeNoBreakLinks(text: string): string[] {
-  const links: string[] = [];
-  const sanitized = text.replace(/\[[^\]]+\]/g, link => {
-    links.push(link);
-    return `[${links.length - 1}]`;
-  });
-  let tokens = splitDroppingTrailingEmpty(sanitized, ' ');
-  links.forEach((link, index) => {
-    tokens = tokens.map(token => token.replaceAll(`[${index}]`, () => link));
-  });
-  return tokens;
-}
-
-function wrapText(text: string, maxColumns: number): string {
-  // A table row.
-  if (/^[\u0000- ]*\|/.test(text))
-    return text;
-  const lines: string[] = [];
-  let line = '';
-  for (const word of tokenizeNoBreakLinks(text)) {
-    if (line && line.length + word.length < maxColumns) {
-      line += ' ' + word;
-    } else {
-      if (line)
-        lines.push(line);
-      line = word;
-    }
-  }
-  if (line)
-    lines.push(line);
-  return lines.join('\n');
-}
-
 function beautify(paragraph: string): string {
-  const text = updateExternalLinks(linkifyMemberRefs(paragraph))
+  const text = updateExternalLinks(paragraph)
       .replaceAll('↵', ' ')
       .replace(/`'([^`]+)'`/g, '{@code "$1"}')
       .replace(/`([^`]+)`/g, '{@code $1}');
-  return wrapText(text, 120);
+  return md.wrapText(text, { maxColumns: 120 }, '');
 }
 
 function formatSpec(spec: MarkdownNode[]): string {
@@ -428,15 +398,6 @@ abstract class Element {
     this.name = name;
     this.path = path ?? (parent ? `${parent.path}.${name}` : name);
   }
-
-  typeScope(): TypeDefinition {
-    return this.parent!.typeScope();
-  }
-
-  // All types that go to files of their own, by name. The first definition of a type wins.
-  topLevelTypes(): Map<string, TypeDefinition> {
-    return this.parent!.topLevelTypes();
-  }
 }
 
 function nullable(javaType: string): string {
@@ -450,6 +411,12 @@ function javaAlias(type: DocType): string | undefined {
   return type.langAliases?.[LANG] ?? type.langAliases?.default;
 }
 
+// The type `T` of `null|T`.
+function nullableInnerType(type: DocType): DocType | undefined {
+  if (type.union && !type.name && type.union.length === 2 && type.union.some(item => item.name === 'null'))
+    return type.union.find(item => item.name !== 'null');
+}
+
 // The return type of a method, the type of a method param or the type of a field.
 class TypeRef extends Element {
   readonly type: DocType | null;
@@ -457,7 +424,7 @@ class TypeRef extends Element {
   customType: string | null = null;
 
   constructor(parent: Element, type: DocType | null) {
-    super(parent, type?.name ?? '', parent.path);
+    super(parent, '', parent.path);
     this.type = type;
     if (type)
       this.createClassesAndEnums(type);
@@ -466,7 +433,7 @@ class TypeRef extends Element {
   private createClassesAndEnums(type: DocType) {
     if (type.union) {
       if (type.name)
-        this.typeScope().createEnum(type);
+        registerTopLevelType(new Enum(type));
       else
         type.union.forEach(item => this.createClassesAndEnums(item));
       return;
@@ -479,7 +446,7 @@ class TypeRef extends Element {
       for (const arg of type.args) {
         const alias = javaAlias(arg);
         if (arg.name === 'Object' && alias)
-          this.typeScope().createTopLevelInterface(alias, this, arg);
+          registerTopLevelType(new CustomInterface(this, alias, arg));
       }
       return;
     }
@@ -489,18 +456,19 @@ class TypeRef extends Element {
     if (this.customType)
       return;
     if (this.parent instanceof Param && this.parent.name === 'options') {
-      this.customType = toTitle(this.parent.parent!.name) + toTitle(this.parent.name);
-      this.typeScope().createNestedClass(this.customType, this, type);
+      const method = this.parent.parent as Method;
+      this.customType = toTitle(method.name) + toTitle(this.parent.name);
+      (method.parent as Interface).createNestedClass(this.customType, this, type);
     } else {
       this.customType = javaAlias(type) ?? toTitle(this.parent!.name);
-      this.typeScope().createTopLevelClass(this.customType, this, type);
+      registerTopLevelType(new CustomClass(this, this.customType, type));
     }
   }
 
   toJava(): string {
     if (!this.type)
       return 'void';
-    return this.convertType(this.stripNullable());
+    return this.convertType(this.stripNullable()!);
   }
 
   toJavaWithNullability(): string {
@@ -546,14 +514,11 @@ class TypeRef extends Element {
 
   // True for `null|T`.
   isNullable(): boolean {
-    const type = this.type;
-    return !!type?.union && !type.name && type.union.length === 2 && type.union.some(item => item.name === 'null');
+    return !!this.type && !!nullableInnerType(this.type);
   }
 
-  private stripNullable(): DocType {
-    if (!this.isNullable())
-      return this.type!;
-    return this.type!.union!.find(item => item.name !== 'null')!;
+  private stripNullable(): DocType | null {
+    return this.type && (nullableInnerType(this.type) ?? this.type);
   }
 
   private convertType(type: DocType): string {
@@ -591,17 +556,19 @@ class TypeRef extends Element {
         return alias;
       if (!type.args)
         throw new Error(`Missing mapping for ${this.path}`);
-      if (this.path === 'WebSocketRoute.onClose.handler')
-        return 'BiConsumer<Integer, String>';
-      if (type.args.length === 1) {
-        const paramType = this.convertType(type.args[0]);
-        const returnTypeName = type.returnType?.name;
-        if (returnTypeName === 'boolean')
-          return `Predicate<${paramType}>`;
-        if (!returnTypeName || returnTypeName === 'Promise' || returnTypeName === 'void')
-          return `Consumer<${paramType}>`;
-        throw new Error(`Missing mapping for the return type ${returnTypeName} in ${this.path}`);
-      }
+      const argTypes = type.args.map(arg => {
+        const argType = this.convertType(nullableInnerType(arg) ?? arg);
+        return BOXED_TYPES[argType] ?? argType;
+      }).join(', ');
+      const returnTypeName = type.returnType?.name;
+      const isVoid = !returnTypeName || returnTypeName === 'Promise' || returnTypeName === 'void';
+      if (type.args.length === 1 && returnTypeName === 'boolean')
+        return `Predicate<${argTypes}>`;
+      if (type.args.length === 1 && isVoid)
+        return `Consumer<${argTypes}>`;
+      if (type.args.length === 2 && isVoid)
+        return `BiConsumer<${argTypes}>`;
+      throw new Error(`Missing mapping for the function in ${this.path}`);
     }
     return name;
   }
@@ -611,46 +578,21 @@ class TypeRef extends Element {
   }
 }
 
+// A type of the generated code: an interface, a class or an enum.
 abstract class TypeDefinition extends Element {
-  // The options classes of the methods.
-  readonly nestedClasses: CustomClass[] = [];
-
-  override typeScope(): TypeDefinition {
-    return this;
-  }
-
   abstract writeTo(output: string[], offset: string): void;
+}
 
-  // Constructs the type in any case: it registers the types of its fields.
-  private createTopLevelType<T extends TypeDefinition>(name: string, type: T, kind: Function) {
-    const types = this.topLevelTypes();
-    const existing = types.get(name);
-    if (!existing)
-      types.set(name, type);
-    else if (!(existing instanceof kind))
-      throw new Error(`Two types with the name ${name} are of different kinds, the second one is ${type.path}`);
-    return existing as T | undefined;
-  }
-
-  createEnum(type: DocType) {
-    const newEnum = new Enum(this, type);
-    const existing = this.createTopLevelType(newEnum.name, newEnum, Enum);
-    if (existing && existing.values.join() !== newEnum.values.join())
-      throw new Error(`Two enums with the name ${newEnum.name} have different values: ${existing.values} and ${newEnum.values}`);
-  }
-
-  createTopLevelClass(name: string, parent: TypeRef, type: DocType) {
-    this.createTopLevelType(name, new CustomClass(parent, name, type), CustomClass);
-  }
-
-  createTopLevelInterface(name: string, parent: TypeRef, type: DocType) {
-    this.createTopLevelType(name, new CustomInterface(parent, name, type), CustomInterface);
-  }
-
-  createNestedClass(name: string, parent: TypeRef, type: DocType) {
-    if (!this.nestedClasses.some(c => c.name === name))
-      this.nestedClasses.push(new CustomClass(parent, name, type));
-  }
+// The caller constructs the type even when a type with its name exists: the constructor
+// registers the types of the fields.
+function registerTopLevelType(type: TypeDefinition) {
+  const existing = topLevelTypes.get(type.name);
+  if (!existing)
+    topLevelTypes.set(type.name, type);
+  else if (existing.constructor !== type.constructor)
+    throw new Error(`Two types with the name ${type.name} are of different kinds, the second one is ${type.path}`);
+  else if (existing instanceof Enum && type instanceof Enum && existing.values.join() !== type.values.join())
+    throw new Error(`Two enums with the name ${type.name} have different values: ${existing.values} and ${type.values}`);
 }
 
 class Event extends Element {
@@ -711,18 +653,6 @@ class Method extends Element {
   }
 
   writeTo(output: string[], offset: string) {
-    if (this.path === 'Playwright.create') {
-      this.writeJavadoc(this.params, output, offset);
-      output.push(
-          `${offset}static Playwright create(${this.params[0].toJava(0)}) {`,
-          `${offset}  return PlaywrightImpl.create(options);`,
-          `${offset}}`,
-          '',
-          `${offset}static Playwright create() {`,
-          `${offset}  return create(null);`,
-          `${offset}}`);
-      return;
-    }
     const staticMethod = STATIC_METHODS[this.path];
     if (staticMethod) {
       const originalName = this.member.originalName ?? this.name;
@@ -765,7 +695,7 @@ class Method extends Element {
           const type = param.type.formatTypeFromUnion(overloadIndex);
           args.push(type === 'int' ? '0' : `(${type}) null`);
         } else {
-          // TODO: it should probably be done for all methods that have name#1, name#2 etc overloads.
+          // The overloads of hasAttribute make a plain null ambiguous.
           args.push(this.path === 'LocatorAssertions.hasAttribute' ? `(${param.type.toJava()}) null` : 'null');
         }
         return;
@@ -810,11 +740,16 @@ class Field extends Element {
   }
 
   isRequired(): boolean {
-    return !!this.member.required;
+    return this.member.required;
   }
 
   comment(): string {
     return memberComment(this.member);
+  }
+
+  // The declaration of the constructor param of a required field.
+  toJavaParam(): string {
+    return `${this.type.toJavaWithNullability()} ${this.name}`;
   }
 
   writeTo(output: string[], offset: string) {
@@ -851,18 +786,14 @@ class Field extends Element {
 
   // The setter that takes the required fields of the custom class, for example setHttpCredentials(username, password).
   private writeRequiredFieldsBuilderMethod(output: string[], offset: string, parentClass: string) {
-    const customType = this.topLevelTypes().get(this.type.customType!);
-    if (!(customType instanceof CustomClass))
-      return;
-    const requiredFields = customType.fields.filter(f => f.isRequired());
+    const customType = topLevelTypes.get(this.type.customType!) as CustomClass;
+    const requiredFields = customType.requiredFields();
     if (!requiredFields.length)
       return;
-    const params = requiredFields.map(f => `${f.type.toJavaWithNullability()} ${f.name}`).join(', ');
-    const args = requiredFields.map(f => f.name).join(', ');
     writeJavadoc(output, offset, this.comment());
     output.push(
-        `${offset}public ${parentClass} set${toTitle(this.name)}(${params}) {`,
-        `${offset}  return set${toTitle(this.name)}(new ${this.type.customType}(${args}));`,
+        `${offset}public ${parentClass} set${toTitle(this.name)}(${requiredFields.map(f => f.toJavaParam()).join(', ')}) {`,
+        `${offset}  return set${toTitle(this.name)}(new ${this.type.customType}(${requiredFields.map(f => f.name).join(', ')}));`,
         `${offset}}`);
   }
 
@@ -884,14 +815,14 @@ class Field extends Element {
 // An interface of the API, made from a class of the docs.
 class Interface extends TypeDefinition {
   private readonly clazz: DocClass;
-  private readonly types: Map<string, TypeDefinition>;
   private readonly methods: Method[] = [];
   private readonly events: Event[] = [];
+  // The options classes of the methods.
+  private readonly nestedClasses: CustomClass[] = [];
 
-  constructor(clazz: DocClass, topLevelTypes: Map<string, TypeDefinition>) {
+  constructor(clazz: DocClass) {
     super(null, clazz.name);
     this.clazz = clazz;
-    this.types = topLevelTypes;
     for (const member of clazz.membersArray) {
       if (member.kind === 'event')
         this.events.push(new Event(this, member));
@@ -900,12 +831,14 @@ class Interface extends TypeDefinition {
     }
   }
 
-  override topLevelTypes(): Map<string, TypeDefinition> {
-    return this.types;
+  createNestedClass(name: string, parent: TypeRef, type: DocType) {
+    if (!this.nestedClasses.some(c => c.name === name))
+      this.nestedClasses.push(new CustomClass(parent, name, type));
   }
 
   writeTo(output: string[], offset: string) {
-    if (FACTORY_INTERFACES.includes(this.name) && this.methods.some(m => m.name === 'create'))
+    // The static create() method calls the implementation class.
+    if (Object.hasOwn(STATIC_METHODS, `${this.name}.create`))
       output.push(`import ${API_PACKAGE}.impl.${this.name}Impl;`);
     for (const [imports, interfaces] of INTERFACE_IMPORTS) {
       if (interfaces.includes(this.name))
@@ -914,7 +847,7 @@ class Interface extends TypeDefinition {
     output.push('');
 
     const superInterfaces: string[] = [];
-    if (this.clazz.extends && BASE_INTERFACES.includes(this.clazz.extends))
+    if (this.clazz.extends && interfaceNames.has(this.clazz.extends))
       superInterfaces.push(this.clazz.extends);
     if (AUTO_CLOSEABLE_INTERFACES.includes(this.name))
       superInterfaces.push('AutoCloseable');
@@ -950,7 +883,8 @@ class CustomClass extends TypeDefinition {
   writeTo(output: string[], offset: string) {
     if (CUSTOM_CLASS_IMPORTS[this.name])
       output.push(`import ${CUSTOM_CLASS_IMPORTS[this.name]};`, '');
-    const access = this.topLevelTypes().has(this.name) ? 'public ' : '';
+    // A class nested in an interface is public without the modifier.
+    const access = offset ? '' : 'public ';
     output.push(`${offset}${access}class ${this.name} {`);
     const bodyOffset = offset + '  ';
     for (const field of this.fields)
@@ -968,13 +902,16 @@ class CustomClass extends TypeDefinition {
     output.push(`${offset}}`);
   }
 
+  requiredFields(): Field[] {
+    return this.fields.filter(f => f.isRequired());
+  }
+
   private writeConstructor(output: string[], offset: string) {
-    const requiredFields = this.fields.filter(f => f.isRequired());
+    const requiredFields = this.requiredFields();
     if (!requiredFields.length)
       return;
-    const params = requiredFields.map(f => `${f.type.toJavaWithNullability()} ${f.name}`).join(', ');
     output.push(
-        `${offset}public ${this.name}(${params}) {`,
+        `${offset}public ${this.name}(${requiredFields.map(f => f.toJavaParam()).join(', ')}) {`,
         ...requiredFields.map(f => `${offset}  this.${f.name} = ${f.name};`),
         `${offset}}`);
   }
@@ -1005,13 +942,10 @@ class CustomInterface extends TypeDefinition {
 class Enum extends TypeDefinition {
   readonly values: string[];
 
-  constructor(parent: TypeDefinition, type: DocType) {
-    super(parent, type.name);
+  constructor(type: DocType) {
+    super(null, type.name);
     // The values are in quotes: "load", "domcontentloaded".
     this.values = type.union!.map(item => item.name.substring(1, item.name.length - 1).replaceAll('-', '_').toUpperCase());
-    // Firefox stable 'channel' was removed in 1.12.0
-    if (this.name === 'BrowserChannel')
-      this.values.push('@Deprecated FIREFOX_STABLE');
   }
 
   writeTo(output: string[], offset: string) {
@@ -1035,11 +969,9 @@ function writeFile(dir: string, packageName: string, type: TypeDefinition) {
   fs.writeFileSync(path.join(dir, `${type.name}.java`), lines.join('\n'));
 }
 
-function generateInterfaces(classes: DocClass[], dir: string, packageName: string, topLevelTypes: Map<string, TypeDefinition>) {
+function generateInterfaces(classes: DocClass[], dir: string, packageName: string) {
   for (const clazz of classes) {
-    const iface = new Interface(clazz, topLevelTypes);
-    // The file is written before the next interface is read: a nested class is `public` when
-    // a type with its name is among the top-level types found so far.
+    const iface = new Interface(clazz);
     if (OPTIONS_PACKAGE_INTERFACES.includes(clazz.name))
       topLevelTypes.set(clazz.name, iface);
     else
@@ -1047,37 +979,33 @@ function generateInterfaces(classes: DocClass[], dir: string, packageName: strin
   }
 }
 
-function parseDocs(upstreamDir: string): Documentation {
-  const require = createRequire(import.meta.url);
-  const { parseApi } = require(path.join(upstreamDir, 'utils', 'doclint', 'api_parser'));
-  const documentation: Documentation = parseApi(path.join(upstreamDir, 'docs', 'src', 'api'));
-  // The links to params, options and classes become code. The links to members stay:
-  // linkifyMemberRefs() makes {@link} tags of them.
-  documentation.setLinkRenderer(({ clazz, param, option }) => {
+function parseDocs(): Documentation {
+  const documentation = parseApi(path.join(UPSTREAM_DIR, 'docs', 'src', 'api'));
+  // The renderer runs before the docs are filtered for Java: the names are the names in the docs.
+  documentation.setLinkRenderer(({ clazz, member, param, option }) => {
     if (param)
       return `\`${param.alias}\``;
     if (option)
       return `\`${option.alias}\``;
     if (clazz)
       return `\`${clazz.name}\``;
+    if (member) {
+      const className = member.clazz!.name;
+      const alias = member.langs.aliases?.[LANG] ?? member.name;
+      const name = member.kind === 'event' ? 'on' + toTitle(alias) : alias;
+      const packageName = isAssertionClass(className) ? `${API_PACKAGE}.assertions` : API_PACKAGE;
+      return `{@link ${packageName}.${className}#${name} ${className}.${name}()}`;
+    }
   });
   return documentation;
 }
 
 function main() {
-  if (process.argv.length !== 3) {
-    console.error(`Usage: node ${path.relative(process.cwd(), process.argv[1])} <upstream-checkout-dir>`);
-    console.error('For example: node scripts/generate_java_api.mts .upstream');
-    process.exit(1);
-  }
-  const classes = filterForJava(parseDocs(path.resolve(process.argv[2])))
-      .filter(clazz => !HANDWRITTEN_CLASSES.includes(clazz.name));
-
-  const topLevelTypes = new Map<string, TypeDefinition>();
-  generateInterfaces(classes.filter(clazz => !isAssertionClass(clazz.name)), API_DIR, API_PACKAGE, topLevelTypes);
-  // TODO: generate SoftAssertions once they are implemented.
-  generateInterfaces(classes.filter(clazz => isAssertionClass(clazz.name) && !clazz.name.includes('SoftAssertions')),
-      path.join(API_DIR, 'assertions'), `${API_PACKAGE}.assertions`, topLevelTypes);
+  const classes = filterForJava(parseDocs()).filter(clazz => !HANDWRITTEN_CLASSES.includes(clazz.name));
+  for (const clazz of classes)
+    interfaceNames.add(clazz.name);
+  generateInterfaces(classes.filter(clazz => !isAssertionClass(clazz.name)), API_DIR, API_PACKAGE);
+  generateInterfaces(classes.filter(clazz => isAssertionClass(clazz.name)), path.join(API_DIR, 'assertions'), `${API_PACKAGE}.assertions`);
   for (const type of topLevelTypes.values()) {
     if (type instanceof CustomInterface)
       writeFile(API_DIR, API_PACKAGE, type);
