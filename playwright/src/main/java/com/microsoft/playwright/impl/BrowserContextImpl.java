@@ -59,6 +59,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
   private String closeReason;
+  boolean recordVideo;
 
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
 
@@ -83,8 +84,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     credentials = new CredentialsImpl(this);
     closePromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
   }
-
-  boolean recordVideo;
 
   Path videosDir() {
     JsonObject recordVideo = initializer.getAsJsonObject("options").getAsJsonObject("recordVideo");
