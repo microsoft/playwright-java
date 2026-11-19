@@ -160,7 +160,6 @@ public class TestPageRequestContinue {
 
   @PlaywrightTest
   @DisplayName("RO-063 should not allow changing protocol when overriding url")
-  @Fixme("java: route.resume() does not wait for the driver's reply, so 'New URL must have same protocol as overridden URL' is never thrown (error is null)")
   void shouldNotAllowChangingProtocolWhenOverridingUrl(Page page, TestServer server) throws Exception {
     CompletableFuture<Throwable> errorPromise = new CompletableFuture<>();
     page.route("**/*", route -> {
