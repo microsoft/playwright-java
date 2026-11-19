@@ -895,7 +895,6 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-068 should save download")
-    @Fixme("java: the message of download.path() differs: 'Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.'")
     void shouldSaveDownload(TestServer server, Connect connect, StartRemoteServer startRemoteServer, TestInfo testInfo) throws Exception {
       server.setRoute("/download", (req, res) -> {
         res.setHeader("Content-Type", "application/octet-stream");

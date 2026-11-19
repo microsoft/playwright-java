@@ -331,7 +331,7 @@ public class TestBrowserTypeConnect {
     page.video().saveAs(savedAsPath);
     assertTrue(Files.exists(savedAsPath));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.video().path());
-    assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use saveAs() to save a local copy."));
+    assertTrue(e.getMessage().contains("Path is not available when connecting remotely. Use saveAs() to save a local copy."));
   }
 
 
@@ -354,7 +354,7 @@ public class TestBrowserTypeConnect {
     assertTrue(Files.exists(nestedPath));
     assertEquals("Hello world", new String(Files.readAllBytes(nestedPath), StandardCharsets.UTF_8));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.path());
-    assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
+    assertTrue(e.getMessage().contains("Path is not available when connecting remotely. Use saveAs() to save a local copy."));
     page.close();
   }
 
