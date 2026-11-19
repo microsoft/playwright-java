@@ -775,7 +775,6 @@ public class TestGlobalFetchCookie {
 
   @PlaywrightTest
   @DisplayName("FE-086 storage state should round-trip through file")
-  @Fixme("java: storageState({ path }) writes the compact JSON of the state, the JavaScript client writes JSON.stringify(state, undefined, 2)")
   void storageStateShouldRoundTripThroughFile(Playwright playwright, TestServer server, TestInfo testInfo) throws IOException {
     Map<String, Object> storageState = mapOf(
       "cookies", Arrays.asList(

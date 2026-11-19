@@ -47,6 +47,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   boolean didFailOrFinish;
   ResponseImpl existingResponse;
   private FallbackOverrides fallbackOverrides;
+  private final FrameImpl frame;
 
   static class FallbackOverrides {
     String url;
@@ -60,6 +61,11 @@ public class RequestImpl extends ChannelOwner implements Request {
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 
+    if (initializer.has("frame")) {
+      frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    } else {
+      frame = null;
+    }
     if (initializer.has("redirectedFrom")) {
       redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
       redirectedFrom.redirectedTo = this;
@@ -87,9 +93,15 @@ public class RequestImpl extends ChannelOwner implements Request {
     return failure;
   }
 
+  PageImpl safePage() {
+    return frame == null ? null : frame.page;
+  }
+
   @Override
   public FrameImpl frame() {
-    FrameImpl frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    if (frame == null) {
+      throw new PlaywrightException("Service Worker requests do not have an associated frame.");
+    }
     if (frame.page == null) {
       throw new PlaywrightException("Frame for this navigation request is not available, because the request\n" +
         "was issued before the frame is created. You can check whether the request\n" +
@@ -216,6 +228,13 @@ public class RequestImpl extends ChannelOwner implements Request {
     // The field may have been initialized in a nested call but it is ok.
     rawHeaders = new RawHeaders(headers);
     return rawHeaders;
+  }
+
+  void setResponseEndTiming(double responseEndTiming) {
+    timing.responseEnd = responseEndTiming;
+    if (timing.responseStart == -1) {
+      timing.responseStart = responseEndTiming;
+    }
   }
 
   void applyFallbackOverrides(FallbackOverrides overrides) {

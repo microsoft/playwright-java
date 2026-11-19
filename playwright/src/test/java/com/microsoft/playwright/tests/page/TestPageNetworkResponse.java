@@ -213,7 +213,6 @@ public class TestPageNetworkResponse {
   @PlaywrightTest
   @DisplayName("NE-041 should return non-utf8 body even when content-type says utf8")
   @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: webkit encodes the response body")
-  @Fixme(value = "java: page.evaluate() fails with 'Unexpected result: {}' for a Uint8Array result", browsers = {BrowserName.CHROMIUM, BrowserName.FIREFOX})
   void shouldReturnNonUtf8BodyEvenWhenContentTypeSaysUtf8(Page page, TestServer server, BrowserName browserName, Browser browser) {
     assumeFalse(browserName == BrowserName.CHROMIUM && browserMajorVersion(browser) < 151,
       "fixme: older chromium re-encodes the non-utf8 response body and lacks Response.bytes()");

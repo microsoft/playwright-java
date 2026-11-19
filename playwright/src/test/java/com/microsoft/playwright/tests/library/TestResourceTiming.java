@@ -134,7 +134,6 @@ public class TestResourceTiming {
 
   @PlaywrightTest
   @DisplayName("NE-135 should work when serving from memory cache")
-  @Fixme("java: Request.timing().responseStart stays -1 for a response served from the memory cache; the JavaScript client sets it to responseEnd when it is -1 (Request._setResponseEndTiming), the Java client only sets responseEnd")
   void shouldWorkWhenServingFromMemoryCache(ContextFactory contextFactory, TestServer server, BrowserName browserName) {
     // issue: https://github.com/microsoft/playwright-java/issues/1080
     assumeFalse(browserName == BrowserName.FIREFOX && !Env.isBidi(), "fixme: Response event is not fired in Firefox");

@@ -196,7 +196,6 @@ public class TestWorkers {
 
   @PlaywrightTest
   @DisplayName("WO-010 should report console event on the worker when not listening on page or context")
-  @Fixme("java: worker.waitForConsoleMessage times out with 'Timeout 30000ms exceeded' when nothing listens for console on page or context")
   void shouldReportConsoleEventOnTheWorkerWhenNotListeningOnPageOrContext(Page page, Browser browser, BrowserName browserName) {
     assumeFalse(browserName == BrowserName.CHROMIUM && browserMajorVersion(browser) < 143, "needs workerScriptLoaded event");
 

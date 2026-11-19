@@ -231,7 +231,6 @@ public class TestBrowsercontextStorageState {
 
   @PlaywrightTest
   @DisplayName("ST-004 should round-trip through the file")
-  @Fixme("java: BrowserContext.storageState(path) writes the compact JSON of the driver, JS writes JSON.stringify(state, undefined, 2)")
   void shouldRoundTripThroughTheFile(ContextFactory contextFactory, TestInfo testInfo) throws Exception {
     assumeFalse(Env.channel() != null && Env.channel().startsWith("msedge"), "fixme: Network.clearBrowserCache sometimes stalls");
 

@@ -143,7 +143,6 @@ public class TestGlobalFetch {
 
   @PlaywrightTest
   @DisplayName("FE-002 should dispose global request")
-  @Fixme("java: dispose() of an already disposed APIRequestContext throws TargetClosedError: 'Target page, context or browser has been closed'")
   void shouldDisposeGlobalRequest(Playwright playwright, TestServer server) {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.PREFIX + "/simple.json");
@@ -626,8 +625,8 @@ public class TestGlobalFetch {
     Object value;
 
     @PlaywrightTest
-    @Fixme(value = "java: an empty String data with a JSON content type is sent as is instead of JSON-stringified, and null data sends no body",
-      parameters = {"type=string (falsey)", "type=null,"})
+    @Fixme(value = "java: null data sends no body, the Node.js client sends 'null'",
+      parameters = {"type=null,"})
     @DisplayName("FE-033 should json stringify ${type} body when content-type is application/json")
     void shouldJsonStringifyBodyWhenContentTypeIsApplicationJson(Playwright playwright, TestServer server) throws Exception {
       String stringifiedValue = stringify(value);

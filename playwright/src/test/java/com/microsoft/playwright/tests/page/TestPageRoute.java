@@ -691,7 +691,6 @@ public class TestPageRoute {
   @PlaywrightTest
   @DisplayName("RO-033 should not fulfill with redirect status")
   @EnabledOnBrowser(value = BrowserName.WEBKIT, reason = "we should support fulfill with redirect in webkit and delete this test")
-  @Fixme("java: route.fulfill() does not wait for the driver's reply, so 'Cannot fulfill with redirect status' is never thrown (AssertionError: fulfill didn't throw)")
   void shouldNotFulfillWithRedirectStatus(Page page, TestServer server) throws Exception {
     page.navigate(server.PREFIX + "/empty.html");
 
@@ -1111,7 +1110,6 @@ public class TestPageRoute {
 
   @PlaywrightTest
   @DisplayName("RO-046 should work if handler with times parameter was removed from another handler")
-  @Fixme("java: the Router keeps iterating over the handlers it had before page.unroute() ran in a handler, so the removed handler still runs: expected: <[second]> but was: <[second, first]>")
   void shouldWorkIfHandlerWithTimesParameterWasRemovedFromAnotherHandler(Page page, TestServer server) {
     List<String> intercepted = new ArrayList<>();
     Consumer<Route> handler = route -> {

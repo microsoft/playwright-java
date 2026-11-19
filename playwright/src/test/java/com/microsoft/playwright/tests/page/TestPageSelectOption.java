@@ -217,7 +217,6 @@ public class TestPageSelectOption {
 
   @PlaywrightTest
   @DisplayName("SO-020 should not allow null items")
-  @Fixme("java: selectOption() with a null item in the array does not throw, the expected error 'options[1]: expected object, got null' is not reported")
   void shouldNotAllowNullItems(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");

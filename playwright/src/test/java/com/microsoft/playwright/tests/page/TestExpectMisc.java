@@ -577,7 +577,6 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-230 should support pseudo element")
-    @Fixme("java: the pseudo option of hasCSS is not applied: 'Locator expected to have CSS property 'color'\nExpected: rgb(255, 0, 0)\nReceived: rgb(0, 0, 0)'")
     void shouldSupportPseudoElement(Page page) {
       page.setContent("\n" +
         "      <style>\n" +

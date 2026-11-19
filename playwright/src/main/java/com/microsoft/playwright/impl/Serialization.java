@@ -32,6 +32,8 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.DateFormat;
@@ -66,6 +68,7 @@ class Serialization {
     .registerTypeAdapter(ScrollMode.class, new ToLowerCaseSerializer<ScrollMode>())
     .registerTypeAdapter(ConsoleMessagesFilter.class, new ConsoleMessagesFilterSerializer())
     .registerTypeAdapter(AriaSnapshotMode.class, new ToLowerCaseSerializer<AriaSnapshotMode>())
+    .registerTypeAdapter(PseudoElement.class, new ToLowerCaseSerializer<PseudoElement>())
     .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
     .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
     .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())
@@ -88,6 +91,12 @@ class Serialization {
     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
     .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer())
     .serializeNulls().create();
+
+  private static final Gson prettyGson = new GsonBuilder().disableHtmlEscaping().serializeNulls().setPrettyPrinting().create();
+
+  static String toPrettyJson(String json) {
+    return prettyGson.toJson(JsonParser.parseString(json));
+  }
 
   static SerializedError serializeError(Throwable e) {
     SerializedError result = new SerializedError();
@@ -264,6 +273,9 @@ class Serialization {
     if (value.e != null) {
       return (T)new Exception(value.e.s);
     }
+    if (value.ta != null) {
+      return (T) deserializeTypedArray(value.ta);
+    }
     if (value.v != null) {
       switch (value.v) {
         case "undefined":
@@ -299,6 +311,46 @@ class Serialization {
       return (T) map;
     }
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
+  }
+
+  private static Object deserializeTypedArray(SerializedValue.SerializedValueTa typedArray) {
+    ByteBuffer buffer = ByteBuffer.wrap(typedArray.b).order(ByteOrder.LITTLE_ENDIAN);
+    switch (typedArray.k) {
+      case "i8":
+      case "ui8":
+      case "ui8c":
+        return typedArray.b;
+      case "i16":
+      case "ui16": {
+        short[] result = new short[typedArray.b.length / 2];
+        buffer.asShortBuffer().get(result);
+        return result;
+      }
+      case "i32":
+      case "ui32": {
+        int[] result = new int[typedArray.b.length / 4];
+        buffer.asIntBuffer().get(result);
+        return result;
+      }
+      case "f32": {
+        float[] result = new float[typedArray.b.length / 4];
+        buffer.asFloatBuffer().get(result);
+        return result;
+      }
+      case "f64": {
+        double[] result = new double[typedArray.b.length / 8];
+        buffer.asDoubleBuffer().get(result);
+        return result;
+      }
+      case "bi64":
+      case "bui64": {
+        long[] result = new long[typedArray.b.length / 8];
+        buffer.asLongBuffer().get(result);
+        return result;
+      }
+      default:
+        throw new PlaywrightException("Unexpected typed array kind: " + typedArray.k);
+    }
   }
 
   private static class KeyboardModifiersSerializer implements JsonSerializer<List<KeyboardModifier>> {

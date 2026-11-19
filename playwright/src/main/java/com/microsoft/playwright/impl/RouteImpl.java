@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.APIResponse;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,10 +51,11 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void abort(String errorCode) {
-    startHandling();
-    RouteAbortParams params = new RouteAbortParams();
-    params.errorCode = errorCode;
-    sendMessageAsync("abort", params);
+    handleRoute(() -> {
+      RouteAbortParams params = new RouteAbortParams();
+      params.errorCode = errorCode;
+      raceWithTargetClose("abort", params);
+    });
   }
 
   boolean isHandled() {
@@ -61,13 +64,54 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void resume(ResumeOptions options) {
-    resume(options, false);
+    handleRoute(() -> {
+      applyOverrides(convertType(options, FallbackOptions.class));
+      raceWithTargetClose("continue", continueParams(false));
+    });
   }
 
-  void resume(ResumeOptions options, boolean isFallback) {
-    startHandling();
-    applyOverrides(convertType(options, FallbackOptions.class));
-    resumeImpl(request().fallbackOverridesForResume(), isFallback);
+  // java: upstream awaits _innerContinue(true) and ignores its error; nothing observes the reply here.
+  void continueAsFallback() {
+    checkNotHandled();
+    handled = true;
+    sendMessageAsync("continue", continueParams(true));
+  }
+
+  private void handleRoute(Runnable callback) {
+    checkNotHandled();
+    callback.run();
+    handled = true;
+  }
+
+  // java: pumps the connection until the reply arrives; when the page closes first the call returns
+  // without an error, as safeRace() of the target closed scope does upstream.
+  private void raceWithTargetClose(String method, Object params) {
+    WaitableResult<JsonElement> result = sendMessageAsync(method, params);
+    PageImpl page = request.safePage();
+    if (page == null) {
+      runUntil(() -> {}, result);
+      return;
+    }
+    if (page.isClosed()) {
+      return;
+    }
+    Waitable<JsonElement> closed = page.createWaitForCloseHelper();
+    runUntil(() -> {}, new WaitableRace<>(Arrays.asList(result, new Waitable<JsonElement>() {
+      @Override
+      public boolean isDone() {
+        return closed.isDone();
+      }
+
+      @Override
+      public JsonElement get() {
+        return null;
+      }
+
+      @Override
+      public void dispose() {
+        closed.dispose();
+      }
+    })));
   }
 
   @Override
@@ -78,7 +122,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
     applyOverrides(options);
     if (shouldResumeIfFallbackIsCalled) {
-      resume(null, true);
+      continueAsFallback();
     }
   }
 
@@ -121,18 +165,29 @@ public class RouteImpl extends ChannelOwner implements Route {
     request().applyFallbackOverrides(overrides);
   }
 
-  private void resumeImpl(RequestImpl.FallbackOverrides options, boolean isFallback) {
+  private RouteContinueParams continueParams(boolean isFallback) {
+    RequestImpl.FallbackOverrides options = request().fallbackOverridesForResume();
     RouteContinueParams params = new RouteContinueParams();
     if (options != null) {
       params.url = options.url;
       params.method = options.method;
       if (options.headers != null) {
-        params.headers = toNameValues(options.headers);
+        params.headers = toNameValues(withoutNullValues(options.headers));
       }
       params.postData = options.postData;
     }
     params.isFallback = isFallback;
-    sendMessageAsync("continue", params);
+    return params;
+  }
+
+  private static Map<String, String> withoutNullValues(Map<String, String> map) {
+    Map<String, String> result = new LinkedHashMap<>();
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      if (e.getValue() != null) {
+        result.put(e.getKey(), e.getValue());
+      }
+    }
+    return result;
   }
 
   private static List<NameValue> toNameValues(Map<String, String> map) {
@@ -161,8 +216,7 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fulfill(FulfillOptions options) {
-    startHandling();
-    fulfillImpl(options);
+    handleRoute(() -> fulfillImpl(options));
   }
 
   private void fulfillImpl(FulfillOptions options) {
@@ -238,7 +292,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.isBase64 = isBase64;
     params.body = body;
     params.fetchResponseUid = fetchResponseUid;
-    sendMessageAsync("fulfill", params);
+    raceWithTargetClose("fulfill", params);
   }
 
   @Override
@@ -247,17 +301,17 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   void redirectNavigationRequest(String redirectURL) {
-    startHandling();
-    RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
-    params.url = redirectURL;
-    // TODO: _raceWithPageClose ?
-    sendMessageAsync("redirectNavigationRequest", params);
+    handleRoute(() -> {
+      RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
+      params.url = redirectURL;
+      raceWithTargetClose("redirectNavigationRequest", params);
+    });
   }
 
-  private void startHandling() {
+  private void checkNotHandled() {
     if (handled) {
       throw new PlaywrightException("Route is already handled!");
     }
-    handled = true;
   }
+
 }

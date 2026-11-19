@@ -73,9 +73,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
         return request.failure();
       }
     });
-    PageImpl page = request.frame().page;
-    waitables.add(page.createWaitForCloseHelper());
-    waitables.add(page.createWaitableTimeout(null));
+    PageImpl page = request.safePage();
+    if (page != null) {
+      waitables.add(page.createWaitForCloseHelper());
+      waitables.add(page.createWaitableTimeout(null));
+    }
     runUntil(() -> {}, new WaitableRace<>(waitables));
     return request.failure();
   }

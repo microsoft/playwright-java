@@ -64,7 +64,6 @@ public class TestVideo {
 
   @PlaywrightTest
   @DisplayName("VI-001 should not have video by default")
-  @Fixme("java: page.video() returns a Video also when the context does not record video (PageImpl creates a VideoImpl without an artifact): expected: <null> but was: <com.microsoft.playwright.impl.VideoImpl@...>")
   void shouldNotHaveVideoByDefault(Page page) {
     assertNull(page.video());
   }
