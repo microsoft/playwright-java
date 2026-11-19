@@ -8,8 +8,8 @@ cd "$(dirname "$0")/.."
 
 DRIVER_VERSION=$(head -1 ./scripts/DRIVER_VERSION)
 
-# The script generates api.json from .upstream/. This is the microsoft/playwright checkout
-# at the commit in scripts/DRIVER_VERSION. scripts/build_driver.sh makes it.
+# The script generates the API from the docs in .upstream/ (docs/src/api/*.md). This is the
+# microsoft/playwright checkout at the commit in scripts/DRIVER_VERSION. scripts/build_driver.sh makes it.
 # To try a change to the upstream docs or to the generator, set PW_SRC_DIR to a different
 # checkout. Do not commit files that come from PW_SRC_DIR: CI generates the files again
 # from .upstream/ and fails if they are different.
@@ -24,14 +24,14 @@ else
   fi
 fi
 
-echo "Updating api.json from $UPSTREAM_DIR"
-API_JSON_MODE=1 node "$UPSTREAM_DIR/utils/doclint/generateApiJson.js" \
-  > ./tools/api-generator/src/main/resources/api.json
+# Node.js runs the TypeScript file of the generator as is. Older versions cannot.
+if ! node -e 'process.exit(process.features.typescript ? 0 : 1)'; then
+  echo "The API generator needs Node.js 22.18 or newer, got $(node --version)"
+  exit 1
+fi
 
-mvn compile -f ./tools/api-generator --no-transfer-progress
-
-echo "Regenerating Java interfaces"
-mvn exec:java --f ./tools/api-generator -D exec.mainClass=com.microsoft.playwright.tools.ApiGenerator
+echo "Regenerating Java interfaces from $UPSTREAM_DIR"
+node ./scripts/generate_java_api.mts "$UPSTREAM_DIR"
 
 # The protocol types are generated last: they avoid names of the public API types generated above.
 # utils/protocol_spec.js needs the 'yaml' package. .upstream/ has it after scripts/build_driver.sh.
