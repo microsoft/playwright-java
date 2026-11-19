@@ -59,7 +59,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
   private String closeReason;
-  boolean recordVideo;
 
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
 
