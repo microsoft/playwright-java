@@ -49,10 +49,9 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
-    LocatorImpl locator = (LocatorImpl) selectorOrLocator;
-    if (locator.frame != frame)
+    if (((LocatorImpl) selectorOrLocator).frame != frame)
       throw new PlaywrightException("Locators must belong to the same frame.");
-    return new LocatorImpl(frame, childSelector(locator.selector), convertType(options, Locator.LocatorOptions.class));
+    return new LocatorImpl(frame, childSelector(((LocatorImpl) selectorOrLocator).selector), convertType(options, Locator.LocatorOptions.class));
   }
 
   // java: the test id attribute lives in SelectorsImpl of the Playwright instance, see LocatorUtils.getByTestIdSelector.

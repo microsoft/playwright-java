@@ -39,7 +39,7 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 
 class LocatorImpl implements Locator {
   final FrameImpl frame;
-  final String selector;
+  String selector;
 
   // java: upstream has one constructor with optional LocatorOptions. Locator.LocatorOptions has no
   // 'visible', so filter() and visible() use the private constructor that takes FilterOptions.
@@ -53,31 +53,30 @@ class LocatorImpl implements Locator {
 
   private LocatorImpl(FrameImpl frame, String selector, FilterOptions options) {
     this.frame = frame;
+    this.selector = selector;
 
     if (options != null && options.hasText != null)
-      selector += " >> internal:has-text=" + escapeForTextSelector(options.hasText, false);
+      this.selector += " >> internal:has-text=" + escapeForTextSelector(options.hasText, false);
 
     if (options != null && options.hasNotText != null)
-      selector += " >> internal:has-not-text=" + escapeForTextSelector(options.hasNotText, false);
+      this.selector += " >> internal:has-not-text=" + escapeForTextSelector(options.hasNotText, false);
 
     if (options != null && options.has != null) {
       LocatorImpl locator = (LocatorImpl) options.has;
       if (locator.frame != frame)
         throw new PlaywrightException("Inner \"has\" locator must belong to the same frame.");
-      selector += " >> internal:has=" + gson().toJson(locator.selector);
+      this.selector += " >> internal:has=" + gson().toJson(locator.selector);
     }
 
     if (options != null && options.hasNot != null) {
       LocatorImpl locator = (LocatorImpl) options.hasNot;
       if (locator.frame != frame)
         throw new PlaywrightException("Inner \"hasNot\" locator must belong to the same frame.");
-      selector += " >> internal:has-not=" + gson().toJson(locator.selector);
+      this.selector += " >> internal:has-not=" + gson().toJson(locator.selector);
     }
 
     if (options != null && options.visible != null)
-      selector += " >> visible=" + (options.visible ? "true" : "false");
-
-    this.selector = selector;
+      this.selector += " >> visible=" + (options.visible ? "true" : "false");
   }
 
   <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
@@ -221,10 +220,9 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
-    LocatorImpl locator = (LocatorImpl) selectorOrLocator;
-    if (locator.frame != frame)
+    if (((LocatorImpl) selectorOrLocator).frame != frame)
       throw new PlaywrightException("Locators must belong to the same frame.");
-    return new LocatorImpl(frame, selector + " >> internal:chain=" + gson().toJson(locator.selector), options);
+    return new LocatorImpl(frame, selector + " >> internal:chain=" + gson().toJson(((LocatorImpl) selectorOrLocator).selector), options);
   }
 
   @Override
@@ -335,7 +333,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator describe(String description) {
-    return new LocatorImpl(frame, selector + " >> " + describeSelector(description));
+    return new LocatorImpl(frame, selector + " >> internal:describe=" + gson().toJson(description));
   }
 
   // java: there is no port of the selector parser; this matches the trailing internal:describe part
@@ -369,18 +367,16 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator and(Locator locator) {
-    LocatorImpl other = (LocatorImpl) locator;
-    if (other.frame != frame)
+    if (((LocatorImpl) locator).frame != frame)
       throw new PlaywrightException("Locators must belong to the same frame.");
-    return new LocatorImpl(frame, selector + " >> internal:and=" + gson().toJson(other.selector));
+    return new LocatorImpl(frame, selector + " >> internal:and=" + gson().toJson(((LocatorImpl) locator).selector));
   }
 
   @Override
   public Locator or(Locator locator) {
-    LocatorImpl other = (LocatorImpl) locator;
-    if (other.frame != frame)
+    if (((LocatorImpl) locator).frame != frame)
       throw new PlaywrightException("Locators must belong to the same frame.");
-    return new LocatorImpl(frame, selector + " >> internal:or=" + gson().toJson(other.selector));
+    return new LocatorImpl(frame, selector + " >> internal:or=" + gson().toJson(((LocatorImpl) locator).selector));
   }
 
   @Override

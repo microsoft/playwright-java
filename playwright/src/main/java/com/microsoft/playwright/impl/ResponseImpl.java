@@ -28,7 +28,6 @@ import com.microsoft.playwright.options.SecurityDetails;
 import com.microsoft.playwright.options.ServerAddr;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     responseInitializer = connection.protocolGson().fromJson(initializer, ResponseInitializer.class);
-    this.provisionalHeaders = new RawHeaders(responseInitializer.headers != null ? responseInitializer.headers : new ArrayList<>());
+    this.provisionalHeaders = new RawHeaders(responseInitializer.headers);
     this.request = responseInitializer.request;
     this.request.response = this;
     assignTiming(this.request, responseInitializer.timing);
@@ -171,34 +170,15 @@ public class ResponseImpl extends ChannelOwner implements Response {
     return channel.httpVersion(NO_TIMEOUT).value;
   }
 
-  // java: Object.assign(this._request._timing, this._initializer.timing).
+  // java: Object.assign(this._request._timing, this._initializer.timing), field by field.
   private static void assignTiming(RequestImpl request, ResourceTiming timing) {
-    if (timing == null) {
-      return;
-    }
-    if (timing.startTime != null) {
-      request.timing.startTime = timing.startTime;
-    }
-    if (timing.domainLookupStart != null) {
-      request.timing.domainLookupStart = timing.domainLookupStart;
-    }
-    if (timing.domainLookupEnd != null) {
-      request.timing.domainLookupEnd = timing.domainLookupEnd;
-    }
-    if (timing.connectStart != null) {
-      request.timing.connectStart = timing.connectStart;
-    }
-    if (timing.secureConnectionStart != null) {
-      request.timing.secureConnectionStart = timing.secureConnectionStart;
-    }
-    if (timing.connectEnd != null) {
-      request.timing.connectEnd = timing.connectEnd;
-    }
-    if (timing.requestStart != null) {
-      request.timing.requestStart = timing.requestStart;
-    }
-    if (timing.responseStart != null) {
-      request.timing.responseStart = timing.responseStart;
-    }
+    request.timing.startTime = timing.startTime;
+    request.timing.domainLookupStart = timing.domainLookupStart;
+    request.timing.domainLookupEnd = timing.domainLookupEnd;
+    request.timing.connectStart = timing.connectStart;
+    request.timing.secureConnectionStart = timing.secureConnectionStart;
+    request.timing.connectEnd = timing.connectEnd;
+    request.timing.requestStart = timing.requestStart;
+    request.timing.responseStart = timing.responseStart;
   }
 }

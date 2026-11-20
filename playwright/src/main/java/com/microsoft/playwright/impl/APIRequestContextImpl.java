@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Errors.isTargetClosedError;
+import static com.microsoft.playwright.impl.RawHeaders.headersObjectToArray;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.jsonDataSerializer;
 import static com.microsoft.playwright.impl.Serialization.toClearCookiesParams;
@@ -262,11 +263,6 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     return state;
   }
 
-  @Override
-  public TracingImpl tracing() {
-    return tracing;
-  }
-
   // java: FormData values are String, Boolean, Integer, Path (upstream's ReadStream) or FilePayload.
   static FormField toFormField(String name, Object value) {
     FormField field = new FormField();
@@ -342,29 +338,19 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     return result;
   }
 
-  // java: helpers, the method override of the get/post/... shortcuts and isomorphic headersObjectToArray.
+  // java: the accessor of the tracing field, the { ...options, method } of the get/post/... shortcuts and the { name, value } literal.
+  @Override
+  public TracingImpl tracing() {
+    return tracing;
+  }
 
-  // java: upstream overrides the method; an explicit RequestOptions.setMethod wins here, as it always did in Java.
   private static RequestOptionsImpl withMethod(RequestOptions options, String method) {
     RequestOptionsImpl impl = Utils.clone((RequestOptionsImpl) options);
     if (impl == null) {
       impl = new RequestOptionsImpl();
     }
-    if (impl.method == null) {
-      impl.method = method;
-    }
+    impl.method = method;
     return impl;
-  }
-
-  static List<NameValue> headersObjectToArray(Map<String, String> headers) {
-    List<NameValue> result = new ArrayList<>();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      if (e.getValue() == null) {
-        continue;
-      }
-      result.add(nameValue(e.getKey(), e.getValue()));
-    }
-    return result;
   }
 
   private static NameValue nameValue(String name, String value) {

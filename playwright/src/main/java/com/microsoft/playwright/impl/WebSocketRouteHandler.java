@@ -20,7 +20,6 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.WebSocketRoute;
 import com.microsoft.playwright.impl.protocol.BrowserContextSetWebSocketInterceptionPatternsParams.BrowserContextSetWebSocketInterceptionPatternsParamsPatterns;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -32,17 +31,11 @@ class WebSocketRouteHandler {
   final UrlMatcher url;
   final Consumer<WebSocketRoute> handler;
 
-  // java: the UrlMatcher has resolved a glob against the base URL and validated it already, baseURL is
-  // kept for the upstream signature only.
+  // java: UrlMatcher.forGlob() has resolved and validated a glob against the base URL already.
   WebSocketRouteHandler(String baseURL, UrlMatcher url, Consumer<WebSocketRoute> handler) {
     this.baseURL = baseURL;
     this.url = url;
     this.handler = handler;
-  }
-
-  // java: the base URL of the context as a java.net.URL.
-  WebSocketRouteHandler(URL baseURL, UrlMatcher url, Consumer<WebSocketRoute> handler) {
-    this(baseURL != null ? baseURL.toString() : null, url, handler);
   }
 
   // java: the result is a list of the BrowserContext pattern struct; the Page struct has the same fields

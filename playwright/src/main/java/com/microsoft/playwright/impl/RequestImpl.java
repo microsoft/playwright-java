@@ -73,7 +73,7 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (this.redirectedFrom != null) {
       this.redirectedFrom.redirectedTo = this;
     }
-    this.provisionalHeaders = new RawHeaders(requestInitializer.headers != null ? requestInitializer.headers : new ArrayList<>());
+    this.provisionalHeaders = new RawHeaders(requestInitializer.headers);
     this.timing = new Timing();
     this.timing.startTime = 0;
     this.timing.domainLookupStart = -1;
@@ -268,43 +268,33 @@ public class RequestImpl extends ChannelOwner implements Request {
     return fallbackOverrides;
   }
 
-  // java: there is no LongStandingScope; the scope watches the close events of the service worker or the page.
-  TargetClosedScope targetClosedScope() {
+  LongStandingScope targetClosedScope() {
     WorkerImpl serviceWorker = serviceWorker();
     if (serviceWorker != null) {
-      return new TargetClosedScope(this, serviceWorker, Events.Worker.CLOSE, serviceWorker::closeErrorWithReason, null, null);
+      // java: WorkerImpl has no _closedScope, the Close event closes it.
+      return new LongStandingScope(this, () -> new WaitableEvent<Object>(serviceWorker, Events.Worker.CLOSE) {
+        @Override
+        public Object get() {
+          throw serviceWorker.closeErrorWithReason();
+        }
+      });
     }
     PageImpl page = safePage();
     if (page != null) {
-      return new TargetClosedScope(this, page, Events.Page.CLOSE, page::closeErrorWithReason, Events.Page.CRASH, TargetClosedError::new);
+      return new LongStandingScope(this, page::createWaitForCloseHelper);
     }
-    return new TargetClosedScope(this, null, null, null, null, null);
+    return new LongStandingScope(this, null);
   }
 
-  // java: the LongStandingScope of a service worker or a page, built on Waitables.
-  static class TargetClosedScope {
+  // java: LongStandingScope of isomorphic/manualPromise.ts, made of the Waitable that is done once the scope
+  // closed and then throws its error; null is a scope that never closes.
+  static class LongStandingScope {
     private final ChannelOwner owner;
-    private final EventEmitter target;
-    private final String closeEvent;
-    private final Supplier<RuntimeException> closeError;
-    private final String crashEvent;
-    private final Supplier<RuntimeException> crashError;
+    private final Supplier<Waitable<Object>> terminatePromise;
 
-    TargetClosedScope(ChannelOwner owner, EventEmitter target, String closeEvent, Supplier<RuntimeException> closeError,
-                      String crashEvent, Supplier<RuntimeException> crashError) {
+    LongStandingScope(ChannelOwner owner, Supplier<Waitable<Object>> terminatePromise) {
       this.owner = owner;
-      this.target = target;
-      this.closeEvent = closeEvent;
-      this.closeError = closeError;
-      this.crashEvent = crashEvent;
-      this.crashError = crashError;
-    }
-
-    private boolean isClosed() {
-      if (target instanceof PageImpl) {
-        return ((PageImpl) target).isClosed();
-      }
-      return false;
+      this.terminatePromise = terminatePromise;
     }
 
     <T> T race(Waitable<T> promise) {
@@ -315,37 +305,32 @@ public class RequestImpl extends ChannelOwner implements Request {
       return race(promise, true);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T race(Waitable<T> promise, boolean safe) {
-      // java: a settled promise wins over the terminate promise, as its reaction runs first upstream.
-      if (target == null || promise.isDone()) {
+      if (terminatePromise == null) {
         return owner.runUntil(() -> {}, promise);
       }
-      if (isClosed()) {
-        promise.dispose();
-        if (safe) {
+      Waitable<Object> terminate = terminatePromise.get();
+      List<Waitable<Object>> waitables = new ArrayList<>();
+      // java: the promise goes first, a settled promise wins over a closed scope as its reaction runs first upstream.
+      waitables.add((Waitable<Object>) promise);
+      waitables.add(safe ? new Waitable<Object>() {
+        @Override
+        public boolean isDone() {
+          return terminate.isDone();
+        }
+
+        @Override
+        public Object get() {
           return null;
         }
-        throw closeError.get();
-      }
-      List<Waitable<T>> waitables = new ArrayList<>();
-      waitables.add(terminateWaitable(closeEvent, closeError, safe));
-      if (crashEvent != null) {
-        waitables.add(terminateWaitable(crashEvent, crashError, safe));
-      }
-      waitables.add(promise);
-      return owner.runUntil(() -> {}, new WaitableRace<>(waitables));
-    }
 
-    private <T> Waitable<T> terminateWaitable(String event, Supplier<RuntimeException> error, boolean safe) {
-      return new WaitableEvent<T>(target, event) {
         @Override
-        public T get() {
-          if (safe) {
-            return null;
-          }
-          throw error.get();
+        public void dispose() {
+          terminate.dispose();
         }
-      };
+      } : terminate);
+      return (T) owner.runUntil(() -> {}, new WaitableRace<>(waitables));
     }
   }
 }

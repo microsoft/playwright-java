@@ -119,17 +119,13 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       isTracing = true;
       connection.setIsTracing(true);
     }
-    LocalUtils localUtils = connection.localUtils();
-    if (localUtils == null) {
-      stacksId = null;
-      return;
-    }
-    // java: LocalUtils.tracingStarted of the seed has no live flag and drops tracesDir, the params go to the channel as upstream passes them.
     LocalUtilsTracingStartedParams params = new LocalUtilsTracingStartedParams();
     params.tracesDir = tracesDir == null ? null : tracesDir.toString();
     params.traceName = traceName;
     params.live = live;
-    LocalUtilsTracingStartedResult result = localUtils.channel.tracingStarted(params, NO_TIMEOUT);
+    LocalUtils localUtils = connection.localUtils();
+    // java: LocalUtils.tracingStarted of the seed has no live flag and drops tracesDir, so the channel is called directly.
+    LocalUtilsTracingStartedResult result = localUtils == null ? null : localUtils.channel.tracingStarted(params, NO_TIMEOUT);
     stacksId = result == null ? null : result.stacksId;
   }
 

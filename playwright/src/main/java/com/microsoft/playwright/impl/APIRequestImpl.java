@@ -58,24 +58,23 @@ class APIRequestImpl implements APIRequest {
     Map<String, String> extraHTTPHeaders = options.extraHTTPHeaders;
     List<ClientCertificate> clientCertificates = options.clientCertificates;
     Object httpCredentials = options.httpCredentials;
-    Double timeout = options.timeout;
     // java: the fields that the spread of upstream replaces are cleared before the options are copied into the params.
     options.storageState = null;
     options.storageStatePath = null;
     options.extraHTTPHeaders = null;
     options.clientCertificates = null;
     options.httpCredentials = null;
-    options.timeout = null;
     PlaywrightNewRequestParams params = Utils.toProtocol(options, PlaywrightNewRequestParams.class);
-    params.extraHTTPHeaders = extraHTTPHeaders != null ? APIRequestContextImpl.headersObjectToArray(extraHTTPHeaders) : null;
+    params.extraHTTPHeaders = extraHTTPHeaders != null ? RawHeaders.headersObjectToArray(extraHTTPHeaders) : null;
     params.storageState = storageState;
-    // java: there are no default launch options with a tracesDir in the Java API.
+    // java: no _defaultLaunchOptions in the Java API, so no tracesDir here and none for context.tracing below.
     params.clientCertificates = BrowserContextImpl.toClientCertificatesProtocol(clientCertificates);
     params.httpCredentials = BrowserContextImpl.toHttpCredentialsProtocol(httpCredentials);
     APIRequestContextImpl context = playwright.channel.newRequest(params, NO_TIMEOUT).request;
     contexts.add(context);
     context.request = this;
-    context.timeoutSettings.setDefaultTimeout(timeout);
+    // java: no _defaultContextTimeout in the Java API.
+    context.timeoutSettings.setDefaultTimeout(options.timeout);
     return context;
   }
 }

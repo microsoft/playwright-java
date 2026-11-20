@@ -132,11 +132,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   }
 
   @Override
-  public APIRequestImpl request() {
-    return request;
-  }
-
-  @Override
   public BrowserTypeImpl webkit() {
     return webkit;
   }
@@ -144,6 +139,11 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public SelectorsImpl selectors() {
     return selectors;
+  }
+
+  @Override
+  public APIRequestImpl request() {
+    return request;
   }
 
   @Override

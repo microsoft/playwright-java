@@ -99,6 +99,7 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     return context;
   }
 
+  // java: no logger parameter, the Java API has no logger option.
   void connectToBrowserType(BrowserTypeImpl browserType, BrowserType.LaunchOptions browserOptions) {
     // Note: when using connect(), `browserType` is different from `this._parent`.
     // This is why browser type is not wired up in the constructor,

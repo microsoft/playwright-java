@@ -397,10 +397,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
-    // java: the state is an enum that may be null.
-    if (state == null) {
-      throw new IllegalArgumentException("State cannot be null");
-    }
     ElementHandleWaitForElementStateParams params = toProtocol(options, ElementHandleWaitForElementStateParams.class);
     params.state = state.toString().toLowerCase();
     elementChannel.waitForElementState(params, frame.timeout(options.timeout));
@@ -428,7 +424,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (items.length == 0) {
       return result;
     }
-    Utils.assertNoNullItems(items);
+    for (int i = 0; i < items.length; i++) {
+      if (items[i] == null) {
+        throw new PlaywrightException("options[" + i + "]: expected object, got null");
+      }
+    }
     if (items[0] instanceof ElementHandle) {
       result.elements = new ArrayList<>();
       for (Object v : items) {
@@ -436,8 +436,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       }
       return result;
     }
-    result.options = new ArrayList<>();
     if (items[0] instanceof String) {
+      result.options = new ArrayList<>();
       for (Object valueOrLabel : items) {
         ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
         option.valueOrLabel = (String) valueOrLabel;
@@ -445,6 +445,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       }
       return result;
     }
+    result.options = new ArrayList<>();
     for (Object v : items) {
       SelectOption value = (SelectOption) v;
       ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions option = new ElementHandleSelectOptionParams.ElementHandleSelectOptionParamsOptions();
@@ -456,7 +457,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     return result;
   }
 
-  // java: Utils.checkFilePayloadSize is not used, its limit check is > while upstream's is >=.
   private static boolean filePayloadExceedsSizeLimit(List<FilePayload> payloads) {
     long size = 0;
     for (FilePayload item : payloads) {
@@ -489,19 +489,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   // The result holds only the file fields, the caller copies them into its own params.
   static ElementHandleSetInputFilesParams convertInputFiles(Object files, BrowserContextImpl context) {
     List<Object> items = files instanceof Object[] ? new ArrayList<>(Arrays.asList((Object[]) files)) : new ArrayList<>(Collections.singletonList(files));
-    ElementHandleSetInputFilesParams result = new ElementHandleSetInputFilesParams();
 
-    boolean somePaths = false;
-    boolean allPaths = true;
-    for (Object item : items) {
-      if (item instanceof Path) {
-        somePaths = true;
-      } else {
-        allPaths = false;
-      }
-    }
-    if (somePaths) {
-      if (!allPaths) {
+    if (items.stream().anyMatch(item -> item instanceof Path)) {
+      if (!items.stream().allMatch(item -> item instanceof Path)) {
         throw new PlaywrightException("File paths cannot be mixed with buffers");
       }
 
@@ -510,19 +500,23 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
       if (context.connection.isRemote()) {
         List<Path> filesToStream = localDirectory != null ? listFilesRecursively(localDirectory) : localPaths;
-        BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
-        params.rootDirName = localDirectory != null ? localDirectory.getFileName().toString() : null;
-        params.items = new ArrayList<>();
-        for (Path file : filesToStream) {
-          double lastModifiedMs = (double) stat(file).lastModifiedTime().toMillis();
-          BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems item = new BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems();
-          item.name = localDirectory != null ? localDirectory.relativize(file).toString() : file.getFileName().toString();
-          item.lastModifiedMs = lastModifiedMs;
-          params.items.add(item);
-        }
-        BrowserContextCreateTempFilesResult tempFiles = context.wrapApiCall(() -> context.channel.createTempFiles(params, NO_TIMEOUT), null, true);
+        BrowserContextCreateTempFilesResult tempFiles = context.wrapApiCall(() -> {
+          BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
+          params.rootDirName = localDirectory != null ? localDirectory.getFileName().toString() : null;
+          params.items = new ArrayList<>();
+          for (Path file : filesToStream) {
+            double lastModifiedMs = (double) stat(file).lastModifiedTime().toMillis();
+            BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems item = new BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems();
+            item.name = localDirectory != null ? localDirectory.relativize(file).toString() : file.getFileName().toString();
+            item.lastModifiedMs = lastModifiedMs;
+            params.items.add(item);
+          }
+          return context.channel.createTempFiles(params, NO_TIMEOUT);
+        }, null, true);
+        List<WritableStream> writableStreams = tempFiles.writableStreams;
+        WritableStream rootDir = tempFiles.rootDir;
         for (int i = 0; i < filesToStream.size(); i++) {
-          WritableStream writable = tempFiles.writableStreams.get(i);
+          WritableStream writable = writableStreams.get(i);
           // java: Files.copy into the stream of the WritableStream stands for stream.pipeline.
           try (OutputStream out = writable.stream()) {
             Files.copy(filesToStream.get(i), out);
@@ -530,10 +524,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
             throw new PlaywrightException("Failed to copy file to remote server.", e);
           }
         }
-        result.directoryStream = tempFiles.rootDir;
-        result.streams = localDirectory != null ? null : tempFiles.writableStreams;
+        ElementHandleSetInputFilesParams result = new ElementHandleSetInputFilesParams();
+        result.directoryStream = rootDir;
+        result.streams = localDirectory != null ? null : writableStreams;
         return result;
       }
+      ElementHandleSetInputFilesParams result = new ElementHandleSetInputFilesParams();
       if (!localPaths.isEmpty()) {
         result.localPaths = new ArrayList<>();
         for (Path path : localPaths) {
@@ -551,6 +547,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (filePayloadExceedsSizeLimit(payloads)) {
       throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
     }
+    ElementHandleSetInputFilesParams result = new ElementHandleSetInputFilesParams();
     result.payloads = new ArrayList<>();
     for (FilePayload file : payloads) {
       ElementHandleSetInputFilesParams.ElementHandleSetInputFilesParamsPayloads payload = new ElementHandleSetInputFilesParams.ElementHandleSetInputFilesParamsPayloads();

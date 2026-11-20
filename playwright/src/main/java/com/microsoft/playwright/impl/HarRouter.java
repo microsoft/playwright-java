@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
@@ -46,7 +45,7 @@ class HarRouter {
   private final LocalUtils localUtils;
   private final String harId;
   private final HarNotFound notFoundAction;
-  // java: options.urlMatch, a String, Pattern, Predicate<String> or UrlMatcher; there is no baseURL option.
+  // java: options.urlMatch, a String or a Pattern; there is no baseURL option.
   private final Object urlMatch;
 
   static HarRouter create(LocalUtils localUtils, String file, HarNotFound notFoundAction, Object urlMatch) {
@@ -128,7 +127,7 @@ class HarRouter {
     }
     // Report the error, but fall through to the default handler.
 
-    if (notFoundAction != HarNotFound.FALLBACK) {
+    if (notFoundAction == HarNotFound.ABORT) {
       route.abort();
       return;
     }
@@ -138,13 +137,9 @@ class HarRouter {
 
   void addContextRoute(BrowserContext context) {
     Object urlMatch = this.urlMatch != null ? this.urlMatch : "**/*";
-    if (urlMatch instanceof UrlMatcher) {
-      urlMatch = fromUrlMatcher((UrlMatcher) urlMatch);
-    }
+    // java: route() has an overload per URLMatch type.
     if (urlMatch instanceof Pattern) {
       context.route((Pattern) urlMatch, route -> handle(route));
-    } else if (urlMatch instanceof Predicate) {
-      context.route(asPredicate(urlMatch), route -> handle(route));
     } else {
       context.route((String) urlMatch, route -> handle(route));
     }
@@ -152,13 +147,9 @@ class HarRouter {
 
   void addPageRoute(Page page) {
     Object urlMatch = this.urlMatch != null ? this.urlMatch : "**/*";
-    if (urlMatch instanceof UrlMatcher) {
-      urlMatch = fromUrlMatcher((UrlMatcher) urlMatch);
-    }
+    // java: route() has an overload per URLMatch type.
     if (urlMatch instanceof Pattern) {
       page.route((Pattern) urlMatch, route -> handle(route));
-    } else if (urlMatch instanceof Predicate) {
-      page.route(asPredicate(urlMatch), route -> handle(route));
     } else {
       page.route((String) urlMatch, route -> handle(route));
     }
@@ -173,26 +164,7 @@ class HarRouter {
     }
   }
 
-  // java: helpers to pass the URLMatch to the String, Pattern and Predicate overloads of route().
-
-  private static Object fromUrlMatcher(UrlMatcher matcher) {
-    if (matcher.glob != null) {
-      return matcher.glob;
-    }
-    if (matcher.pattern != null) {
-      return matcher.pattern;
-    }
-    if (matcher.predicate != null) {
-      return matcher.predicate;
-    }
-    return "**/*";
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Predicate<String> asPredicate(Object urlMatch) {
-    return (Predicate<String>) urlMatch;
-  }
-
+  // java: the public HttpHeader list of Request.headersArray() as protocol headers.
   private static List<NameValue> toNameValues(List<HttpHeader> headers) {
     List<NameValue> result = new ArrayList<>();
     for (HttpHeader header : headers) {

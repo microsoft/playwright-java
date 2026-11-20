@@ -90,13 +90,7 @@ class APIResponseImpl implements APIResponse {
 
   @Override
   public ServerAddr serverAddr() {
-    if (initializer.serverAddr == null) {
-      return null;
-    }
-    ServerAddr result = new ServerAddr();
-    result.ipAddress = initializer.serverAddr.ipAddress;
-    result.port = initializer.serverAddr.port == null ? 0 : initializer.serverAddr.port;
-    return result;
+    return Utils.convertType(initializer.serverAddr, ServerAddr.class);
   }
 
   @Override
@@ -149,6 +143,7 @@ class APIResponseImpl implements APIResponse {
         APIRequestContextFetchResponseBodyParams params = new APIRequestContextFetchResponseBodyParams();
         params.fetchUid = fetchUid();
         APIRequestContextFetchResponseBodyResult result = request.channel.fetchResponseBody(params, NO_TIMEOUT);
+        // java: the channel returns null for an empty reply.
         if (result == null || result.binary == null) {
           throw new PlaywrightException("Response has been disposed");
         }
@@ -167,6 +162,8 @@ class APIResponseImpl implements APIResponse {
     byte[] content = body();
     return new String(content, StandardCharsets.UTF_8);
   }
+
+  // java: json() is not in the Java API.
 
   @Override
   public void dispose() {

@@ -20,7 +20,6 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.Route;
 import com.microsoft.playwright.impl.protocol.BrowserContextSetNetworkInterceptionPatternsParams.BrowserContextSetNetworkInterceptionPatternsParamsPatterns;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -48,26 +47,13 @@ class RouteHandler {
     }
   }
 
-  // java: the UrlMatcher has resolved a glob against the base URL and validated it already, baseURL is
-  // kept for the upstream signature only. A null times is Number.MAX_SAFE_INTEGER.
+  // java: UrlMatcher.forGlob() has resolved and validated a glob against the base URL already. A null times
+  // is Number.MAX_SAFE_INTEGER.
   RouteHandler(String baseURL, UrlMatcher url, Consumer<Route> handler, Integer times) {
     this.baseURL = baseURL;
     this.times = times != null ? times : Integer.MAX_VALUE;
     this.url = url;
     this.handler = handler;
-  }
-
-  RouteHandler(String baseURL, UrlMatcher url, Consumer<Route> handler) {
-    this(baseURL, url, handler, null);
-  }
-
-  // java: the base URL of the context as a java.net.URL.
-  RouteHandler(URL baseURL, UrlMatcher url, Consumer<Route> handler, Integer times) {
-    this(baseURL != null ? baseURL.toString() : null, url, handler, times);
-  }
-
-  RouteHandler(URL baseURL, UrlMatcher url, Consumer<Route> handler) {
-    this(baseURL, url, handler, null);
   }
 
   // java: the result is a list of the BrowserContext pattern struct; the Page struct has the same fields

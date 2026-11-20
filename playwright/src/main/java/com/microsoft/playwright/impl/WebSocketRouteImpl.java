@@ -79,7 +79,7 @@ public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
       @Override
       public List<String> protocols() {
-        return WebSocketRouteImpl.this.protocols();
+        return new ArrayList<>(webSocketRouteInitializer.protocols);
       }
 
       @Override
@@ -178,7 +178,7 @@ public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
 
   @Override
   public List<String> protocols() {
-    return webSocketRouteInitializer.protocols != null ? new ArrayList<>(webSocketRouteInitializer.protocols) : new ArrayList<>();
+    return new ArrayList<>(webSocketRouteInitializer.protocols);
   }
 
   @Override

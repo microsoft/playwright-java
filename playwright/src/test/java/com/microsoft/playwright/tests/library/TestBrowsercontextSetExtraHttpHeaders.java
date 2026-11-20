@@ -57,7 +57,6 @@ public class TestBrowsercontextSetExtraHttpHeaders {
 
   @PlaywrightTest
   @DisplayName("NE-120 should throw for non-string header values")
-  @Fixme("java: newContext() with a null header value fails with 'Value cannot be null', the Node.js client checks 'Expected value of header \"foo\" to be String, but \"object\" is found.'")
   void shouldThrowForNonStringHeaderValues(Browser browser) {
     Map<String, String> extraHTTPHeaders = new HashMap<>();
     extraHTTPHeaders.put("foo", null);

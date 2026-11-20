@@ -58,7 +58,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -74,13 +73,12 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
-  // java: an insertion-ordered list, pages() lists the pages in creation order.
-  final List<PageImpl> pages = new ArrayList<>();
+  final Set<PageImpl> pages = new LinkedHashSet<>();
   List<RouteHandler> routes = new ArrayList<>();
   List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
   // Browser is null for browser contexts created outside of normal browser, e.g. android or electron.
   BrowserImpl browser = null;
-  final Map<String, BindingCallback> bindings = new HashMap<>();
+  final Map<String, BindingCallback> bindings = new LinkedHashMap<>();
   final TimeoutSettings timeoutSettings;
   PageImpl ownerPage;
   private final WaitableEvent<BrowserContextImpl> closedPromise;
@@ -172,6 +170,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         }
         if (worker != null && serviceWorkers.contains(worker)) {
           String scope = serviceWorkerScope(worker);
+          // java: a copy, a listener that closes a page would modify the set while it is iterated.
           for (PageImpl p : new ArrayList<>(pages)) {
             if (scope != null && p.url().startsWith(scope)) {
               p.emit(Events.Page.CONSOLE, consoleMessage);
@@ -463,7 +462,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       options = new GrantPermissionsOptions();
     }
     BrowserContextGrantPermissionsParams params = toProtocol(options, BrowserContextGrantPermissionsParams.class);
-    params.permissions = permissions == null ? new ArrayList<>() : permissions;
+    params.permissions = permissions;
     channel.grantPermissions(params, NO_TIMEOUT);
   }
 
@@ -482,8 +481,9 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
+    RawHeaders.validateHeaders(headers);
     BrowserContextSetExtraHTTPHeadersParams params = new BrowserContextSetExtraHTTPHeadersParams();
-    params.headers = connection.protocolGson().fromJson(Serialization.toProtocol(headers), new TypeToken<List<NameValue>>() {}.getType());
+    params.headers = RawHeaders.headersObjectToArray(headers);
     channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
@@ -751,11 +751,11 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close(CloseOptions options) {
-    if (isClosed()) {
-      return;
-    }
     if (options == null) {
       options = new CloseOptions();
+    }
+    if (isClosed()) {
+      return;
     }
     closeReason = options.reason;
     closingStatus = "closing";
@@ -766,9 +766,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } catch (RuntimeException e) {
       harError = e;
     }
-    BrowserContextCloseParams params = new BrowserContextCloseParams();
-    params.reason = options.reason;
-    channel.close(params, NO_TIMEOUT);
+    channel.close(toProtocol(options, BrowserContextCloseParams.class), NO_TIMEOUT);
     runUntil(() -> {}, closedPromise);
     if (harError != null) {
       throw harError;
@@ -779,15 +777,11 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   // java: upstream reads a path given as a string and passes an object through; Java options hold a Path.
   static JsonElement prepareStorageState(Path storageState) {
-    String text;
     try {
-      text = new String(Files.readAllBytes(storageState), StandardCharsets.UTF_8);
+      return JsonParser.parseString(new String(Files.readAllBytes(storageState), StandardCharsets.UTF_8));
     } catch (IOException e) {
       // java: the message the Java client always had, tests match on it.
       throw new PlaywrightException("Failed to read storage state from file", e);
-    }
-    try {
-      return JsonParser.parseString(text);
     } catch (JsonParseException e) {
       throw new PlaywrightException("Error reading storage state from " + storageState + ":\n" + e.getMessage(), e);
     }
@@ -798,11 +792,15 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new Browser.NewContextOptions();
     }
+    if (options.extraHTTPHeaders != null) {
+      RawHeaders.validateHeaders(options.extraHTTPHeaders);
+    }
     // java: the options whose Java type differs from the protocol are converted one by one below,
     // the others are copied by toProtocol, which also maps an empty Optional to 'no-override'
-    // for colorScheme, reducedMotion, forcedColors and contrast, and the headers map to name/value pairs.
+    // for colorScheme, reducedMotion, forcedColors and contrast.
     Browser.NewContextOptions rest = Utils.clone(options);
     rest.viewportSize = null;
+    rest.extraHTTPHeaders = null;
     rest.screenSize = null;
     rest.storageState = null;
     rest.storageStatePath = null;
@@ -824,6 +822,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       contextParams.viewport.height = options.viewportSize.get().height;
     }
     contextParams.noDefaultViewport = options.viewportSize != null && !options.viewportSize.isPresent();
+    contextParams.extraHTTPHeaders = options.extraHTTPHeaders != null ? RawHeaders.headersObjectToArray(options.extraHTTPHeaders) : null;
     if (options.screenSize != null) {
       contextParams.screen = new BrowserNewContextParams.BrowserNewContextParamsScreen();
       contextParams.screen.width = options.screenSize.width;
@@ -848,7 +847,8 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     }
     contextParams.httpCredentials = toHttpCredentialsProtocol(options.httpCredentials);
-    // java: recordVideo is the flat recordVideoDir, recordVideoSize and recordVideoFps options.
+    // java: recordVideo is the flat recordVideoDir, recordVideoSize and recordVideoFps options; a size or fps
+    // without a dir is an error instead of being dropped.
     if (options.recordVideoDir != null) {
       contextParams.recordVideo = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo();
       contextParams.recordVideo.dir = options.recordVideoDir.toAbsolutePath().toString();

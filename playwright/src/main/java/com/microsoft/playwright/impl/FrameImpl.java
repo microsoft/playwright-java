@@ -23,8 +23,6 @@ import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.*;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,10 +66,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     name = init.name;
     url = init.url;
-    loadStates = new LinkedHashSet<>();
-    if (init.loadStates != null) {
-      loadStates.addAll(init.loadStates);
-    }
+    loadStates = new LinkedHashSet<>(init.loadStates);
   }
 
   // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
@@ -88,7 +83,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       }
       if (parentFrame == null && "load".equals(loadstateEvent.add) && page != null) {
         page.emit(Events.Page.LOAD, page);
-        ((BrowserContextImpl) page.context()).emit(Events.BrowserContext.PAGE_LOAD, page);
+        page.context().emit(Events.BrowserContext.PAGE_LOAD, page);
       }
       if (parentFrame == null && "domcontentloaded".equals(loadstateEvent.add) && page != null) {
         page.emit(Events.Page.DOM_CONTENT_LOADED, page);
@@ -97,12 +92,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
       FrameNavigatedEvent navigatedEvent = connection.protocolGson().fromJson(params, FrameNavigatedEvent.class);
       url = navigatedEvent.url;
       name = navigatedEvent.name;
-      // java: there are no functions passed to evaluate() (no exposeFunctions option), so no
-      // _eraseEvaluateCallbacks() on a main frame navigation.
+      // java: no exposeFunctions option of evaluate(), so no _eraseEvaluateCallbacks().
       eventEmitter.emit(Events.Frame.NAVIGATED, navigatedEvent);
       if (navigatedEvent.error == null && page != null) {
         page.emit(Events.Page.FRAME_NAVIGATED, this);
-        ((BrowserContextImpl) page.context()).emit(Events.BrowserContext.FRAME_NAVIGATED, this);
+        page.context().emit(Events.BrowserContext.FRAME_NAVIGATED, this);
       }
     }
   }
@@ -153,7 +147,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     // java: the matcher is built once and before the waiter subscribes: a glob is converted by a call to the driver,
     // which dispatches the events that arrive meanwhile.
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseURL(), options.url, connection.localUtils(), false);
+    UrlMatcher matcher = UrlMatcher.forOneOf(page != null ? page.context().baseUrl() : null, options.url, connection.localUtils(), false);
     return waitForNavigation(matcher, options, callback);
   }
 
@@ -248,7 +242,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   private void waitForURL(Object url, WaitForURLOptions options) {
     WaitForURLOptions waitOptions = options == null ? new WaitForURLOptions() : options;
     // java: one matcher for the check and the wait, nothing pumps the connection between them.
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseURL(), url, connection.localUtils(), false);
+    UrlMatcher matcher = UrlMatcher.forOneOf(page != null ? page.context().baseUrl() : null, url, connection.localUtils(), false);
     if (matcher.test(url())) {
       waitForLoadState(waitOptions.waitUntil == null ? "load" : lifecycleEvent(waitOptions.waitUntil), waitOptions.timeout);
       return;
@@ -457,7 +451,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.selector = selector;
     params.strict = true;
     if (payload.files != null) {
-      ElementHandleSetInputFilesParams converted = ElementHandleImpl.convertInputFiles(payload.files, (BrowserContextImpl) page().context());
+      ElementHandleSetInputFilesParams converted = ElementHandleImpl.convertInputFiles(payload.files, page().context());
       if (converted.localDirectory != null || converted.directoryStream != null) {
         throw new PlaywrightException("Dropping a directory is not supported — pass individual files.");
       }
@@ -796,7 +790,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    ElementHandleSetInputFilesParams converted = ElementHandleImpl.convertInputFiles(files, (BrowserContextImpl) page().context());
+    ElementHandleSetInputFilesParams converted = ElementHandleImpl.convertInputFiles(files, page().context());
     FrameSetInputFilesParams params = toProtocol(options, FrameSetInputFilesParams.class);
     params.selector = selector;
     if (converted.payloads != null) {
@@ -926,33 +920,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return waitUntil;
   }
 
-  private static final Set<String> kLifecycleEvents = new LinkedHashSet<>(Arrays.asList("load", "domcontentloaded", "networkidle", "commit"));
-
-  // java: members with no upstream counterpart: kAnyFrameSelector of isomorphic/selectorParser.ts, the enum form of
-  // verifyLoadState, conversions for the seed classes, and the webmcp() accessor of upstream's webmcp field.
+  // java: members with no upstream counterpart: kAnyFrameSelector of isomorphic/selectorParser.ts, kLifecycleEvents
+  // of types.ts, the enum to lifecycle event conversion, a file reader and the webmcp() accessor of the webmcp field.
   static final String ANY_FRAME_SELECTOR = "internal:control=any-frame";
 
-  static WaitUntilState verifyLoadState(String name, WaitUntilState waitUntil) {
-    return WaitUntilState.valueOf(verifyLoadState(name, lifecycleEvent(waitUntil)).toUpperCase(Locale.ROOT));
-  }
+  private static final Set<String> kLifecycleEvents = new LinkedHashSet<>(Arrays.asList("load", "domcontentloaded", "networkidle", "commit"));
 
   private static String lifecycleEvent(WaitUntilState state) {
     return state.name().toLowerCase(Locale.ROOT);
-  }
-
-  private URL baseURL() {
-    if (page == null) {
-      return null;
-    }
-    String baseURL = ((BrowserContextImpl) page.context()).options.baseURL;
-    if (baseURL == null) {
-      return null;
-    }
-    try {
-      return new URL(baseURL);
-    } catch (MalformedURLException e) {
-      return null;
-    }
   }
 
   private static String readFile(Path path) {

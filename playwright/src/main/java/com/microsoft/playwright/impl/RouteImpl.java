@@ -78,8 +78,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     checkNotHandled();
     request().applyFallbackOverrides(fallbackOverrides(options.url, options.method, options.headers, options.postData));
     reportHandled(false);
-    // java: RouteHandler.handle() returned when the handler did, nobody waits for the outcome of a later
-    // fallback(), so the request continues to the network as the default handler of the context does.
+    // java: nobody waits for a fallback() after the handler returned (see RouteHandler.handleInternal), so the
+    // request continues as the end of BrowserContext.onRoute() does.
     if (handlerReturned) {
       try {
         innerContinue(true);
@@ -243,9 +243,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     raceWithTargetClose(sendMessageAsync("continue", params));
   }
 
-  // java: helpers with no counterpart upstream.
-
-  // java: set by RouteHandler when the handler returned before it fulfilled, continued or fell back.
+  // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
+  // returned before it handled the route or fell back.
   boolean handlerReturned;
 
   private static RequestImpl.FallbackOverrides fallbackOverrides(String url, String method, Map<String, String> headers, Object postData) {

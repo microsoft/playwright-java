@@ -26,7 +26,6 @@ import com.microsoft.playwright.options.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -54,7 +53,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   final Set<WorkerImpl> workers = new LinkedHashSet<>();
   private boolean closed;
-  // java: LongStandingScope; the Close and Crash events close it as upstream, createWaitForCloseHelper() races it.
+  // java: LongStandingScope is the error it was closed with; createWaitForCloseHelper() races it.
   private TargetClosedError closedOrCrashedScope;
   private ViewportSize viewportSize;
   List<RouteHandler> routes = new ArrayList<>();
@@ -70,7 +69,7 @@ public class PageImpl extends ChannelOwner implements Page {
   final WebStorageImpl sessionStorage;
   final WebMCPImpl webmcp;
 
-  final Map<String, BindingCallback> bindings = new HashMap<>();
+  final Map<String, BindingCallback> bindings = new LinkedHashMap<>();
   final TimeoutSettings timeoutSettings;
   private final VideoImpl video;
   final PageImpl opener;
@@ -103,12 +102,25 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     closed = Boolean.TRUE.equals(pageInitializer.isClosed);
     opener = pageInitializer.opener;
-    video = pageInitializer.video != null ? new VideoImpl(this, pageInitializer.video) : new VideoImpl(this);
+    video = new VideoImpl(this, pageInitializer.video);
     screencast = new ScreencastImpl(this);
 
-    // java: the once(Close) and once(Crash) listeners that close _closedOrCrashedScope are in onClose() and onCrash().
+    on(Events.Page.CLOSE, new Consumer<Page>() {
+      @Override
+      public void accept(Page page) {
+        off(Events.Page.CLOSE, this);
+        closedOrCrashedScope = closeErrorWithReason();
+      }
+    });
+    on(Events.Page.CRASH, new Consumer<Page>() {
+      @Override
+      public void accept(Page page) {
+        off(Events.Page.CRASH, this);
+        closedOrCrashedScope = new TargetClosedError();
+      }
+    });
 
-    Map<String, String> mapping = new HashMap<>();
+    Map<String, String> mapping = new LinkedHashMap<>();
     mapping.put(Events.Page.CONSOLE, "console");
     mapping.put(Events.Page.DIALOG, "dialog");
     mapping.put(Events.Page.DIALOG_CLOSED, "dialogClosed");
@@ -267,7 +279,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   void onBinding(BindingCall bindingCall) {
-    BindingCallback func = bindings.get(bindingCall.initializer.get("name").getAsString());
+    BindingCallback func = bindings.get(bindingCall.bindingCallInitializer.name);
     if (func != null) {
       bindingCall.call(func);
       return;
@@ -285,19 +297,11 @@ public class PageImpl extends ChannelOwner implements Page {
     closed = true;
     browserContext.pages.remove(this);
     disposeHarRouters();
-    // java: this.once(Events.Page.Close, ...) of the constructor.
-    if (closedOrCrashedScope == null) {
-      closedOrCrashedScope = closeErrorWithReason();
-    }
     emit(Events.Page.CLOSE, this);
     browserContext.emit(Events.BrowserContext.PAGE_CLOSE, this);
   }
 
   private void onCrash() {
-    // java: this.once(Events.Page.Crash, ...) of the constructor.
-    if (closedOrCrashedScope == null) {
-      closedOrCrashedScope = new TargetClosedError();
-    }
     emit(Events.Page.CRASH, this);
   }
 
@@ -319,38 +323,33 @@ public class PageImpl extends ChannelOwner implements Page {
     return mainFrame;
   }
 
-  // java: frame(frameSelector) takes a name or { name, url }; the Java API has frame(name) and frameByUrl(url).
   @Override
   public Frame frame(String name) {
-    if (name == null || name.isEmpty()) {
-      throw new PlaywrightException("Either name or url matcher should be specified");
-    }
-    for (FrameImpl f : frames) {
-      if (name.equals(f.name())) {
-        return f;
-      }
-    }
-    return null;
+    return frame(name, null);
   }
 
   @Override
   public Frame frameByUrl(String url) {
-    return frameByUrl(UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), false));
+    return frame(null, UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), false));
   }
 
   @Override
   public Frame frameByUrl(Pattern url) {
-    return frameByUrl(new UrlMatcher(url));
+    return frame(null, new UrlMatcher(url));
   }
 
   @Override
   public Frame frameByUrl(Predicate<String> url) {
-    return frameByUrl(new UrlMatcher(url));
+    return frame(null, new UrlMatcher(url));
   }
 
-  private Frame frameByUrl(UrlMatcher url) {
-    for (FrameImpl f : frames) {
-      if (url.test(f.url())) {
+  // java: frameSelector is a name or { name, url }; the Java API has frame(name) and frameByUrl(url).
+  private Frame frame(String name, UrlMatcher url) {
+    if ((name == null || name.isEmpty()) && url == null) {
+      throw new PlaywrightException("Either name or url matcher should be specified");
+    }
+    for (Frame f : frames()) {
+      if (name != null && !name.isEmpty() ? f.name().equals(name) : url.test(f.url())) {
         return f;
       }
     }
@@ -468,18 +467,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    // java: validateHeaders checks the JS type of the values, a Java map holds strings.
+    RawHeaders.validateHeaders(headers);
     PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
-    params.headers = new ArrayList<>();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      if (e.getValue() == null) {
-        continue;
-      }
-      NameValue header = new NameValue();
-      header.name = e.getKey();
-      header.value = e.getValue();
-      params.headers.add(header);
-    }
+    params.headers = RawHeaders.headersObjectToArray(headers);
     channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
@@ -508,11 +498,8 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
-    // java: verifyLoadState only validates the string, WaitUntilState is an enum.
     PageReloadParams params = toProtocol(options, PageReloadParams.class);
-    if (params.waitUntil == null) {
-      params.waitUntil = "load";
-    }
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
     return channel.reload(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
@@ -564,7 +551,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void removeLocatorHandler(Locator locator) {
     for (Map.Entry<Integer, LocatorHandler> entry : new ArrayList<>(locatorHandlers.entrySet())) {
-      if (entry.getValue().locator.equals((LocatorImpl) locator)) {
+      if (entry.getValue().locator.equals(locator)) {
         locatorHandlers.remove(entry.getKey());
         PageUnregisterLocatorHandlerParams params = new PageUnregisterLocatorHandlerParams();
         params.uid = entry.getKey();
@@ -761,9 +748,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new GoBackOptions();
     }
     PageGoBackParams params = toProtocol(options, PageGoBackParams.class);
-    if (params.waitUntil == null) {
-      params.waitUntil = "load";
-    }
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
     return channel.goBack(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
@@ -773,9 +758,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new GoForwardOptions();
     }
     PageGoForwardParams params = toProtocol(options, PageGoForwardParams.class);
-    if (params.waitUntil == null) {
-      params.waitUntil = "load";
-    }
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
     return channel.goForward(params, timeoutSettings.navigationTimeout(options.timeout)).response;
   }
 
@@ -814,24 +797,21 @@ public class PageImpl extends ChannelOwner implements Page {
   // java: the script is a string or a file; there is no function to serialize and no exposeFunctions option.
   @Override
   public AutoCloseable addInitScript(String script) {
-    return addInitScriptImpl(script);
+    PageAddInitScriptParams params = new PageAddInitScriptParams();
+    params.source = script;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
   public AutoCloseable addInitScript(Path script) {
+    // java: evaluationScript of clientHelper.ts for { path }.
     String source;
     try {
-      source = ClientHelper.addSourceUrlToScript(new String(readAllBytes(script), UTF_8), script);
+      source = new String(readAllBytes(script), UTF_8);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read script from file", e);
     }
-    return addInitScriptImpl(source);
-  }
-
-  private AutoCloseable addInitScriptImpl(String source) {
-    PageAddInitScriptParams params = new PageAddInitScriptParams();
-    params.source = source;
-    return channel.addInitScript(params, NO_TIMEOUT).disposable;
+    return addInitScript(ClientHelper.addSourceUrlToScript(source, script));
   }
 
   @Override
@@ -954,18 +934,15 @@ public class PageImpl extends ChannelOwner implements Page {
     wrapApiCall(() -> updateInterceptionPatterns(), null, true);
   }
 
-  // java: the patterns go through JSON into the page's own params class.
   private void updateInterceptionPatterns() {
-    JsonObject json = new JsonObject();
-    json.add("patterns", gson().toJsonTree(RouteHandler.prepareInterceptionPatterns(routes)));
-    PageSetNetworkInterceptionPatternsParams params = connection.protocolGson().fromJson(json, PageSetNetworkInterceptionPatternsParams.class);
+    PageSetNetworkInterceptionPatternsParams params = new PageSetNetworkInterceptionPatternsParams();
+    params.patterns = RouteHandler.prepareInterceptionPatterns(routes);
     channel.setNetworkInterceptionPatterns(params, NO_TIMEOUT);
   }
 
   private void updateWebSocketInterceptionPatterns() {
-    JsonObject json = new JsonObject();
-    json.add("patterns", gson().toJsonTree(WebSocketRouteHandler.prepareInterceptionPatterns(webSocketRoutes)));
-    PageSetWebSocketInterceptionPatternsParams params = connection.protocolGson().fromJson(json, PageSetWebSocketInterceptionPatternsParams.class);
+    PageSetWebSocketInterceptionPatternsParams params = new PageSetWebSocketInterceptionPatternsParams();
+    params.patterns = WebSocketRouteHandler.prepareInterceptionPatterns(webSocketRoutes);
     channel.setWebSocketInterceptionPatterns(params, NO_TIMEOUT);
   }
 
@@ -975,13 +952,13 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new ScreenshotOptions();
     }
     List<Locator> mask = options.mask;
-    ScreenshotOptions copyOptions = Utils.clone(options);
-    copyOptions.mask = null;
-    if (copyOptions.type == null && options.path != null) {
-      // java: determineScreenshotType(options).
-      copyOptions.type = Utils.screenshotTypeForPath(options.path);
+    // java: { ...options, mask: undefined } is a shallow copy of the options without the mask, as params.
+    ScreenshotOptions withoutMask = Utils.clone(options);
+    withoutMask.mask = null;
+    PageScreenshotParams copy = toProtocol(withoutMask, PageScreenshotParams.class);
+    if (copy.type == null) {
+      copy.type = ElementHandleImpl.determineScreenshotType(options);
     }
-    PageScreenshotParams copy = toProtocol(copyOptions, PageScreenshotParams.class);
     if (mask != null) {
       copy.mask = new ArrayList<>();
       for (Locator locator : mask) {
@@ -1093,14 +1070,7 @@ public class PageImpl extends ChannelOwner implements Page {
     PagePageErrorsResult result = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
     List<String> errors = new ArrayList<>();
     for (SerializedError error : result.errors) {
-      String errorStr = "";
-      if (error.error != null) {
-        errorStr = error.error.name + ": " + error.error.message;
-        if (error.error.stack != null && !error.error.stack.isEmpty()) {
-          errorStr += "\n" + error.error.stack;
-        }
-      }
-      errors.add(errorStr);
+      errors.add(Serialization.parseError(gson().toJsonTree(error).getAsJsonObject()));
     }
     return errors;
   }

@@ -57,6 +57,7 @@ public class BindingCall extends ChannelOwner {
       } catch (PlaywrightException e) {
       }
     } catch (RuntimeException e) {
+      // java: an Error thrown by the callback, such as a failed assertion, reaches the caller instead.
       BindingCallRejectParams params = new BindingCallRejectParams();
       params.error = serializeError(e);
       try {

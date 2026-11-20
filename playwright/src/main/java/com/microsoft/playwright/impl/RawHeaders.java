@@ -93,9 +93,6 @@ class RawHeaders {
 
   // java: module-level functions of network.ts and isomorphic/headers.ts used with headers.
   static void validateHeaders(Map<String, String> headers) {
-    if (headers == null) {
-      return;
-    }
     for (Map.Entry<String, String> entry : headers.entrySet()) {
       // java: a null value is a JavaScript null, typeof null is "object".
       if (entry.getValue() == null) {

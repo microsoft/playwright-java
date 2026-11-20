@@ -37,7 +37,8 @@ public class JsonPipe extends ChannelOwner implements Transport {
     super(parent, type, guid, initializer);
   }
 
-  // java: the members below have no counterpart in jsonPipe.ts, they implement Transport (connect.ts upstream).
+  // java: the members below have no counterpart in jsonPipe.ts, they are JsonPipeTransport of connect.ts in the
+  // order send, onMessage (poll), onClose, close; its connect is in Connect.connectToEndpoint.
   private final Queue<JsonObject> incoming = new LinkedList<>();
   private boolean isClosed;
   private String closeReason = "Browser has been closed";
@@ -79,23 +80,19 @@ public class JsonPipe extends ChannelOwner implements Transport {
     });
   }
 
-  @Override
-  public void close() throws IOException {
-    if (!isClosed) {
-      channel.close(NO_TIMEOUT);
-    }
-  }
-
-  String closeReason() {
-    return closeReason;
-  }
-
   void onClose(Consumer<JsonPipe> handler) {
     on(Events.JsonPipe.CLOSE, handler);
   }
 
   void offClose(Consumer<JsonPipe> handler) {
     off(Events.JsonPipe.CLOSE, handler);
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (!isClosed) {
+      channel.close(NO_TIMEOUT);
+    }
   }
 
   @Override
@@ -112,6 +109,10 @@ public class JsonPipe extends ChannelOwner implements Transport {
       }
       emit(Events.JsonPipe.CLOSE, this);
     }
+  }
+
+  String closeReason() {
+    return closeReason;
   }
 
   private void checkIfClosed() {
