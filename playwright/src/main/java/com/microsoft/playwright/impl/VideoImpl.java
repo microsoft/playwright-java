@@ -39,7 +39,6 @@ class VideoImpl implements Video {
   @Override
   public Path path() {
     if (page.connection.isRemote()) {
-      // java: the message names the Java API.
       throw new PlaywrightException("Path is not available when connecting remotely. Use saveAs() to save a local copy.");
     }
     if (artifact == null)
