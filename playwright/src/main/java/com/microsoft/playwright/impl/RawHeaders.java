@@ -91,7 +91,7 @@ class RawHeaders {
     return result;
   }
 
-  // java: module-level functions of network.ts and isomorphic/headers.ts used with headers.
+  // java: a module-level function of network.ts.
   static void validateHeaders(Map<String, String> headers) {
     for (Map.Entry<String, String> entry : headers.entrySet()) {
       // java: a null value is a JavaScript null, typeof null is "object".
@@ -99,19 +99,5 @@ class RawHeaders {
         throw new PlaywrightException("Expected value of header \"" + entry.getKey() + "\" to be String, but \"object\" is found.");
       }
     }
-  }
-
-  static List<NameValue> headersObjectToArray(Map<String, String> headers) {
-    List<NameValue> result = new ArrayList<>();
-    for (Map.Entry<String, String> entry : headers.entrySet()) {
-      if (entry.getValue() == null) {
-        continue;
-      }
-      NameValue header = new NameValue();
-      header.name = entry.getKey();
-      header.value = entry.getValue();
-      result.add(header);
-    }
-    return result;
   }
 }

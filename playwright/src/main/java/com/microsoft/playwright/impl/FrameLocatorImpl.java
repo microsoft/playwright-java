@@ -54,15 +54,15 @@ class FrameLocatorImpl implements FrameLocator {
     return new LocatorImpl(frame, childSelector(((LocatorImpl) selectorOrLocator).selector), convertType(options, Locator.LocatorOptions.class));
   }
 
-  // java: the test id attribute lives in SelectorsImpl of the Playwright instance, see LocatorUtils.getByTestIdSelector.
+  // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
+    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
+    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Port of packages/playwright-core/src/client/eventEmitter.ts
+
+// Port of eventEmitter.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
@@ -70,10 +71,6 @@ class EventEmitter extends LoggingSupport {
 
   void off(String type, Consumer<?> listener) {
     removeListener(type, listener);
-  }
-
-  void removeAllListeners(String type) {
-    events.remove(type);
   }
 
   int listenerCount(String type) {

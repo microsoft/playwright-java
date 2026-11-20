@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of download.ts. java: url and suggestedFilename are read from the initializer.
+// Port of download.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
@@ -24,6 +24,7 @@ import com.microsoft.playwright.Page;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+// java: url and suggestedFilename are read from the initializer.
 class DownloadImpl implements Download {
   private final PageImpl page;
   private final ArtifactImpl artifact;

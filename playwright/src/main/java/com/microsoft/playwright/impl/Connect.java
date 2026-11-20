@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.impl.Time.monotonicTime;
+
 final class Connect {
   private Connect() {
   }
@@ -39,7 +41,7 @@ final class Connect {
   // java: upstream's params is one ConnectOptions object with browserName and endpoint in it.
   static BrowserImpl connectToBrowser(PlaywrightImpl playwright, String browserName, String endpoint, BrowserType.ConnectOptions params) {
     double timeout = params.timeout == null ? 0 : params.timeout;
-    long deadline = timeout != 0 ? System.nanoTime() + (long) (timeout * 1_000_000) : 0;
+    double deadline = timeout != 0 ? monotonicTime() + timeout : 0;
     JsonObject headers = new JsonObject();
     if (browserName != null) {
       headers.addProperty("x-playwright-browser", browserName);

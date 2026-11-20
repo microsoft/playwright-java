@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of screencast.ts. java: onFrame receives a ScreencastFrame and the frame event arrives through handleScreencastFrame.
+// Port of screencast.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
+// java: onFrame receives a ScreencastFrame and the frame event arrives through handleScreencastFrame.
 class ScreencastImpl implements Screencast {
   private final PageImpl page;
   private boolean started;

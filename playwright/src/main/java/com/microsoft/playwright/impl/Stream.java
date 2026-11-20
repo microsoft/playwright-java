@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of stream.ts. java: the Readable is an InputStream; _read becomes read(), _destroy becomes close().
+// Port of stream.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 
+// java: the Readable is an InputStream; _read becomes read(), _destroy becomes close().
 public class Stream extends ChannelOwner {
   private final InputStream stream = new InputStreamImpl();
   final StreamChannel channel = new StreamChannel(this);

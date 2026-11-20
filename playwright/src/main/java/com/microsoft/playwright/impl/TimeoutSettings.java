@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+// Port of timeoutSettings.ts.
 package com.microsoft.playwright.impl;
 
-// Port of timeoutSettings.ts. java: no AbortSignal and no PWDEBUG=inspector branch, a timeout is a Double
+import static com.microsoft.playwright.impl.Time.DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
+import static com.microsoft.playwright.impl.Time.DEFAULT_PLAYWRIGHT_TIMEOUT;
+
+// java: no AbortSignal and no PWDEBUG=inspector branch, a timeout is a Double
 // and 0 means no deadline.
 class TimeoutSettings {
-  static final int DEFAULT_TIMEOUT = 30_000;
-  static final int DEFAULT_LAUNCH_TIMEOUT = 180_000;
-
   private final TimeoutSettings parent;
   private Double defaultTimeout;
   private Double defaultNavigationTimeout;
@@ -63,7 +64,7 @@ class TimeoutSettings {
     if (parent != null) {
       return parent.navigationTimeout(timeout);
     }
-    return DEFAULT_TIMEOUT;
+    return DEFAULT_PLAYWRIGHT_TIMEOUT;
   }
 
   double timeout(Double timeout) {
@@ -76,7 +77,7 @@ class TimeoutSettings {
     if (parent != null) {
       return parent.timeout(timeout);
     }
-    return DEFAULT_TIMEOUT;
+    return DEFAULT_PLAYWRIGHT_TIMEOUT;
   }
 
   double launchTimeout(Double timeout) {
@@ -86,7 +87,7 @@ class TimeoutSettings {
     if (parent != null) {
       return parent.launchTimeout(timeout);
     }
-    return DEFAULT_LAUNCH_TIMEOUT;
+    return DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
   }
 
   // java: removed once every wait goes through Waiter.

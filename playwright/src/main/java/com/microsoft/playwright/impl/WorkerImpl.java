@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of worker.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -33,10 +34,10 @@ import java.util.function.Predicate;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 
-// Port of worker.ts.
 public class WorkerImpl extends ChannelOwner implements Worker {
   PageImpl page;
   // java: no service worker or connectToWorker API, so there is no _context, _closeReason or _disconnect.
+  final LongStandingScope closedScope = new LongStandingScope(this);
 
   final WorkerChannel channel = new WorkerChannel(this);
 
@@ -45,6 +46,13 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     Map<String, String> mapping = new HashMap<>();
     mapping.put(Events.Worker.CONSOLE, "console");
     setEventToSubscriptionMapping(mapping);
+    on(Events.Worker.CLOSE, new Consumer<Worker>() {
+      @Override
+      public void accept(Worker worker) {
+        off(Events.Worker.CLOSE, this);
+        closedScope.close(closeErrorWithReason());
+      }
+    });
   }
 
   // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.

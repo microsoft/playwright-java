@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of jsonPipe.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -27,9 +28,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-
-// Port of jsonPipe.ts.
 public class JsonPipe extends ChannelOwner implements Transport {
   final JsonPipeChannel channel = new JsonPipeChannel(this);
 
@@ -82,10 +80,6 @@ public class JsonPipe extends ChannelOwner implements Transport {
 
   void onClose(Consumer<JsonPipe> handler) {
     on(Events.JsonPipe.CLOSE, handler);
-  }
-
-  void offClose(Consumer<JsonPipe> handler) {
-    off(Events.JsonPipe.CLOSE, handler);
   }
 
   @Override

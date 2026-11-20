@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of cdpSession.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -23,7 +24,6 @@ import com.microsoft.playwright.CDPSession;
 
 import java.util.function.Consumer;
 
-// Port of cdpSession.ts.
 public class CDPSessionImpl extends ChannelOwner implements CDPSession {
 
   final CDPSessionChannel channel = new CDPSessionChannel(this);

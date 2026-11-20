@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of packages/playwright-core/src/client/errors.ts
+// Port of errors.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;

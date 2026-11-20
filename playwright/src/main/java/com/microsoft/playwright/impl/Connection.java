@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of packages/playwright-core/src/client/connection.ts
+// Port of connection.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -43,6 +43,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Time.monotonicTime;
 
 class Root extends ChannelOwner {
   Root(Connection connection) {
@@ -57,15 +58,15 @@ class Root extends ChannelOwner {
   }
 
   // java: the deadline of raceAgainstDeadline in connect.ts, the wait pumps the connection until then.
-  PlaywrightImpl initialize(long deadlineNanos, double timeout) {
+  PlaywrightImpl initialize(double deadline, double timeout) {
     RootInitializeParams params = new RootInitializeParams();
     params.sdkLanguage = "java";
     params.supportsLoneSurrogates = true;
     WaitableResult<JsonElement> result = sendMessageAsync("initialize", params);
-    Waitable<JsonElement> deadline = new Waitable<JsonElement>() {
+    Waitable<JsonElement> deadlineWaitable = new Waitable<JsonElement>() {
       @Override
       public boolean isDone() {
-        return System.nanoTime() > deadlineNanos;
+        return monotonicTime() > deadline;
       }
 
       @Override
@@ -77,7 +78,7 @@ class Root extends ChannelOwner {
       public void dispose() {
       }
     };
-    JsonElement json = runUntil(() -> {}, new WaitableRace<>(Arrays.asList(result, deadline)));
+    JsonElement json = runUntil(() -> {}, new WaitableRace<>(Arrays.asList(result, deadlineWaitable)));
     return connection.protocolGson().fromJson(json, RootInitializeResult.class).playwright;
   }
 }
@@ -216,8 +217,8 @@ public class Connection {
   }
 
   // java: connect.ts races the initialization against the deadline of connect().
-  PlaywrightImpl initializePlaywright(long deadlineNanos, double timeout) {
-    playwright = rootObject.initialize(deadlineNanos, timeout);
+  PlaywrightImpl initializePlaywright(double deadline, double timeout) {
+    playwright = rootObject.initialize(deadline, timeout);
     return playwright;
   }
 
@@ -302,10 +303,8 @@ public class Connection {
       callData.add("stack", options.frames);
       JsonObject stackParams = new JsonObject();
       stackParams.add("callData", callData);
-      // LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
-      CallOptions stackOptions = new CallOptions();
-      stackOptions.internal = true;
-      localUtils.connection.sendMessageToServer(localUtils, "addStackToTracingNoReply", stackParams, stackOptions);
+      // java: LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
+      localUtils.addStackToTracingNoReply(stackParams);
     }
     return expectsReply ? result : completed();
   }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of webmcp.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -27,7 +28,6 @@ import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 
-// Port of webmcp.ts.
 class WebMCPImpl implements WebMCP {
   private final FrameImpl frame;
 

@@ -37,7 +37,8 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.RawHeaders.headersObjectToArray;
+import static com.microsoft.playwright.impl.Headers.headersObjectToArray;
+import static com.microsoft.playwright.impl.MimeType.getMimeTypeForPath;
 
 public class RouteImpl extends ChannelOwner implements Route {
   private WaitableResult<Boolean> handlingPromise = null;
@@ -195,7 +196,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     if (options.contentType != null) {
       headers.put("content-type", options.contentType);
     } else if (options.path != null) {
-      headers.put("content-type", Utils.mimeType(options.path));
+      String mimeType = getMimeTypeForPath(options.path.toString());
+      headers.put("content-type", mimeType != null ? mimeType : "application/octet-stream");
     }
     if (length != 0 && !headers.containsKey("content-length")) {
       headers.put("content-length", String.valueOf(length));

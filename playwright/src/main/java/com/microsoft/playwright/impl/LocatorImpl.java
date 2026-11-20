@@ -35,6 +35,8 @@ import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.StringUtils.escapeForTextSelector;
+import static com.microsoft.playwright.impl.Time.monotonicTime;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class LocatorImpl implements Locator {
@@ -230,15 +232,15 @@ class LocatorImpl implements Locator {
     return locator.locator(this);
   }
 
-  // java: the test id attribute lives in SelectorsImpl of the Playwright instance, see LocatorUtils.getByTestIdSelector.
+  // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
+    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
+    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override
@@ -692,10 +694,6 @@ class LocatorImpl implements Locator {
 
   // java: helpers and members with no upstream counterpart.
   private String stringRepresentation;
-
-  private static double monotonicTime() {
-    return System.nanoTime() / 1_000_000.0;
-  }
 
   private Frame.SelectOptionOptions frameSelectOptionOptions(SelectOptionOptions options) {
     if (options == null)

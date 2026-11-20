@@ -17,13 +17,11 @@
 // Port of page.ts.
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.*;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -36,13 +34,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.StringUtils.trimStringWithEllipsis;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.readAllBytes;
-import static java.util.Arrays.asList;
 
 public class PageImpl extends ChannelOwner implements Page {
   final PageChannel channel = new PageChannel(this);
@@ -53,8 +50,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   final Set<WorkerImpl> workers = new LinkedHashSet<>();
   private boolean closed;
-  // java: LongStandingScope is the error it was closed with; createWaitForCloseHelper() races it.
-  private TargetClosedError closedOrCrashedScope;
+  final LongStandingScope closedOrCrashedScope = new LongStandingScope(this);
   private ViewportSize viewportSize;
   List<RouteHandler> routes = new ArrayList<>();
   List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
@@ -109,14 +105,14 @@ public class PageImpl extends ChannelOwner implements Page {
       @Override
       public void accept(Page page) {
         off(Events.Page.CLOSE, this);
-        closedOrCrashedScope = closeErrorWithReason();
+        closedOrCrashedScope.close(closeErrorWithReason());
       }
     });
     on(Events.Page.CRASH, new Consumer<Page>() {
       @Override
       public void accept(Page page) {
         off(Events.Page.CRASH, this);
-        closedOrCrashedScope = new TargetClosedError();
+        closedOrCrashedScope.close(new TargetClosedError());
       }
     });
 
@@ -469,7 +465,7 @@ public class PageImpl extends ChannelOwner implements Page {
   public void setExtraHTTPHeaders(Map<String, String> headers) {
     RawHeaders.validateHeaders(headers);
     PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
-    params.headers = RawHeaders.headersObjectToArray(headers);
+    params.headers = Headers.headersObjectToArray(headers);
     channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
@@ -797,21 +793,20 @@ public class PageImpl extends ChannelOwner implements Page {
   // java: the script is a string or a file; there is no function to serialize and no exposeFunctions option.
   @Override
   public AutoCloseable addInitScript(String script) {
-    PageAddInitScriptParams params = new PageAddInitScriptParams();
-    params.source = script;
-    return channel.addInitScript(params, NO_TIMEOUT).disposable;
+    return addInitScriptImpl(script);
   }
 
   @Override
   public AutoCloseable addInitScript(Path script) {
-    // java: evaluationScript of clientHelper.ts for { path }.
-    String source;
-    try {
-      source = new String(readAllBytes(script), UTF_8);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read script from file", e);
-    }
-    return addInitScript(ClientHelper.addSourceUrlToScript(source, script));
+    return addInitScriptImpl(script);
+  }
+
+  // java: the core of the String and Path overloads; the exposeFunctions option and arg have no Java API.
+  private AutoCloseable addInitScriptImpl(Object script) {
+    String source = evaluationScript(script, true);
+    PageAddInitScriptParams params = new PageAddInitScriptParams();
+    params.source = source;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -1323,9 +1318,7 @@ public class PageImpl extends ChannelOwner implements Page {
     Double defaultTimeout = browserContext.timeoutSettings.defaultTimeout();
     browserContext.setDefaultNavigationTimeout(0);
     browserContext.setDefaultTimeout(0);
-    // java: closedOrCrashedScope.safeRace(promise) is a race of the reply with a close helper that returns null.
-    WaitableResult<JsonElement> pause = browserContext.sendMessageAsync("pause");
-    runUntil(() -> {}, new WaitableRace<>(asList(pause, new ClosedOrCrashed<>(true))));
+    closedOrCrashedScope.safeRace(browserContext.sendMessageAsync("pause"));
     // java: the saved defaults may be unset, which the public double setters cannot express.
     browserContext.timeoutSettings.setDefaultNavigationTimeout(defaultNavigationTimeout);
     browserContext.timeoutSettings.setDefaultTimeout(defaultTimeout);
@@ -1368,18 +1361,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return null;
   }
 
-  // java: trimStringWithEllipsis of isomorphic/stringUtils.ts, counting code points like [...input].
-  private static String trimStringWithEllipsis(String input, int cap) {
-    if (input.length() <= cap) {
-      return input;
-    }
-    int[] chars = input.codePoints().toArray();
-    if (chars.length > cap) {
-      return new String(chars, 0, cap - 1) + "…";
-    }
-    return input;
-  }
-
   // java: the value object of _locatorHandlers.
   private static class LocatorHandler {
     final LocatorImpl locator;
@@ -1394,7 +1375,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   // java: the public API members with no upstream counterpart: accessors of the readonly fields, typed
-  // listeners, onceDialog, waitForCondition, and the close helpers that stand in for _closedOrCrashedScope.
+  // listeners, onceDialog, waitForCondition and its waitables.
   @Override
   public ClockImpl clock() {
     return clock;
@@ -1664,37 +1645,12 @@ public class PageImpl extends ChannelOwner implements Page {
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
-  // A race with _closedOrCrashedScope: done once the page closed or crashed, then throws the error the scope was closed with.
+  // java: done once the page closed or crashed, then throws the error closedOrCrashedScope was closed with.
   <T> Waitable<T> createWaitForCloseHelper() {
-    return new ClosedOrCrashed<>(false);
+    return closedOrCrashedScope.terminatePromise(false);
   }
 
   <T> Waitable<T> createWaitableTimeout(Double timeout) {
     return timeoutSettings.createWaitable(timeout);
-  }
-
-  private class ClosedOrCrashed<T> implements Waitable<T> {
-    private final boolean safe;
-
-    ClosedOrCrashed(boolean safe) {
-      this.safe = safe;
-    }
-
-    @Override
-    public boolean isDone() {
-      return closedOrCrashedScope != null;
-    }
-
-    @Override
-    public T get() {
-      if (safe) {
-        return null;
-      }
-      throw new TargetClosedError(closedOrCrashedScope.getMessage());
-    }
-
-    @Override
-    public void dispose() {
-    }
   }
 }

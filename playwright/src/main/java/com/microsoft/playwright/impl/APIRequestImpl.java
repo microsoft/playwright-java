@@ -65,7 +65,7 @@ class APIRequestImpl implements APIRequest {
     options.clientCertificates = null;
     options.httpCredentials = null;
     PlaywrightNewRequestParams params = Utils.toProtocol(options, PlaywrightNewRequestParams.class);
-    params.extraHTTPHeaders = extraHTTPHeaders != null ? RawHeaders.headersObjectToArray(extraHTTPHeaders) : null;
+    params.extraHTTPHeaders = extraHTTPHeaders != null ? Headers.headersObjectToArray(extraHTTPHeaders) : null;
     params.storageState = storageState;
     // java: no _defaultLaunchOptions in the Java API, so no tracesDir here and none for context.tracing below.
     params.clientCertificates = BrowserContextImpl.toClientCertificatesProtocol(clientCertificates);

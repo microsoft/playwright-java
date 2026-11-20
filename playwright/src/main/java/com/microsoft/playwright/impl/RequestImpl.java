@@ -29,10 +29,8 @@ import com.microsoft.playwright.options.Sizes;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -270,67 +268,11 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   LongStandingScope targetClosedScope() {
     WorkerImpl serviceWorker = serviceWorker();
-    if (serviceWorker != null) {
-      // java: WorkerImpl has no _closedScope, the Close event closes it.
-      return new LongStandingScope(this, () -> new WaitableEvent<Object>(serviceWorker, Events.Worker.CLOSE) {
-        @Override
-        public Object get() {
-          throw serviceWorker.closeErrorWithReason();
-        }
-      });
-    }
+    if (serviceWorker != null)
+      return serviceWorker.closedScope;
     PageImpl page = safePage();
-    if (page != null) {
-      return new LongStandingScope(this, page::createWaitForCloseHelper);
-    }
-    return new LongStandingScope(this, null);
-  }
-
-  // java: LongStandingScope of isomorphic/manualPromise.ts, made of the Waitable that is done once the scope
-  // closed and then throws its error; null is a scope that never closes.
-  static class LongStandingScope {
-    private final ChannelOwner owner;
-    private final Supplier<Waitable<Object>> terminatePromise;
-
-    LongStandingScope(ChannelOwner owner, Supplier<Waitable<Object>> terminatePromise) {
-      this.owner = owner;
-      this.terminatePromise = terminatePromise;
-    }
-
-    <T> T race(Waitable<T> promise) {
-      return race(promise, false);
-    }
-
-    <T> T safeRace(Waitable<T> promise) {
-      return race(promise, true);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T race(Waitable<T> promise, boolean safe) {
-      if (terminatePromise == null) {
-        return owner.runUntil(() -> {}, promise);
-      }
-      Waitable<Object> terminate = terminatePromise.get();
-      List<Waitable<Object>> waitables = new ArrayList<>();
-      // java: the promise goes first, a settled promise wins over a closed scope as its reaction runs first upstream.
-      waitables.add((Waitable<Object>) promise);
-      waitables.add(safe ? new Waitable<Object>() {
-        @Override
-        public boolean isDone() {
-          return terminate.isDone();
-        }
-
-        @Override
-        public Object get() {
-          return null;
-        }
-
-        @Override
-        public void dispose() {
-          terminate.dispose();
-        }
-      } : terminate);
-      return (T) owner.runUntil(() -> {}, new WaitableRace<>(waitables));
-    }
+    if (page != null)
+      return page.closedOrCrashedScope;
+    return new LongStandingScope(this);
   }
 }

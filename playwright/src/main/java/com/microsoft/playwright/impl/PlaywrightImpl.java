@@ -19,18 +19,13 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.impl.protocol.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -60,27 +55,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     selectors = new SelectorsImpl();
   }
 
-  private List<BrowserTypeImpl> browserTypes() {
-    return Arrays.asList(chromium, firefox, webkit);
-  }
-
-  // java: no _preLaunchedBrowser, only the test runner calls it upstream.
-
-  List<BrowserContextImpl> allContexts() {
-    List<BrowserContextImpl> result = new ArrayList<>();
-    for (BrowserTypeImpl type : browserTypes()) {
-      result.addAll(type.contexts);
-    }
-    return result;
-  }
-
-  List<Page> allPages() {
-    List<Page> result = new ArrayList<>();
-    for (BrowserContext context : allContexts()) {
-      result.addAll(context.pages());
-    }
-    return result;
-  }
+  // java: no _browserTypes, _preLaunchedBrowser, _allContexts and _allPages, they serve the test runner upstream.
 
   // java: the entry point of the Java client and the getters of the Java API, playwright.ts has no counterpart.
   private Process driverProcess;
@@ -99,7 +74,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Driver.ensureDriverInstalled(env, true);
     try {
       ProcessBuilder pb = driver.createProcessBuilder();
-      // The driver is installed once per JVM with the env of the first instance, so add the env of this one.
+      // java: the driver is installed once per JVM with the env of the first instance, so add the env of this one.
       pb.environment().putAll(env);
       pb.command().add("run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -150,7 +125,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   public void close() {
     try {
       connection.close();
-      // playwright-cli will exit when its stdin is closed, we wait for that.
+      // java: the driver exits when its stdin is closed, wait for that.
       boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
       if (!didClose) {
         System.err.println("WARNING: Timed out while waiting for driver process to exit");

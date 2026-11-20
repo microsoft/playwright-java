@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of selectors.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -21,16 +22,13 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
 
-// Port of selectors.ts.
 public class SelectorsImpl extends LoggingSupport implements Selectors {
   protected final List<SelectorEngine> selectorEngines = new ArrayList<>();
   // java: defaults to data-testid, upstream leaves it undefined until set.
@@ -42,26 +40,21 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
     registerImpl(name, script, options);
   }
 
-  // java: evaluationScript with a path, without the sourceURL suffix.
   @Override
   public void register(String name, Path path, RegisterOptions options) {
-    byte[] buffer;
-    try {
-      buffer = Files.readAllBytes(path);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read selector from file: " + path, e);
-    }
-    registerImpl(name, new String(buffer, UTF_8), options);
+    registerImpl(name, path, options);
   }
 
-  private void registerImpl(String name, String script, RegisterOptions options) {
+  // java: the core of the String and Path overloads.
+  private void registerImpl(String name, Object script, RegisterOptions options) {
     if (selectorEngines.stream().anyMatch(engine -> name.equals(engine.name))) {
       throw new PlaywrightException("selectors.register: \"" + name + "\" selector engine has been already registered");
     }
 
+    String source = evaluationScript(script, false);
     SelectorEngine engine = new SelectorEngine();
     engine.name = name;
-    engine.source = script;
+    engine.source = source;
     if (options != null) {
       engine.contentScript = options.contentScript;
     }

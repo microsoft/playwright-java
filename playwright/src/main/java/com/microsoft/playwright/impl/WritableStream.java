@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of writableStream.ts. java: the Writable is an OutputStream; _write becomes write(), _final becomes close().
+// Port of writableStream.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+// java: the Writable is an OutputStream; _write becomes write(), _final becomes close().
 public class WritableStream extends ChannelOwner {
   final WritableStreamChannel channel = new WritableStreamChannel(this);
 

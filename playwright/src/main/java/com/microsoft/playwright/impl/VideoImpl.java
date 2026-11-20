@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of video.ts. java: the video is created before its artifact is known, so the artifact is assigned later.
+// Port of video.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
@@ -23,6 +23,7 @@ import com.microsoft.playwright.Video;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+// java: the video is created before its artifact is known, so the artifact is assigned later.
 class VideoImpl implements Video {
   private final PageImpl page;
   ArtifactImpl artifact;

@@ -27,7 +27,6 @@ import com.microsoft.playwright.options.HarMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -124,8 +123,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     params.traceName = traceName;
     params.live = live;
     LocalUtils localUtils = connection.localUtils();
-    // java: LocalUtils.tracingStarted of the seed has no live flag and drops tracesDir, so the channel is called directly.
-    LocalUtilsTracingStartedResult result = localUtils == null ? null : localUtils.channel.tracingStarted(params, NO_TIMEOUT);
+    LocalUtilsTracingStartedResult result = localUtils == null ? null : localUtils.tracingStarted(params);
     stacksId = result == null ? null : result.stacksId;
   }
 
@@ -224,7 +222,13 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       if (localUtils == null) {
         throw new PlaywrightException("Cannot save zipped HAR in thin clients");
       }
-      localUtils.zip(harParams.path, entries, null, false, false, Collections.<String>emptyList());
+      LocalUtilsZipParams zipParams = new LocalUtilsZipParams();
+      zipParams.zipFile = harParams.path.toString();
+      zipParams.entries = entries;
+      zipParams.mode = "write";
+      zipParams.includeSources = false;
+      zipParams.additionalSources = new ArrayList<>();
+      localUtils.zip(zipParams);
       return;
     }
 
@@ -246,8 +250,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     unzipParams.zipFile = harParams.path + ".tmp";
     unzipParams.harFile = harParams.path.toString();
     unzipParams.resourcesDir = harParams.resourcesDir == null ? null : harParams.resourcesDir.toString();
-    // java: the seed LocalUtils has no harUnzip wrapper.
-    localUtils.channel.harUnzip(unzipParams, NO_TIMEOUT);
+    localUtils.harUnzip(unzipParams);
     artifact.delete();
   }
 
@@ -273,7 +276,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       // Release the stack session even on failure, otherwise later traces keep appending to it.
       if (stacksId != null && connection.localUtils() != null) {
         try {
-          connection.localUtils().traceDiscarded(stacksId);
+          connection.localUtils().traceDiscarded(traceDiscardedParams(stacksId));
         } catch (PlaywrightException e) {
         }
       }
@@ -288,7 +291,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       params.mode = "discard";
       channel.tracingStopChunk(params, NO_TIMEOUT);
       if (stacksId != null) {
-        connection.localUtils().traceDiscarded(stacksId);
+        connection.localUtils().traceDiscarded(traceDiscardedParams(stacksId));
       }
       return;
     }
@@ -304,7 +307,14 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       TracingTracingStopChunkParams params = new TracingTracingStopChunkParams();
       params.mode = "entries";
       TracingTracingStopChunkResult result = channel.tracingStopChunk(params, NO_TIMEOUT);
-      localUtils.zip(filePath, result.entries, stacksId, false, includeSources, additionalSources);
+      LocalUtilsZipParams zipParams = new LocalUtilsZipParams();
+      zipParams.zipFile = filePath.toString();
+      zipParams.entries = result.entries;
+      zipParams.mode = "write";
+      zipParams.stacksId = stacksId;
+      zipParams.includeSources = includeSources;
+      zipParams.additionalSources = additionalSources;
+      localUtils.zip(zipParams);
       return;
     }
 
@@ -315,7 +325,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     // The artifact may be missing if the browser closed while stopping tracing.
     if (result.artifact == null) {
       if (stacksId != null) {
-        localUtils.traceDiscarded(stacksId);
+        localUtils.traceDiscarded(traceDiscardedParams(stacksId));
       }
       return;
     }
@@ -334,7 +344,14 @@ public class TracingImpl extends ChannelOwner implements Tracing {
     }
     artifact.delete();
 
-    localUtils.zip(filePath, new ArrayList<>(), stacksId, true, includeSources, additionalSources);
+    LocalUtilsZipParams zipParams = new LocalUtilsZipParams();
+    zipParams.zipFile = filePath.toString();
+    zipParams.entries = new ArrayList<>();
+    zipParams.mode = "append";
+    zipParams.stacksId = stacksId;
+    zipParams.includeSources = includeSources;
+    zipParams.additionalSources = additionalSources;
+    localUtils.zip(zipParams);
   }
 
   void resetStackCounter() {
@@ -357,5 +374,12 @@ public class TracingImpl extends ChannelOwner implements Tracing {
 
   private static boolean isZip(Path path) {
     return path.toString().toLowerCase().endsWith(".zip");
+  }
+
+  // java: the { stacksId } params literal.
+  private static LocalUtilsTraceDiscardedParams traceDiscardedParams(String stacksId) {
+    LocalUtilsTraceDiscardedParams params = new LocalUtilsTraceDiscardedParams();
+    params.stacksId = stacksId;
+    return params;
   }
 }

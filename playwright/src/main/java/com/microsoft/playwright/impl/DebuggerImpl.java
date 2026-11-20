@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of debugger.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -28,7 +29,6 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
-// Port of debugger.ts.
 public class DebuggerImpl extends ChannelOwner implements Debugger {
   private DebuggerPausedDetails pausedDetails;
   // java: handlers of onPausedStateChanged(Runnable); upstream emits Events.Debugger.PausedStateChanged. apiCallsUpdated has no Java API.

@@ -22,10 +22,10 @@ import com.microsoft.playwright.options.AriaRole;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.StringUtils.escapeForAttributeSelector;
+import static com.microsoft.playwright.impl.StringUtils.escapeForTextSelector;
 
 public final class LocatorUtils {
   // java: each getBy* method has its own options class, so the exact flag is passed instead of the options.
@@ -38,9 +38,7 @@ public final class LocatorUtils {
     return testIdAttributeName.contains(",") ? gson().toJson(testIdAttributeName) : testIdAttributeName;
   }
 
-  // java: the test id attribute name lives in SelectorsImpl of the Playwright instance, not in a module variable.
-  static String getByTestIdSelector(Object testId, PlaywrightImpl playwright) {
-    String testIdAttributeName = playwright.selectors.testIdAttributeName;
+  static String getByTestIdSelector(String testIdAttributeName, Object testId) {
     return "internal:testid=[" + encodeTestIdAttributeName(testIdAttributeName) + "=" + escapeForAttributeSelector(testId, true) + "]";
   }
 
@@ -91,39 +89,5 @@ public final class LocatorUtils {
     for (String[] prop : props)
       result.append("[").append(prop[0]).append("=").append(prop[1]).append("]");
     return result.toString();
-  }
-
-  // java: ports of the isomorphic/stringUtils.ts escapes that the selectors above use.
-  // java: toJsRegexFlags() never produces the 'u' or 'v' flag, so there is no unicode early return.
-  private static String escapeRegexForSelector(Pattern re) {
-    // Even number of backslashes followed by the quote -> insert a backslash.
-    return toJsRegExp(re).replaceAll("(^|[^\\\\])(\\\\\\\\)*([\"'`])", "$1$2\\\\$3").replaceAll(">>", "\\\\>\\\\>");
-  }
-
-  static String escapeForTextSelector(Object text, boolean exact) {
-    if (text instanceof Pattern)
-      return escapeRegexForSelector((Pattern) text);
-    if (text instanceof String)
-      return gson().toJson(text) + (exact ? "s" : "i");
-    throw new IllegalArgumentException("text parameter must be Pattern or String: " + text);
-  }
-
-  // java: an exact match has no suffix here, upstream appends 's'; kept as the old Java client sent it.
-  private static String escapeForAttributeSelector(Object value, boolean exact) {
-    if (value instanceof Pattern)
-      return escapeRegexForSelector((Pattern) value);
-    if (value instanceof String) {
-      // TODO: this should actually be
-      //   cssEscape(value).replace(/\\ /g, ' ')
-      // However, our attribute selectors do not conform to CSS parsing spec,
-      // so we escape them differently.
-      return '"' + ((String) value).replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"") + '"' + (exact ? "" : "i");
-    }
-    throw new IllegalArgumentException("Attribute can be String or Pattern, found: " + value);
-  }
-
-  // java: String(re) of a JS RegExp.
-  private static String toJsRegExp(Pattern pattern) {
-    return "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
   }
 }

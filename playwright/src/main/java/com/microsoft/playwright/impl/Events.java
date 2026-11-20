@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Port of packages/playwright-core/src/client/events.ts
+
+// Port of events.ts.
 package com.microsoft.playwright.impl;
 
 final class Events {

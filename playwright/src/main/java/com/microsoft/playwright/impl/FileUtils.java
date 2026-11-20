@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of fileUtils.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
@@ -22,8 +23,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-// Port of fileUtils.ts. java: fileUploadSizeLimit is inlined in Utils.checkFilePayloadSize.
 class FileUtils {
+  // Keep in sync with the server.
+  static final long fileUploadSizeLimit = 50 * 1024 * 1024;
+
   // java: a failure to create the directory is reported, upstream ignores it.
   static void mkdirIfNeeded(Path filePath) {
     Path dir = filePath.getParent();

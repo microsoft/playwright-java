@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
+// java: globToRegexPattern, resolveGlobToRegexPattern, resolveGlobBase and the other glob functions are not ported:
+// the driver resolves globs (LocalUtils.globToRegex), as they rely on the WHATWG URL parser.
 // java: an URLMatch value; a glob also holds its resolved regex, so test() does not resolve it again.
 class UrlMatcher {
   public final String glob;
@@ -117,12 +119,7 @@ class UrlMatcher {
     return new UrlMatcher(glob, pattern, null);
   }
 
-  // java: constructURLBasedOnBaseURL() for the base URL of a context.
-  static String resolveUrl(URL baseUrl, String spec) {
-    return constructURLBasedOnBaseURL(baseUrl.toString(), spec);
-  }
-
-  private static String constructURLBasedOnBaseURL(String baseURL, String givenURL) {
+  static String constructURLBasedOnBaseURL(String baseURL, String givenURL) {
     if (baseURL == null) {
       return givenURL;
     }

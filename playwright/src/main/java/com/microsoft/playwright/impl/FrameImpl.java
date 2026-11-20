@@ -276,13 +276,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
   }
 
-  Object evaluateExposeUtilityScript(String expression, Object arg) {
-    FrameEvaluateExpressionParams params = new FrameEvaluateExpressionParams();
-    params.expression = expression;
-    params.arg = serializeArgument(arg);
-    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
-  }
-
   @Override
   public ElementHandleImpl querySelector(String selector, QuerySelectorOptions options) {
     FrameQuerySelectorParams params = toProtocol(options, FrameQuerySelectorParams.class);
@@ -519,14 +512,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return new LocatorImpl(this, selector, convertType(options, Locator.LocatorOptions.class));
   }
 
+  // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId, connection.playwright));
+    return locator(getByTestIdSelector(connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId, connection.playwright));
+    return locator(getByTestIdSelector(connection.playwright.selectors.testIdAttributeName, testId));
   }
 
   @Override

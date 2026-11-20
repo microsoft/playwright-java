@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of waiter.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
@@ -27,7 +28,7 @@ import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.Utils.createGuid;
 
-// Port of waiter.ts. java: promises are Waitables, the API thread pumps the connection in waitForPromise(),
+// java: promises are Waitables, the API thread pumps the connection in waitForPromise(),
 // there are no zones to save and no AbortSignal.
 class Waiter {
   private final List<Runnable> dispose = new ArrayList<>();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of packages/playwright-core/src/client/channelOwner.ts
+// Port of channelOwner.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
@@ -118,16 +118,7 @@ public class ChannelOwner extends EventEmitter {
     child.parent = this;
   }
 
-  ChannelOwner parentOfType(String type) {
-    ChannelOwner parent = this.parent;
-    while (parent != null) {
-      if (parent.type.equals(type)) {
-        return parent;
-      }
-      parent = parent.parent;
-    }
-    return null;
-  }
+  // java: no _parentOfType, the exposeFunctions option it serves has no Java API.
 
   void dispose(String reason) {
     // Clean up from parent and connection.

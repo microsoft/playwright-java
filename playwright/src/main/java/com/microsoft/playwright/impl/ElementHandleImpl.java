@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.microsoft.playwright.impl.FileUtils.fileUploadSizeLimit;
+import static com.microsoft.playwright.impl.MimeType.getMimeTypeForPath;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.convertType;
@@ -572,17 +574,21 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     return determineScreenshotType(options.path, options.type);
   }
 
-  // java: Utils.screenshotTypeForPath stands for getMimeTypeForPath and throws upstream's error for other mime types.
   private static String determineScreenshotType(Path path, ScreenshotType type) {
     if (path != null) {
-      return Utils.screenshotTypeForPath(path).toString().toLowerCase();
+      String mimeType = getMimeTypeForPath(path.toString());
+      if ("image/png".equals(mimeType))
+        return "png";
+      else if ("image/jpeg".equals(mimeType))
+        return "jpeg";
+      else if ("image/webp".equals(mimeType))
+        return "webp";
+      throw new PlaywrightException("path: unsupported mime type \"" + mimeType + "\"");
     }
     return type == null ? null : type.toString().toLowerCase();
   }
 
-  // java: fileUtils.ts fileUploadSizeLimit, fs.promises.stat and fs.promises.readdir with recursive: true.
-  static final long fileUploadSizeLimit = 50 * 1024 * 1024;
-
+  // java: fs.promises.stat and fs.promises.readdir with recursive: true.
   private static BasicFileAttributes stat(Path path) {
     try {
       return Files.readAttributes(path, BasicFileAttributes.class);

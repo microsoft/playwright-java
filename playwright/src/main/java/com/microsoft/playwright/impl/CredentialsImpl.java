@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of credentials.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -27,7 +28,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 import static java.util.Arrays.asList;
 
-// Port of credentials.ts.
 class CredentialsImpl implements Credentials {
   private final BrowserContextImpl browserContext;
 

@@ -68,6 +68,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
@@ -369,7 +370,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   void onBinding(BindingCall bindingCall) {
-    BindingCallback func = bindings.get(bindingCall.initializer.get("name").getAsString());
+    BindingCallback func = bindings.get(bindingCall.bindingCallInitializer.name);
     if (func == null) {
       return;
     }
@@ -483,7 +484,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   public void setExtraHTTPHeaders(Map<String, String> headers) {
     RawHeaders.validateHeaders(headers);
     BrowserContextSetExtraHTTPHeadersParams params = new BrowserContextSetExtraHTTPHeadersParams();
-    params.headers = RawHeaders.headersObjectToArray(headers);
+    params.headers = Headers.headersObjectToArray(headers);
     channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
   }
 
@@ -498,22 +499,20 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public AutoCloseable addInitScript(String script) {
-    // java: the exposeFunctions option has no Java API.
-    BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
-    params.source = script;
-    return channel.addInitScript(params, NO_TIMEOUT).disposable;
+    return addInitScriptImpl(script);
   }
 
   @Override
   public AutoCloseable addInitScript(Path script) {
-    // java: evaluationScript of clientHelper.ts for { path }.
-    String source;
-    try {
-      source = new String(Files.readAllBytes(script), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read script from file", e);
-    }
-    return addInitScript(ClientHelper.addSourceUrlToScript(source, script));
+    return addInitScriptImpl(script);
+  }
+
+  // java: the core of the String and Path overloads; the exposeFunctions option and arg have no Java API.
+  private AutoCloseable addInitScriptImpl(Object script) {
+    String source = evaluationScript(script, true);
+    BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
+    params.source = source;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
   }
 
   @Override
@@ -822,7 +821,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       contextParams.viewport.height = options.viewportSize.get().height;
     }
     contextParams.noDefaultViewport = options.viewportSize != null && !options.viewportSize.isPresent();
-    contextParams.extraHTTPHeaders = options.extraHTTPHeaders != null ? RawHeaders.headersObjectToArray(options.extraHTTPHeaders) : null;
+    contextParams.extraHTTPHeaders = options.extraHTTPHeaders != null ? Headers.headersObjectToArray(options.extraHTTPHeaders) : null;
     if (options.screenSize != null) {
       contextParams.screen = new BrowserNewContextParams.BrowserNewContextParamsScreen();
       contextParams.screen.width = options.screenSize.width;

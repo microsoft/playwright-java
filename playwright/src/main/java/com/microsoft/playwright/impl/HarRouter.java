@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.LoggingSupport.logApiIfEnabled;
 
 class HarRouter {
@@ -51,7 +50,7 @@ class HarRouter {
   static HarRouter create(LocalUtils localUtils, String file, HarNotFound notFoundAction, Object urlMatch) {
     LocalUtilsHarOpenParams params = new LocalUtilsHarOpenParams();
     params.file = file;
-    LocalUtilsHarOpenResult result = localUtils.channel.harOpen(params, NO_TIMEOUT);
+    LocalUtilsHarOpenResult result = localUtils.harOpen(params);
     if (result.error != null) {
       throw new PlaywrightException(result.error);
     }
@@ -80,7 +79,7 @@ class HarRouter {
     params.headers = toNameValues(request.headersArray());
     params.postData = request.postDataBuffer();
     params.isNavigationRequest = request.isNavigationRequest();
-    LocalUtilsHarLookupResult response = localUtils.channel.harLookup(params, NO_TIMEOUT);
+    LocalUtilsHarLookupResult response = localUtils.harLookup(params);
 
     if ("redirect".equals(response.action)) {
       logApiIfEnabled("HAR: " + route.request().url() + " redirected to " + response.redirectURL);
@@ -159,7 +158,7 @@ class HarRouter {
     LocalUtilsHarCloseParams params = new LocalUtilsHarCloseParams();
     params.harId = harId;
     try {
-      localUtils.sendMessageAsync("harClose", params);
+      localUtils.harClose(params);
     } catch (PlaywrightException e) {
     }
   }

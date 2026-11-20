@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of packages/playwright-core/src/client/clientStackTrace.ts
+// Port of clientStackTrace.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
