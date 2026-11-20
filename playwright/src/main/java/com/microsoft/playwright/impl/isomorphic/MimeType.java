@@ -15,18 +15,18 @@
  */
 
 // Port of isomorphic/mimeType.ts.
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.isomorphic;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 // java: only getMimeTypeForPath and its table; isJsonMimeType, isXmlMimeType, isTextualMimeType and
 // getExtensionForMimeType have no caller in the client.
-final class MimeType {
+public final class MimeType {
   private MimeType() {
   }
 
-  static String getMimeTypeForPath(String path) {
+  public static String getMimeTypeForPath(String path) {
     int dotIndex = path.lastIndexOf('.');
     if (dotIndex == -1)
       return null;

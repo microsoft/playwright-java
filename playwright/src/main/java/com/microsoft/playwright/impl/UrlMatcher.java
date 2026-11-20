@@ -31,6 +31,7 @@ import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 // java: globToRegexPattern, resolveGlobToRegexPattern, resolveGlobBase and the other glob functions are not ported:
 // the driver resolves globs (LocalUtils.globToRegex), as they rely on the WHATWG URL parser.
 // java: an URLMatch value; a glob also holds its resolved regex, so test() does not resolve it again.
+// java: stays in impl, not in impl.isomorphic: globs are converted by the driver through LocalUtils.
 class UrlMatcher {
   public final String glob;
   public final Pattern pattern;

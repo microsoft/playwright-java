@@ -24,7 +24,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.*;
+import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {

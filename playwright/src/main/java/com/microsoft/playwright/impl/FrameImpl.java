@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.*;
+import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;

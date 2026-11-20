@@ -173,7 +173,7 @@ public class Utils {
     }
   }
 
-  static String toJsRegexFlags(Pattern pattern) {
+  public static String toJsRegexFlags(Pattern pattern) {
     String regexFlags = "";
     if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {
       // Case-insensitive search.

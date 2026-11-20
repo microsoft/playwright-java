@@ -43,7 +43,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Time.monotonicTime;
+import static com.microsoft.playwright.impl.isomorphic.Time.monotonicTime;
 
 class Root extends ChannelOwner {
   Root(Connection connection) {

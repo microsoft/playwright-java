@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Errors.isTargetClosedError;
-import static com.microsoft.playwright.impl.Headers.headersObjectToArray;
+import static com.microsoft.playwright.impl.isomorphic.Headers.headersObjectToArray;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.jsonDataSerializer;
 import static com.microsoft.playwright.impl.Serialization.toClearCookiesParams;

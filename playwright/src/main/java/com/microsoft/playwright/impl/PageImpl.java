@@ -17,6 +17,7 @@
 // Port of page.ts.
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.isomorphic.Headers;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.impl.protocol.*;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.StringUtils.trimStringWithEllipsis;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.trimStringWithEllipsis;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static com.microsoft.playwright.impl.Utils.toProtocol;

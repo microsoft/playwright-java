@@ -32,11 +32,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.LocatorUtils.*;
+import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
-import static com.microsoft.playwright.impl.StringUtils.escapeForTextSelector;
-import static com.microsoft.playwright.impl.Time.monotonicTime;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.escapeForTextSelector;
+import static com.microsoft.playwright.impl.isomorphic.Time.monotonicTime;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class LocatorImpl implements Locator {

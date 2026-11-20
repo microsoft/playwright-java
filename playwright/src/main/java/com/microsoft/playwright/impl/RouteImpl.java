@@ -37,8 +37,8 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Headers.headersObjectToArray;
-import static com.microsoft.playwright.impl.MimeType.getMimeTypeForPath;
+import static com.microsoft.playwright.impl.isomorphic.Headers.headersObjectToArray;
+import static com.microsoft.playwright.impl.isomorphic.MimeType.getMimeTypeForPath;
 
 public class RouteImpl extends ChannelOwner implements Route {
   private WaitableResult<Boolean> handlingPromise = null;

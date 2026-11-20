@@ -17,8 +17,8 @@
 // Port of timeoutSettings.ts.
 package com.microsoft.playwright.impl;
 
-import static com.microsoft.playwright.impl.Time.DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
-import static com.microsoft.playwright.impl.Time.DEFAULT_PLAYWRIGHT_TIMEOUT;
+import static com.microsoft.playwright.impl.isomorphic.Time.DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
+import static com.microsoft.playwright.impl.isomorphic.Time.DEFAULT_PLAYWRIGHT_TIMEOUT;
 
 // java: no AbortSignal and no PWDEBUG=inspector branch, a timeout is a Double
 // and 0 means no deadline.

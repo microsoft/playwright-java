@@ -25,6 +25,7 @@ import java.util.List;
 // java: only the LongStandingScope class, and only the members the client uses (no reject, raceMultiple or the
 // safeRace default value). There are no terminate promises to resolve: a race is a Waitable that is done once
 // the scope is closed, and the owner pumps the connection while it waits.
+// java: stays in impl, not in impl.isomorphic: it is built on ChannelOwner and the Waitable primitives.
 class LongStandingScope {
   private final ChannelOwner owner;
   private PlaywrightException closeError;

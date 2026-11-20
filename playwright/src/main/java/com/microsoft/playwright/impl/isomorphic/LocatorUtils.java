@@ -15,7 +15,7 @@
  */
 
 // Port of isomorphic/locatorUtils.ts.
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.isomorphic;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;
@@ -23,9 +23,9 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.StringUtils.escapeForAttributeSelector;
-import static com.microsoft.playwright.impl.StringUtils.escapeForTextSelector;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.escapeForAttributeSelector;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.escapeForTextSelector;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.jsonStringify;
 
 public final class LocatorUtils {
   // java: each getBy* method has its own options class, so the exact flag is passed instead of the options.
@@ -34,36 +34,36 @@ public final class LocatorUtils {
   }
 
   // Multiple test id attribute names can be joined with a comma. Attribute names cannot contain commas.
-  static String encodeTestIdAttributeName(String testIdAttributeName) {
-    return testIdAttributeName.contains(",") ? gson().toJson(testIdAttributeName) : testIdAttributeName;
+  public static String encodeTestIdAttributeName(String testIdAttributeName) {
+    return testIdAttributeName.contains(",") ? jsonStringify(testIdAttributeName) : testIdAttributeName;
   }
 
-  static String getByTestIdSelector(String testIdAttributeName, Object testId) {
+  public static String getByTestIdSelector(String testIdAttributeName, Object testId) {
     return "internal:testid=[" + encodeTestIdAttributeName(testIdAttributeName) + "=" + escapeForAttributeSelector(testId, true) + "]";
   }
 
-  static String getByLabelSelector(Object text, Locator.GetByLabelOptions options) {
+  public static String getByLabelSelector(Object text, Locator.GetByLabelOptions options) {
     return "internal:label=" + escapeForTextSelector(text, options != null && options.exact != null && options.exact);
   }
 
-  static String getByAltTextSelector(Object text, Locator.GetByAltTextOptions options) {
+  public static String getByAltTextSelector(Object text, Locator.GetByAltTextOptions options) {
     return getByAttributeTextSelector("alt", text, options == null ? null : options.exact);
   }
 
-  static String getByTitleSelector(Object text, Locator.GetByTitleOptions options) {
+  public static String getByTitleSelector(Object text, Locator.GetByTitleOptions options) {
     return getByAttributeTextSelector("title", text, options == null ? null : options.exact);
   }
 
-  static String getByPlaceholderSelector(Object text, Locator.GetByPlaceholderOptions options) {
+  public static String getByPlaceholderSelector(Object text, Locator.GetByPlaceholderOptions options) {
     return getByAttributeTextSelector("placeholder", text, options == null ? null : options.exact);
   }
 
-  static String getByTextSelector(Object text, Locator.GetByTextOptions options) {
+  public static String getByTextSelector(Object text, Locator.GetByTextOptions options) {
     return "internal:text=" + escapeForTextSelector(text, options != null && options.exact != null && options.exact);
   }
 
   // java: the role is an AriaRole enum, its lower-cased name is the upstream role string.
-  static String getByRoleSelector(AriaRole role, Locator.GetByRoleOptions options) {
+  public static String getByRoleSelector(AriaRole role, Locator.GetByRoleOptions options) {
     if (options == null)
       options = new Locator.GetByRoleOptions();
     List<String[]> props = new ArrayList<>();

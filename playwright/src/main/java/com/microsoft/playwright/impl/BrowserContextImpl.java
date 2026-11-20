@@ -17,6 +17,7 @@
 // Port of browserContext.ts.
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.isomorphic.Headers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

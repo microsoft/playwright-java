@@ -17,6 +17,7 @@
 // Port of fetch.ts.
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.impl.isomorphic.Headers;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.protocol.PlaywrightNewRequestParams;

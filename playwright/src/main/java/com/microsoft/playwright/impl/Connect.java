@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Time.monotonicTime;
+import static com.microsoft.playwright.impl.isomorphic.Time.monotonicTime;
 
 final class Connect {
   private Connect() {

@@ -15,7 +15,7 @@
  */
 
 // Port of isomorphic/headers.ts.
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.isomorphic;
 
 import com.microsoft.playwright.impl.protocol.NameValue;
 
@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 // java: headersArrayToObject and splitSetCookieHeader have no caller in the client.
-final class Headers {
+public final class Headers {
   private Headers() {
   }
 
   // java: the client never passes separator and setCookieSeparator; a null value is undefined.
-  static List<NameValue> headersObjectToArray(Map<String, String> headers) {
+  public static List<NameValue> headersObjectToArray(Map<String, String> headers) {
     List<NameValue> result = new ArrayList<>();
     for (Map.Entry<String, String> entry : headers.entrySet()) {
       String name = entry.getKey();

@@ -15,18 +15,18 @@
  */
 
 // Port of isomorphic/time.ts.
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.isomorphic;
 
 // java: no setTimeOrigin and timeOrigin, the client does not use them.
-final class Time {
+public final class Time {
   private Time() {
   }
 
   // java: System.nanoTime() stands for performance.now(), in milliseconds.
-  static double monotonicTime() {
+  public static double monotonicTime() {
     return Math.floor(System.nanoTime() / 1000.0) / 1000;
   }
 
-  static final int DEFAULT_PLAYWRIGHT_TIMEOUT = 30_000;
-  static final int DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+  public static final int DEFAULT_PLAYWRIGHT_TIMEOUT = 30_000;
+  public static final int DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT = 3 * 60 * 1000; // 3 minutes
 }

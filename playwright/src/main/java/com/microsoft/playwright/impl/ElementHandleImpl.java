@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.microsoft.playwright.impl.FileUtils.fileUploadSizeLimit;
-import static com.microsoft.playwright.impl.MimeType.getMimeTypeForPath;
+import static com.microsoft.playwright.impl.isomorphic.MimeType.getMimeTypeForPath;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.convertType;

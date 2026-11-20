@@ -15,16 +15,24 @@
  */
 
 // Port of isomorphic/stringUtils.ts.
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.isomorphic;
+
+import com.google.gson.Gson;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 // java: only the functions the client uses; a string | RegExp parameter is an Object holding a String or a Pattern.
-final class StringUtils {
+public final class StringUtils {
   private StringUtils() {
+  }
+
+  private static final Gson gson = new Gson();
+
+  // java: JSON.stringify of a string.
+  public static String jsonStringify(String value) {
+    return gson.toJson(value);
   }
 
   // java: toJsRegexFlags() never produces the 'u' or 'v' flag, so there is no unicode early return.
@@ -33,13 +41,13 @@ final class StringUtils {
     return toJsRegExp(re).replaceAll("(^|[^\\\\])(\\\\\\\\)*([\"'`])", "$1$2\\\\$3").replaceAll(">>", "\\\\>\\\\>");
   }
 
-  static String escapeForTextSelector(Object text, boolean exact) {
+  public static String escapeForTextSelector(Object text, boolean exact) {
     if (!(text instanceof String))
       return escapeRegexForSelector((Pattern) text);
-    return gson().toJson(text) + (exact ? "s" : "i");
+    return jsonStringify((String) text) + (exact ? "s" : "i");
   }
 
-  static String escapeForAttributeSelector(Object value, boolean exact) {
+  public static String escapeForAttributeSelector(Object value, boolean exact) {
     if (!(value instanceof String))
       return escapeRegexForSelector((Pattern) value);
     // TODO: this should actually be
@@ -50,7 +58,7 @@ final class StringUtils {
   }
 
   // java: [...input] splits into code points.
-  static String trimString(String input, int cap, String suffix) {
+  public static String trimString(String input, int cap, String suffix) {
     if (input.length() <= cap)
       return input;
     int[] chars = input.codePoints().toArray();
@@ -59,7 +67,7 @@ final class StringUtils {
     return new String(chars, 0, chars.length);
   }
 
-  static String trimStringWithEllipsis(String input, int cap) {
+  public static String trimStringWithEllipsis(String input, int cap) {
     return trimString(input, cap, "…");
   }
 
