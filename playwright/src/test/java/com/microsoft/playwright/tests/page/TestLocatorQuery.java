@@ -318,7 +318,6 @@ public class TestLocatorQuery {
 
   @PlaywrightTest
   @DisplayName("LO-180 should enforce same frame for has/leftOf/rightOf/above/below/near")
-  @Fixme("java: the message is \"Inner 'has' locator must belong to the same frame.\", with single quotes")
   void shouldEnforceSameFrameForHasLeftOfRightOfAboveBelowNear(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/frames/two-frames.html");
     Frame child = page.frames().get(1);

@@ -1687,9 +1687,10 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options) {
     List<Waitable<Void>> waitables = new ArrayList<>();
+    // java: the condition goes first, it wins on a page that is already closed.
+    waitables.add(new WaitablePredicate<>(condition));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options == null ? null : options.timeout));
-    waitables.add(new WaitablePredicate<>(condition));
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 

@@ -151,6 +151,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new WaitForNavigationOptions();
     }
+    // java: the matcher is built once and before the waiter subscribes: a glob is converted by a call to the driver,
+    // which dispatches the events that arrive meanwhile.
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseURL(), options.url, connection.localUtils(), false);
+    return waitForNavigation(matcher, options, callback);
+  }
+
+  private ResponseImpl waitForNavigation(UrlMatcher matcher, WaitForNavigationOptions options, Runnable callback) {
     String waitUntil = verifyLoadState("waitUntil", options.waitUntil == null ? "load" : lifecycleEvent(options.waitUntil));
     Double timeout = options.timeout;
     // java: only the setup runs in the "Wait for navigation" zone, so that the calls of the callback are reported on their own.
@@ -159,8 +166,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     String toUrl = options.url instanceof String ? " to \"" + options.url + "\"" : "";
     waiter.log("waiting for navigation" + toUrl + " until \"" + waitUntil + "\"");
 
-    // java: the matcher is built once, a glob is converted by a call to the driver that must not run inside the event handler.
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseURL(), options.url, connection.localUtils(), false);
     FrameNavigatedEvent navigatedEvent = waiter.waitForEvent(eventEmitter, Events.Frame.NAVIGATED, (FrameNavigatedEvent event) -> {
       // Any failed navigation results in a rejection.
       if (event.error != null) {
@@ -242,7 +247,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   private void waitForURL(Object url, WaitForURLOptions options) {
     WaitForURLOptions waitOptions = options == null ? new WaitForURLOptions() : options;
-    if (UrlMatcher.forOneOf(baseURL(), url, connection.localUtils(), false).test(url())) {
+    // java: one matcher for the check and the wait, nothing pumps the connection between them.
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseURL(), url, connection.localUtils(), false);
+    if (matcher.test(url())) {
       waitForLoadState(waitOptions.waitUntil == null ? "load" : lifecycleEvent(waitOptions.waitUntil), waitOptions.timeout);
       return;
     }
@@ -251,7 +258,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     navigationOptions.url = url;
     navigationOptions.waitUntil = waitOptions.waitUntil;
     navigationOptions.timeout = waitOptions.timeout;
-    waitForNavigation(navigationOptions, null);
+    waitForNavigation(matcher, navigationOptions, null);
   }
 
   @Override

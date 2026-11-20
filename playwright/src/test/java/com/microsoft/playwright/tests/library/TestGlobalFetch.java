@@ -747,7 +747,6 @@ public class TestGlobalFetch {
 
   @PlaywrightTest
   @DisplayName("FE-041 should throw an error when maxRedirects is less than 0")
-  @Fixme("java: the Java client validates maxRedirects itself and says \"'maxRedirects' should be greater than or equal to '0'\" instead of 'must be'")
   void shouldThrowAnErrorWhenMaxRedirectsIsLessThan0(Playwright playwright, TestServer server) {
     server.setRedirect("/a/redirect1", "/b/c/redirect2");
     server.setRedirect("/b/c/redirect2", "/simple.json");
