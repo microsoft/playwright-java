@@ -14,45 +14,274 @@
  * limitations under the License.
  */
 
+// Port of browser.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.BindResult;
-import com.microsoft.playwright.options.ClientCertificate;
-import com.microsoft.playwright.options.HttpCredentials;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
+import static com.microsoft.playwright.impl.Errors.isTargetClosedError;
+import static com.microsoft.playwright.impl.FileUtils.mkdirIfNeeded;
+import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
+import static com.microsoft.playwright.impl.Utils.writeToFile;
 
 public class BrowserImpl extends ChannelOwner implements Browser {
-  // Insertion order, so that browser.contexts() lists the contexts in creation order like the other clients.
   final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
-  boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
+  private final WaitableResult<Void> closedPromise;
+  boolean shouldCloseConnectionOnClose = false;
   BrowserTypeImpl browserType;
-  BrowserType.LaunchOptions launchOptions;
-  private Path tracePath;
+  private BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+  final String name;
+  final String browserName;
+  private Path path;
   String closeReason;
 
   final BrowserChannel channel = new BrowserChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    BrowserInitializer browserInitializer = connection.protocolGson().fromJson(initializer, BrowserInitializer.class);
+    name = browserInitializer.name;
+    browserName = browserInitializer.browserName;
+    // java: the promise is a WaitableResult completed by a listener that removes itself, the once() of upstream.
+    closedPromise = new WaitableResult<>();
+    on(Events.Browser.DISCONNECTED, new Consumer<BrowserImpl>() {
+      @Override
+      public void accept(BrowserImpl browser) {
+        off(Events.Browser.DISCONNECTED, this);
+        closedPromise.complete(null);
+      }
+    });
   }
 
+  @Override
+  void handleEvent(String event, JsonObject params) {
+    switch (event) {
+      case "context":
+        didCreateContext(connection.protocolGson().fromJson(params, BrowserContextEvent.class).context);
+        break;
+      case "close":
+        didClose();
+        break;
+    }
+  }
+
+  @Override
+  public BrowserType browserType() {
+    return browserType;
+  }
+
+  @Override
+  public BrowserContextImpl newContext(NewContextOptions options) {
+    return innerNewContext(options, false);
+  }
+
+  BrowserContextImpl newContextForReuse(NewContextOptions options) {
+    return innerNewContext(options, true);
+  }
+
+  void disconnectFromReusedContext(String reason) {
+    BrowserContextImpl context = null;
+    for (BrowserContextImpl c : contexts) {
+      if (c.forReuse) {
+        context = c;
+        break;
+      }
+    }
+    if (context == null) {
+      return;
+    }
+    instrumentation.runBeforeCloseBrowserContext(context);
+    for (Page page : context.pages()) {
+      ((PageImpl) page).onClose();
+    }
+    context.onClose();
+    BrowserDisconnectFromReusedContextParams params = new BrowserDisconnectFromReusedContextParams();
+    params.reason = reason;
+    channel.disconnectFromReusedContext(params, NO_TIMEOUT);
+  }
+
+  BrowserContextImpl innerNewContext(NewContextOptions userOptions, boolean forReuse) {
+    if (userOptions == null) {
+      userOptions = new NewContextOptions();
+    }
+    // java: _withSelectorOptions, the Java options have no selector fields, so they are set on the params below.
+    NewContextOptions options = userOptions;
+    instrumentation.runBeforeCreateBrowserContext(options);
+    BrowserNewContextParams contextOptions = BrowserContextImpl.prepareBrowserContextParams(options);
+    contextOptions.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
+    contextOptions.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
+    // java: newContextForReuse takes its own params class with the same fields.
+    BrowserContextImpl context = forReuse
+      ? channel.newContextForReuse(connection.protocolGson().fromJson(connection.protocolGson().toJsonTree(contextOptions), BrowserNewContextForReuseParams.class), NO_TIMEOUT).context
+      : channel.newContext(contextOptions, NO_TIMEOUT).context;
+    if (forReuse) {
+      context.forReuse = true;
+    }
+    // java: no options.logger to set on the context, the Java options have no logger.
+    // java: the HAR options are the recordHar* fields of the options, upstream passes options.recordHar.
+    context.initializeHarFromOptions(options);
+    instrumentation.runAfterCreateBrowserContext(context);
+    return context;
+  }
+
+  // java: logger is Object, the Java API has no Logger.
+  void connectToBrowserType(BrowserTypeImpl browserType, BrowserType.LaunchOptions browserOptions, Object logger) {
+    // Note: when using connect(), `browserType` is different from `this._parent`.
+    // This is why browser type is not wired up in the constructor,
+    // and instead this separate method is called later on.
+    this.browserType = browserType;
+    this.options = browserOptions;
+    this.logger = logger;
+    for (BrowserContextImpl context : contexts) {
+      setupBrowserContext(context);
+    }
+  }
+
+  private void didCreateContext(BrowserContextImpl context) {
+    context.browser = this;
+    contexts.add(context);
+    // Note: when connecting to a browser, initial contexts arrive before `browserType` is set,
+    // and will be configured later in `_connectToBrowserType`.
+    if (browserType != null) {
+      setupBrowserContext(context);
+    }
+    emit(Events.Browser.CONTEXT, context);
+  }
+
+  private void setupBrowserContext(BrowserContextImpl context) {
+    context.logger = this.logger;
+    context.tracing.tracesDir = options.tracesDir;
+    context.request.tracing.tracesDir = options.tracesDir;
+    browserType.contexts.add(context);
+    browserType.playwright.selectors.contextsForSelectors.add(context);
+    // java: setDefaultTimeout and setDefaultNavigationTimeout of the Java API take a double, an unset (null)
+    // default goes to the TimeoutSettings directly.
+    context.timeoutSettings.setDefaultTimeout(browserType.playwright.defaultContextTimeout);
+    context.timeoutSettings.setDefaultNavigationTimeout(browserType.playwright.defaultContextNavigationTimeout);
+  }
+
+  @Override
+  public List<BrowserContext> contexts() {
+    return new ArrayList<>(contexts);
+  }
+
+  @Override
+  public String version() {
+    return initializer.get("version").getAsString();
+  }
+
+  @Override
+  public BindResult bind(String title, BindOptions options) {
+    BrowserStartServerParams params = toProtocol(options, BrowserStartServerParams.class);
+    params.title = title;
+    BrowserStartServerResult result = channel.startServer(params, NO_TIMEOUT);
+    BindResult bindResult = new BindResult();
+    bindResult.endpoint = result.endpoint;
+    return bindResult;
+  }
+
+  @Override
+  public void unbind() {
+    channel.stopServer(NO_TIMEOUT);
+  }
+
+  @Override
+  public PageImpl newPage(NewPageOptions options) {
+    return withTitle("Create page", () -> {
+      BrowserContextImpl context = newContext(convertType(options, NewContextOptions.class));
+      PageImpl page = (PageImpl) context.newPage();
+      page.ownedContext = context;
+      context.ownerPage = page;
+      return page;
+    });
+  }
+
+  @Override
+  public boolean isConnected() {
+    return isConnected;
+  }
+
+  @Override
+  public CDPSessionImpl newBrowserCDPSession() {
+    return channel.newBrowserCDPSession(NO_TIMEOUT).session;
+  }
+
+  @Override
+  public void startTracing(Page page, StartTracingOptions options) {
+    if (options == null) {
+      options = new StartTracingOptions();
+    }
+    path = options.path;
+    BrowserStartTracingParams params = toProtocol(options, BrowserStartTracingParams.class);
+    params.page = (PageImpl) page;
+    channel.startTracing(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public byte[] stopTracing() {
+    ArtifactImpl artifact = channel.stopTracing(NO_TIMEOUT).artifact;
+    // java: readAllBytes is readIntoBuffer.
+    byte[] buffer = artifact.readAllBytes();
+    artifact.delete();
+    if (path != null) {
+      mkdirIfNeeded(path);
+      writeToFile(buffer, path);
+      path = null;
+    }
+    return buffer;
+  }
+
+  // java: Symbol.asyncDispose is not ported.
+
+  @Override
+  public void close(CloseOptions options) {
+    if (options == null) {
+      options = new CloseOptions();
+    }
+    closeReason = options.reason;
+    try {
+      if (shouldCloseConnectionOnClose) {
+        // java: the reason is what a pending call of the connection fails with, the default close reason of JsonPipe.
+        closeConnection("Browser has been closed");
+      } else {
+        channel.close(toProtocol(options, BrowserCloseParams.class), NO_TIMEOUT);
+      }
+      runUntil(() -> {}, closedPromise);
+    } catch (PlaywrightException e) {
+      // java: also the safe close errors of the driver, which do not all arrive as TargetClosedError.
+      if (isTargetClosedError(e) || isSafeCloseError(e)) {
+        return;
+      }
+      throw e;
+    }
+  }
+
+  void didClose() {
+    isConnected = false;
+    emit(Events.Browser.DISCONNECTED, this);
+  }
+
+  // java: typed listeners of the Java API.
   @Override
   public void onContext(Consumer<BrowserContext> handler) {
     on(Events.Browser.CONTEXT, handler);
@@ -73,297 +302,12 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     off(Events.Browser.DISCONNECTED, handler);
   }
 
-  @Override
-  public BrowserType browserType() {
-    return browserType;
-  }
-
-  @Override
-  public void close(CloseOptions options) {
-    if (options == null) {
-      options = new CloseOptions();
-    }
-    closeReason = options.reason;
-    if (isConnectedOverWebSocket) {
-      try {
-        // java: the message of a call that fails because of this, the default close reason of JsonPipe.
-        connection.close("Browser has been closed");
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to close browser connection", e);
-      }
-      return;
-    }
+  // java: Connection.close declares IOException.
+  private void closeConnection(String reason) {
     try {
-      channel.close(new BrowserCloseParams(), NO_TIMEOUT);
-    } catch (PlaywrightException e) {
-      if (!isSafeCloseError(e)) {
-        throw e;
-      }
+      connection.close(reason);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to close browser connection", e);
     }
-  }
-
-  void notifyRemoteClosed() {
-    // Emulate all pages, contexts and the browser closing upon disconnect.
-    for (BrowserContextImpl context : new ArrayList<>(contexts)) {
-      for (PageImpl page : new ArrayList<>(context.pages)) {
-        page.didClose();
-      }
-      context.didClose();
-    }
-    didClose();
-  }
-
-  @Override
-  public List<BrowserContext> contexts() {
-    return new ArrayList<>(contexts);
-  }
-
-  @Override
-  public boolean isConnected() {
-    return isConnected;
-  }
-
-  @Override
-  public BrowserContextImpl newContext(NewContextOptions options) {
-    if (options == null) {
-      options = new NewContextOptions();
-    } else {
-      // Make a copy so that we can nullify some fields below.
-      options = convertType(options, NewContextOptions.class);
-    }
-
-    NewContextOptions harOptions = Utils.clone(options);
-    options.recordHarContent = null;
-    options.recordHarMode = null;
-    options.recordHarPath = null;
-    options.recordHarOmitContent = null;
-    options.recordHarUrlFilter = null;
-
-    if (options.storageStatePath != null) {
-      try {
-        byte[] bytes = Files.readAllBytes(options.storageStatePath);
-        options.storageState = new String(bytes, StandardCharsets.UTF_8);
-        options.storageStatePath = null;
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read storage state from file", e);
-      }
-    }
-    BrowserNewContextParams.BrowserNewContextParamsStorageState storageState = null;
-    if (options.storageState != null) {
-      storageState = connection.protocolGson().fromJson(options.storageState, BrowserNewContextParams.BrowserNewContextParamsStorageState.class);
-      options.storageState = null;
-    }
-    // These two are converted below, their option types differ from the protocol ones.
-    Object httpCredentials = options.httpCredentials;
-    options.httpCredentials = null;
-    List<ClientCertificate> clientCertificates = options.clientCertificates;
-    options.clientCertificates = null;
-    BrowserNewContextParams params = toProtocol(options, BrowserNewContextParams.class);
-    params.storageState = storageState;
-    if (options.recordVideoDir != null) {
-      BrowserNewContextParams.BrowserNewContextParamsRecordVideo recordVideo = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo();
-      recordVideo.dir = options.recordVideoDir.toAbsolutePath().toString();
-      if (options.recordVideoSize != null) {
-        recordVideo.size = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo.BrowserNewContextParamsRecordVideoSize();
-        recordVideo.size.width = options.recordVideoSize.width;
-        recordVideo.size.height = options.recordVideoSize.height;
-      }
-      if (options.recordVideoFps != null) {
-        recordVideo.fps = options.recordVideoFps;
-      }
-      params.recordVideo = recordVideo;
-    } else if (options.recordVideoSize != null) {
-      throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
-    } else if (options.recordVideoFps != null) {
-      throw new PlaywrightException("recordVideoFps is set but recordVideoDir is null");
-    }
-    if (options.viewportSize != null) {
-      if (options.viewportSize.isPresent()) {
-        params.viewport = new BrowserNewContextParams.BrowserNewContextParamsViewport();
-        params.viewport.width = options.viewportSize.get().width;
-        params.viewport.height = options.viewportSize.get().height;
-      } else {
-        params.noDefaultViewport = true;
-      }
-    }
-    if (options.screenSize != null) {
-      params.screen = new BrowserNewContextParams.BrowserNewContextParamsScreen();
-      params.screen.width = options.screenSize.width;
-      params.screen.height = options.screenSize.height;
-    }
-    params.clientCertificates = clientCertificatesToProtocol(clientCertificates);
-    params.httpCredentials = httpCredentialsToProtocol(httpCredentials);
-    params.acceptDownloads = options.acceptDownloads == null ? null : (options.acceptDownloads ? "accept" : "deny");
-    params.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
-    params.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
-    BrowserContextImpl context = channel.newContext(params, NO_TIMEOUT).context;
-    context.initializeHarFromOptions(harOptions);
-    return context;
-  }
-
-  @Override
-  public Page newPage(NewPageOptions options) {
-    return withTitle("Create Page", () -> newPageImpl(options));
-  }
-
-  @Override
-  public void startTracing(Page page, StartTracingOptions options) {
-    if (options == null) {
-      options = new StartTracingOptions();
-    }
-    tracePath = options.path;
-    BrowserStartTracingParams params = toProtocol(options, BrowserStartTracingParams.class);
-    if (page != null) {
-      params.page = (PageImpl) page;
-    }
-    channel.startTracing(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public BindResult bind(String title, BindOptions options) {
-    BrowserStartServerParams params = toProtocol(options, BrowserStartServerParams.class);
-    params.title = title;
-    BrowserStartServerResult result = channel.startServer(params, NO_TIMEOUT);
-    BindResult bindResult = new BindResult();
-    bindResult.endpoint = result.endpoint;
-    return bindResult;
-  }
-
-  @Override
-  public void unbind() {
-    channel.stopServer(NO_TIMEOUT);
-  }
-
-  @Override
-  public byte[] stopTracing() {
-    ArtifactImpl artifact = channel.stopTracing(NO_TIMEOUT).artifact;
-    byte[] data = artifact.readAllBytes();
-    artifact.delete();
-    if (tracePath != null) {
-      try {
-        Files.createDirectories(tracePath.getParent());
-        Files.write(tracePath, data);
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to write trace file", e);
-      } finally {
-        tracePath = null;
-      }
-    }
-    return data;
-  }
-
-  // The protocol takes a list of http credentials, the option is a single value or a list.
-  @SuppressWarnings("unchecked")
-  static List<com.microsoft.playwright.impl.protocol.HttpCredentials> httpCredentialsToProtocol(Object httpCredentials) {
-    if (httpCredentials == null) {
-      return null;
-    }
-    List<HttpCredentials> list = new ArrayList<>();
-    if (httpCredentials instanceof List) {
-      list.addAll((List<HttpCredentials>) httpCredentials);
-    } else {
-      list.add((HttpCredentials) httpCredentials);
-    }
-    if (list.isEmpty()) {
-      return null;
-    }
-    List<com.microsoft.playwright.impl.protocol.HttpCredentials> result = new ArrayList<>();
-    for (HttpCredentials credentials : list) {
-      com.microsoft.playwright.impl.protocol.HttpCredentials c = new com.microsoft.playwright.impl.protocol.HttpCredentials();
-      c.username = credentials.username;
-      c.password = credentials.password;
-      c.origin = credentials.origin;
-      c.send = credentials.send == null ? null : credentials.send.name().toLowerCase();
-      result.add(c);
-    }
-    return result;
-  }
-
-  static List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> clientCertificatesToProtocol(List<ClientCertificate> clientCertificates) {
-    if (clientCertificates == null) {
-      return null;
-    }
-    List<BrowserNewContextParams.BrowserNewContextParamsClientCertificates> result = new ArrayList<>();
-    for (ClientCertificate cert : clientCertificates) {
-      BrowserNewContextParams.BrowserNewContextParamsClientCertificates c = new BrowserNewContextParams.BrowserNewContextParamsClientCertificates();
-      c.origin = cert.origin;
-      try {
-        c.cert = cert.certPath != null ? Files.readAllBytes(cert.certPath) : cert.cert;
-        c.key = cert.keyPath != null ? Files.readAllBytes(cert.keyPath) : cert.key;
-        c.pfx = cert.pfxPath != null ? Files.readAllBytes(cert.pfxPath) : cert.pfx;
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file", e);
-      }
-      c.passphrase = cert.passphrase;
-      result.add(c);
-    }
-    return result;
-  }
-
-  private Page newPageImpl(NewPageOptions options) {
-    BrowserContextImpl context = newContext(convertType(options, NewContextOptions.class));
-    PageImpl page = context.newPage();
-    page.ownedContext = context;
-    context.ownerPage = page;
-    return page;
-  }
-
-  private String name() {
-    return initializer.get("name").getAsString();
-  }
-
-  boolean isChromium() {
-    return "chromium".equals(name());
-  }
-
-  @Override
-  public String version() {
-    return initializer.get("version").getAsString();
-  }
-
-  @Override
-  void handleEvent(String event, JsonObject parameters) {
-    switch (event) {
-      case "context":
-        didCreateContext(connection.getExistingObject(parameters.getAsJsonObject("context").get("guid").getAsString()));
-        break;
-      case "close":
-        didClose();
-        break;
-    }
-  }
-
-  @Override
-  public CDPSession newBrowserCDPSession() {
-    return channel.newBrowserCDPSession(NO_TIMEOUT).session;
-  }
-
-  protected void connectToBrowserType(BrowserTypeImpl browserType, Path tracesDir){
-    // Note: when using connect(), `browserType` is different from `this.parent`.
-    // This is why browser type is not wired up in the constructor, and instead this separate method is called later on.
-    this.browserType = browserType;
-    this.tracePath = tracesDir;
-
-    for (BrowserContextImpl context : contexts) {
-      context.setTracesDir(tracesDir);
-      browserType.playwright.selectors.contextsForSelectors.add(context);
-    }
-  }
-
-  private void didCreateContext(BrowserContextImpl context) {
-    context.browser = this;
-    contexts.add(context);
-    // Note: when connecting to a browser, initial contexts arrive before `_browserType` is set,
-    // and will be configured later in `ConnectToBrowserType`.
-    if (browserType != null) {
-      context.setTracesDir(tracePath);
-      browserType.playwright.selectors.contextsForSelectors.add(context);
-    }
-    emit(Events.Browser.CONTEXT, context);
-  }
-
-  private void didClose() {
-    isConnected = false;
-    emit(Events.Browser.DISCONNECTED, this);
   }
 }

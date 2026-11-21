@@ -14,73 +14,105 @@
  * limitations under the License.
  */
 
+// Port of fetch.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.RequestOptions;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.toFilePayload;
-import static com.microsoft.playwright.impl.Utils.toProtocol;
-import static java.util.Arrays.asList;
+import static com.microsoft.playwright.impl.Errors.isTargetClosedError;
+import static com.microsoft.playwright.impl.isomorphic.Headers.headersObjectToArray;
+import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.jsonDataSerializer;
+import static com.microsoft.playwright.impl.Serialization.toClearCookiesParams;
 
 public class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
-  private final TracingImpl tracing;
-  private String disposeReason;
-
-  protected TimeoutSettings timeoutSettings = new TimeoutSettings();
+  APIRequestImpl request;
+  final TracingImpl tracing;
+  private String closeReason;
+  TimeoutSettings timeoutSettings;
 
   final APIRequestContextChannel channel = new APIRequestContextChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
+    this.tracing = connection.protocolGson().fromJson(initializer, APIRequestContextInitializer.class).tracing;
+    this.timeoutSettings = new TimeoutSettings();
   }
 
-  @Override
-  public TracingImpl tracing() {
-    return tracing;
-  }
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
 
   @Override
-  public List<Cookie> cookies(String url) {
-    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
+  public void dispose(DisposeOptions options) {
+    if (options == null) {
+      options = new DisposeOptions();
+    }
+    closeReason = options.reason;
+    instrumentation.runBeforeCloseRequestContext(this);
+    tracing.exportAllHars();
+    try {
+      APIRequestContextDisposeParams params = new APIRequestContextDisposeParams();
+      params.reason = options.reason;
+      channel.dispose(params, NO_TIMEOUT);
+    } catch (PlaywrightException e) {
+      if (isTargetClosedError(e)) {
+        return;
+      }
+      throw e;
+    }
+    tracing.resetStackCounter();
+    if (request != null) {
+      request.contexts.remove(this);
+    }
+  }
+
+  // java: the string | string[] parameter is two overloads, a null url means all cookies.
+  @Override
+  public List<Cookie> cookies(String urls) {
+    return cookies(urls == null ? Collections.<String>emptyList() : Collections.singletonList(urls));
   }
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
-    APIRequestContextCookiesParams params = new APIRequestContextCookiesParams();
     if (urls == null) {
       urls = new ArrayList<>();
     }
+    APIRequestContextCookiesParams params = new APIRequestContextCookiesParams();
     params.urls = urls;
-    APIRequestContextCookiesResult result = channel.cookies(params, NO_TIMEOUT);
-    Cookie[] cookies = gson().fromJson(gson().toJsonTree(result.cookies), Cookie[].class);
-    return asList(cookies);
+    List<NetworkCookie> cookies = channel.cookies(params, NO_TIMEOUT).cookies;
+    // java: the protocol cookies are converted to the API type.
+    return Arrays.asList(gson().fromJson(gson().toJsonTree(cookies), Cookie[].class));
   }
 
   @Override
   public void addCookies(List<Cookie> cookies) {
     APIRequestContextAddCookiesParams params = new APIRequestContextAddCookiesParams();
-    params.cookies = gson().fromJson(gson().toJsonTree(cookies), new TypeToken<List<SetNetworkCookie>>() {}.getType());
+    // java: the API cookies are converted to the protocol type.
+    params.cookies = new ArrayList<>();
+    for (Cookie cookie : cookies) {
+      params.cookies.add(Utils.toProtocol(cookie, SetNetworkCookie.class));
+    }
     channel.addCookies(params, NO_TIMEOUT);
   }
 
@@ -89,188 +121,140 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     if (options == null) {
       options = new ClearCookiesOptions();
     }
-    APIRequestContextClearCookiesParams params = gson().fromJson(
+    // java: toClearCookiesParams of network.ts is the seed Serialization.toClearCookiesParams.
+    APIRequestContextClearCookiesParams params = connection.protocolGson().fromJson(
       toClearCookiesParams(options.name, options.domain, options.path), APIRequestContextClearCookiesParams.class);
     channel.clearCookies(params, NO_TIMEOUT);
   }
 
   @Override
   public APIResponse delete(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "DELETE"));
-  }
-
-  @Override
-  public void dispose(DisposeOptions options) {
-    if (options == null) {
-      options = new DisposeOptions();
-    }
-    disposeReason = options.reason;
-    try {
-      channel.dispose(toProtocol(options, APIRequestContextDisposeParams.class), NO_TIMEOUT);
-    } catch (TargetClosedError e) {
-      return;
-    }
-    tracing.resetStackCounter();
-  }
-
-  @Override
-  public APIResponse fetch(String urlOrRequest, RequestOptions options) {
-    return fetchImpl(urlOrRequest, (RequestOptionsImpl) options);
-  }
-
-  @Override
-  public APIResponse fetch(Request request, RequestOptions optionsArg) {
-    RequestOptionsImpl options = (RequestOptionsImpl) optionsArg;
-    if (options == null) {
-      options = new RequestOptionsImpl();
-    }
-    if (options.method == null) {
-      options.method = request.method();
-    }
-    if (options.headers == null) {
-      options.headers = request.headers();
-    }
-    if (options.data == null && options.form == null && options.multipart == null) {
-      options.data = request.postDataBuffer();
-    }
-    return fetch(request.url(), options);
-  }
-
-  private APIResponse fetchImpl(String url, RequestOptionsImpl options) {
-    if (disposeReason != null) {
-      throw new PlaywrightException(disposeReason);
-    }
-    if (options == null) {
-      options = new RequestOptionsImpl();
-    }
-    options.timeout = timeoutSettings.timeout(options.timeout);
-    APIRequestContextFetchParams params = new APIRequestContextFetchParams();
-    params.url = url;
-    if (options.params != null) {
-      Map<String, String> queryParams = new LinkedHashMap<>();
-      for (Map.Entry<String, ?> e : options.params.entrySet()) {
-        queryParams.put(e.getKey(), "" + e.getValue());
-      }
-      params.params = toNameValues(toNameValueArray(queryParams.entrySet()));
-    }
-    params.method = options.method;
-    if (options.headers != null) {
-      params.headers = toNameValues(Serialization.toProtocol(options.headers));
-    }
-
-    if (options.data != null) {
-      byte[] bytes = null;
-      if (options.data instanceof byte[]) {
-        bytes = (byte[]) options.data;
-      } else if (options.data instanceof String) {
-        String stringData = (String) options.data;
-        if (!isJsonContentType(options.headers) || isJsonParsable(stringData)) {
-          bytes = (stringData).getBytes(StandardCharsets.UTF_8);
-        }
-      }
-      if (bytes == null) {
-        params.jsonData = jsonDataSerializer.toJson(options.data);
-      } else {
-        params.postData = bytes;
-      }
-    }
-    if (options.form != null) {
-      params.formData = toNameValues(toNameValueArray(options.form.fields));
-    }
-    if (options.multipart != null) {
-      params.multipartData = serializeMultipartData(options.multipart.fields);
-    }
-    params.failOnStatusCode = options.failOnStatusCode;
-    params.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
-    if (options.maxRedirects != null) {
-      if (options.maxRedirects < 0) {
-        throw new PlaywrightException("'maxRedirects' should be greater than or equal to '0'");
-      }
-      params.maxRedirects = options.maxRedirects;
-    }
-    if (options.maxRetries != null) {
-      if (options.maxRetries < 0) {
-        throw new PlaywrightException("'maxRetries' must be greater than or equal to '0'");
-      }
-      params.maxRetries = options.maxRetries;
-    }
-    APIRequestContextFetchResult result = channel.fetch(params, timeoutSettings.timeout(options.timeout));
-    return new APIResponseImpl(this, result.response);
-  }
-
-  private static List<NameValue> toNameValues(JsonArray array) {
-    List<NameValue> result = new ArrayList<>();
-    for (JsonElement element : array) {
-      JsonObject item = element.getAsJsonObject();
-      NameValue nv = new NameValue();
-      nv.name = item.get("name").getAsString();
-      nv.value = item.get("value").getAsString();
-      result.add(nv);
-    }
-    return result;
-  }
-
-  private static boolean isJsonContentType(Map<String, String> headers) {
-    if (headers == null) {
-      return false;
-    }
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      if ("content-type".equalsIgnoreCase(e.getKey())) {
-        return "application/json".equals(e.getValue().split(";", -1)[0].trim().toLowerCase());
-      }
-    }
-    return false;
-  }
-
-  private static List<FormField> serializeMultipartData(List<? extends Map.Entry<String, Object>> data) {
-    List<FormField> result = new ArrayList<>();
-    for (Map.Entry<String, ?> e : data) {
-      FilePayload filePayload = null;
-      if (e.getValue() instanceof FilePayload) {
-        filePayload = (FilePayload) e.getValue();
-      } else if (e.getValue() instanceof Path) {
-        filePayload = toFilePayload((Path) e.getValue());
-      } else if (e.getValue() instanceof File) {
-        filePayload = toFilePayload(((File) e.getValue()).toPath());
-      }
-      FormField item = new FormField();
-      item.name = e.getKey();
-      if (filePayload == null) {
-        item.value = "" + e.getValue();
-      } else {
-        item.file = new FormField.FormFieldFile();
-        item.file.name = filePayload.name;
-        item.file.mimeType = filePayload.mimeType;
-        item.file.buffer = filePayload.buffer;
-      }
-      result.add(item);
-    }
-    return result;
-  }
-
-  @Override
-  public APIResponse get(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "GET"));
+    return fetch(url, withMethod(options, "DELETE"));
   }
 
   @Override
   public APIResponse head(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "HEAD"));
+    return fetch(url, withMethod(options, "HEAD"));
+  }
+
+  @Override
+  public APIResponse get(String url, RequestOptions options) {
+    return fetch(url, withMethod(options, "GET"));
   }
 
   @Override
   public APIResponse patch(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "PATCH"));
+    return fetch(url, withMethod(options, "PATCH"));
   }
 
   @Override
   public APIResponse post(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "POST"));
+    return fetch(url, withMethod(options, "POST"));
   }
 
   @Override
   public APIResponse put(String url, RequestOptions options) {
-    return fetch(url, ensureOptions(options, "PUT"));
+    return fetch(url, withMethod(options, "PUT"));
+  }
+
+  // java: the string | Request parameter is two overloads.
+  @Override
+  public APIResponse fetch(String urlOrRequest, RequestOptions options) {
+    return wrapApiCall(() -> innerFetch(urlOrRequest, null, (RequestOptionsImpl) options, null), null, false);
+  }
+
+  @Override
+  public APIResponse fetch(Request urlOrRequest, RequestOptions options) {
+    return wrapApiCall(() -> innerFetch(null, urlOrRequest, (RequestOptionsImpl) options, null), null, false);
+  }
+
+  // java: upstream takes one object { url, request, ...options }. RequestOptions holds the object form of
+  // params only; paramsString is the string or URLSearchParams form, which RequestOptions has no setter for.
+  APIResponseImpl innerFetch(String url, Request request, RequestOptionsImpl options, String paramsString) {
+    if (options == null) {
+      options = new RequestOptionsImpl();
+    }
+    if (closeReason != null) {
+      throw new TargetClosedError(closeReason);
+    }
+    if (request == null && url == null) {
+      throw new PlaywrightException("First argument must be either URL string or Request");
+    }
+    if ((options.data == null ? 0 : 1) + (options.form == null ? 0 : 1) + (options.multipart == null ? 0 : 1) > 1) {
+      throw new PlaywrightException("Only one of 'data', 'form' or 'multipart' can be specified");
+    }
+    if (options.maxRedirects != null && options.maxRedirects < 0) {
+      throw new PlaywrightException("'maxRedirects' must be greater than or equal to '0'");
+    }
+    if (options.maxRetries != null && options.maxRetries < 0) {
+      throw new PlaywrightException("'maxRetries' must be greater than or equal to '0'");
+    }
+    if (url == null) {
+      url = request.url();
+    }
+    String method = options.method != null ? options.method : (request != null ? request.method() : null);
+    String encodedParams = null;
+    // java: a URLSearchParams is its toString() in paramsString too.
+    if (paramsString != null) {
+      encodedParams = paramsString;
+    }
+    // Cannot call allHeaders() here as the request may be paused inside route handler.
+    Map<String, String> headersObj = options.headers != null ? options.headers : (request != null ? request.headers() : null);
+    List<NameValue> headers = headersObj != null ? headersObjectToArray(headersObj) : null;
+    String jsonData = null;
+    List<NameValue> formData = null;
+    List<FormField> multipartData = null;
+    byte[] postDataBuffer = null;
+    if (options.data != null) {
+      if (options.data instanceof String) {
+        String data = (String) options.data;
+        if (APIResponseImpl.isJsonContentType(headers)) {
+          jsonData = isJsonParsable(data) ? data : jsonDataSerializer.toJson(data);
+        } else {
+          postDataBuffer = data.getBytes(StandardCharsets.UTF_8);
+        }
+      } else if (options.data instanceof byte[]) {
+        postDataBuffer = (byte[]) options.data;
+      } else {
+        // java: every other Java value is an object, a number or a boolean, so there is no "Unexpected 'data' type" error.
+        jsonData = jsonDataSerializer.toJson(options.data);
+      }
+    } else if (options.form != null) {
+      // java: FormData is the only form type of the Java API.
+      formData = new ArrayList<>();
+      for (FormDataImpl.Field field : options.form.fields) {
+        if (field.value instanceof FilePayload || field.value instanceof Path) {
+          throw new PlaywrightException("Expected string for options.form[\"" + field.name + "\"], found File. Please use options.multipart instead.");
+        }
+        formData.add(nameValue(field.name, String.valueOf(field.value)));
+      }
+    } else if (options.multipart != null) {
+      multipartData = new ArrayList<>();
+      // Convert file-like values to ServerFilePayload structs.
+      for (FormDataImpl.Field field : options.multipart.fields) {
+        multipartData.add(toFormField(field.name, field.value));
+      }
+    }
+    if (postDataBuffer == null && jsonData == null && formData == null && multipartData == null) {
+      postDataBuffer = request != null ? request.postDataBuffer() : null;
+    }
+    // java: no __testHookLookup fixture, a test hook function cannot be sent to the driver from Java.
+    APIRequestContextFetchParams params = new APIRequestContextFetchParams();
+    params.url = url;
+    params.params = APIResponseImpl.objectToArray(options.params);
+    params.encodedParams = encodedParams;
+    params.method = method;
+    params.headers = headers;
+    params.postData = postDataBuffer;
+    params.jsonData = jsonData;
+    params.formData = formData;
+    params.multipartData = multipartData;
+    params.failOnStatusCode = options.failOnStatusCode;
+    params.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
+    params.maxRedirects = options.maxRedirects;
+    params.maxRetries = options.maxRetries;
+    APIRequestContextFetchResult result = channel.fetch(params, timeoutSettings.timeout(options.timeout));
+    return new APIResponseImpl(this, result.response);
   }
 
   @Override
@@ -278,28 +262,39 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     if (options == null) {
       options = new StorageStateOptions();
     }
-    APIRequestContextStorageStateParams params = toProtocol(options, APIRequestContextStorageStateParams.class);
-    // Keep the raw reply: re-serializing the typed result would turn "expires":-1 into -1.0 and change the string
-    // that is compared with BrowserContext.storageState().
-    String storageState = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT).toString();
+    APIRequestContextStorageStateParams params = new APIRequestContextStorageStateParams();
+    params.indexedDB = options.indexedDB;
+    params.opfs = options.opfs;
+    // java: the API returns the raw JSON of the reply; re-serializing the typed result would turn "expires":-1
+    // into -1.0 and change the string that is compared with BrowserContext.storageState().
+    String state = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT).toString();
     if (options.path != null) {
-      Utils.writeToFile(Serialization.toPrettyJson(storageState).getBytes(StandardCharsets.UTF_8), options.path);
+      // java: writeToFile creates the parent directories, as mkdirIfNeeded does upstream.
+      Utils.writeToFile(Serialization.toPrettyJson(state).getBytes(StandardCharsets.UTF_8), options.path);
     }
-    return storageState;
+    return state;
   }
 
-  private static RequestOptionsImpl ensureOptions(RequestOptions options, String method) {
-    RequestOptionsImpl impl = Utils.clone((RequestOptionsImpl) options);
-    if (impl == null) {
-      impl = new RequestOptionsImpl();
+  // java: FormData values are String, Boolean, Integer, Path (upstream's ReadStream) or FilePayload.
+  static FormField toFormField(String name, Object value) {
+    FormField field = new FormField();
+    field.name = name;
+    if (APIResponseImpl.isFilePayload(value)) {
+      FilePayload payload = (FilePayload) value;
+      if (payload.buffer == null) {
+        throw new PlaywrightException("Unexpected buffer type of 'data." + name + "'");
+      }
+      field.file = APIResponseImpl.filePayloadToJson(payload);
+    } else if (value instanceof String || value instanceof Number || value instanceof Boolean) {
+      field.value = String.valueOf(value);
+    } else {
+      field.file = APIResponseImpl.readStreamToJson((Path) value);
     }
-    if (impl.method == null) {
-      impl.method = method;
-    }
-    return impl;
+    return field;
   }
 
-  private static boolean isJsonParsable(String value) {
+  // java: Gson parses some non-JSON text leniently (a bare word is a string), JSON.parse does not.
+  static boolean isJsonParsable(String value) {
     if (value.trim().isEmpty()) {
       return false;
     }
@@ -308,14 +303,36 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
       if (result != null && result.isJsonPrimitive()) {
         JsonPrimitive primitive = result.getAsJsonPrimitive();
         if (primitive.isString() && value.equals(primitive.getAsString())) {
-          // Gson parses unquoted strings too, but we don't want to treat them
-          // as valid JSON.
           return false;
         }
       }
       return true;
-    } catch (JsonSyntaxException error) {
+    } catch (JsonSyntaxException e) {
       return false;
     }
+  }
+
+  // java: class APIResponse and the module functions after it are in APIResponseImpl.java.
+
+  // java: the accessor of the tracing field, the { ...options, method } of the get/post/... shortcuts and the { name, value } literal.
+  @Override
+  public TracingImpl tracing() {
+    return tracing;
+  }
+
+  private static RequestOptionsImpl withMethod(RequestOptions options, String method) {
+    RequestOptionsImpl impl = Utils.clone((RequestOptionsImpl) options);
+    if (impl == null) {
+      impl = new RequestOptionsImpl();
+    }
+    impl.method = method;
+    return impl;
+  }
+
+  private static NameValue nameValue(String name, String value) {
+    NameValue nv = new NameValue();
+    nv.name = name;
+    nv.value = value;
+    return nv;
   }
 }

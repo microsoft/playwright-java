@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of locator.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.FrameLocator;
@@ -23,13 +24,11 @@ import com.microsoft.playwright.options.AriaRole;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.*;
+import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
+import static com.microsoft.playwright.impl.LocatorImpl.testIdAttributeName;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
-  // Created by page.frameLocator() / frame.frameLocator() without a selector: searches in any frame of the subtree.
-  static final String ANY_FRAME_SELECTOR = "internal:control=any-frame";
-
   private final FrameImpl frame;
   private final String frameSelector;
 
@@ -39,27 +38,31 @@ class FrameLocatorImpl implements FrameLocator {
   }
 
   private String childSelector(String selector) {
-    if (ANY_FRAME_SELECTOR.equals(frameSelector)) {
+    if (FrameImpl.ANY_FRAME_SELECTOR.equals(frameSelector))
       return frameSelector + " >> " + selector;
-    }
     return frameSelector + " >> internal:control=enter-frame >> " + selector;
   }
 
-  private String nthSelector(int nth) {
-    if (ANY_FRAME_SELECTOR.equals(frameSelector)) {
-      throw new PlaywrightException("Selecting the nth frame is not allowed on frameLocator().");
-    }
-    return frameSelector + " >> nth=" + nth;
+  @Override
+  public Locator locator(String selectorOrLocator, LocatorOptions options) {
+    return new LocatorImpl(frame, childSelector(selectorOrLocator), convertType(options, Locator.LocatorOptions.class));
   }
 
   @Override
-  public FrameLocator first() {
-    return new FrameLocatorImpl(frame, nthSelector(0));
+  public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
+    if (((LocatorImpl) selectorOrLocator).frame != frame)
+      throw new PlaywrightException("Locators must belong to the same frame.");
+    return new LocatorImpl(frame, childSelector(((LocatorImpl) selectorOrLocator).selector), convertType(options, Locator.LocatorOptions.class));
   }
 
   @Override
-  public FrameLocatorImpl frameLocator(String selector) {
-    return new FrameLocatorImpl(frame, childSelector(selector));
+  public Locator getByTestId(String testId) {
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
+  }
+
+  @Override
+  public Locator getByTestId(Pattern testId) {
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
   }
 
   @Override
@@ -93,21 +96,6 @@ class FrameLocatorImpl implements FrameLocator {
   }
 
   @Override
-  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
-    return locator(getByRoleSelector(role, convertType(options, Locator.GetByRoleOptions.class)));
-  }
-
-  @Override
-  public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
-  }
-
-  @Override
-  public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId, frame.connection.playwright));
-  }
-
-  @Override
   public Locator getByText(String text, GetByTextOptions options) {
     return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
   }
@@ -128,31 +116,38 @@ class FrameLocatorImpl implements FrameLocator {
   }
 
   @Override
-  public FrameLocator last() {
-    return new FrameLocatorImpl(frame, nthSelector(-1));
-  }
-
-  @Override
-  public Locator locator(String selector, LocatorOptions options) {
-    return new LocatorImpl(frame, childSelector(selector), convertType(options, Locator.LocatorOptions.class));
-  }
-
-  @Override
-  public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
-    LocatorImpl other = (LocatorImpl) selectorOrLocator;
-    if (other.frame != frame) {
-      throw new PlaywrightException("Locators must belong to the same frame.");
-    }
-    return locator(other.selector, options);
-  }
-
-  @Override
-  public FrameLocator nth(int index) {
-    return new FrameLocatorImpl(frame, nthSelector(index));
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
+    return locator(getByRoleSelector(role, convertType(options, Locator.GetByRoleOptions.class)));
   }
 
   @Override
   public Locator owner() {
-    return new LocatorImpl(frame, frameSelector, null);
+    return new LocatorImpl(frame, frameSelector);
+  }
+
+  @Override
+  public FrameLocator frameLocator(String selector) {
+    return new FrameLocatorImpl(frame, childSelector(selector));
+  }
+
+  private String nthSelector(String nth) {
+    if (FrameImpl.ANY_FRAME_SELECTOR.equals(frameSelector))
+      throw new PlaywrightException("Selecting the nth frame is not allowed on frameLocator().");
+    return frameSelector + " >> nth=" + nth;
+  }
+
+  @Override
+  public FrameLocator first() {
+    return new FrameLocatorImpl(frame, nthSelector("0"));
+  }
+
+  @Override
+  public FrameLocator last() {
+    return new FrameLocatorImpl(frame, nthSelector("-1"));
+  }
+
+  @Override
+  public FrameLocator nth(int index) {
+    return new FrameLocatorImpl(frame, nthSelector(String.valueOf(index)));
   }
 }

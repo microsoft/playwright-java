@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
+// Port of disposable.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+// java: upstream's Disposable interface is AutoCloseable.
 public class DisposableObject extends ChannelOwner implements AutoCloseable {
   final DisposableChannel channel = new DisposableChannel(this);
 
@@ -26,8 +31,34 @@ public class DisposableObject extends ChannelOwner implements AutoCloseable {
     super(parent, type, guid, initializer);
   }
 
+  // java: from is not ported, generated results already hold the impl object.
+
+  // java: Symbol.asyncDispose is AutoCloseable.close().
   @Override
   public void close() {
-    channel.dispose(NO_TIMEOUT);
+    dispose();
+  }
+
+  void dispose() {
+    try {
+      channel.dispose(NO_TIMEOUT);
+    } catch (TargetClosedError e) {
+      return;
+    }
+  }
+
+  // java: the module function of disposable.ts; Promise.all runs the disposals one after another.
+  static void disposeAll(List<? extends AutoCloseable> disposables) {
+    List<AutoCloseable> copy = new ArrayList<>(disposables);
+    disposables.clear();
+    for (AutoCloseable d : copy) {
+      try {
+        d.close();
+      } catch (RuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

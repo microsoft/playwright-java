@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Port of packages/playwright-core/src/client/events.ts
+
+// Port of events.ts.
 package com.microsoft.playwright.impl;
 
 final class Events {
   private Events() {
+  }
+
+  static final class AndroidDevice {
+    static final String WEB_VIEW = "webview";
+    static final String CLOSE = "close";
+  }
+
+  static final class AndroidSocket {
+    static final String DATA = "data";
+    static final String CLOSE = "close";
+  }
+
+  static final class AndroidWebView {
+    static final String CLOSE = "close";
   }
 
   static final class Browser {
@@ -43,6 +58,7 @@ final class Events {
     static final String PAGE_CLOSE = "pageclose";
     static final String PAGE_LOAD = "pageload";
     // Can't use just 'error' due to node.js special treatment of error events.
+    // @see https://nodejs.org/api/events.html#events_error_events
     static final String WEB_ERROR = "weberror";
     static final String BACKGROUND_PAGE = "backgroundpage";  // Deprecated in v1.56, never emitted anymore.
     static final String SERVICE_WORKER = "serviceworker";
@@ -50,6 +66,10 @@ final class Events {
     static final String RESPONSE = "response";
     static final String REQUEST_FAILED = "requestfailed";
     static final String REQUEST_FINISHED = "requestfinished";
+  }
+
+  static final class BrowserServer {
+    static final String CLOSE = "close";
   }
 
   static final class Page {
@@ -62,6 +82,7 @@ final class Events {
     static final String FILE_CHOOSER = "filechooser";
     static final String DOM_CONTENT_LOADED = "domcontentloaded";
     // Can't use just 'error' due to node.js special treatment of error events.
+    // @see https://nodejs.org/api/events.html#events_error_events
     static final String PAGE_ERROR = "pageerror";
     static final String REQUEST = "request";
     static final String RESPONSE = "response";
@@ -86,6 +107,12 @@ final class Events {
   static final class Worker {
     static final String CLOSE = "close";
     static final String CONSOLE = "console";
+  }
+
+  static final class ElectronApplication {
+    static final String CLOSE = "close";
+    static final String CONSOLE = "console";
+    static final String WINDOW = "window";
   }
 
   // java: events that upstream emits as string literals (cdpSession.ts) or does not have (the Java

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of video.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
@@ -22,30 +23,19 @@ import com.microsoft.playwright.Video;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-class VideoImpl implements Video {
-  private final PageImpl page;
-  ArtifactImpl artifact;
+class VideoImpl extends EventEmitter implements Video {
+  private ArtifactImpl artifact;
+  private boolean isRemote = false;
 
-  VideoImpl(PageImpl page) {
-    this.page = page;
-  }
-
-  VideoImpl(PageImpl page, ArtifactImpl artifact) {
-    this.page = page;
+  VideoImpl(Connection connection, ArtifactImpl artifact) {
+    this.isRemote = connection.isRemote();
     this.artifact = artifact;
   }
 
   @Override
-  public void delete() {
-    if (artifact != null)
-      artifact.delete();
-  }
-
-  @Override
   public Path path() {
-    if (page.connection.isRemote()) {
+    if (isRemote)
       throw new PlaywrightException("Path is not available when connecting remotely. Use saveAs() to save a local copy.");
-    }
     if (artifact == null)
       throw new PlaywrightException("Video recording has not been started.");
     return Paths.get(artifact.initializer.get("absolutePath").getAsString());
@@ -56,5 +46,16 @@ class VideoImpl implements Video {
     if (artifact == null)
       throw new PlaywrightException("Video recording has not been started.");
     artifact.saveAs(path);
+  }
+
+  @Override
+  public void delete() {
+    if (artifact != null)
+      artifact.delete();
+  }
+
+  // java: the constructor PageImpl calls.
+  VideoImpl(PageImpl page, ArtifactImpl artifact) {
+    this(page.connection, artifact);
   }
 }

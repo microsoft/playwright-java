@@ -14,88 +14,120 @@
  * limitations under the License.
  */
 
+// Port of page.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.JsonArray;
+import com.microsoft.playwright.impl.isomorphic.Headers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.*;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Serialization.parseError;
-import static com.microsoft.playwright.impl.Utils.*;
-import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.readAllBytes;
-import static java.util.Arrays.asList;
-
+import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
+import static com.microsoft.playwright.impl.ClientHelper.initScriptSourceWithExposedFunctions;
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.trimStringWithEllipsis;
+import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class PageImpl extends ChannelOwner implements Page {
-  final BrowserContextImpl browserContext;
-  private final FrameImpl mainFrame;
-  final PageChannel channel;
-  private final KeyboardImpl keyboard;
-  private final MouseImpl mouse;
-  private final TouchscreenImpl touchscreen;
-  private final ScreencastImpl screencast;
-  private final WebStorageImpl localStorage;
-  private final WebStorageImpl sessionStorage;
-  final Waitable<?> waitableClosedOrCrashed;
-  private ViewportSize viewport;
-  private final Router routes = new Router();
-  private final WebSocketRouter webSocketRoutes = new WebSocketRouter();
-  private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  private final Map<Integer, LocatorHandler> locatorHandlers = new HashMap<>();
-
-  private static class LocatorHandler {
-    private final Locator locator;
-    private final Consumer<Locator> handler;
-    private Integer times;
-
-    LocatorHandler(Locator locator, Consumer<Locator> handler, Integer times) {
-      this.locator = locator;
-      this.handler = handler;
-      this.times = times;
-    }
-
-    boolean call() {
-      if (shouldRemove()) {
-        return true;
-      }
-      if (times != null) {
-        --times;
-      }
-      handler.accept(locator);
-      return shouldRemove();
-    }
-
-    private boolean shouldRemove() {
-      return times != null && times == 0;
-    }
-  }
-
-  final Map<String, BindingCallback> bindings = new HashMap<>();
+  final PageChannel channel = new PageChannel(this);
+  private final BrowserContextImpl browserContext;
   BrowserContextImpl ownedContext;
-  private boolean isClosed;
-  final Set<Worker> workers = new HashSet<>();
-  protected final TimeoutSettings timeoutSettings;
-  private VideoImpl video;
-  private final PageImpl opener;
+  String apiName = "Page";
+
+  private final FrameImpl mainFrame;
+  private final Set<FrameImpl> frames = new LinkedHashSet<>();
+  final Set<WorkerImpl> workers = new LinkedHashSet<>();
+  private boolean closed;
+  final LongStandingScope closedOrCrashedScope = new LongStandingScope(this);
+  private ViewportSize viewportSize;
+  List<RouteHandler> routes = new ArrayList<>();
+  List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
+
+  final Coverage coverage;
+  final KeyboardImpl keyboard;
+  final MouseImpl mouse;
+  final APIRequestContextImpl request;
+  final TouchscreenImpl touchscreen;
+  final ClockImpl clock;
+  final ScreencastImpl screencast;
+  final WebStorageImpl localStorage;
+  final WebStorageImpl sessionStorage;
+  final WebMCPImpl webmcp;
+
+  final Map<String, BindingCallback> bindings = new LinkedHashMap<>();
+  final TimeoutSettings timeoutSettings;
+  private final VideoImpl video;
+  final PageImpl opener;
   private String closeReason;
+  boolean closeWasCalled;
+  private List<HarRouter> harRouters = new ArrayList<>();
+
+  private final Map<Integer, LocatorHandler> locatorHandlers = new LinkedHashMap<>();
+  private List<ExposedCallback> evaluateCallbacks = new ArrayList<>();
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    Map<String, String> mapping = new HashMap<>();
+    instrumentation.onPage(this);
+    PageInitializer pageInitializer = connection.protocolGson().fromJson(initializer, PageInitializer.class);
+    browserContext = (BrowserContextImpl) parent;
+    timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
+
+    keyboard = new KeyboardImpl(this);
+    mouse = new MouseImpl(this);
+    request = browserContext.request;
+    touchscreen = new TouchscreenImpl(this);
+    clock = browserContext.clock;
+    localStorage = new WebStorageImpl(this, "local");
+    sessionStorage = new WebStorageImpl(this, "session");
+
+    mainFrame = pageInitializer.mainFrame;
+    mainFrame.page = this;
+    webmcp = mainFrame.webmcp;
+    frames.add(mainFrame);
+    if (pageInitializer.viewportSize != null) {
+      viewportSize = new ViewportSize(pageInitializer.viewportSize.width, pageInitializer.viewportSize.height);
+    }
+    closed = Boolean.TRUE.equals(pageInitializer.isClosed);
+    opener = pageInitializer.opener;
+    video = new VideoImpl(this, pageInitializer.video);
+    screencast = new ScreencastImpl(this);
+
+    coverage = new Coverage(channel);
+
+    on(Events.Page.CLOSE, new Consumer<Page>() {
+      @Override
+      public void accept(Page page) {
+        off(Events.Page.CLOSE, this);
+        closedOrCrashedScope.close(closeErrorWithReason());
+      }
+    });
+    on(Events.Page.CRASH, new Consumer<Page>() {
+      @Override
+      public void accept(Page page) {
+        off(Events.Page.CRASH, this);
+        closedOrCrashedScope.close(new TargetClosedError());
+      }
+    });
+
+    Map<String, String> mapping = new LinkedHashMap<>();
     mapping.put(Events.Page.CONSOLE, "console");
     mapping.put(Events.Page.DIALOG, "dialog");
     mapping.put(Events.Page.DIALOG_CLOSED, "dialogClosed");
@@ -105,150 +137,1552 @@ public class PageImpl extends ChannelOwner implements Page {
     mapping.put(Events.Page.REQUEST_FAILED, "requestFailed");
     mapping.put(Events.Page.FILE_CHOOSER, "fileChooser");
     setEventToSubscriptionMapping(mapping);
-    browserContext = (BrowserContextImpl) parent;
-    mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
-    mainFrame.page = this;
-    isClosed = initializer.get("isClosed").getAsBoolean();
-    if (initializer.has("viewportSize")) {
-      viewport = gson().fromJson(initializer.get("viewportSize"), ViewportSize.class);
+  }
+
+  // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
+  @Override
+  void handleEvent(String event, JsonObject params) {
+    switch (event) {
+      case "bindingCall": {
+        PageBindingCallEvent e = connection.protocolGson().fromJson(params, PageBindingCallEvent.class);
+        onBinding(e.binding);
+        break;
+      }
+      case "close":
+        onClose();
+        break;
+      case "crash":
+        onCrash();
+        break;
+      case "download": {
+        PageDownloadEvent e = connection.protocolGson().fromJson(params, PageDownloadEvent.class);
+        // java: DownloadImpl reads url and suggestedFilename from the event params.
+        DownloadImpl download = new DownloadImpl(this, e.artifact, params);
+        emit(Events.Page.DOWNLOAD, download);
+        browserContext.emit(Events.BrowserContext.DOWNLOAD, download);
+        break;
+      }
+      case "fileChooser": {
+        PageFileChooserEvent e = connection.protocolGson().fromJson(params, PageFileChooserEvent.class);
+        emit(Events.Page.FILE_CHOOSER, new FileChooserImpl(this, e.element, Boolean.TRUE.equals(e.isMultiple)));
+        break;
+      }
+      case "frameAttached": {
+        PageFrameAttachedEvent e = connection.protocolGson().fromJson(params, PageFrameAttachedEvent.class);
+        onFrameAttached(e.frame);
+        break;
+      }
+      case "frameDetached": {
+        PageFrameDetachedEvent e = connection.protocolGson().fromJson(params, PageFrameDetachedEvent.class);
+        onFrameDetached(e.frame);
+        break;
+      }
+      case "locatorHandlerTriggered": {
+        PageLocatorHandlerTriggeredEvent e = connection.protocolGson().fromJson(params, PageLocatorHandlerTriggeredEvent.class);
+        onLocatorHandlerTriggered(e.uid);
+        break;
+      }
+      case "route": {
+        PageRouteEvent e = connection.protocolGson().fromJson(params, PageRouteEvent.class);
+        onRoute(e.route);
+        break;
+      }
+      case "webSocketRoute": {
+        PageWebSocketRouteEvent e = connection.protocolGson().fromJson(params, PageWebSocketRouteEvent.class);
+        onWebSocketRoute(e.webSocketRoute);
+        break;
+      }
+      case "viewportSizeChanged": {
+        PageViewportSizeChangedEvent e = connection.protocolGson().fromJson(params, PageViewportSizeChangedEvent.class);
+        viewportSize = e.viewportSize == null ? null : new ViewportSize(e.viewportSize.width, e.viewportSize.height);
+        break;
+      }
+      case "webSocket": {
+        PageWebSocketEvent e = connection.protocolGson().fromJson(params, PageWebSocketEvent.class);
+        emit(Events.Page.WEB_SOCKET, e.webSocket);
+        break;
+      }
+      case "worker": {
+        PageWorkerEvent e = connection.protocolGson().fromJson(params, PageWorkerEvent.class);
+        onWorker(e.worker);
+        break;
+      }
+      // java: upstream's Screencast subscribes to the page channel itself.
+      case "screencastFrame":
+        screencast.handleScreencastFrame(params);
+        break;
+      default:
+        break;
     }
-    channel = new PageChannel(this);
-    keyboard = new KeyboardImpl(this);
-    mouse = new MouseImpl(this);
-    touchscreen = new TouchscreenImpl(this);
-    screencast = new ScreencastImpl(this);
-    localStorage = new WebStorageImpl(this, "local");
-    sessionStorage = new WebStorageImpl(this, "session");
-    frames.add(mainFrame);
-    timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
-    waitableClosedOrCrashed = createWaitForCloseHelper();
-    if (initializer.has("opener")) {
-      opener = connection.getExistingObject(initializer.getAsJsonObject("opener").get("guid").getAsString());
-    } else {
-      opener = null;
+  }
+
+  private void onFrameAttached(FrameImpl frame) {
+    frame.page = this;
+    frames.add(frame);
+    if (frame.parentFrame != null) {
+      frame.parentFrame.childFrames.add(frame);
     }
-    if (initializer.has("video")) {
-      String artifactGuid = initializer.getAsJsonObject("video").get("guid").getAsString();
-      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
-      video = new VideoImpl(this, artifact);
+    emit(Events.Page.FRAME_ATTACHED, frame);
+    browserContext.emit(Events.BrowserContext.FRAME_ATTACHED, frame);
+  }
+
+  private void onFrameDetached(FrameImpl frame) {
+    frames.remove(frame);
+    frame.detached = true;
+    if (frame.parentFrame != null) {
+      frame.parentFrame.childFrames.remove(frame);
+    }
+    emit(Events.Page.FRAME_DETACHED, frame);
+    browserContext.emit(Events.BrowserContext.FRAME_DETACHED, frame);
+  }
+
+  private void onRoute(RouteImpl route) {
+    route.context = context();
+    List<RouteHandler> routeHandlers = routes;
+    for (RouteHandler routeHandler : new ArrayList<>(routeHandlers)) {
+      // If the page was closed we stall all requests right away.
+      if (closeWasCalled || browserContext.isClosed()) {
+        return;
+      }
+      if (!routeHandler.matches(route.request().url())) {
+        continue;
+      }
+      int index = routes.indexOf(routeHandler);
+      if (index == -1) {
+        continue;
+      }
+      if (routeHandler.willExpire()) {
+        routes.remove(index);
+      }
+      boolean handled = routeHandler.handle(route);
+      // unrouteAll() replaces _routes and updates interception after waiting for handlers.
+      if (routeHandlers == routes && routes.isEmpty()) {
+        try {
+          disableInterception();
+        } catch (PlaywrightException e) {
+        }
+      }
+      if (handled) {
+        return;
+      }
+    }
+
+    browserContext.onRoute(route);
+  }
+
+  private void onWebSocketRoute(WebSocketRouteImpl webSocketRoute) {
+    WebSocketRouteHandler routeHandler = null;
+    for (WebSocketRouteHandler route : webSocketRoutes) {
+      if (route.matches(webSocketRoute.url())) {
+        routeHandler = route;
+        break;
+      }
+    }
+    if (routeHandler != null) {
+      routeHandler.handle(webSocketRoute);
     } else {
-      video = new VideoImpl(this);
+      browserContext.onWebSocketRoute(webSocketRoute);
+    }
+  }
+
+  void onBinding(BindingCall bindingCall) {
+    BindingCallback func = bindings.get(bindingCall.bindingCallInitializer.name);
+    if (func != null) {
+      bindingCall.call(func);
+      return;
+    }
+    browserContext.onBinding(bindingCall);
+  }
+
+  void onWorker(WorkerImpl worker) {
+    workers.add(worker);
+    worker.page = this;
+    emit(Events.Page.WORKER, worker);
+  }
+
+  void onClose() {
+    closed = true;
+    browserContext.pages.remove(this);
+    disposeHarRouters();
+    emit(Events.Page.CLOSE, this);
+    browserContext.emit(Events.BrowserContext.PAGE_CLOSE, this);
+  }
+
+  private void onCrash() {
+    emit(Events.Page.CRASH, this);
+  }
+
+  @Override
+  public BrowserContextImpl context() {
+    return browserContext;
+  }
+
+  @Override
+  public PageImpl opener() {
+    if (opener == null || opener.isClosed()) {
+      return null;
+    }
+    return opener;
+  }
+
+  @Override
+  public FrameImpl mainFrame() {
+    return mainFrame;
+  }
+
+  @Override
+  public Frame frame(String name) {
+    return frame(name, null);
+  }
+
+  @Override
+  public Frame frameByUrl(String url) {
+    return frame(null, UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), false));
+  }
+
+  @Override
+  public Frame frameByUrl(Pattern url) {
+    return frame(null, new UrlMatcher(url));
+  }
+
+  @Override
+  public Frame frameByUrl(Predicate<String> url) {
+    return frame(null, new UrlMatcher(url));
+  }
+
+  // java: frameSelector is a name or { name, url }; the Java API has frame(name) and frameByUrl(url).
+  private Frame frame(String name, UrlMatcher url) {
+    if ((name == null || name.isEmpty()) && url == null) {
+      throw new PlaywrightException("Either name or url matcher should be specified");
+    }
+    for (Frame f : frames()) {
+      if (name != null && !name.isEmpty() ? f.name().equals(name) : url.test(f.url())) {
+        return f;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public List<Frame> frames() {
+    return new ArrayList<>(frames);
+  }
+
+  @Override
+  public void setDefaultNavigationTimeout(double timeout) {
+    timeoutSettings.setDefaultNavigationTimeout(timeout);
+  }
+
+  @Override
+  public void setDefaultTimeout(double timeout) {
+    timeoutSettings.setDefaultTimeout(timeout);
+  }
+
+  @Override
+  public VideoImpl video() {
+    // Note: we are creating Video object lazily, because we do not know
+    // BrowserContextOptions when constructing the page - it is assigned
+    // too late during launchPersistentContext.
+    if (browserContext.options.recordVideo == null) {
+      return null;
+    }
+    return video;
+  }
+
+  @Override
+  public Locator pickLocator() {
+    PagePickLocatorResult result = channel.pickLocator(NO_TIMEOUT);
+    return locator(result.selector);
+  }
+
+  @Override
+  public void cancelPickLocator() {
+    channel.cancelPickLocator(NO_TIMEOUT);
+  }
+
+  @Override
+  public void hideHighlight() {
+    channel.hideHighlight(NO_TIMEOUT);
+  }
+
+  @Override
+  public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
+    return mainFrame.querySelector(selector, convertType(options, Frame.QuerySelectorOptions.class));
+  }
+
+  @Override
+  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
+    return mainFrame.waitForSelector(selector, convertType(options, Frame.WaitForSelectorOptions.class));
+  }
+
+  @Override
+  public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
+    mainFrame.dispatchEvent(selector, type, eventInit, convertType(options, Frame.DispatchEventOptions.class));
+  }
+
+  @Override
+  public JSHandle evaluateHandle(String expression, Object arg) {
+    return evaluateHandle(expression, arg, null);
+  }
+
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments is
+  // a JS typing check.
+  JSHandle evaluateHandle(String expression, Object arg, Serialization.EvaluateOptions options) {
+    return mainFrame.evaluateHandle(expression, arg, options);
+  }
+
+  // java: assertMaxArguments is a JS typing check.
+  @Override
+  public Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options) {
+    return mainFrame.evalOnSelector(selector, expression, arg, convertType(options, Frame.EvalOnSelectorOptions.class));
+  }
+
+  // java: assertMaxArguments is a JS typing check.
+  @Override
+  public Object evalOnSelectorAll(String selector, String expression, Object arg) {
+    return mainFrame.evalOnSelectorAll(selector, expression, arg);
+  }
+
+  @Override
+  public List<ElementHandle> querySelectorAll(String selector) {
+    return mainFrame.querySelectorAll(selector);
+  }
+
+  @Override
+  public ElementHandle addScriptTag(AddScriptTagOptions options) {
+    return mainFrame.addScriptTag(convertType(options, Frame.AddScriptTagOptions.class));
+  }
+
+  @Override
+  public ElementHandle addStyleTag(AddStyleTagOptions options) {
+    return mainFrame.addStyleTag(convertType(options, Frame.AddStyleTagOptions.class));
+  }
+
+  @Override
+  public AutoCloseable exposeFunction(String name, FunctionCallback callback) {
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    PageExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    BindingCallback binding = (source, args) -> callback.call(args);
+    bindings.put(name, binding);
+    return result.disposable;
+  }
+
+  @Override
+  public AutoCloseable exposeBinding(String name, BindingCallback callback) {
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    PageExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    bindings.put(name, callback);
+    return result.disposable;
+  }
+
+  // java: the callback Function is a FunctionCallback.
+  DisposableObject exposeCallbackBinding(String name, FunctionCallback callback) {
+    bindings.put(name, (source, args) -> callback.call(args));
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    params.noGlobal = true;
+    PageExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    return result.disposable;
+  }
+
+  void exposeEvaluateCallback(String name, FunctionCallback callback) {
+    DisposableObject disposable = exposeCallbackBinding(name, callback);
+    evaluateCallbacks.add(new ExposedCallback(name, disposable));
+  }
+
+  void eraseEvaluateCallbacks() {
+    for (ExposedCallback callback : evaluateCallbacks) {
+      bindings.remove(callback.name);
+      // java: dispose() is not awaited upstream; sendMessageAsync does not pump.
+      try {
+        callback.disposable.sendMessageAsync("dispose");
+      } catch (PlaywrightException e) {
+      }
+    }
+    evaluateCallbacks = new ArrayList<>();
+  }
+
+  @Override
+  public void setExtraHTTPHeaders(Map<String, String> headers) {
+    RawHeaders.validateHeaders(headers);
+    PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
+    params.headers = Headers.headersObjectToArray(headers);
+    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public String url() {
+    return mainFrame.url();
+  }
+
+  @Override
+  public String content(ContentOptions options) {
+    return mainFrame.content(convertType(options, Frame.ContentOptions.class));
+  }
+
+  @Override
+  public void setContent(String html, SetContentOptions options) {
+    mainFrame.setContent(html, convertType(options, Frame.SetContentOptions.class));
+  }
+
+  @Override
+  public Response navigate(String url, NavigateOptions options) {
+    return mainFrame.navigate(url, convertType(options, Frame.NavigateOptions.class));
+  }
+
+  @Override
+  public Response reload(ReloadOptions options) {
+    if (options == null) {
+      options = new ReloadOptions();
+    }
+    PageReloadParams params = toProtocol(options, PageReloadParams.class);
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
+    return channel.reload(params, timeoutSettings.navigationTimeout(options.timeout)).response;
+  }
+
+  @Override
+  public void addLocatorHandler(Locator locator, Consumer<Locator> handler, AddLocatorHandlerOptions options) {
+    if (options == null) {
+      options = new AddLocatorHandlerOptions();
+    }
+    LocatorImpl locatorImpl = (LocatorImpl) locator;
+    if (locatorImpl.frame != mainFrame) {
+      throw new PlaywrightException("Locator must belong to the main frame of this page");
+    }
+    if (options.times != null && options.times == 0) {
+      return;
+    }
+    PageRegisterLocatorHandlerParams params = new PageRegisterLocatorHandlerParams();
+    params.selector = locatorImpl.selector;
+    params.noWaitAfter = options.noWaitAfter;
+    int uid = channel.registerLocatorHandler(params, NO_TIMEOUT).uid;
+    locatorHandlers.put(uid, new LocatorHandler(locatorImpl, handler, options.times));
+  }
+
+  private void onLocatorHandlerTriggered(int uid) {
+    boolean remove = false;
+    try {
+      LocatorHandler handler = locatorHandlers.get(uid);
+      if (handler != null && !Integer.valueOf(0).equals(handler.times)) {
+        if (handler.times != null) {
+          handler.times--;
+        }
+        handler.handler.accept(handler.locator);
+      }
+      remove = handler != null && Integer.valueOf(0).equals(handler.times);
+    } finally {
+      if (remove) {
+        locatorHandlers.remove(uid);
+      }
+      PageResolveLocatorHandlerNoReplyParams params = new PageResolveLocatorHandlerNoReplyParams();
+      params.uid = uid;
+      params.remove = remove;
+      // java: the call is not awaited upstream; sendMessageAsync does not pump.
+      try {
+        sendMessageAsync("resolveLocatorHandlerNoReply", params);
+      } catch (PlaywrightException e) {
+      }
     }
   }
 
   @Override
-  protected void handleEvent(String event, JsonObject params) {
-    if ("worker".equals(event)) {
-      String guid = params.getAsJsonObject("worker").get("guid").getAsString();
-      WorkerImpl worker = connection.getExistingObject(guid);
-      worker.page = this;
-      workers.add(worker);
-      emit(Events.Page.WORKER, worker);
-    } else if ("webSocket".equals(event)) {
-      String guid = params.getAsJsonObject("webSocket").get("guid").getAsString();
-      WebSocketImpl webSocket = connection.getExistingObject(guid);
-      emit(Events.Page.WEB_SOCKET, webSocket);
-    } else if ("download".equals(event)) {
-      String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
-      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
-      DownloadImpl download = new DownloadImpl(this, artifact, params);
-      emit(Events.Page.DOWNLOAD, download);
-      browserContext.notifyDownload(download);
-    } else if ("fileChooser".equals(event)) {
-      String guid = params.getAsJsonObject("element").get("guid").getAsString();
-      ElementHandleImpl elementHandle = connection.getExistingObject(guid);
-      FileChooser fileChooser = new FileChooserImpl(this, elementHandle, params.get("isMultiple").getAsBoolean());
-      emit(Events.Page.FILE_CHOOSER, fileChooser);
-    } else if ("bindingCall".equals(event)) {
-      String guid = params.getAsJsonObject("binding").get("guid").getAsString();
-      BindingCall bindingCall = connection.getExistingObject(guid);
-      BindingCallback binding = bindings.get(bindingCall.name());
-      if (binding == null) {
-        binding = browserContext.bindings.get(bindingCall.name());
-      }
-      if (binding != null) {
+  public void removeLocatorHandler(Locator locator) {
+    for (Map.Entry<Integer, LocatorHandler> entry : new ArrayList<>(locatorHandlers.entrySet())) {
+      if (entry.getValue().locator.equals(locator)) {
+        locatorHandlers.remove(entry.getKey());
+        PageUnregisterLocatorHandlerParams params = new PageUnregisterLocatorHandlerParams();
+        params.uid = entry.getKey();
         try {
-          bindingCall.call(binding);
-        } catch (RuntimeException e) {
-          if (!isSafeCloseError(e.getMessage())) {
-            logWithTimestamp(e.getMessage());
-          }
-        }
-      }
-    } else if ("frameAttached".equals(event)) {
-      String guid = params.getAsJsonObject("frame").get("guid").getAsString();
-      FrameImpl frame = connection.getExistingObject(guid);
-      frames.add(frame);
-      frame.page = this;
-      if (frame.parentFrame != null) {
-        frame.parentFrame.childFrames.add(frame);
-      }
-      emit(Events.Page.FRAME_ATTACHED, frame);
-      browserContext.notifyFrameAttached(frame);
-    } else if ("frameDetached".equals(event)) {
-      String guid = params.getAsJsonObject("frame").get("guid").getAsString();
-      FrameImpl frame = connection.getExistingObject(guid);
-      frames.remove(frame);
-      frame.isDetached = true;
-      if (frame.parentFrame != null) {
-        frame.parentFrame.childFrames.remove(frame);
-      }
-      emit(Events.Page.FRAME_DETACHED, frame);
-      browserContext.notifyFrameDetached(frame);
-    } else if ("locatorHandlerTriggered".equals(event)) {
-      int uid = params.get("uid").getAsInt();
-      onLocatorHandlerTriggered(uid);
-    } else if ("route".equals(event)) {
-      RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
-      route.browserContext = browserContext;
-      Router.HandleResult handled = routes.handle(route);
-      if (handled != Router.HandleResult.NoMatchingHandler) {
-        try {
-          updateInterceptionPatterns();
+          channel.unregisterLocatorHandler(params, NO_TIMEOUT);
         } catch (PlaywrightException e) {
-          // Like the Node.js client, ignore the error when the page or the context was closed meanwhile.
-          if (!isSafeCloseError(e)) {
-            throw e;
-          }
         }
       }
-      if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
-        browserContext.handleRoute(route);
-      }
-    } else if ("webSocketRoute".equals(event)) {
-      WebSocketRouteImpl route = connection.getExistingObject(params.getAsJsonObject("webSocketRoute").get("guid").getAsString());
-      if (!webSocketRoutes.handle(route)) {
-        browserContext.handleWebSocketRoute(route);
-      }
-    } else if ("crash".equals(event)) {
-      emit(Events.Page.CRASH, this);
-    } else if ("close".equals(event)) {
-      didClose();
-    } else if ("screencastFrame".equals(event)) {
-      screencast.handleScreencastFrame(params);
     }
   }
 
-  void notifyPopup(PageImpl popup) {
-    emit(Events.Page.POPUP, popup);
+  @Override
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    mainFrame.waitForLoadState(state, convertType(options, Frame.WaitForLoadStateOptions.class));
   }
 
-  void didClose() {
-    isClosed = true;
-    browserContext.pages.remove(this);
-    emit(Events.Page.CLOSE, this);
-    browserContext.notifyPageClose(this);
+  @Override
+  public Response waitForNavigation(WaitForNavigationOptions options, Runnable callback) {
+    return mainFrame.waitForNavigation(convertType(options, Frame.WaitForNavigationOptions.class), callback);
   }
 
-  private String effectiveCloseReason() {
-    if (closeReason != null) {
-      return closeReason;
+  @Override
+  public void waitForURL(String url, WaitForURLOptions options) {
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
+  }
+
+  @Override
+  public void waitForURL(Pattern url, WaitForURLOptions options) {
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
+  }
+
+  @Override
+  public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
+    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
+  }
+
+  @Override
+  public Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback) {
+    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlOrPredicate, connection.localUtils(), false), null, trimUrl(urlOrPredicate), options, callback);
+  }
+
+  @Override
+  public Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback) {
+    return waitForRequest(new UrlMatcher(urlOrPredicate), null, trimUrl(urlOrPredicate), options, callback);
+  }
+
+  @Override
+  public Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback) {
+    return waitForRequest(null, urlOrPredicate, null, options, callback);
+  }
+
+  // java: the url matcher or the predicate of urlOrPredicate, with trimUrl(urlOrPredicate) computed by the overload;
+  // no signal (AbortSignal). No @apiCall() zone around the waits: the callback runs inside the wait and its calls
+  // would join that zone.
+  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> urlOrPredicate, String trimmedUrl, WaitForRequestOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForRequestOptions();
     }
-    return browserContext.effectiveCloseReason();
+    Double timeout = options.timeout;
+    Predicate<Request> predicate = request -> {
+      if (urlMatcher != null) {
+        return urlMatcher.test(request.url());
+      }
+      return urlOrPredicate.test(request);
+    };
+    String logLine = trimmedUrl != null ? "waiting for request " + trimmedUrl : null;
+    return waitForEvent(Events.Page.REQUEST, predicate, timeout, logLine, callback);
+  }
+
+  @Override
+  public Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback) {
+    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlOrPredicate, connection.localUtils(), false), null, trimUrl(urlOrPredicate), options, callback);
+  }
+
+  @Override
+  public Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback) {
+    return waitForResponse(new UrlMatcher(urlOrPredicate), null, trimUrl(urlOrPredicate), options, callback);
+  }
+
+  @Override
+  public Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback) {
+    return waitForResponse(null, urlOrPredicate, null, options, callback);
+  }
+
+  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> urlOrPredicate, String trimmedUrl, WaitForResponseOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForResponseOptions();
+    }
+    Double timeout = options.timeout;
+    Predicate<Response> predicate = response -> {
+      if (urlMatcher != null) {
+        return urlMatcher.test(response.url());
+      }
+      return urlOrPredicate.test(response);
+    };
+    String logLine = trimmedUrl != null ? "waiting for response " + trimmedUrl : null;
+    return waitForEvent(Events.Page.RESPONSE, predicate, timeout, logLine, callback);
+  }
+
+  // java: waitForEvent(event) is one typed waitForX(options, callback) per event.
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable callback) {
+    return waitForEvent(event, predicate, timeout, "waiting for event \"" + event + "\"", callback);
+  }
+
+  @Override
+  public Page waitForClose(WaitForCloseOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForCloseOptions();
+    }
+    return waitForEvent(Events.Page.CLOSE, null, options.timeout, callback);
+  }
+
+  @Override
+  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForConsoleMessageOptions();
+    }
+    return waitForEvent(Events.Page.CONSOLE, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public Download waitForDownload(WaitForDownloadOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForDownloadOptions();
+    }
+    return waitForEvent(Events.Page.DOWNLOAD, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForFileChooserOptions();
+    }
+    return waitForEvent(Events.Page.FILE_CHOOSER, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public Page waitForPopup(WaitForPopupOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForPopupOptions();
+    }
+    return waitForEvent(Events.Page.POPUP, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForRequestFinishedOptions();
+    }
+    return waitForEvent(Events.Page.REQUEST_FINISHED, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForWebSocketOptions();
+    }
+    return waitForEvent(Events.Page.WEB_SOCKET, options.predicate, options.timeout, callback);
+  }
+
+  @Override
+  public Worker waitForWorker(WaitForWorkerOptions options, Runnable callback) {
+    if (options == null) {
+      options = new WaitForWorkerOptions();
+    }
+    return waitForEvent(Events.Page.WORKER, options.predicate, options.timeout, callback);
   }
 
   TargetClosedError closeErrorWithReason() {
-    return new TargetClosedError(effectiveCloseReason());
+    return new TargetClosedError(closeReason != null ? closeReason : browserContext.effectiveCloseReason());
+  }
+
+  // java: the predicate and timeout are passed separately and the code to run is a Runnable.
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, String logLine, Runnable callback) {
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    if (logLine != null) {
+      waiter.log(logLine);
+    }
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.Page.CRASH.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CRASH, () -> new PlaywrightException("Page crashed"));
+    }
+    if (!Events.Page.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.Page.CLOSE, () -> closeErrorWithReason());
+    }
+    T result = waiter.waitForEvent(this, event, predicate, callback);
+    waiter.dispose();
+    return result;
+  }
+
+  @Override
+  public Response goBack(GoBackOptions options) {
+    if (options == null) {
+      options = new GoBackOptions();
+    }
+    PageGoBackParams params = toProtocol(options, PageGoBackParams.class);
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
+    return channel.goBack(params, timeoutSettings.navigationTimeout(options.timeout)).response;
+  }
+
+  @Override
+  public Response goForward(GoForwardOptions options) {
+    if (options == null) {
+      options = new GoForwardOptions();
+    }
+    PageGoForwardParams params = toProtocol(options, PageGoForwardParams.class);
+    params.waitUntil = FrameImpl.verifyLoadState("waitUntil", params.waitUntil == null ? "load" : params.waitUntil);
+    return channel.goForward(params, timeoutSettings.navigationTimeout(options.timeout)).response;
+  }
+
+  @Override
+  public void requestGC() {
+    channel.requestGC(NO_TIMEOUT);
+  }
+
+  @Override
+  public void emulateMedia(EmulateMediaOptions options) {
+    // java: an empty Optional is serialized as 'no-override', a null field is left out.
+    PageEmulateMediaParams params = toProtocol(options, PageEmulateMediaParams.class);
+    channel.emulateMedia(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void setViewportSize(int width, int height) {
+    viewportSize = new ViewportSize(width, height);
+    PageSetViewportSizeParams params = new PageSetViewportSizeParams();
+    params.viewportSize = new PageSetViewportSizeParams.PageSetViewportSizeParamsViewportSize();
+    params.viewportSize.width = width;
+    params.viewportSize.height = height;
+    channel.setViewportSize(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public ViewportSize viewportSize() {
+    return viewportSize;
+  }
+
+  @Override
+  public Object evaluate(String expression, Object arg) {
+    return evaluate(expression, arg, null);
+  }
+
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments is
+  // a JS typing check.
+  Object evaluate(String expression, Object arg, Serialization.EvaluateOptions options) {
+    return mainFrame.evaluate(expression, arg, options);
+  }
+
+  // java: the script is a String or a Path, the Java API has no arg and no options.
+  @Override
+  public AutoCloseable addInitScript(String script) {
+    return addInitScript(script, null, null);
+  }
+
+  @Override
+  public AutoCloseable addInitScript(Path script) {
+    return addInitScript(script, null, null);
+  }
+
+  // java: the core of the String and Path overloads, package-private. evaluationScript takes no arg: a Java script
+  // is not a function.
+  AutoCloseable addInitScript(Object script, Object arg, Serialization.ExposeFunctionsOptions options) {
+    assertEvaluateOptions(options);
+    if (options != null && Boolean.TRUE.equals(options.exposeFunctions)) {
+      return addInitScriptWithExposedFunctions(this, script, arg);
+    }
+    String source = evaluationScript(script, true);
+    PageAddInitScriptParams params = new PageAddInitScriptParams();
+    params.source = source;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
+  }
+
+  @Override
+  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
+    return route(UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), false), handler, options);
+  }
+
+  @Override
+  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+    return route(new UrlMatcher(url), handler, options);
+  }
+
+  @Override
+  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+    return route(new UrlMatcher(url), handler, options);
+  }
+
+  private AutoCloseable route(UrlMatcher url, Consumer<Route> handler, RouteOptions options) {
+    Integer times = options == null ? null : options.times;
+    return withTitle("Route requests", () -> {
+      routes.add(0, new RouteHandler(browserContext.options.baseURL, url, handler, times));
+      updateInterceptionPatterns();
+      return new DisposableStub(() -> unroute(url, handler));
+    });
+  }
+
+  @Override
+  public void routeFromHAR(Path har, RouteFromHAROptions options) {
+    if (options == null) {
+      options = new RouteFromHAROptions();
+    }
+    LocalUtils localUtils = connection.localUtils();
+    if (localUtils == null) {
+      throw new PlaywrightException("Route from har is not supported in thin clients");
+    }
+    if (Boolean.TRUE.equals(options.update)) {
+      browserContext.tracing.recordIntoHAR(har, this, options.url, convertType(options.updateContent, HarContentPolicy.class), options.updateMode, null);
+      return;
+    }
+    HarRouter harRouter = HarRouter.create(localUtils, har, options.notFound != null ? options.notFound : HarNotFound.ABORT, options.url);
+    harRouters.add(harRouter);
+    harRouter.addPageRoute(this);
+  }
+
+  @Override
+  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), true), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Pattern url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Predicate<String> url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(new UrlMatcher(url), handler);
+  }
+
+  private void routeWebSocket(UrlMatcher url, Consumer<WebSocketRoute> handler) {
+    withTitle("Route WebSockets", () -> {
+      webSocketRoutes.add(0, new WebSocketRouteHandler(browserContext.options.baseURL, url, handler));
+      updateWebSocketInterceptionPatterns();
+    });
+  }
+
+  private void disposeHarRouters() {
+    for (HarRouter router : harRouters) {
+      router.dispose();
+    }
+    harRouters = new ArrayList<>();
+  }
+
+  // java: the Java API has no behavior option, unrouteAll() passes none.
+  @Override
+  public void unrouteAll() {
+    withTitle("Unroute requests", () -> {
+      unrouteInternal(routes, new ArrayList<>(), null);
+      disposeHarRouters();
+    });
+  }
+
+  @Override
+  public void unroute(String url, Consumer<Route> handler) {
+    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, connection.localUtils(), false), handler);
+  }
+
+  @Override
+  public void unroute(Pattern url, Consumer<Route> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void unroute(Predicate<String> url, Consumer<Route> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  private void unroute(UrlMatcher url, Consumer<Route> handler) {
+    withTitle("Unroute requests", () -> {
+      List<RouteHandler> removed = new ArrayList<>();
+      List<RouteHandler> remaining = new ArrayList<>();
+      for (RouteHandler route : routes) {
+        if (route.url.equals(url) && (handler == null || route.handler == handler)) {
+          removed.add(route);
+        } else {
+          remaining.add(route);
+        }
+      }
+      unrouteInternal(removed, remaining, "default");
+    });
+  }
+
+  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining, String behavior) {
+    routes = remaining;
+    if (behavior != null && !"default".equals(behavior)) {
+      // java: Promise.all over the removed handlers is a loop, each stop() returns when done.
+      for (RouteHandler routeHandler : removed) {
+        routeHandler.stop(behavior);
+      }
+    }
+    updateInterceptionPatterns();
+  }
+
+  private void disableInterception() {
+    wrapApiCall(() -> updateInterceptionPatterns(), null, true);
+  }
+
+  private void updateInterceptionPatterns() {
+    PageSetNetworkInterceptionPatternsParams params = new PageSetNetworkInterceptionPatternsParams();
+    params.patterns = RouteHandler.prepareInterceptionPatterns(routes);
+    channel.setNetworkInterceptionPatterns(params, NO_TIMEOUT);
+  }
+
+  private void updateWebSocketInterceptionPatterns() {
+    PageSetWebSocketInterceptionPatternsParams params = new PageSetWebSocketInterceptionPatternsParams();
+    params.patterns = WebSocketRouteHandler.prepareInterceptionPatterns(webSocketRoutes);
+    channel.setWebSocketInterceptionPatterns(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public byte[] screenshot(ScreenshotOptions options) {
+    if (options == null) {
+      options = new ScreenshotOptions();
+    }
+    List<Locator> mask = options.mask;
+    // java: { ...options, mask: undefined } is a shallow copy of the options without the mask, as params.
+    ScreenshotOptions withoutMask = Utils.clone(options);
+    withoutMask.mask = null;
+    PageScreenshotParams copy = toProtocol(withoutMask, PageScreenshotParams.class);
+    if (copy.type == null) {
+      copy.type = ElementHandleImpl.determineScreenshotType(options);
+    }
+    if (mask != null) {
+      copy.mask = new ArrayList<>();
+      for (Locator locator : mask) {
+        PageScreenshotParams.PageScreenshotParamsMask item = new PageScreenshotParams.PageScreenshotParamsMask();
+        item.frame = ((LocatorImpl) locator).frame;
+        item.selector = ((LocatorImpl) locator).selector;
+        copy.mask.add(item);
+      }
+    }
+    PageScreenshotResult result = channel.screenshot(copy, timeoutSettings.timeout(options.timeout));
+    if (options.path != null) {
+      Utils.writeToFile(result.binary, options.path);
+    }
+    return result.binary;
+  }
+
+  // java: no signal (AbortSignal), so no AbortError branch.
+  ExpectScreenshotResult expectScreenshot(ExpectScreenshotOptions options) {
+    double timeout = options.timeout;
+    String title = options.title;
+    return wrapApiCall(() -> {
+      List<PageExpectScreenshotParams.PageExpectScreenshotParamsMask> mask = null;
+      if (options.mask != null) {
+        mask = new ArrayList<>();
+        for (Locator locator : options.mask) {
+          PageExpectScreenshotParams.PageExpectScreenshotParamsMask item = new PageExpectScreenshotParams.PageExpectScreenshotParamsMask();
+          item.frame = ((LocatorImpl) locator).frame;
+          item.selector = ((LocatorImpl) locator).selector;
+          mask.add(item);
+        }
+      }
+      PageExpectScreenshotParams.PageExpectScreenshotParamsLocator locator = null;
+      if (options.locator != null) {
+        locator = new PageExpectScreenshotParams.PageExpectScreenshotParamsLocator();
+        locator.frame = ((LocatorImpl) options.locator).frame;
+        locator.selector = ((LocatorImpl) options.locator).selector;
+      }
+      try {
+        // java: { ...optionsWithoutTimeout, isNot, locator, mask } copies the protocol fields of the options.
+        PageExpectScreenshotParams params = new PageExpectScreenshotParams();
+        params.expected = options.expected;
+        params.comparator = options.comparator;
+        params.maxDiffPixels = options.maxDiffPixels;
+        params.maxDiffPixelRatio = options.maxDiffPixelRatio;
+        params.threshold = options.threshold;
+        params.fullPage = options.fullPage;
+        params.clip = options.clip;
+        params.type = options.type;
+        params.omitBackground = options.omitBackground;
+        params.caret = options.caret;
+        params.animations = options.animations;
+        params.scale = options.scale;
+        params.maskColor = options.maskColor;
+        params.style = options.style;
+        params.isNot = options.isNot;
+        params.locator = locator;
+        params.mask = mask;
+        PageExpectScreenshotResult result = channel.expectScreenshot(params, timeout);
+        ExpectScreenshotResult expectResult = new ExpectScreenshotResult();
+        expectResult.actual = result.actual;
+        return expectResult;
+      } catch (ServerErrorWithDetails e) {
+        // java: a PlaywrightError with details is a ServerErrorWithDetails, other errors pass through.
+        PageExpectScreenshotErrorDetails details = connection.protocolGson().fromJson(e.errorDetails(), PageExpectScreenshotErrorDetails.class);
+        if (details.customErrorMessage == null) {
+          throw e;
+        }
+        ExpectScreenshotResult expectResult = new ExpectScreenshotResult();
+        expectResult.diff = details.diff;
+        expectResult.actual = details.actual;
+        expectResult.previous = details.previous;
+        expectResult.timedOut = details.timedOut;
+        expectResult.log = details.log;
+        expectResult.errorMessage = details.customErrorMessage;
+        return expectResult;
+      }
+    }, title, false);
+  }
+
+  @Override
+  public String title() {
+    return mainFrame.title();
+  }
+
+  @Override
+  public void bringToFront() {
+    channel.bringToFront(NO_TIMEOUT);
+  }
+
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
+
+  @Override
+  public void close(CloseOptions options) {
+    if (options == null) {
+      options = new CloseOptions();
+    }
+    boolean runBeforeUnload = Boolean.TRUE.equals(options.runBeforeUnload);
+    closeReason = options.reason;
+    if (!runBeforeUnload) {
+      closeWasCalled = true;
+    }
+    try {
+      if (ownedContext != null) {
+        ownedContext.close();
+      } else if (runBeforeUnload) {
+        channel.runBeforeUnload(NO_TIMEOUT);
+      } else {
+        PageCloseParams params = new PageCloseParams();
+        params.reason = options.reason;
+        channel.close(params, NO_TIMEOUT);
+      }
+    } catch (TargetClosedError e) {
+      if (!runBeforeUnload) {
+        return;
+      }
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean isClosed() {
+    return closed;
+  }
+
+  @Override
+  public void click(String selector, ClickOptions options) {
+    mainFrame.click(selector, convertType(options, Frame.ClickOptions.class));
+  }
+
+  @Override
+  public void dragAndDrop(String source, String target, DragAndDropOptions options) {
+    mainFrame.dragAndDrop(source, target, convertType(options, Frame.DragAndDropOptions.class));
+  }
+
+  @Override
+  public void dblclick(String selector, DblclickOptions options) {
+    mainFrame.dblclick(selector, convertType(options, Frame.DblclickOptions.class));
+  }
+
+  @Override
+  public void tap(String selector, TapOptions options) {
+    mainFrame.tap(selector, convertType(options, Frame.TapOptions.class));
+  }
+
+  @Override
+  public void fill(String selector, String value, FillOptions options) {
+    mainFrame.fill(selector, value, convertType(options, Frame.FillOptions.class));
+  }
+
+  @Override
+  public void clearConsoleMessages() {
+    channel.clearConsoleMessages(NO_TIMEOUT);
+  }
+
+  @Override
+  public List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options) {
+    PageConsoleMessagesParams params = toProtocol(options, PageConsoleMessagesParams.class);
+    PageConsoleMessagesResult result = channel.consoleMessages(params, NO_TIMEOUT);
+    List<ConsoleMessage> messages = new ArrayList<>();
+    for (PageConsoleMessagesResult.PageConsoleMessagesResultMessages message : result.messages) {
+      messages.add(new ConsoleMessageImpl(this, message));
+    }
+    return messages;
+  }
+
+  @Override
+  public void clearPageErrors() {
+    channel.clearPageErrors(NO_TIMEOUT);
+  }
+
+  @Override
+  public List<String> pageErrors() {
+    return pageErrors(null);
+  }
+
+  // java: the Java API returns the errors as strings, not as parsed Error objects; options is its filter, the
+  // public pageErrors() passes none.
+  List<String> pageErrors(String filter) {
+    PagePageErrorsParams params = new PagePageErrorsParams();
+    params.filter = filter;
+    PagePageErrorsResult result = channel.pageErrors(params, NO_TIMEOUT);
+    List<String> errors = new ArrayList<>();
+    for (SerializedError error : result.errors) {
+      errors.add(Serialization.parseError(connection.protocolGson().toJsonTree(error).getAsJsonObject()));
+    }
+    return errors;
+  }
+
+  @Override
+  public Locator locator(String selector, LocatorOptions options) {
+    return mainFrame().locator(selector, convertType(options, Frame.LocatorOptions.class));
+  }
+
+  @Override
+  public Locator getByTestId(String testId) {
+    return mainFrame().getByTestId(testId);
+  }
+
+  @Override
+  public Locator getByTestId(Pattern testId) {
+    return mainFrame().getByTestId(testId);
+  }
+
+  @Override
+  public Locator getByAltText(String text, GetByAltTextOptions options) {
+    return mainFrame().getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class));
+  }
+
+  @Override
+  public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
+    return mainFrame().getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class));
+  }
+
+  @Override
+  public Locator getByLabel(String text, GetByLabelOptions options) {
+    return mainFrame().getByLabel(text, convertType(options, Frame.GetByLabelOptions.class));
+  }
+
+  @Override
+  public Locator getByLabel(Pattern text, GetByLabelOptions options) {
+    return mainFrame().getByLabel(text, convertType(options, Frame.GetByLabelOptions.class));
+  }
+
+  @Override
+  public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
+    return mainFrame().getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class));
+  }
+
+  @Override
+  public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
+    return mainFrame().getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class));
+  }
+
+  @Override
+  public Locator getByRef(String ref) {
+    return locator("aria-ref=" + ref);
+  }
+
+  @Override
+  public Locator getByText(String text, GetByTextOptions options) {
+    return mainFrame().getByText(text, convertType(options, Frame.GetByTextOptions.class));
+  }
+
+  @Override
+  public Locator getByText(Pattern text, GetByTextOptions options) {
+    return mainFrame().getByText(text, convertType(options, Frame.GetByTextOptions.class));
+  }
+
+  @Override
+  public Locator getByTitle(String text, GetByTitleOptions options) {
+    return mainFrame().getByTitle(text, convertType(options, Frame.GetByTitleOptions.class));
+  }
+
+  @Override
+  public Locator getByTitle(Pattern text, GetByTitleOptions options) {
+    return mainFrame().getByTitle(text, convertType(options, Frame.GetByTitleOptions.class));
+  }
+
+  @Override
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
+    return mainFrame().getByRole(role, convertType(options, Frame.GetByRoleOptions.class));
+  }
+
+  @Override
+  public FrameLocator frameLocator(String selector) {
+    return mainFrame().frameLocator(selector);
+  }
+
+  @Override
+  public void focus(String selector, FocusOptions options) {
+    mainFrame.focus(selector, convertType(options, Frame.FocusOptions.class));
+  }
+
+  @Override
+  public String textContent(String selector, TextContentOptions options) {
+    return mainFrame.textContent(selector, convertType(options, Frame.TextContentOptions.class));
+  }
+
+  @Override
+  public String innerText(String selector, InnerTextOptions options) {
+    return mainFrame.innerText(selector, convertType(options, Frame.InnerTextOptions.class));
+  }
+
+  @Override
+  public String innerHTML(String selector, InnerHTMLOptions options) {
+    return mainFrame.innerHTML(selector, convertType(options, Frame.InnerHTMLOptions.class));
+  }
+
+  @Override
+  public String getAttribute(String selector, String name, GetAttributeOptions options) {
+    return mainFrame.getAttribute(selector, name, convertType(options, Frame.GetAttributeOptions.class));
+  }
+
+  @Override
+  public String inputValue(String selector, InputValueOptions options) {
+    return mainFrame.inputValue(selector, convertType(options, Frame.InputValueOptions.class));
+  }
+
+  @Override
+  public boolean isChecked(String selector, IsCheckedOptions options) {
+    return mainFrame.isChecked(selector, convertType(options, Frame.IsCheckedOptions.class));
+  }
+
+  @Override
+  public boolean isDisabled(String selector, IsDisabledOptions options) {
+    return mainFrame.isDisabled(selector, convertType(options, Frame.IsDisabledOptions.class));
+  }
+
+  @Override
+  public boolean isEditable(String selector, IsEditableOptions options) {
+    return mainFrame.isEditable(selector, convertType(options, Frame.IsEditableOptions.class));
+  }
+
+  @Override
+  public boolean isEnabled(String selector, IsEnabledOptions options) {
+    return mainFrame.isEnabled(selector, convertType(options, Frame.IsEnabledOptions.class));
+  }
+
+  @Override
+  public boolean isHidden(String selector, IsHiddenOptions options) {
+    return mainFrame.isHidden(selector, convertType(options, Frame.IsHiddenOptions.class));
+  }
+
+  @Override
+  public boolean isVisible(String selector, IsVisibleOptions options) {
+    return mainFrame.isVisible(selector, convertType(options, Frame.IsVisibleOptions.class));
+  }
+
+  @Override
+  public void hover(String selector, HoverOptions options) {
+    mainFrame.hover(selector, convertType(options, Frame.HoverOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, String values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertType(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
+    mainFrame.setInputFiles(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
+  }
+
+  @Override
+  public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
+    mainFrame.setInputFiles(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
+  }
+
+  @Override
+  public void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options) {
+    mainFrame.setInputFiles(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
+  }
+
+  @Override
+  public void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options) {
+    mainFrame.setInputFiles(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
+  }
+
+  @Override
+  public void type(String selector, String text, TypeOptions options) {
+    mainFrame.type(selector, text, convertType(options, Frame.TypeOptions.class));
+  }
+
+  @Override
+  public void press(String selector, String key, PressOptions options) {
+    mainFrame.press(selector, key, convertType(options, Frame.PressOptions.class));
+  }
+
+  @Override
+  public void check(String selector, CheckOptions options) {
+    mainFrame.check(selector, convertType(options, Frame.CheckOptions.class));
+  }
+
+  @Override
+  public void uncheck(String selector, UncheckOptions options) {
+    mainFrame.uncheck(selector, convertType(options, Frame.UncheckOptions.class));
+  }
+
+  @Override
+  public void setChecked(String selector, boolean checked, SetCheckedOptions options) {
+    mainFrame.setChecked(selector, checked, convertType(options, Frame.SetCheckedOptions.class));
+  }
+
+  @Override
+  public void waitForTimeout(double timeout) {
+    mainFrame.waitForTimeout(timeout);
+  }
+
+  @Override
+  public JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options) {
+    return mainFrame.waitForFunction(expression, arg, convertType(options, Frame.WaitForFunctionOptions.class));
+  }
+
+  @Override
+  public List<Request> requests() {
+    PageRequestsResult result = channel.requests(NO_TIMEOUT);
+    return new ArrayList<>(result.requests);
+  }
+
+  @Override
+  public List<Worker> workers() {
+    return new ArrayList<>(workers);
+  }
+
+  @Override
+  public void pause() {
+    pause(false);
+  }
+
+  // java: _options is its __testHookKeepTestTimeout flag, the public pause() passes false. The inspector.url()
+  // check is not ported: it detects a Node.js debugger, the Java client has none to detect.
+  void pause(boolean testHookKeepTestTimeout) {
+    Double defaultNavigationTimeout = browserContext.timeoutSettings.defaultNavigationTimeout();
+    Double defaultTimeout = browserContext.timeoutSettings.defaultTimeout();
+    browserContext.setDefaultNavigationTimeout(0);
+    browserContext.setDefaultTimeout(0);
+    instrumentation.onWillPause(testHookKeepTestTimeout);
+    closedOrCrashedScope.safeRace(browserContext.sendMessageAsync("pause"));
+    // java: the saved defaults may be unset, which the public double setters cannot express.
+    browserContext.timeoutSettings.setDefaultNavigationTimeout(defaultNavigationTimeout);
+    browserContext.timeoutSettings.setDefaultTimeout(defaultTimeout);
+  }
+
+  @Override
+  public byte[] pdf(PdfOptions options) {
+    if (options == null) {
+      options = new PdfOptions();
+    }
+    // java: toProtocol makes a copy of the margin too.
+    PagePdfParams transportOptions = toProtocol(options, PagePdfParams.class);
+    // java: width, height and the margins are Strings in the Java API, a number never reaches these checks.
+    if ((Object) options.width instanceof Number) {
+      transportOptions.width = options.width + "px";
+    }
+    if ((Object) options.height instanceof Number) {
+      transportOptions.height = options.height + "px";
+    }
+    // java: the loop over 'top', 'right', 'bottom' and 'left' is unrolled, Java has no field access by name.
+    if (options.margin != null && (Object) options.margin.top instanceof Number) {
+      transportOptions.margin.top = transportOptions.margin.top + "px";
+    }
+    if (options.margin != null && (Object) options.margin.right instanceof Number) {
+      transportOptions.margin.right = transportOptions.margin.right + "px";
+    }
+    if (options.margin != null && (Object) options.margin.bottom instanceof Number) {
+      transportOptions.margin.bottom = transportOptions.margin.bottom + "px";
+    }
+    if (options.margin != null && (Object) options.margin.left instanceof Number) {
+      transportOptions.margin.left = transportOptions.margin.left + "px";
+    }
+    PagePdfResult result = channel.pdf(transportOptions, NO_TIMEOUT);
+    if (options.path != null) {
+      Utils.writeToFile(result.pdf, options.path);
+    }
+    return result.pdf;
+  }
+
+  @Override
+  public String ariaSnapshot(AriaSnapshotOptions options) {
+    if (options == null) {
+      options = new AriaSnapshotOptions();
+    }
+    FrameAriaSnapshotParams params = new FrameAriaSnapshotParams();
+    // java: the AriaSnapshotMode enum is sent as its lower-case protocol string.
+    params.mode = options.mode == null ? null : options.mode.toString().toLowerCase();
+    params.depth = options.depth;
+    params.boxes = options.boxes;
+    return mainFrame().channel.ariaSnapshot(params, timeoutSettings.timeout(options.timeout)).snapshot;
+  }
+
+  // java: the AriaSnapshotJSON result is parsed JSON, a JsonElement.
+  JsonElement ariaSnapshotJSON(AriaSnapshotOptions options) {
+    if (options == null) {
+      options = new AriaSnapshotOptions();
+    }
+    FrameAriaSnapshotJSONParams params = new FrameAriaSnapshotJSONParams();
+    // java: the AriaSnapshotMode enum is sent as its lower-case protocol string.
+    params.mode = options.mode == null ? null : options.mode.toString().toLowerCase();
+    params.depth = options.depth;
+    params.boxes = options.boxes;
+    return mainFrame().channel.ariaSnapshotJSON(params, timeoutSettings.timeout(options.timeout)).snapshot;
+  }
+
+  void setDockTile(byte[] image) {
+    PageSetDockTileParams params = new PageSetDockTileParams();
+    params.image = image;
+    channel.setDockTile(params, NO_TIMEOUT);
+  }
+
+  // java: class BindingCall is in BindingCall.java.
+
+  private static String trimUrl(Object param) {
+    if (param instanceof Pattern) {
+      Pattern pattern = (Pattern) param;
+      return "/" + trimStringWithEllipsis(pattern.pattern(), 50) + "/" + toJsRegexFlags(pattern);
+    }
+    if (param instanceof String) {
+      return "\"" + trimStringWithEllipsis((String) param, 50) + "\"";
+    }
+    return null;
+  }
+
+  // java: owner is a PageImpl or a BrowserContextImpl, the members it needs are reached through its class. The
+  // init script function is its source, a String; the callbacks in arg are FunctionCallbacks.
+  static DisposableStub addInitScriptWithExposedFunctions(ChannelOwner owner, Object script, Object arg) {
+    if (!(script instanceof String)) {
+      throw new PlaywrightException("Passing functions requires the init script to be a function");
+    }
+    List<ExposedCallback> callbacks = new ArrayList<>();
+    String source = owner.wrapApiCall(() -> {
+      return initScriptSourceWithExposedFunctions((String) script, arg, (name, callback) -> {
+        DisposableObject disposable = owner instanceof PageImpl
+          ? ((PageImpl) owner).exposeCallbackBinding(name, callback)
+          : ((BrowserContextImpl) owner).exposeCallbackBinding(name, callback);
+        callbacks.add(new ExposedCallback(name, disposable));
+      });
+    }, null, true);
+    DisposableObject initScriptDisposable;
+    if (owner instanceof PageImpl) {
+      PageAddInitScriptParams params = new PageAddInitScriptParams();
+      params.source = source;
+      initScriptDisposable = ((PageImpl) owner).channel.addInitScript(params, NO_TIMEOUT).disposable;
+    } else {
+      BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
+      params.source = source;
+      initScriptDisposable = ((BrowserContextImpl) owner).channel.addInitScript(params, NO_TIMEOUT).disposable;
+    }
+    return new DisposableStub(() -> {
+      Map<String, BindingCallback> bindings = owner instanceof PageImpl ? ((PageImpl) owner).bindings : ((BrowserContextImpl) owner).bindings;
+      for (ExposedCallback callback : callbacks) {
+        bindings.remove(callback.name);
+        // java: dispose() is not awaited upstream; sendMessageAsync does not pump.
+        try {
+          callback.disposable.sendMessageAsync("dispose");
+        } catch (PlaywrightException e) {
+        }
+      }
+      initScriptDisposable.close();
+    });
+  }
+
+  // java: the value object of _locatorHandlers.
+  private static class LocatorHandler {
+    final LocatorImpl locator;
+    final Consumer<Locator> handler;
+    Integer times;
+
+    LocatorHandler(LocatorImpl locator, Consumer<Locator> handler, Integer times) {
+      this.locator = locator;
+      this.handler = handler;
+      this.times = times;
+    }
+  }
+
+  // java: the { name, disposable } entries of _evaluateCallbacks and of the callbacks of addInitScriptWithExposedFunctions.
+  static class ExposedCallback {
+    final String name;
+    final DisposableObject disposable;
+
+    ExposedCallback(String name, DisposableObject disposable) {
+      this.name = name;
+      this.disposable = disposable;
+    }
+  }
+
+  // java: ExpectScreenshotOptions of page.ts: the protocol options with Locator objects for locator and mask, the
+  // timeout and the title; no signal (AbortSignal).
+  static class ExpectScreenshotOptions {
+    byte[] expected;
+    Locator locator;
+    double timeout;
+    boolean isNot;
+    List<Locator> mask;
+    String title;
+    String comparator;
+    Integer maxDiffPixels;
+    Double maxDiffPixelRatio;
+    Double threshold;
+    Boolean fullPage;
+    Rect clip;
+    String type;
+    Boolean omitBackground;
+    String caret;
+    String animations;
+    String scale;
+    String maskColor;
+    String style;
+  }
+
+  // java: the result type of _expectScreenshot.
+  static class ExpectScreenshotResult {
+    byte[] actual;
+    byte[] previous;
+    byte[] diff;
+    String errorMessage;
+    List<String> log;
+    Boolean timedOut;
+  }
+
+  // java: the public API members with no upstream counterpart: accessors of the readonly fields, typed
+  // listeners, onceDialog, waitForCondition and its waitables.
+  @Override
+  public ClockImpl clock() {
+    return clock;
+  }
+
+  @Override
+  public KeyboardImpl keyboard() {
+    return keyboard;
+  }
+
+  @Override
+  public MouseImpl mouse() {
+    return mouse;
+  }
+
+  @Override
+  public APIRequestContextImpl request() {
+    return request;
+  }
+
+  @Override
+  public TouchscreenImpl touchscreen() {
+    return touchscreen;
+  }
+
+  @Override
+  public Screencast screencast() {
+    return screencast;
+  }
+
+  @Override
+  public WebStorage localStorage() {
+    return localStorage;
+  }
+
+  @Override
+  public WebStorage sessionStorage() {
+    return sessionStorage;
+  }
+
+  @Override
+  public WebMCP webmcp() {
+    return webmcp;
   }
 
   @Override
@@ -452,1133 +1886,6 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ClockImpl clock() {
-    return browserContext.clock();
-  }
-
-  @Override
-  public Page waitForClose(WaitForCloseOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForCloseOptions();
-    }
-    return waitForEvent(Events.Page.CLOSE, null, options.timeout, "waiting for event \"close\"", code);
-  }
-
-  @Override
-  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForConsoleMessageOptions();
-    }
-    return waitForEvent(Events.Page.CONSOLE, options.predicate, options.timeout, "waiting for event \"console\"", code);
-  }
-
-  @Override
-  public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForDownloadOptions();
-    }
-    return waitForEvent(Events.Page.DOWNLOAD, options.predicate, options.timeout, "waiting for event \"download\"", code);
-  }
-
-  @Override
-  public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
-    // TODO: enable/disable file chooser interception
-    if (options == null) {
-      options = new WaitForFileChooserOptions();
-    }
-    return waitForEvent(Events.Page.FILE_CHOOSER, options.predicate, options.timeout, "waiting for event \"filechooser\"", code);
-  }
-
-  @Override
-  public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForPopupOptions();
-    }
-    return waitForEvent(Events.Page.POPUP, options.predicate, options.timeout, "waiting for event \"popup\"", code);
-  }
-
-  @Override
-  public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForWebSocketOptions();
-    }
-    return waitForEvent(Events.Page.WEB_SOCKET, options.predicate, options.timeout, "waiting for event \"websocket\"", code);
-  }
-
-  @Override
-  public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForWorkerOptions();
-    }
-    return waitForEvent(Events.Page.WORKER, options.predicate, options.timeout, "waiting for event \"worker\"", code);
-  }
-
-  private static String trimUrl(Object param) {
-    if (param instanceof Pattern) {
-      Pattern pattern = (Pattern) param;
-      return "/" + trimStringWithEllipsis(pattern.pattern(), 50) + "/" + Utils.toJsRegexFlags(pattern);
-    }
-    if (param instanceof String) {
-      return "\"" + trimStringWithEllipsis((String) param, 50) + "\"";
-    }
-    return null;
-  }
-
-  private static String trimStringWithEllipsis(String input, int cap) {
-    if (input.length() <= cap) {
-      return input;
-    }
-    int[] chars = input.codePoints().toArray();
-    if (chars.length > cap) {
-      return new String(chars, 0, cap - 1) + "\u2026";
-    }
-    return input;
-  }
-
-  // _waitForEvent in page.ts
-  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, String logLine, Runnable code) {
-    double timeoutMs = timeoutSettings.timeout(timeout);
-    Waiter waiter = Waiter.createForEvent(this, event);
-    if (logLine != null) {
-      waiter.log(logLine);
-    }
-    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
-    if (!Events.Page.CRASH.equals(event)) {
-      waiter.rejectOnEvent(this, Events.Page.CRASH, () -> new PlaywrightException("Page crashed"));
-    }
-    if (!Events.Page.CLOSE.equals(event)) {
-      waiter.rejectOnEvent(this, Events.Page.CLOSE, () -> closeErrorWithReason());
-    }
-    T result = waiter.waitForEvent(this, event, predicate, code);
-    waiter.dispose();
-    return result;
-  }
-
-  @Override
-  public void close(CloseOptions options) {
-    if (options == null) {
-      options = new CloseOptions();
-    }
-    closeReason = options.reason;
-    try {
-      if (ownedContext != null) {
-        ownedContext.close();
-      } else if (options.runBeforeUnload != null && options.runBeforeUnload) {
-        channel.runBeforeUnload(NO_TIMEOUT);
-      } else {
-        PageCloseParams params = new PageCloseParams();
-        params.reason = options.reason;
-        channel.close(params, NO_TIMEOUT);
-      }
-    } catch (PlaywrightException exception) {
-      if (isSafeCloseError(exception) && (options.runBeforeUnload == null || !options.runBeforeUnload)) {
-        return;
-      }
-      throw exception;
-    }
-  }
-
-  @Override
-  public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
-    return mainFrame.querySelector(
-      selector, convertType(options, Frame.QuerySelectorOptions.class));
-  }
-
-  @Override
-  public List<ElementHandle> querySelectorAll(String selector) {
-    return mainFrame.querySelectorAll(selector);
-  }
-
-  @Override
-  public List<Request> requests() {
-    PageRequestsResult json = channel.requests(NO_TIMEOUT);
-    return new ArrayList<Request>(json.requests);
-  }
-
-  @Override
-  public void addLocatorHandler(Locator locator, Consumer<Locator> handler, AddLocatorHandlerOptions options) {
-    LocatorImpl locatorImpl = (LocatorImpl) locator;
-    if (locatorImpl.frame != mainFrame) {
-      throw new PlaywrightException("Locator must belong to the main frame of this page");
-    }
-    if (options == null) {
-      options = new AddLocatorHandlerOptions();
-    }
-    if (options.times != null && options.times == 0) {
-      return;
-    }
-    AddLocatorHandlerOptions finalOptions = options;
-    PageRegisterLocatorHandlerParams params = new PageRegisterLocatorHandlerParams();
-    params.selector = locatorImpl.selector;
-    if (finalOptions.noWaitAfter != null && finalOptions.noWaitAfter) {
-      params.noWaitAfter = true;
-    }
-    PageRegisterLocatorHandlerResult json = channel.registerLocatorHandler(params, NO_TIMEOUT);
-    int uid = json.uid;
-    locatorHandlers.put(uid, new LocatorHandler(locator, handler, finalOptions.times));
-  }
-
-  @Override
-  public void removeLocatorHandler(Locator locator) {
-    for (Map.Entry<Integer, LocatorHandler> entry: locatorHandlers.entrySet()) {
-      if (entry.getValue().locator.equals(locator)) {
-        locatorHandlers.remove(locator);
-        PageUnregisterLocatorHandlerParams params = new PageUnregisterLocatorHandlerParams();
-        params.uid = entry.getKey();
-        try {
-          channel.unregisterLocatorHandler(params, NO_TIMEOUT);
-        } catch (PlaywrightException e) {
-        }
-      }
-    }
-  }
-
-  private void onLocatorHandlerTriggered(int uid) {
-    boolean remove = false;
-    try {
-      LocatorHandler handler = locatorHandlers.get(uid);
-      remove = handler != null && handler.call();
-    } finally {
-      if (remove) {
-        locatorHandlers.remove(uid);
-      }
-      PageResolveLocatorHandlerNoReplyParams params = new PageResolveLocatorHandlerNoReplyParams();
-      params.uid = uid;
-      params.remove = remove;
-      sendMessageAsync("resolveLocatorHandlerNoReply", params);
-    }
-  }
-
-  @Override
-  public String ariaSnapshot(AriaSnapshotOptions options) {
-    if (options == null) {
-      options = new AriaSnapshotOptions();
-    }
-    FrameAriaSnapshotParams params = toProtocol(options, FrameAriaSnapshotParams.class);
-    return mainFrame.channel.ariaSnapshot(params, mainFrame.timeout(options.timeout)).snapshot;
-  }
-
-  @Override
-  public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
-    return mainFrame.evalOnSelectorImpl(
-      selector, pageFunction, arg, convertType(options, Frame.EvalOnSelectorOptions.class));
-  }
-
-  @Override
-  public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    return mainFrame.evalOnSelectorAllImpl(selector, pageFunction, arg);
-  }
-
-  @Override
-  public AutoCloseable addInitScript(String script) {
-    return addInitScriptImpl(script);
-  }
-
-  @Override
-  public AutoCloseable addInitScript(Path path) {
-    try {
-      byte[] bytes = readAllBytes(path);
-      String script = addSourceUrlToScript(new String(bytes, UTF_8), path);
-      return addInitScriptImpl(script);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read script from file", e);
-    }
-  }
-
-  private AutoCloseable addInitScriptImpl(String script) {
-    PageAddInitScriptParams params = new PageAddInitScriptParams();
-    params.source = script;
-    return channel.addInitScript(params, NO_TIMEOUT).disposable;
-  }
-
-  @Override
-  public ElementHandle addScriptTag(AddScriptTagOptions options) {
-    return mainFrame.addScriptTagImpl(convertType(options, Frame.AddScriptTagOptions.class));
-  }
-
-  @Override
-  public ElementHandle addStyleTag(AddStyleTagOptions options) {
-    return mainFrame.addStyleTagImpl(convertType(options, Frame.AddStyleTagOptions.class));
-  }
-
-  @Override
-  public void bringToFront() {
-    channel.bringToFront(NO_TIMEOUT);
-  }
-
-  @Override
-  public void check(String selector, CheckOptions options) {
-    mainFrame.check(selector, convertType(options, Frame.CheckOptions.class));
-  }
-
-  @Override
-  public void click(String selector, ClickOptions options) {
-    mainFrame.clickImpl(selector, convertType(options, Frame.ClickOptions.class), null);
-  }
-
-  @Override
-  public String content(ContentOptions options) {
-    return mainFrame.content(convertType(options, Frame.ContentOptions.class));
-  }
-
-  @Override
-  public BrowserContextImpl context() {
-    return browserContext;
-  }
-
-  @Override
-  public void dblclick(String selector, DblclickOptions options) {
-    mainFrame.dblclickImpl(selector, convertType(options, Frame.DblclickOptions.class), null);
-  }
-
-  @Override
-  public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
-    mainFrame.dispatchEvent(selector, type, eventInit, convertType(options, Frame.DispatchEventOptions.class));
-  }
-
-  @Override
-  public void emulateMedia(EmulateMediaOptions options) {
-    emulateMediaImpl(options);
-  }
-
-  private void emulateMediaImpl(EmulateMediaOptions options) {
-    if (options == null) {
-      options = new EmulateMediaOptions();
-    }
-    PageEmulateMediaParams params = toProtocol(options, PageEmulateMediaParams.class);
-    channel.emulateMedia(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public Object evaluate(String expression, Object arg) {
-    return mainFrame.evaluate(expression, arg);
-  }
-
-  @Override
-  public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return mainFrame.evaluateHandle(pageFunction, arg);
-  }
-
-  @Override
-  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding) {
-    return exposeBindingImpl(name, playwrightBinding);
-  }
-
-  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding) {
-    if (bindings.containsKey(name)) {
-      throw new PlaywrightException("Function \"" + name + "\" has been already registered");
-    }
-    if (browserContext.bindings.containsKey(name)) {
-      throw new PlaywrightException("Function \"" + name + "\" has been already registered in the browser context");
-    }
-    bindings.put(name, playwrightBinding);
-
-    PageExposeBindingParams params = new PageExposeBindingParams();
-    params.name = name;
-    return channel.exposeBinding(params, NO_TIMEOUT).disposable;
-  }
-
-  @Override
-  public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
-    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args));
-  }
-
-  @Override
-  public void fill(String selector, String value, FillOptions options) {
-    mainFrame.fill(selector, value, convertType(options, Frame.FillOptions.class));
-  }
-
-  @Override
-  public void focus(String selector, FocusOptions options) {
-    mainFrame.focus(selector, convertType(options, Frame.FocusOptions.class));
-  }
-
-  @Override
-  public Frame frame(String name) {
-    for (Frame frame : frames) {
-      if (name.equals(frame.name())) {
-        return frame;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public Frame frameByUrl(String glob) {
-    return frameFor(UrlMatcher.forGlob(browserContext.baseUrl(), glob, this.connection.localUtils(), false));
-  }
-
-  @Override
-  public Frame frameByUrl(Pattern pattern) {
-    return frameFor(new UrlMatcher(pattern));
-  }
-
-  @Override
-  public Frame frameByUrl(Predicate<String> predicate) {
-    return frameFor(new UrlMatcher(predicate));
-  }
-
-  @Override
-  public FrameLocator frameLocator(String selector) {
-    return mainFrame.frameLocator(selector);
-  }
-
-  private Frame frameFor(UrlMatcher matcher) {
-    for (Frame frame : frames) {
-      if (matcher.test(frame.url())) {
-        return frame;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public List<Frame> frames() {
-    return new ArrayList<>(frames);
-  }
-
-  @Override
-  public String getAttribute(String selector, String name, GetAttributeOptions options) {
-    return mainFrame.getAttributeImpl(selector, name, convertType(options, Frame.GetAttributeOptions.class));
-  }
-
-  @Override
-  public Locator getByAltText(String text, GetByAltTextOptions options) {
-    return mainFrame.getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class));
-  }
-
-  @Override
-  public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
-    return mainFrame.getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class));
-  }
-
-  @Override
-  public Locator getByLabel(String text, GetByLabelOptions options) {
-    return mainFrame.getByLabel(text, convertType(options, Frame.GetByLabelOptions.class));
-  }
-
-  @Override
-  public Locator getByLabel(Pattern text, GetByLabelOptions options) {
-    return mainFrame.getByLabel(text, convertType(options, Frame.GetByLabelOptions.class));
-  }
-
-  @Override
-  public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
-    return mainFrame.getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class));
-  }
-
-  @Override
-  public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
-    return mainFrame.getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class));
-  }
-
-  @Override
-  public Locator getByRef(String ref) {
-    return locator("aria-ref=" + ref);
-  }
-
-  @Override
-  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
-    return mainFrame.getByRole(role, convertType(options, Frame.GetByRoleOptions.class));
-  }
-
-  @Override
-  public Locator getByTestId(String testId) {
-    return mainFrame.getByTestId(testId);
-  }
-
-  @Override
-  public Locator getByTestId(Pattern testId) {
-    return mainFrame.getByTestId(testId);
-  }
-
-  @Override
-  public Locator getByText(String text, GetByTextOptions options) {
-    return mainFrame.getByText(text, convertType(options, Frame.GetByTextOptions.class));
-  }
-
-  @Override
-  public Locator getByText(Pattern text, GetByTextOptions options) {
-    return mainFrame.getByText(text, convertType(options, Frame.GetByTextOptions.class));
-  }
-
-  @Override
-  public Locator getByTitle(String text, GetByTitleOptions options) {
-    return mainFrame.getByTitle(text, convertType(options, Frame.GetByTitleOptions.class));
-  }
-
-  @Override
-  public Locator getByTitle(Pattern text, GetByTitleOptions options) {
-    return mainFrame.getByTitle(text, convertType(options, Frame.GetByTitleOptions.class));
-  }
-
-  @Override
-  public Response goBack(GoBackOptions options) {
-    return goBackImpl(options);
-  }
-
-  Response goBackImpl(GoBackOptions options) {
-    if (options == null) {
-      options = new GoBackOptions();
-    }
-    PageGoBackParams params = toProtocol(options, PageGoBackParams.class);
-    return channel.goBack(params, timeoutSettings.navigationTimeout(options.timeout)).response;
-  }
-
-  @Override
-  public Response goForward(GoForwardOptions options) {
-    return goForwardImpl(options);
-  }
-
-  Response goForwardImpl(GoForwardOptions options) {
-    if (options == null) {
-      options = new GoForwardOptions();
-    }
-    PageGoForwardParams params = toProtocol(options, PageGoForwardParams.class);
-    return channel.goForward(params, timeoutSettings.navigationTimeout(options.timeout)).response;
-  }
-
-  @Override
-  public void requestGC() {
-    channel.requestGC(NO_TIMEOUT);
-  }
-
-  @Override
-  public ResponseImpl navigate(String url, NavigateOptions options) {
-    return mainFrame.navigateImpl(url, convertType(options, Frame.NavigateOptions.class));
-  }
-
-  @Override
-  public void hover(String selector, HoverOptions options) {
-    mainFrame.hoverImpl(selector, convertType(options, Frame.HoverOptions.class));
-  }
-
-  @Override
-  public void dragAndDrop(String source, String target, DragAndDropOptions options) {
-    if (options == null) {
-      options = new DragAndDropOptions();
-    }
-    mainFrame.dragAndDropImpl(source, target, convertType(options, Frame.DragAndDropOptions.class), options.steps);
-  }
-
-  @Override
-  public String innerHTML(String selector, InnerHTMLOptions options) {
-    return mainFrame.innerHTMLImpl(selector, convertType(options, Frame.InnerHTMLOptions.class));
-  }
-
-  @Override
-  public String innerText(String selector, InnerTextOptions options) {
-    return mainFrame.innerTextImpl(selector, convertType(options, Frame.InnerTextOptions.class));
-  }
-
-  @Override
-  public String inputValue(String selector, InputValueOptions options) {
-    return mainFrame.inputValueImpl(selector, convertType(options, Frame.InputValueOptions.class));
-  }
-
-  @Override
-  public boolean isChecked(String selector, IsCheckedOptions options) {
-    return mainFrame.isCheckedImpl(selector, convertType(options, Frame.IsCheckedOptions.class));
-  }
-
-  @Override
-  public boolean isClosed() {
-    return isClosed;
-  }
-
-  @Override
-  public boolean isDisabled(String selector, IsDisabledOptions options) {
-    return mainFrame.isDisabledImpl(selector, convertType(options, Frame.IsDisabledOptions.class));
-  }
-
-  @Override
-  public boolean isEditable(String selector, IsEditableOptions options) {
-    return mainFrame.isEditableImpl(selector, convertType(options, Frame.IsEditableOptions.class));
-  }
-
-  @Override
-  public boolean isEnabled(String selector, IsEnabledOptions options) {
-    return mainFrame.isEnabledImpl(selector, convertType(options, Frame.IsEnabledOptions.class));
-  }
-
-  @Override
-  public boolean isHidden(String selector, IsHiddenOptions options) {
-    return mainFrame.isHiddenImpl(selector, convertType(options, Frame.IsHiddenOptions.class));
-  }
-
-  @Override
-  public boolean isVisible(String selector, IsVisibleOptions options) {
-    return mainFrame.isVisibleImpl(selector, convertType(options, Frame.IsVisibleOptions.class));
-  }
-
-  @Override
-  public Keyboard keyboard() {
-    return keyboard;
-  }
-
-  @Override
-  public List<ConsoleMessage> consoleMessages(ConsoleMessagesOptions options) {
-    PageConsoleMessagesParams params = toProtocol(options, PageConsoleMessagesParams.class);
-    PageConsoleMessagesResult json = channel.consoleMessages(params, NO_TIMEOUT);
-    List<ConsoleMessage> result = new ArrayList<>();
-    for (PageConsoleMessagesResult.PageConsoleMessagesResultMessages item : json.messages) {
-      result.add(new ConsoleMessageImpl(this, item));
-    }
-    return result;
-  }
-
-  @Override
-  public void clearConsoleMessages() {
-    channel.clearConsoleMessages(NO_TIMEOUT);
-  }
-
-  @Override
-  public void clearPageErrors() {
-    channel.clearPageErrors(NO_TIMEOUT);
-  }
-
-  @Override
-  public List<String> pageErrors() {
-    PagePageErrorsResult json = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
-    List<String> result = new ArrayList<>();
-    for (SerializedError item : json.errors) {
-      String errorStr = "";
-      if (item.error != null) {
-        errorStr = item.error.name + ": " + item.error.message;
-        if (item.error.stack != null && !item.error.stack.isEmpty()) {
-          errorStr += "\n" + item.error.stack;
-        }
-      }
-      result.add(errorStr);
-    }
-    return result;
-  }
-
-  @Override
-  public Locator locator(String selector, LocatorOptions options) {
-    return mainFrame.locator(selector, convertType(options, Frame.LocatorOptions.class));
-  }
-
-  @Override
-  public Frame mainFrame() {
-    return mainFrame;
-  }
-
-  @Override
-  public WebMCP webmcp() {
-    return mainFrame.webmcp();
-  }
-
-  @Override
-  public void hideHighlight() {
-    channel.hideHighlight(NO_TIMEOUT);
-  }
-
-  @Override
-  public Mouse mouse() {
-    return mouse;
-  }
-
-  @Override
-  public PageImpl opener() {
-    if (opener == null || opener.isClosed()) {
-      return null;
-    }
-    return opener;
-  }
-
-  @Override
-  public void cancelPickLocator() {
-    channel.cancelPickLocator(NO_TIMEOUT);
-  }
-
-  @Override
-  public Locator pickLocator() {
-    PagePickLocatorResult result = channel.pickLocator(NO_TIMEOUT);
-    return new LocatorImpl(mainFrame, result.selector, null);
-  }
-
-  @Override
-  public void pause() {
-    TimeoutSettings settings = browserContext.timeoutSettings;
-    Double defaultNavigationTimeout = settings.defaultNavigationTimeout();
-    Double defaultTimeout = settings.defaultTimeout();
-    settings.setDefaultNavigationTimeout(0.0);
-    settings.setDefaultTimeout(0.0);
-    try {
-      runUntil(() -> {}, new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)));
-    } finally {
-      settings.setDefaultNavigationTimeout(defaultNavigationTimeout);
-      settings.setDefaultTimeout(defaultTimeout);
-    }
-  }
-
-  @Override
-  public byte[] pdf(PdfOptions options) {
-    return pdfImpl(options);
-  }
-
-  private byte[] pdfImpl(PdfOptions options) {
-    if (options == null) {
-      options = new PdfOptions();
-    }
-    PagePdfParams params = toProtocol(options, PagePdfParams.class);
-    byte[] buffer = channel.pdf(params, NO_TIMEOUT).pdf;
-    if (options.path != null) {
-      Utils.writeToFile(buffer, options.path);
-    }
-    return buffer;
-  }
-
-  @Override
-  public void press(String selector, String key, PressOptions options) {
-    mainFrame.pressImpl(selector, key, convertType(options, Frame.PressOptions.class));
-  }
-
-  @Override
-  public Response reload(ReloadOptions options) {
-    return reloadImpl(options);
-  }
-
-  @Override
-  public APIRequestContextImpl request() {
-    return browserContext.request();
-  }
-
-  private Response reloadImpl(ReloadOptions options) {
-    if (options == null) {
-      options = new ReloadOptions();
-    }
-    PageReloadParams params = toProtocol(options, PageReloadParams.class);
-    return channel.reload(params, timeoutSettings.navigationTimeout(options.timeout)).response;
-  }
-
-  @Override
-  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public void routeFromHAR(Path har, RouteFromHAROptions options) {
-    if (options == null) {
-      options = new RouteFromHAROptions();
-    }
-    if (options.update != null && options.update) {
-      browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class), null);
-      return;
-    }
-    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl(), options.url, this.connection.localUtils(), false);
-    HARRouter harRouter = new HARRouter(connection.localUtils(), har, options.notFound);
-    onClose(context -> harRouter.dispose());
-    route(matcher, route -> harRouter.handle(route), null);
-  }
-
-  private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
-    routes.add(matcher, handler, options == null ? null : options.times);
-    updateInterceptionPatterns();
-  }
-
-    @Override
-  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), true), handler);
-  }
-
-  @Override
-  public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(pattern), handler);
-  }
-
-  @Override
-  public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(predicate), handler);
-  }
-
-  private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
-    webSocketRoutes.add(matcher, handler);
-    updateWebSocketInterceptionPatterns();
-  }
-
-  @Override
-  public byte[] screenshot(ScreenshotOptions options) {
-    return screenshotImpl(options);
-  }
-
-  @Override
-  public List<String> selectOption(String selector, String value, SelectOptionOptions options) {
-    String[] values = value == null ? null : new String[]{ value };
-    return selectOption(selector, values, options);
-  }
-
-  @Override
-  public List<String> selectOption(String selector, ElementHandle value, SelectOptionOptions options) {
-    ElementHandle[] values = value == null ? null : new ElementHandle[]{ value };
-    return selectOption(selector, values, options);
-  }
-
-  @Override
-  public List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
-    return mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class));
-  }
-
-  @Override
-  public List<String> selectOption(String selector, SelectOption value, SelectOptionOptions options) {
-    SelectOption[] values = value == null ? null : new SelectOption[]{value};
-    return selectOption(selector, values, options);
-  }
-
-  private byte[] screenshotImpl(ScreenshotOptions options) {
-    if (options == null) {
-      options = new ScreenshotOptions();
-    }
-    if (options.type == null && options.path != null) {
-      options.type = Utils.screenshotTypeForPath(options.path);
-    }
-    PageScreenshotParams params = toProtocol(this, options, PageScreenshotParams.class);
-    byte[] buffer = channel.screenshot(params, timeoutSettings.timeout(options.timeout)).binary;
-    if (options.path != null) {
-      Utils.writeToFile(buffer, options.path);
-    }
-    return buffer;
-  }
-
-  @Override
-  public List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options) {
-    return mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class));
-  }
-
-  @Override
-  public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
-    return mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class));
-  }
-
-  @Override
-  public void setChecked(String selector, boolean checked, SetCheckedOptions options) {
-    mainFrame.setCheckedImpl(selector, checked, convertType(options, Frame.SetCheckedOptions.class));
-  }
-
-  @Override
-  public void setContent(String html, SetContentOptions options) {
-    mainFrame.setContent(html, convertType(options, Frame.SetContentOptions.class));
-  }
-
-  @Override
-  public void setDefaultNavigationTimeout(double timeout) {
-    timeoutSettings.setDefaultNavigationTimeout(timeout);
-  }
-
-  @Override
-  public void setDefaultTimeout(double timeout) {
-    timeoutSettings.setDefaultTimeout(timeout);
-  }
-
-  @Override
-  public void setExtraHTTPHeaders(Map<String, String> headers) {
-    PageSetExtraHTTPHeadersParams params = new PageSetExtraHTTPHeadersParams();
-    params.headers = new ArrayList<>();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      NameValue header = new NameValue();
-      header.name = e.getKey();
-      header.value = e.getValue();
-      params.headers.add(header);
-    }
-    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
-    setInputFiles(selector, new Path[]{files}, options);
-  }
-
-  @Override
-  public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
-    mainFrame.setInputFilesImpl(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
-  }
-
-  @Override
-  public void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options) {
-    setInputFiles(selector, new FilePayload[]{files}, options);
-  }
-
-  @Override
-  public void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options) {
-    mainFrame.setInputFilesImpl(selector, files, convertType(options, Frame.SetInputFilesOptions.class));
-  }
-
-  @Override
-  public void setViewportSize(int width, int height) {
-    viewport = new ViewportSize(width, height);
-    PageSetViewportSizeParams params = new PageSetViewportSizeParams();
-    params.viewportSize = new PageSetViewportSizeParams.PageSetViewportSizeParamsViewportSize();
-    params.viewportSize.width = width;
-    params.viewportSize.height = height;
-    channel.setViewportSize(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void tap(String selector, TapOptions options) {
-    mainFrame.tap(selector, convertType(options, Frame.TapOptions.class));
-  }
-
-  @Override
-  public String textContent(String selector, TextContentOptions options) {
-    return mainFrame.textContent(selector, convertType(options, Frame.TextContentOptions.class));
-  }
-
-  @Override
-  public String title() {
-    return mainFrame.title();
-  }
-
-  @Override
-  public Touchscreen touchscreen() {
-    return touchscreen;
-  }
-
-  @Override
-  public Screencast screencast() {
-    return screencast;
-  }
-
-  @Override
-  public WebStorage localStorage() {
-    return localStorage;
-  }
-
-  @Override
-  public WebStorage sessionStorage() {
-    return sessionStorage;
-  }
-
-  @Override
-  public void type(String selector, String text, TypeOptions options) {
-    mainFrame.type(selector, text, convertType(options, Frame.TypeOptions.class));
-  }
-
-  @Override
-  public void uncheck(String selector, UncheckOptions options) {
-    mainFrame.uncheck(selector, convertType(options, Frame.UncheckOptions.class));
-  }
-
-  @Override
-  public void unrouteAll() {
-    routes.removeAll();
-    updateInterceptionPatterns();
-  }
-
-  @Override
-  public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(browserContext.baseUrl(), url, this.connection.localUtils(), false), handler);
-  }
-
-  @Override
-  public void unroute(Pattern url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
-  }
-
-  @Override
-  public void unroute(Predicate<String> url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
-  }
-
-  private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.remove(matcher, handler);
-    updateInterceptionPatterns();
-  }
-
-  private void updateInterceptionPatterns() {
-    channel.setNetworkInterceptionPatterns(
-      connection.protocolGson().fromJson(routes.interceptionPatterns(), PageSetNetworkInterceptionPatternsParams.class), NO_TIMEOUT);
-  }
-
-  private void updateWebSocketInterceptionPatterns() {
-    channel.setWebSocketInterceptionPatterns(
-      connection.protocolGson().fromJson(webSocketRoutes.interceptionPatterns(), PageSetWebSocketInterceptionPatternsParams.class), NO_TIMEOUT);
-  }
-
-  @Override
-  public String url() {
-    return mainFrame.url();
-  }
-
-
-  @Override
-  public VideoImpl video() {
-    if (!browserContext.initializer.getAsJsonObject("options").has("recordVideo")) {
-      return null;
-    }
-    return video;
-  }
-
-  @Override
-  public ViewportSize viewportSize() {
-    return viewport;
-  }
-
-  <T> Waitable<T> createWaitableTimeout(Double timeout) {
-    return timeoutSettings.createWaitable(timeout);
-  }
-
-  @Override
-  public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
-    return mainFrame.waitForFunction(pageFunction, arg, convertType(options, Frame.WaitForFunctionOptions.class));
-  }
-
-  @Override
-  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    mainFrame.waitForLoadState(state, convertType(options, Frame.WaitForLoadStateOptions.class));
-  }
-
-  @Override
-  public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
-    if (options != null) {
-      frameOptions.timeout = options.timeout;
-      frameOptions.waitUntil = options.waitUntil;
-      frameOptions.url = options.url;
-    }
-    return mainFrame.waitForNavigation(frameOptions, code);
-  }
-
-  void frameNavigated(FrameImpl frame) {
-    emit(Events.Page.FRAME_NAVIGATED, frame);
-    browserContext.notifyFrameNavigated(frame);
-  }
-
-  <T> Waitable<T> createWaitForCloseHelper() {
-    return new WaitableRace<T>(asList(new WaitablePageClose(), new WaitablePageCrash()));
-  }
-
-  private class WaitablePageClose<T> extends WaitableEvent<T> {
-    WaitablePageClose() {
-      super(PageImpl.this, Events.Page.CLOSE);
-    }
-
-    @Override
-    public T get() {
-      throw closeErrorWithReason();
-    }
-  }
-
-  private class WaitablePageCrash<T> extends WaitableEvent<T> {
-    WaitablePageCrash() {
-      super(PageImpl.this, Events.Page.CRASH);
-    }
-
-    @Override
-    public T get() {
-      throw new TargetClosedError("Page crashed");
-    }
-  }
-
-  @Override
-  public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
-  }
-
-  @Override
-  public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
-  }
-
-  @Override
-  public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(null, predicate, null, options, code);
-  }
-
-  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, String trimmedUrl, WaitForRequestOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForRequestOptions();
-    }
-    Predicate<Request> requestPredicate = predicate != null ? predicate : request -> urlMatcher.test(request.url());
-    String logLine = trimmedUrl == null ? null : "waiting for request " + trimmedUrl;
-    return waitForEvent(Events.Page.REQUEST, requestPredicate, options.timeout, logLine, code);
-  }
-
-  @Override
-  public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForRequestFinishedOptions();
-    }
-    return waitForEvent(Events.Page.REQUEST_FINISHED, options.predicate, options.timeout, "waiting for event \"requestfinished\"", code);
-  }
-
-  @Override
-  public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(UrlMatcher.forGlob(browserContext.baseUrl(), urlGlob, this.connection.localUtils(), false), null, trimUrl(urlGlob), options, code);
-  }
-
-  @Override
-  public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(new UrlMatcher(urlPattern), null, trimUrl(urlPattern), options, code);
-  }
-
-  @Override
-  public Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(null, predicate, null, options, code);
-  }
-
-  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, String trimmedUrl, WaitForResponseOptions options, Runnable code) {
-    if (options == null) {
-      options = new WaitForResponseOptions();
-    }
-    Predicate<Response> responsePredicate = predicate != null ? predicate : response -> urlMatcher.test(response.url());
-    String logLine = trimmedUrl == null ? null : "waiting for response " + trimmedUrl;
-    return waitForEvent(Events.Page.RESPONSE, responsePredicate, options.timeout, logLine, code);
-  }
-
-  @Override
-  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return mainFrame.waitForSelector(selector, convertType(options, Frame.WaitForSelectorOptions.class));
-  }
-
-  @Override
-  public void waitForCondition(BooleanSupplier predicate, WaitForConditionOptions options) {
-    List<Waitable<Void>> waitables = new ArrayList<>();
-    waitables.add(createWaitForCloseHelper());
-    waitables.add(createWaitableTimeout(options == null ? null : options.timeout));
-    waitables.add(new WaitablePredicate<>(predicate));
-    runUntil(() -> {}, new WaitableRace<>(waitables));
-  }
-
-  @Override
-  public void waitForTimeout(double timeout) {
-    mainFrame.waitForTimeout(timeout);
-  }
-
-  @Override
-  public void waitForURL(String url, WaitForURLOptions options) {
-    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
-  }
-
-  @Override
-  public void waitForURL(Pattern url, WaitForURLOptions options) {
-    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
-  }
-
-  @Override
-  public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
-    mainFrame.waitForURL(url, convertType(options, Frame.WaitForURLOptions.class));
-  }
-
-  @Override
-  public List<Worker> workers() {
-    return new ArrayList<>(workers);
-  }
-
-  @Override
   public void onceDialog(Consumer<Dialog> handler) {
     onDialog(new Consumer<Dialog>() {
       @Override
@@ -1590,5 +1897,24 @@ public class PageImpl extends ChannelOwner implements Page {
         }
       }
     });
+  }
+
+  @Override
+  public void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options) {
+    List<Waitable<Void>> waitables = new ArrayList<>();
+    // java: the condition goes first, it wins on a page that is already closed.
+    waitables.add(new WaitablePredicate<>(condition));
+    waitables.add(createWaitForCloseHelper());
+    waitables.add(createWaitableTimeout(options == null ? null : options.timeout));
+    runUntil(() -> {}, new WaitableRace<>(waitables));
+  }
+
+  // java: done once the page closed or crashed, then throws the error closedOrCrashedScope was closed with.
+  <T> Waitable<T> createWaitForCloseHelper() {
+    return closedOrCrashedScope.terminatePromise(false);
+  }
+
+  <T> Waitable<T> createWaitableTimeout(Double timeout) {
+    return timeoutSettings.createWaitable(timeout);
   }
 }

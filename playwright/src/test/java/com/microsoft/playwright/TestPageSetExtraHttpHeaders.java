@@ -73,6 +73,6 @@ public class TestPageSetExtraHttpHeaders {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
     });
-    assertTrue(e.getMessage().contains("Value cannot be null"));
+    assertTrue(e.getMessage().contains("Expected value of header \"foo\" to be String, but \"object\" is found."));
   }
 }

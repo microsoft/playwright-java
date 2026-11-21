@@ -1,12 +1,12 @@
 /*
  * Copyright (c) Microsoft Corporation.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,39 +14,81 @@
  * limitations under the License.
  */
 
+// Port of network.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
 import com.microsoft.playwright.APIResponse;
-import com.microsoft.playwright.options.RequestOptions;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.Route;
+import com.microsoft.playwright.impl.protocol.RouteAbortParams;
+import com.microsoft.playwright.impl.protocol.RouteChannel;
+import com.microsoft.playwright.impl.protocol.RouteContinueParams;
+import com.microsoft.playwright.impl.protocol.RouteFulfillParams;
+import com.microsoft.playwright.impl.protocol.RouteInitializer;
+import com.microsoft.playwright.impl.protocol.RouteRedirectNavigationRequestParams;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.isomorphic.Headers.headersObjectToArray;
+import static com.microsoft.playwright.impl.isomorphic.MimeType.getMimeTypeForPath;
 
 public class RouteImpl extends ChannelOwner implements Route {
-  private final RequestImpl request;
-  private boolean handled;
-  BrowserContextImpl browserContext;
-  boolean fallbackCalled;
-  boolean shouldResumeIfFallbackIsCalled;
+  private WaitableResult<Boolean> handlingPromise = null;
+  BrowserContextImpl context;
+  boolean didThrow = false;
 
   final RouteChannel channel = new RouteChannel(this);
+  private final RouteInitializer routeInitializer;
 
-  public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+  // java: from is not ported, generated results already hold the impl object.
+
+  RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
+    routeInitializer = connection.protocolGson().fromJson(initializer, RouteInitializer.class);
+  }
+
+  @Override
+  public RequestImpl request() {
+    return routeInitializer.request;
+  }
+
+  // java: takes the pending reply of a message sent with sendMessageAsync.
+  private void raceWithTargetClose(WaitableResult<JsonElement> promise) {
+    // When page closes or crashes, we catch any potential rejects from this Route.
+    // Note that page could be missing when routing popup's initial request that
+    // does not have a Page initialized just yet.
+    request().targetClosedScope().safeRace(promise);
+  }
+
+  WaitableResult<Boolean> startHandling() {
+    handlingPromise = new WaitableResult<>();
+    return handlingPromise;
+  }
+
+  @Override
+  public void fallback(FallbackOptions options) {
+    if (options == null) {
+      options = new FallbackOptions();
+    }
+    checkNotHandled();
+    request().applyFallbackOverrides(fallbackOverrides(options.url, options.method, options.headers, options.postData));
+    reportHandled(false);
+    // java: nobody waits for a fallback() after the handler returned (see RouteHandler.handleInternal), so the
+    // request continues as the end of BrowserContext.onRoute() does.
+    if (handlerReturned) {
+      try {
+        innerContinue(true);
+      } catch (PlaywrightException e) {
+      }
+    }
   }
 
   @Override
@@ -54,264 +96,189 @@ public class RouteImpl extends ChannelOwner implements Route {
     handleRoute(() -> {
       RouteAbortParams params = new RouteAbortParams();
       params.errorCode = errorCode;
-      raceWithTargetClose("abort", params);
+      raceWithTargetClose(sendMessageAsync("abort", params));
     });
   }
 
-  boolean isHandled() {
-    return handled;
-  }
-
-  @Override
-  public void resume(ResumeOptions options) {
+  void redirectNavigationRequest(String url) {
     handleRoute(() -> {
-      applyOverrides(convertType(options, FallbackOptions.class));
-      raceWithTargetClose("continue", continueParams(false));
+      RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
+      params.url = url;
+      raceWithTargetClose(sendMessageAsync("redirectNavigationRequest", params));
     });
   }
 
-  // java: upstream awaits _innerContinue(true) and ignores its error; nothing observes the reply here.
-  void continueAsFallback() {
-    checkNotHandled();
-    handled = true;
-    sendMessageAsync("continue", continueParams(true));
-  }
-
-  private void handleRoute(Runnable callback) {
-    checkNotHandled();
-    callback.run();
-    handled = true;
-  }
-
-  // java: pumps the connection until the reply arrives; when the page closes first the call returns
-  // without an error, as safeRace() of the target closed scope does upstream.
-  private void raceWithTargetClose(String method, Object params) {
-    WaitableResult<JsonElement> result = sendMessageAsync(method, params);
-    PageImpl page = request.safePage();
-    if (page == null) {
-      runUntil(() -> {}, result);
-      return;
-    }
-    if (page.isClosed()) {
-      return;
-    }
-    Waitable<JsonElement> closed = page.createWaitForCloseHelper();
-    runUntil(() -> {}, new WaitableRace<>(Arrays.asList(result, new Waitable<JsonElement>() {
-      @Override
-      public boolean isDone() {
-        return closed.isDone();
-      }
-
-      @Override
-      public JsonElement get() {
-        return null;
-      }
-
-      @Override
-      public void dispose() {
-        closed.dispose();
-      }
-    })));
-  }
-
   @Override
-  public void fallback(FallbackOptions options) {
-    fallbackCalled = true;
-    if (handled) {
-      throw new PlaywrightException("Route is already handled!");
-    }
-    applyOverrides(options);
-    if (shouldResumeIfFallbackIsCalled) {
-      continueAsFallback();
-    }
-  }
-
-  @Override
-  public APIResponse fetch(FetchOptions fetchOptions) {
-    RequestOptionsImpl options = convertType(fetchOptions, RequestOptionsImpl.class);
+  public APIResponse fetch(FetchOptions options) {
     if (options == null) {
-      options = new RequestOptionsImpl();
+      options = new FetchOptions();
     }
-    if (options.method == null) {
-      options.method = request.method();
-    }
-    if (options.headers == null) {
-      options.headers = request.headers();
-    }
-    if (fetchOptions != null && fetchOptions.postData != null) {
-      options.data = fetchOptions.postData;
-    } else {
-      options.data = request.postDataBuffer();
-    }
-    if (fetchOptions != null && fetchOptions.timeout != null) {
-      options.timeout = fetchOptions.timeout;
-    }
-    APIRequestContextImpl apiRequest = browserContext.request();
-    String url = (fetchOptions == null || fetchOptions.url == null) ? request().url() : fetchOptions.url;
-    return apiRequest.fetch(url, options);
-  }
-
-  private void applyOverrides(FallbackOptions options) {
-    if (options == null) {
-      return;
-    }
-    RequestImpl.FallbackOverrides overrides = new RequestImpl.FallbackOverrides();
-    overrides.url = options.url;
-    overrides.method = options.method;
-    overrides.headers = options.headers;
-    if (options.postData != null) {
-      overrides.postData = getPostDataBytes(options.postData);
-    }
-    request().applyFallbackOverrides(overrides);
-  }
-
-  private RouteContinueParams continueParams(boolean isFallback) {
-    RequestImpl.FallbackOverrides options = request().fallbackOverridesForResume();
-    RouteContinueParams params = new RouteContinueParams();
-    if (options != null) {
-      params.url = options.url;
-      params.method = options.method;
-      if (options.headers != null) {
-        params.headers = toNameValues(withoutNullValues(options.headers));
-      }
-      params.postData = options.postData;
-    }
-    params.isFallback = isFallback;
-    return params;
-  }
-
-  private static Map<String, String> withoutNullValues(Map<String, String> map) {
-    Map<String, String> result = new LinkedHashMap<>();
-    for (Map.Entry<String, String> e : map.entrySet()) {
-      if (e.getValue() != null) {
-        result.put(e.getKey(), e.getValue());
-      }
-    }
-    return result;
-  }
-
-  private static List<NameValue> toNameValues(Map<String, String> map) {
-    List<NameValue> result = new ArrayList<>();
-    for (Map.Entry<String, String> e : map.entrySet()) {
-      if (e.getValue() == null) {
-        throw new PlaywrightException("Value cannot be null");
-      }
-      NameValue nv = new NameValue();
-      nv.name = e.getKey();
-      nv.value = e.getValue();
-      result.add(nv);
-    }
-    return result;
-  }
-
-  private static byte[] getPostDataBytes(Object postData) {
-    if (postData instanceof byte[]) {
-      return (byte[]) postData;
-    }
-    if (postData instanceof String) {
-      return ((String) postData).getBytes(StandardCharsets.UTF_8);
-    }
-    throw new PlaywrightException("postData must be either String or byte[], found: " + postData.getClass().getName());
+    FetchOptions fetchOptions = options;
+    return wrapApiCall(() -> {
+      // java: the FetchOptions fields as RequestOptionsImpl, data is options.postData.
+      RequestOptionsImpl requestOptions = new RequestOptionsImpl();
+      requestOptions.data = fetchOptions.postData;
+      requestOptions.method = fetchOptions.method;
+      requestOptions.headers = fetchOptions.headers;
+      requestOptions.maxRedirects = fetchOptions.maxRedirects;
+      requestOptions.maxRetries = fetchOptions.maxRetries;
+      requestOptions.timeout = fetchOptions.timeout;
+      return ((APIRequestContextImpl) context.request()).innerFetch(fetchOptions.url, request(), requestOptions, null);
+    }, null, false);
   }
 
   @Override
   public void fulfill(FulfillOptions options) {
-    handleRoute(() -> fulfillImpl(options));
+    fulfill(options, null);
   }
 
-  private void fulfillImpl(FulfillOptions options) {
+  // java: json is the json option of upstream, which FulfillOptions does not have; the value is a JsonElement.
+  void fulfill(FulfillOptions options, JsonElement json) {
+    handleRoute(() -> {
+      innerFulfill(options, json);
+    });
+  }
+
+  private void handleRoute(Runnable callback) {
+    checkNotHandled();
+    try {
+      callback.run();
+      reportHandled(true);
+    } catch (RuntimeException e) {
+      didThrow = true;
+      throw e;
+    }
+  }
+
+  private void innerFulfill(FulfillOptions options, JsonElement json) {
     if (options == null) {
       options = new FulfillOptions();
     }
-
-    Integer status = options.status;
-    Map<String, String> headersOption = options.headers;
     String fetchResponseUid = null;
+    Integer statusOption = options.status;
+    Map<String, String> headersOption = options.headers;
+    // java: body is a String (body) or a byte[] (bodyBytes).
+    Object body = options.body != null ? options.body : options.bodyBytes;
 
-    if (options.response != null) {
-      if (status == null) {
-        status = options.response.status();
+    if (json != null) {
+      if (body != null) {
+        throw new PlaywrightException("Can specify either body or json parameters");
+      }
+      body = json.toString();
+    }
+
+    if (options.response instanceof APIResponseImpl) {
+      APIResponseImpl response = (APIResponseImpl) options.response;
+      if (statusOption == null) {
+        statusOption = response.status();
       }
       if (headersOption == null) {
-        headersOption = options.response.headers();
+        headersOption = response.headers();
+      }
+      if (body == null && options.path == null) {
+        if (response.request.connection == this.connection) {
+          fetchResponseUid = response.fetchUid();
+        } else {
+          body = response.body();
+        }
       }
     }
-    if (status == null) {
-      status = 200;
-    }
-    String body = null;
+
     boolean isBase64 = false;
     int length = 0;
     if (options.path != null) {
-      try {
-        byte[] buffer = Files.readAllBytes(options.path);
-        body = Base64.getEncoder().encodeToString(buffer);
-        isBase64 = true;
-        length = buffer.length;
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file: " + options.path, e);
-      }
-    } else if (options.body != null) {
-      body = options.body;
-      isBase64 = false;
-      length = body.getBytes().length;
-    } else if (options.bodyBytes != null) {
-      body = Base64.getEncoder().encodeToString(options.bodyBytes);
+      byte[] buffer = readFile(options.path);
+      body = Base64.getEncoder().encodeToString(buffer);
       isBase64 = true;
-      length = options.bodyBytes.length;
-    } else if (options.response != null) {
-      APIResponseImpl response = (APIResponseImpl) options.response;
-      if (response.context.connection == connection) {
-        fetchResponseUid = response.fetchUid();
-      } else {
-        byte[] bodyBytes = response.body();
-        body = Base64.getEncoder().encodeToString(bodyBytes);
-        isBase64 = true;
-        length = bodyBytes.length;
-      }
+      length = buffer.length;
+    } else if (body instanceof String) {
+      isBase64 = false;
+      length = ((String) body).getBytes(StandardCharsets.UTF_8).length;
+    } else if (body != null) {
+      byte[] buffer = (byte[]) body;
+      length = buffer.length;
+      body = Base64.getEncoder().encodeToString(buffer);
+      isBase64 = true;
     }
-
 
     Map<String, String> headers = new LinkedHashMap<>();
     if (headersOption != null) {
-      for (Map.Entry<String, String> h : headersOption.entrySet()) {
-        headers.put(h.getKey().toLowerCase(), h.getValue());
+      for (Map.Entry<String, String> header : headersOption.entrySet()) {
+        headers.put(header.getKey().toLowerCase(), String.valueOf(header.getValue()));
       }
     }
     if (options.contentType != null) {
       headers.put("content-type", options.contentType);
+    } else if (json != null && !json.isJsonNull()) {
+      headers.put("content-type", "application/json");
     } else if (options.path != null) {
-      headers.put("content-type", Utils.mimeType(options.path));
+      String mimeType = getMimeTypeForPath(options.path.toString());
+      headers.put("content-type", mimeType != null ? mimeType : "application/octet-stream");
     }
     if (length != 0 && !headers.containsKey("content-length")) {
-      headers.put("content-length", Integer.toString(length));
+      headers.put("content-length", String.valueOf(length));
     }
+
     RouteFulfillParams params = new RouteFulfillParams();
-    params.status = status;
-    params.headers = toNameValues(headers);
+    params.status = statusOption != null && statusOption != 0 ? statusOption : 200;
+    params.headers = headersObjectToArray(headers);
+    params.body = (String) body;
     params.isBase64 = isBase64;
-    params.body = body;
     params.fetchResponseUid = fetchResponseUid;
-    raceWithTargetClose("fulfill", params);
+    raceWithTargetClose(sendMessageAsync("fulfill", params));
   }
 
+  // java: resume() is continue() of the Node.js API.
   @Override
-  public RequestImpl request() {
-    return request;
-  }
-
-  void redirectNavigationRequest(String redirectURL) {
+  public void resume(ResumeOptions options) {
+    ResumeOptions resumeOptions = options == null ? new ResumeOptions() : options;
     handleRoute(() -> {
-      RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
-      params.url = redirectURL;
-      raceWithTargetClose("redirectNavigationRequest", params);
+      request().applyFallbackOverrides(fallbackOverrides(resumeOptions.url, resumeOptions.method, resumeOptions.headers, resumeOptions.postData));
+      innerContinue(false /* isFallback */);
     });
   }
 
-  private void checkNotHandled() {
-    if (handled) {
+  void checkNotHandled() {
+    if (handlingPromise == null) {
       throw new PlaywrightException("Route is already handled!");
     }
   }
 
+  void reportHandled(boolean done) {
+    WaitableResult<Boolean> chain = handlingPromise;
+    handlingPromise = null;
+    chain.complete(done);
+  }
+
+  void innerContinue(boolean isFallback) {
+    RequestImpl.SerializedFallbackOverrides options = request().fallbackOverridesForContinue();
+    RouteContinueParams params = new RouteContinueParams();
+    params.url = options.url;
+    params.method = options.method;
+    params.headers = options.headers != null ? headersObjectToArray(options.headers) : null;
+    params.postData = options.postDataBuffer;
+    params.isFallback = isFallback;
+    raceWithTargetClose(sendMessageAsync("continue", params));
+  }
+
+  // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
+  // returned before it handled the route or fell back.
+  boolean handlerReturned;
+
+  private static RequestImpl.FallbackOverrides fallbackOverrides(String url, String method, Map<String, String> headers, Object postData) {
+    RequestImpl.FallbackOverrides overrides = new RequestImpl.FallbackOverrides();
+    overrides.url = url;
+    overrides.method = method;
+    overrides.headers = headers;
+    overrides.postData = postData;
+    return overrides;
+  }
+
+  private static byte[] readFile(Path path) {
+    try {
+      return Files.readAllBytes(path);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read from file: " + path, e);
+    }
+  }
 }

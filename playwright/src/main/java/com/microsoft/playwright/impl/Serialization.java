@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of serializers.ts (packages/protocol) and of the module-level functions and types of jsHandle.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -21,7 +22,6 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.*;
 import com.microsoft.playwright.options.BrowserChannel;
@@ -40,12 +40,483 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Utils.createGuid;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
 class Serialization {
+  // java: no systemErrorCode and systemErrorMessage, a Java exception has no Node.js system error code.
+
+  static Object parseSerializedValue(SerializedValue value, List<Object> handles) {
+    return innerParseSerializedValue(value, handles, new HashMap<>(), new ArrayList<>());
+  }
+
+  private static Object innerParseSerializedValue(SerializedValue value, List<Object> handles, Map<Integer, Object> refs, List<Object> accessChain) {
+    if (value.ref != null)
+      return refs.get(value.ref);
+    if (value.n != null) {
+      // java: an integral number is an Integer, any other number a Double.
+      if (value.n.doubleValue() == (double) value.n.intValue())
+        return value.n.intValue();
+      return value.n;
+    }
+    if (value.s != null)
+      return value.s;
+    if (value.b != null)
+      return value.b;
+    if (value.v != null) {
+      // java: undefined is null.
+      if (value.v.equals("undefined"))
+        return null;
+      if (value.v.equals("null"))
+        return null;
+      if (value.v.equals("NaN"))
+        return Double.NaN;
+      if (value.v.equals("Infinity"))
+        return Double.POSITIVE_INFINITY;
+      if (value.v.equals("-Infinity"))
+        return Double.NEGATIVE_INFINITY;
+      if (value.v.equals("-0"))
+        return -0.0;
+    }
+    if (value.d != null)
+      return Date.from(Instant.parse(value.d));
+    if (value.u != null) {
+      // java: new URL() throws a checked exception.
+      try {
+        return new URL(value.u);
+      } catch (MalformedURLException e) {
+        throw new PlaywrightException("Unexpected value: " + value.u, e);
+      }
+    }
+    if (value.bi != null)
+      return new BigInteger(value.bi);
+    if (value.e != null) {
+      // java: an Exception has no settable name or stack, its message is the stack (tests pin it).
+      return new Exception(value.e.s);
+    }
+    if (value.r != null)
+      return Pattern.compile(value.r.p, fromJsRegexFlags(value.r.f));
+    if (value.ta != null) {
+      Class<?> ctor = typedArrayKindToConstructor.get(value.ta.k);
+      // java: an unknown kind fails here instead of in the constructor call.
+      if (ctor == null)
+        throw new PlaywrightException("Unexpected typed array kind: " + value.ta.k);
+      return fromTypedArrayBytes(ctor, value.ta.b);
+    }
+
+    if (value.a != null) {
+      List<Object> result = new ArrayList<>();
+      refs.put(value.id, result);
+      for (int i = 0; i < value.a.size(); i++)
+        result.add(innerParseSerializedValue(value.a.get(i), handles, refs, append(accessChain, i)));
+      return result;
+    }
+    if (value.o != null) {
+      Map<String, Object> result = new LinkedHashMap<>();
+      refs.put(value.id, result);
+      for (SerializedValue.SerializedValueO o : value.o)
+        result.put(o.k, innerParseSerializedValue(o.v, handles, refs, append(accessChain, o.k)));
+      return result;
+    }
+    if (value.h != null) {
+      if (handles == null)
+        throw new PlaywrightException("Unexpected handle");
+      return handles.get(value.h);
+    }
+    if (value.fn != null) {
+      // java: a FunctionCallback stands for a JS function, its toString() is the function name.
+      String name = value.fn;
+      FunctionCallback dummy = new FunctionCallback() {
+        @Override
+        public Object call(Object... args) {
+          return null;
+        }
+
+        @Override
+        public String toString() {
+          return name;
+        }
+      };
+      return dummy;
+    }
+    throw new PlaywrightException("Attempting to deserialize unexpected value" + accessChainToDisplayString(accessChain) + ": " + gson().toJson(value));
+  }
+
+  // java: HandleOrValue is a class with a flag for 'fallThrough' in handle.
+  static class HandleOrValue {
+    Integer h;
+    String fn;
+    boolean hasFallThrough;
+    Object fallThrough;
+  }
+
+  private static class VisitorInfo {
+    // java: an IdentityHashMap, keyed by reference like a JavaScript Map.
+    final Map<Object, Integer> visited = new IdentityHashMap<>();
+    int lastId;
+  }
+
+  static SerializedValue serializeValue(Object value, Function<Object, HandleOrValue> handleSerializer) {
+    return innerSerializeValue(value, handleSerializer, new VisitorInfo(), new ArrayList<>());
+  }
+
+  static SerializedValue serializePlainValue(Object arg) {
+    return serializeValue(arg, value -> fallThrough(value));
+  }
+
+  private static SerializedValue innerSerializeValue(Object value, Function<Object, HandleOrValue> handleSerializer, VisitorInfo visitorInfo, List<Object> accessChain) {
+    HandleOrValue handle = handleSerializer.apply(value);
+    if (handle.hasFallThrough) {
+      value = handle.fallThrough;
+    } else {
+      SerializedValue result = new SerializedValue();
+      result.h = handle.h;
+      result.fn = handle.fn;
+      return result;
+    }
+
+    SerializedValue result = new SerializedValue();
+    // java: there are no symbols; null is undefined (tests pin it), so null never reaches { v: 'null' }.
+    if (value == null) {
+      result.v = "undefined";
+      return result;
+    }
+    if (objectIs(value, Double.NaN)) {
+      result.v = "NaN";
+      return result;
+    }
+    if (objectIs(value, Double.POSITIVE_INFINITY)) {
+      result.v = "Infinity";
+      return result;
+    }
+    if (objectIs(value, Double.NEGATIVE_INFINITY)) {
+      result.v = "-Infinity";
+      return result;
+    }
+    if (objectIs(value, -0.0)) {
+      result.v = "-0";
+      return result;
+    }
+    if (value instanceof Boolean) {
+      result.b = (Boolean) value;
+      return result;
+    }
+    // java: a number is a Byte, Short, Integer, Long, Float or Double.
+    if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float || value instanceof Double) {
+      result.n = ((Number) value).doubleValue();
+      return result;
+    }
+    if (value instanceof String) {
+      result.s = (String) value;
+      return result;
+    }
+    // java: a bigint is a BigInteger.
+    if (value instanceof BigInteger) {
+      result.bi = value.toString();
+      return result;
+    }
+    if (isError(value)) {
+      Throwable error = (Throwable) value;
+      result.e = new SerializedValue.SerializedValueE();
+      // java: the name is the simple class name, the stack is the printed Java stack trace.
+      result.e.n = error.getClass().getSimpleName();
+      result.e.m = error.getMessage();
+      StringWriter stack = new StringWriter();
+      error.printStackTrace(new PrintWriter(stack));
+      result.e.s = stack.toString();
+      return result;
+    }
+    if (isDate(value)) {
+      // java: a LocalDateTime is in the default time zone.
+      Instant instant = value instanceof Date ? ((Date) value).toInstant() : ((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant();
+      result.d = instant.toString();
+      return result;
+    }
+    if (isURL(value)) {
+      result.u = value.toString();
+      return result;
+    }
+    if (isRegExp(value)) {
+      result.r = new SerializedValue.SerializedValueR();
+      result.r.p = ((Pattern) value).pattern();
+      result.r.f = toJsRegexFlags((Pattern) value);
+      return result;
+    }
+
+    String typedArrayKind = constructorToTypedArrayKind.get(value.getClass());
+    if (typedArrayKind != null) {
+      result.ta = new SerializedValue.SerializedValueTa();
+      result.ta.b = toTypedArrayBytes(value);
+      result.ta.k = typedArrayKind;
+      return result;
+    }
+
+    Integer id = visitorInfo.visited.get(value);
+    if (id != null) {
+      result.ref = id;
+      return result;
+    }
+
+    // java: an array is a List or an Object[].
+    if (value instanceof List || value instanceof Object[]) {
+      List<?> array = value instanceof List ? (List<?>) value : Arrays.asList((Object[]) value);
+      List<SerializedValue> a = new ArrayList<>();
+      id = ++visitorInfo.lastId;
+      visitorInfo.visited.put(value, id);
+      for (int i = 0; i < array.size(); ++i)
+        a.add(innerSerializeValue(array.get(i), handleSerializer, visitorInfo, append(accessChain, i)));
+      result.a = a;
+      result.id = id;
+      return result;
+    }
+    // java: an object is a Map, its keys are converted to strings; any other Java object is unexpected.
+    if (value instanceof Map) {
+      List<SerializedValue.SerializedValueO> o = new ArrayList<>();
+      id = ++visitorInfo.lastId;
+      visitorInfo.visited.put(value, id);
+      for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
+        String name = String.valueOf(entry.getKey());
+        SerializedValue.SerializedValueO item = new SerializedValue.SerializedValueO();
+        item.k = name;
+        item.v = innerSerializeValue(entry.getValue(), handleSerializer, visitorInfo, append(accessChain, name));
+        o.add(item);
+      }
+      result.o = o;
+      result.id = id;
+      return result;
+    }
+    // Likely only functions can reach here.
+    throw new PlaywrightException("Attempting to serialize unexpected value" + accessChainToDisplayString(accessChain) + ": " + value);
+  }
+
+  private static String accessChainToDisplayString(List<Object> accessChain) {
+    StringBuilder chainString = new StringBuilder();
+    for (int i = 0; i < accessChain.size(); i++) {
+      Object accessor = accessChain.get(i);
+      if (accessor instanceof String)
+        chainString.append(i != 0 ? "." + accessor : accessor);
+      else
+        chainString.append("[").append(accessor).append("]");
+    }
+
+    return chainString.length() > 0 ? " at position \"" + chainString + "\"" : "";
+  }
+
+  private static boolean isRegExp(Object obj) {
+    return obj instanceof Pattern;
+  }
+
+  // java: a date is a Date or a LocalDateTime.
+  private static boolean isDate(Object obj) {
+    return obj instanceof Date || obj instanceof LocalDateTime;
+  }
+
+  private static boolean isURL(Object obj) {
+    return obj instanceof URL;
+  }
+
+  // java: an error is a Throwable.
+  private static boolean isError(Object obj) {
+    return obj instanceof Throwable;
+  }
+
+  // java: a typed array is a primitive array, several kinds share one array type.
+  private static final Map<String, Class<?>> typedArrayKindToConstructor = new LinkedHashMap<>();
+  static {
+    typedArrayKindToConstructor.put("i8", byte[].class);
+    typedArrayKindToConstructor.put("ui8", byte[].class);
+    typedArrayKindToConstructor.put("ui8c", byte[].class);
+    typedArrayKindToConstructor.put("i16", short[].class);
+    typedArrayKindToConstructor.put("ui16", short[].class);
+    typedArrayKindToConstructor.put("i32", int[].class);
+    typedArrayKindToConstructor.put("ui32", int[].class);
+    typedArrayKindToConstructor.put("f32", float[].class);
+    typedArrayKindToConstructor.put("f64", double[].class);
+    typedArrayKindToConstructor.put("bi64", long[].class);
+    typedArrayKindToConstructor.put("bui64", long[].class);
+  }
+  // java: not the inverse of the map above, a Java array type is sent as the signed kind.
+  private static final Map<Class<?>, String> constructorToTypedArrayKind = new HashMap<>();
+  static {
+    constructorToTypedArrayKind.put(byte[].class, "i8");
+    constructorToTypedArrayKind.put(short[].class, "i16");
+    constructorToTypedArrayKind.put(int[].class, "i32");
+    constructorToTypedArrayKind.put(float[].class, "f32");
+    constructorToTypedArrayKind.put(double[].class, "f64");
+    constructorToTypedArrayKind.put(long[].class, "bi64");
+  }
+
+  // jsHandle.ts
+
+  // java: the optional registerCallback is an overload.
+  static SerializedArgument serializeArgument(Object arg) {
+    return serializeArgument(arg, null);
+  }
+
+  // This function takes care of converting all JSHandles to their channels,
+  // so that generic channel serializer converts them to guids.
+  // java: a FunctionCallback stands for a JS function.
+  static SerializedArgument serializeArgument(Object arg, Function<FunctionCallback, String> registerCallback) {
+    List<ChannelOwner> handles = new ArrayList<>();
+    Function<ChannelOwner, Integer> pushHandle = channel -> {
+      handles.add(channel);
+      return handles.size() - 1;
+    };
+    SerializedValue value = serializeValue(arg, v -> {
+      // java: a JSHandleImpl is its own channel.
+      if (v instanceof JSHandleImpl)
+        return handle(pushHandle.apply((JSHandleImpl) v));
+      if (v instanceof FunctionCallback && registerCallback != null)
+        return fn(registerCallback.apply((FunctionCallback) v));
+      return fallThrough(v);
+    });
+    SerializedArgument result = new SerializedArgument();
+    result.value = value;
+    result.handles = handles;
+    return result;
+  }
+
+  // java: the ExposeFunctionsOptions type, a null exposeFunctions is undefined.
+  static class ExposeFunctionsOptions {
+    Boolean exposeFunctions;
+  }
+
+  // java: the EvaluateOptions alias of ExposeFunctionsOptions is a subclass.
+  static class EvaluateOptions extends ExposeFunctionsOptions {
+  }
+
+  // java: each exposeEvaluateCallback() call returns once the callback is exposed, so there is no Promise.all.
+  static SerializedArgument serializeArgumentWithCallbacks(ChannelOwner owner, PageImpl page, Object arg) {
+    return owner.wrapApiCall(() -> {
+      SerializedArgument serialized = serializeArgument(arg, callback -> {
+        if (page == null)
+          throw new PlaywrightException("Passing a function is not supported as an argument here");
+        String name = kFunctionBindingPrefix + createGuid();
+        page.exposeEvaluateCallback(name, callback);
+        return name;
+      });
+      return serialized;
+    }, null, true);
+  }
+
+  static Object parseResult(SerializedValue value) {
+    return parseSerializedValue(value, null);
+  }
+
+  // java: no assertMaxArguments, it checks the JS arguments count.
+
+  // java: options is an Object so that the check keeps its meaning: a null is undefined, a String, Number, Boolean
+  // or FunctionCallback is not a JS object, a List or a Java array is a JS array.
+  static void assertEvaluateOptions(Object options) {
+    if (options != null && (options instanceof String || options instanceof Number || options instanceof Boolean || options instanceof FunctionCallback || options instanceof List || options.getClass().isArray()))
+      throw new PlaywrightException("Too many arguments. If you need to pass more than 1 argument to the function wrap them in an object.");
+  }
+
+  // java: helpers of the ported part.
+
+  // java: kFunctionBindingPrefix of isomorphic/utilityScriptSerializers.ts, which has no Java port.
+  static final String kFunctionBindingPrefix = "__pw_fn_";
+
+  // java: parseResult cast to the caller's result type, the name other files call.
+  @SuppressWarnings("unchecked")
+  static <T> T deserialize(SerializedValue value) {
+    return (T) parseResult(value);
+  }
+
+  private static HandleOrValue handle(int h) {
+    HandleOrValue result = new HandleOrValue();
+    result.h = h;
+    return result;
+  }
+
+  private static HandleOrValue fn(String fn) {
+    HandleOrValue result = new HandleOrValue();
+    result.fn = fn;
+    return result;
+  }
+
+  private static HandleOrValue fallThrough(Object value) {
+    HandleOrValue result = new HandleOrValue();
+    result.hasFallThrough = true;
+    result.fallThrough = value;
+    return result;
+  }
+
+  private static List<Object> append(List<Object> accessChain, Object accessor) {
+    List<Object> result = new ArrayList<>(accessChain);
+    result.add(accessor);
+    return result;
+  }
+
+  private static boolean objectIs(Object value, double number) {
+    if (!(value instanceof Double) && !(value instanceof Float))
+      return false;
+    return Double.compare(((Number) value).doubleValue(), number) == 0;
+  }
+
+  private static Object fromTypedArrayBytes(Class<?> ctor, byte[] bytes) {
+    ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+    if (ctor == byte[].class)
+      return bytes;
+    if (ctor == short[].class) {
+      short[] result = new short[bytes.length / 2];
+      buffer.asShortBuffer().get(result);
+      return result;
+    }
+    if (ctor == int[].class) {
+      int[] result = new int[bytes.length / 4];
+      buffer.asIntBuffer().get(result);
+      return result;
+    }
+    if (ctor == float[].class) {
+      float[] result = new float[bytes.length / 4];
+      buffer.asFloatBuffer().get(result);
+      return result;
+    }
+    if (ctor == double[].class) {
+      double[] result = new double[bytes.length / 8];
+      buffer.asDoubleBuffer().get(result);
+      return result;
+    }
+    long[] result = new long[bytes.length / 8];
+    buffer.asLongBuffer().get(result);
+    return result;
+  }
+
+  private static byte[] toTypedArrayBytes(Object value) {
+    if (value instanceof byte[])
+      return ((byte[]) value).clone();
+    ByteBuffer buffer;
+    if (value instanceof short[]) {
+      short[] array = (short[]) value;
+      buffer = ByteBuffer.allocate(array.length * 2).order(ByteOrder.LITTLE_ENDIAN);
+      buffer.asShortBuffer().put(array);
+    } else if (value instanceof int[]) {
+      int[] array = (int[]) value;
+      buffer = ByteBuffer.allocate(array.length * 4).order(ByteOrder.LITTLE_ENDIAN);
+      buffer.asIntBuffer().put(array);
+    } else if (value instanceof float[]) {
+      float[] array = (float[]) value;
+      buffer = ByteBuffer.allocate(array.length * 4).order(ByteOrder.LITTLE_ENDIAN);
+      buffer.asFloatBuffer().put(array);
+    } else if (value instanceof double[]) {
+      double[] array = (double[]) value;
+      buffer = ByteBuffer.allocate(array.length * 8).order(ByteOrder.LITTLE_ENDIAN);
+      buffer.asDoubleBuffer().put(array);
+    } else {
+      long[] array = (long[]) value;
+      buffer = ByteBuffer.allocate(array.length * 8).order(ByteOrder.LITTLE_ENDIAN);
+      buffer.asLongBuffer().put(array);
+    }
+    return buffer.array();
+  }
+
+  // java: Gson configuration, protocol conversions and error helpers, no counterpart in serializers.ts.
+
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping()
     .registerTypeAdapter(Date.class, new DateSerializer())
     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
@@ -110,249 +581,6 @@ class Serialization {
     return result;
   }
 
-  private static class ValueSerializer {
-    // hashCode() of a map containing itself as a key will throw stackoverflow exception,
-    // so we user wrappers.
-    private static class HashableValue {
-      final Object value;
-      HashableValue(Object value) {
-        this.value = value;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        return value == ((HashableValue) o).value;
-      }
-
-      @Override
-      public int hashCode() {
-        return System.identityHashCode(value);
-      }
-    }
-    private final Map<HashableValue, Integer> valueToId = new HashMap<>();
-    private int lastId = 0;
-    private final List<JSHandleImpl> handles = new ArrayList<>();
-    private final SerializedValue serializedValue;
-
-    ValueSerializer(Object value) {
-      serializedValue = serializeValue(value);
-    }
-
-    SerializedArgument toSerializedArgument() {
-      SerializedArgument result = new SerializedArgument();
-      result.value = serializedValue;
-      result.handles = new ArrayList<>(handles);
-      return result;
-    }
-
-    private SerializedValue serializeValue(Object value) {
-      SerializedValue result = new SerializedValue();
-      if (value instanceof JSHandleImpl) {
-        result.h = handles.size();
-        handles.add((JSHandleImpl) value);
-        return result;
-      }
-      if (value == null) {
-        result.v = "undefined";
-      } else if (value instanceof Double) {
-        double d = ((Double) value);
-        if (d == Double.POSITIVE_INFINITY) {
-          result.v = "Infinity";
-        } else if (d == Double.NEGATIVE_INFINITY) {
-          result.v = "-Infinity";
-        } else if (Double.compare(d, -0.0) == 0) {
-          result.v = "-0";
-        } else if (Double.isNaN(d)) {
-          result.v = "NaN";
-        } else {
-          result.n = d;
-        }
-      } else if (value instanceof Boolean) {
-        result.b = (Boolean) value;
-      } else if (value instanceof Integer) {
-        result.n = ((Integer) value).doubleValue();
-      } else if (value instanceof String) {
-        result.s = (String) value;
-      } else if (value instanceof Date) {
-        result.d = ((Date)value).toInstant().toString();
-      } else if (value instanceof LocalDateTime) {
-        result.d = ((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant().toString();
-      } else if (value instanceof URL) {
-        result.u = ((URL)value).toString();
-      } else if (value instanceof BigInteger) {
-        result.bi = ((BigInteger)value).toString();
-      } else if (value instanceof Pattern) {
-        result.r = new SerializedValue.SerializedValueR();
-        result.r.p = ((Pattern)value).pattern();
-        result.r.f = toJsRegexFlags(((Pattern)value));
-      } else if (value instanceof Exception) {
-        Exception exception = (Exception) value;
-        result.e = new SerializedValue.SerializedValueE();
-        result.e.m = exception.getMessage();
-        result.e.n = exception.getClass().getSimpleName();
-        StringWriter sw = new StringWriter();
-        exception.printStackTrace(new PrintWriter(sw));
-        result.e.s = sw.toString();
-      } else {
-        HashableValue mapKey = new HashableValue(value);
-        Integer id = valueToId.get(mapKey);
-        if (id != null) {
-          result.ref = id;
-        } else {
-          result.id = ++lastId;
-          valueToId.put(mapKey, lastId);
-          if (value instanceof List) {
-            List<SerializedValue> list = new ArrayList<>();
-            for (Object o : (List<?>) value) {
-              list.add(serializeValue(o));
-            }
-            result.a = list;
-          } else if (value instanceof Map) {
-            List<SerializedValue.SerializedValueO> list = new ArrayList<>();
-            @SuppressWarnings("unchecked")
-            Map<String, ?> map = (Map<String, ?>) value;
-            for (Map.Entry<String, ?> e : map.entrySet()) {
-              SerializedValue.SerializedValueO o = new SerializedValue.SerializedValueO();
-              o.k = e.getKey();
-              o.v = serializeValue(e.getValue());
-              list.add(o);
-            }
-            result.o = list;
-          } else if (value instanceof Object[]) {
-            List<SerializedValue> list = new ArrayList<>();
-            for (Object o : (Object[]) value) {
-              list.add(serializeValue(o));
-            }
-            result.a = list;
-          } else {
-            throw new PlaywrightException("Unsupported type of argument: " + value);
-          }
-        }
-      }
-      return result;
-    }
-  }
-
-  static SerializedArgument serializeArgument(Object arg) {
-    return new ValueSerializer(arg).toSerializedArgument();
-  }
-
-  static <T> T deserialize(SerializedValue value) {
-    return deserialize(value, new HashMap<>());
-  }
-
-  @SuppressWarnings("unchecked")
-  private static <T> T deserialize(SerializedValue value, Map<Integer, Object> idToValue) {
-    if (value.ref != null) {
-      return (T) idToValue.get(value.ref);
-    }
-    if (value.n != null) {
-      if (value.n.doubleValue() == (double) value.n.intValue()) {
-        return (T) Integer.valueOf(value.n.intValue());
-      }
-      return (T) Double.valueOf(value.n.doubleValue());
-    }
-    if (value.b != null)
-      return (T) value.b;
-    if (value.s != null)
-      return (T) value.s;
-    if (value.u != null) {
-      try {
-        return (T)(new URL(value.u));
-      } catch (MalformedURLException e) {
-        throw new PlaywrightException("Unexpected value: " + value.u, e);
-      }
-    }
-    if (value.bi != null) {
-      return (T) new BigInteger(value.bi);
-    }
-    if (value.d != null)
-      return (T)(Date.from(Instant.parse(value.d)));
-    if (value.r != null)
-      return (T)(Pattern.compile(value.r.p, fromJsRegexFlags(value.r.f)));
-    if (value.e != null) {
-      return (T)new Exception(value.e.s);
-    }
-    if (value.ta != null) {
-      return (T) deserializeTypedArray(value.ta);
-    }
-    if (value.v != null) {
-      switch (value.v) {
-        case "undefined":
-        case "null":
-          return null;
-        case "Infinity":
-          return (T) Double.valueOf(Double.POSITIVE_INFINITY);
-        case "-Infinity":
-          return (T) Double.valueOf(Double.NEGATIVE_INFINITY);
-        case "-0": {
-          return (T) Double.valueOf(-0.0);
-        }
-        case "NaN":
-          return (T) Double.valueOf(Double.NaN);
-        default:
-          throw new PlaywrightException("Unexpected value: " + value.v);
-      }
-    }
-    if (value.a != null) {
-      List<Object> list = new ArrayList<>();
-      idToValue.put(value.id, list);
-      for (SerializedValue v : value.a) {
-        list.add(deserialize(v, idToValue));
-      }
-      return (T) list;
-    }
-    if (value.o != null) {
-      Map<String, Object> map = new LinkedHashMap<>();
-      idToValue.put(value.id, map);
-      for (SerializedValue.SerializedValueO o : value.o) {
-        map.put(o.k, deserialize(o.v, idToValue));
-      }
-      return (T) map;
-    }
-    throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
-  }
-
-  private static Object deserializeTypedArray(SerializedValue.SerializedValueTa typedArray) {
-    ByteBuffer buffer = ByteBuffer.wrap(typedArray.b).order(ByteOrder.LITTLE_ENDIAN);
-    switch (typedArray.k) {
-      case "i8":
-      case "ui8":
-      case "ui8c":
-        return typedArray.b;
-      case "i16":
-      case "ui16": {
-        short[] result = new short[typedArray.b.length / 2];
-        buffer.asShortBuffer().get(result);
-        return result;
-      }
-      case "i32":
-      case "ui32": {
-        int[] result = new int[typedArray.b.length / 4];
-        buffer.asIntBuffer().get(result);
-        return result;
-      }
-      case "f32": {
-        float[] result = new float[typedArray.b.length / 4];
-        buffer.asFloatBuffer().get(result);
-        return result;
-      }
-      case "f64": {
-        double[] result = new double[typedArray.b.length / 8];
-        buffer.asDoubleBuffer().get(result);
-        return result;
-      }
-      case "bi64":
-      case "bui64": {
-        long[] result = new long[typedArray.b.length / 8];
-        buffer.asLongBuffer().get(result);
-        return result;
-      }
-      default:
-        throw new PlaywrightException("Unexpected typed array kind: " + typedArray.k);
-    }
-  }
-
   private static class KeyboardModifiersSerializer implements JsonSerializer<List<KeyboardModifier>> {
     @Override
     public JsonArray serialize(List<KeyboardModifier> modifiers, Type typeOfSrc, JsonSerializationContext context) {
@@ -383,16 +611,6 @@ class Serialization {
       }
     }
     return toNameValueArray(map.entrySet());
-  }
-
-  static void addHarUrlFilter(JsonObject options, Object urlFilter) {
-      if (urlFilter instanceof String) {
-        options.addProperty("urlGlob", (String) urlFilter);
-      } else if (urlFilter instanceof Pattern) {
-        Pattern pattern = (Pattern) urlFilter;
-        options.addProperty("urlRegexSource", pattern.pattern());
-        options.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
-      }
   }
 
   static JsonObject toClearCookiesParams(Object name, Object domain, Object path) {
@@ -426,33 +644,6 @@ class Serialization {
       array.add(item);
     }
     return array;
-  }
-
-  static JsonArray toSelectValueOrLabel(String[] values) {
-    JsonArray jsonOptions = new JsonArray();
-    for (String value : values) {
-      JsonObject option = new JsonObject();
-      option.addProperty("valueOrLabel", value);
-      jsonOptions.add(option);
-    }
-    return jsonOptions;
-  }
-
-  static Map<String, String> fromNameValues(JsonArray array) {
-    Map<String, String> map = new LinkedHashMap<>();
-    for (JsonElement element : array) {
-      JsonObject pair = element.getAsJsonObject();
-      map.put(pair.get("name").getAsString(), pair.get("value").getAsString());
-    }
-    return map;
-  }
-
-  static List<String> parseStringList(JsonArray array) {
-    List<String> result = new ArrayList<>();
-    for (JsonElement e : array) {
-      result.add(e.getAsString());
-    }
-    return result;
   }
 
   static String parseError(JsonObject object) {
@@ -626,6 +817,4 @@ class Serialization {
       return new JsonPrimitive(dateFormat.format(Date.from(instant)));
     }
   }
-
 }
-

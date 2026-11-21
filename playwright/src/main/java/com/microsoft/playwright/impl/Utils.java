@@ -16,38 +16,26 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.TypeAdapter;
 import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.options.ClientCertificate;
 import com.microsoft.playwright.options.FilePayload;
-import com.microsoft.playwright.options.HttpHeader;
-import com.microsoft.playwright.options.ScreenshotType;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Random;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static java.nio.file.Files.readAllBytes;
-
+// java: helpers with no upstream counterpart.
 public class Utils {
   static <F, T> T convertType(F f, Class<T> t) {
     if (f == null) {
@@ -90,6 +78,13 @@ public class Utils {
     } catch (Exception e) {
       throw new PlaywrightException("Internal error", e);
     }
+  }
+
+  public static <T> T clone(T f) {
+    if (f == null) {
+      return f;
+    }
+    return convertType(f, (Class<T>) f.getClass());
   }
 
   /**
@@ -146,156 +141,6 @@ public class Utils {
       }
     }).create();
 
-  public static <T> T clone(T f) {
-    if (f == null) {
-      return f;
-    }
-    return convertType(f, (Class<T>) f.getClass());
-  }
-
-  static String mimeType(Path path) {
-    String mimeType;
-    try {
-      mimeType = Files.probeContentType(path);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to determine mime type", e);
-    }
-    if (mimeType == null) {
-      mimeType = "application/octet-stream";
-    }
-    return mimeType;
-  }
-
-  /** Upload fields shared by the set-input-files and drop params; each call site copies them into its own params class. */
-  static class UploadParams {
-    boolean emptyPayloads;
-    List<String> localPaths;
-    List<WritableStream> streams;
-    String localDirectory;
-    WritableStream directoryStream;
-  }
-
-  static UploadParams addFilePathUploadParams(Path[] items, BrowserContextImpl context) {
-    UploadParams upload = new UploadParams();
-    List<Path> localPaths = new ArrayList<>();
-    Path localDirectory = resolvePathsAndDirectoryForInputFiles(items, localPaths);
-    if (items.length == 0) {
-      // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
-      upload.emptyPayloads = true;
-    } else if (context.connection.isRemote()) {
-      if (localDirectory != null) {
-        localPaths = collectFiles(localDirectory);
-      }
-      BrowserContextCreateTempFilesResult result = createTempFiles(context, localDirectory, localPaths);
-      List<WritableStream> streams = copyLocalToTempFiles(localPaths, result.writableStreams);
-      if (result.rootDir != null) {
-        upload.directoryStream = result.rootDir;
-      } else {
-        upload.streams = streams;
-      }
-    } else {
-      if (!localPaths.isEmpty()) {
-        upload.localPaths = new ArrayList<>();
-        for (Path p : localPaths) {
-          upload.localPaths.add(p.toAbsolutePath().toString());
-        }
-      }
-      if (localDirectory != null) {
-        upload.localDirectory = localDirectory.toString();
-      }
-    }
-    return upload;
-  }
-
-  private static Path resolvePathsAndDirectoryForInputFiles(Path[] items, List<Path> outLocalPaths) {
-    Path localDirectory = null;
-    try {
-      for (Path item : items) {
-        if (Files.isDirectory(item)) {
-          if (localDirectory != null) {
-            throw new PlaywrightException("Multiple directories are not supported");
-          }
-          localDirectory = item.toRealPath();
-        } else {
-          outLocalPaths.add(item.toRealPath());
-        }
-      }
-    } catch (IOException e) {
-      throw new PlaywrightException("Cannot get absolute file path",  e);
-    }
-    if (!outLocalPaths.isEmpty() && localDirectory != null) {
-      throw new PlaywrightException("File paths must be all files or a single directory");
-    }
-    return localDirectory;
-  }
-
-  private static List<Path> collectFiles(Path localDirectory) {
-    try {
-      return Files.walk(localDirectory).filter(e -> Files.isRegularFile(e)).collect(Collectors.toList());
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to traverse directory", e);
-    }
-  }
-
-  private static List<WritableStream> copyLocalToTempFiles(List<Path> localPaths, List<WritableStream> writableStreams) {
-    List<WritableStream> streams = new ArrayList<>();
-    for (int i = 0; i < localPaths.size(); i++) {
-      WritableStream temp = writableStreams.get(i);
-      try (OutputStream out = temp.stream()) {
-        Files.copy(localPaths.get(i), out);
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to copy file to remote server.", e);
-      }
-      streams.add(temp);
-    }
-    return streams;
-  }
-
-  private static BrowserContextCreateTempFilesResult createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
-    BrowserContextCreateTempFilesParams params = new BrowserContextCreateTempFilesParams();
-    if (localDirectory != null) {
-      params.rootDirName = localDirectory.getFileName().toString();
-    }
-    params.items = new ArrayList<>();
-    for (Path path : localPaths) {
-      long lastModifiedMs;
-      try {
-        lastModifiedMs = Files.getLastModifiedTime(path).toMillis();
-      } catch (IOException e) {
-        throw new PlaywrightException("Cannot read file timestamp: " + path, e);
-      }
-      Path name;
-      if (localDirectory == null) {
-        name = path.getFileName();
-      } else {
-        name = localDirectory.relativize(path);
-      }
-      BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems item = new BrowserContextCreateTempFilesParams.BrowserContextCreateTempFilesParamsItems();
-      item.name = name.toString();
-      item.lastModifiedMs = (double) lastModifiedMs;
-      params.items.add(item);
-    }
-    return context.channel.createTempFiles(params, NO_TIMEOUT);
-  }
-
-  static void checkFilePayloadSize(FilePayload[] files) {
-    long totalSize = 0;
-    for (FilePayload file: files) {
-      totalSize += file.buffer.length;
-    }
-    if (totalSize > 50 * 1024 * 1024) {
-      throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
-    }
-  }
-
-  static FilePayload[] toFilePayloads(Path[] files) {
-    List<FilePayload> payloads = new ArrayList<>();
-    for (Path file : files) {
-      payloads.add(toFilePayload(file));
-    }
-    return payloads.toArray(new FilePayload[0]);
-  }
-
   static FilePayload toFilePayload(Path file) {
     byte[] buffer;
     try {
@@ -306,36 +151,8 @@ public class Utils {
     return new FilePayload(file.getFileName().toString(), null, buffer);
   }
 
-  static void mkParentDirs(Path file) {
-    Path dir = file.getParent();
-    if (dir != null) {
-      if (!Files.exists(dir)) {
-        try {
-          Files.createDirectories(dir);
-        } catch (IOException e) {
-          throw new PlaywrightException("Failed to create parent directory: " + dir, e);
-        }
-      }
-    }
-  }
-
-  /** The screenshot type for a path when no type is given, from its extension, like the Node.js client. */
-  static ScreenshotType screenshotTypeForPath(Path path) {
-    String fileName = path.getFileName().toString();
-    int extStart = fileName.lastIndexOf('.');
-    String extension = extStart == -1 ? "" : fileName.substring(extStart + 1).toLowerCase();
-    switch (extension) {
-      case "png": return ScreenshotType.PNG;
-      case "jpg":
-      case "jpeg": return ScreenshotType.JPEG;
-      case "webp": return ScreenshotType.WEBP;
-      default:
-        throw new PlaywrightException("path: unsupported mime type \"" + URLConnection.guessContentTypeFromName(fileName) + "\"");
-    }
-  }
-
   static void writeToFile(byte[] buffer, Path path) {
-    mkParentDirs(path);
+    FileUtils.mkdirIfNeeded(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       out.write(buffer);
     } catch (IOException e) {
@@ -344,7 +161,7 @@ public class Utils {
   }
 
   static void writeToFile(InputStream inputStream, Path path) {
-    mkParentDirs(path);
+    FileUtils.mkdirIfNeeded(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       byte[] buf = new byte[1024 * 1024];
       int length;
@@ -356,46 +173,7 @@ public class Utils {
     }
   }
 
-  static String createGuid() {
-    StringBuffer result = new StringBuffer();
-    Random random = new Random();
-    for (int i = 0; i < 4; i++) {
-      result.append(Integer.toHexString(random.nextInt()));
-    }
-    return result.toString();
-  }
-
-  static Map<String, String> toHeadersMap(List<HttpHeader> headers) {
-    Map<String, String> map = new LinkedHashMap<>();
-    for (HttpHeader header: headers) {
-      map.put(header.name.toLowerCase(), header.value);
-    }
-    return map;
-  }
-
-  static void assertNoNullItems(Object[] values) {
-    for (int i = 0; i < values.length; i++) {
-      if (values[i] == null) {
-        throw new PlaywrightException("options[" + i + "]: expected object, got null");
-      }
-    }
-  }
-
-  static List<HttpHeader> toHeadersList(Map<String, String> headers) {
-    List<HttpHeader> list = new ArrayList<>();
-    for (Map.Entry<String, String> entry: headers.entrySet()) {
-      if (entry.getValue() == null) {
-        continue;
-      }
-      HttpHeader header = new HttpHeader();
-      header.name = entry.getKey();
-      header.value = entry.getValue();
-      list.add(header);
-    }
-    return list;
-  }
-
-  static String toJsRegexFlags(Pattern pattern) {
+  public static String toJsRegexFlags(Pattern pattern) {
     String regexFlags = "";
     if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {
       // Case-insensitive search.
@@ -429,30 +207,13 @@ public class Utils {
     return flags;
   }
 
-  static String addSourceUrlToScript(String source, Path path) {
-    return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
-  }
-
-  static JsonObject interceptionPatterns(List<UrlMatcher> matchers) {
-    JsonArray jsonPatterns = new JsonArray();
-    for (UrlMatcher matcher: matchers) {
-      JsonObject jsonPattern = new JsonObject();
-      if (matcher.glob != null) {
-        jsonPattern.addProperty("glob", matcher.glob);
-      } else if (matcher.pattern != null) {
-        jsonPattern.addProperty("regexSource", matcher.pattern.pattern());
-        jsonPattern.addProperty("regexFlags", toJsRegexFlags(matcher.pattern));
-      } else {
-        // Match all requests.
-        jsonPattern.addProperty("glob", "**/*");
-        jsonPatterns = new JsonArray();
-        jsonPatterns.add(jsonPattern);
-        break;
-      }
-      jsonPatterns.add(jsonPattern);
+  // java: createGuid of utils/crypto.ts, a Node.js utils file outside the client.
+  static String createGuid() {
+    StringBuffer result = new StringBuffer();
+    Random random = new Random();
+    for (int i = 0; i < 4; i++) {
+      result.append(Integer.toHexString(random.nextInt()));
     }
-    JsonObject result = new JsonObject();
-    result.add("patterns", jsonPatterns);
-    return result;
+    return result.toString();
   }
 }

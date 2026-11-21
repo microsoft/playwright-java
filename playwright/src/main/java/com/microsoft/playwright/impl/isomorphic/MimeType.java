@@ -1,0 +1,489 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Port of isomorphic/mimeType.ts.
+package com.microsoft.playwright.impl.isomorphic;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+// java: a match() of a regex anchored with ^ and $ is find(); a Java $ also matches before a final line terminator.
+public final class MimeType {
+  private MimeType() {
+  }
+
+  public static boolean isJsonMimeType(String mimeType) {
+    return Pattern.compile("^(application\\/json|application\\/.*?\\+json|text\\/(x-)?json)(;\\s*charset=.*)?$").matcher(mimeType).find();
+  }
+
+  public static boolean isXmlMimeType(String mimeType) {
+    return Pattern.compile("^(application\\/xml|application\\/.*?\\+xml|text\\/xml)(;\\s*charset=.*)?$").matcher(mimeType).find();
+  }
+
+  public static boolean isTextualMimeType(String mimeType) {
+    return Pattern.compile("^(text\\/.*?|application\\/(json|(x-)?javascript|xml.*?|ecmascript|graphql|x-www-form-urlencoded)|image\\/svg(\\+xml)?|application\\/.*?(\\+json|\\+xml))(;\\s*charset=.*)?$").matcher(mimeType).find();
+  }
+
+  public static String getMimeTypeForPath(String path) {
+    int dotIndex = path.lastIndexOf('.');
+    if (dotIndex == -1)
+      return null;
+    String extension = path.substring(dotIndex + 1).toLowerCase();
+    return types.get(extension);
+  }
+
+  // java: a null contentType is undefined.
+  public static String getExtensionForMimeType(String contentType) {
+    String[] parts = (contentType != null ? contentType : "").split(";", -1)[0].split("/", -1);
+    String subtype = parts.length > 1 ? parts[1].trim().toLowerCase() : "";
+    if (subtype.isEmpty())
+      return "bin";
+    // image/svg+xml → xml, application/ld+json → json
+    String tail;
+    if (subtype.contains("+")) {
+      String[] subtypeParts = subtype.split("\\+", -1);
+      tail = subtypeParts[subtypeParts.length - 1];
+    } else {
+      tail = subtype;
+    }
+    if (tail.equals("plain"))
+      return "txt";
+    if (tail.equals("javascript") || tail.equals("ecmascript"))
+      return "js";
+    if (tail.equals("jpeg"))
+      return "jpg";
+    String result = tail.replaceAll("[^a-z0-9]", "");
+    return !result.isEmpty() ? result : "bin";
+  }
+
+  private static final Map<String, String> types = new LinkedHashMap<>();
+  static {
+    types.put("ez", "application/andrew-inset");
+    types.put("aw", "application/applixware");
+    types.put("atom", "application/atom+xml");
+    types.put("atomcat", "application/atomcat+xml");
+    types.put("atomdeleted", "application/atomdeleted+xml");
+    types.put("atomsvc", "application/atomsvc+xml");
+    types.put("dwd", "application/atsc-dwd+xml");
+    types.put("held", "application/atsc-held+xml");
+    types.put("rsat", "application/atsc-rsat+xml");
+    types.put("bdoc", "application/bdoc");
+    types.put("xcs", "application/calendar+xml");
+    types.put("ccxml", "application/ccxml+xml");
+    types.put("cdfx", "application/cdfx+xml");
+    types.put("cdmia", "application/cdmi-capability");
+    types.put("cdmic", "application/cdmi-container");
+    types.put("cdmid", "application/cdmi-domain");
+    types.put("cdmio", "application/cdmi-object");
+    types.put("cdmiq", "application/cdmi-queue");
+    types.put("cu", "application/cu-seeme");
+    types.put("mpd", "application/dash+xml");
+    types.put("davmount", "application/davmount+xml");
+    types.put("dbk", "application/docbook+xml");
+    types.put("dssc", "application/dssc+der");
+    types.put("xdssc", "application/dssc+xml");
+    types.put("ecma", "application/ecmascript");
+    types.put("es", "application/ecmascript");
+    types.put("emma", "application/emma+xml");
+    types.put("emotionml", "application/emotionml+xml");
+    types.put("epub", "application/epub+zip");
+    types.put("exi", "application/exi");
+    types.put("exp", "application/express");
+    types.put("fdt", "application/fdt+xml");
+    types.put("pfr", "application/font-tdpfr");
+    types.put("geojson", "application/geo+json");
+    types.put("gml", "application/gml+xml");
+    types.put("gpx", "application/gpx+xml");
+    types.put("gxf", "application/gxf");
+    types.put("gz", "application/gzip");
+    types.put("hjson", "application/hjson");
+    types.put("stk", "application/hyperstudio");
+    types.put("ink", "application/inkml+xml");
+    types.put("inkml", "application/inkml+xml");
+    types.put("ipfix", "application/ipfix");
+    types.put("its", "application/its+xml");
+    types.put("ear", "application/java-archive");
+    types.put("jar", "application/java-archive");
+    types.put("war", "application/java-archive");
+    types.put("ser", "application/java-serialized-object");
+    types.put("class", "application/java-vm");
+    types.put("js", "application/javascript");
+    types.put("mjs", "application/javascript");
+    types.put("json", "application/json");
+    types.put("map", "application/json");
+    types.put("json5", "application/json5");
+    types.put("jsonml", "application/jsonml+json");
+    types.put("jsonld", "application/ld+json");
+    types.put("lgr", "application/lgr+xml");
+    types.put("lostxml", "application/lost+xml");
+    types.put("hqx", "application/mac-binhex40");
+    types.put("cpt", "application/mac-compactpro");
+    types.put("mads", "application/mads+xml");
+    types.put("webmanifest", "application/manifest+json");
+    types.put("mrc", "application/marc");
+    types.put("mrcx", "application/marcxml+xml");
+    types.put("ma", "application/mathematica");
+    types.put("mb", "application/mathematica");
+    types.put("nb", "application/mathematica");
+    types.put("mathml", "application/mathml+xml");
+    types.put("mbox", "application/mbox");
+    types.put("mscml", "application/mediaservercontrol+xml");
+    types.put("metalink", "application/metalink+xml");
+    types.put("meta4", "application/metalink4+xml");
+    types.put("mets", "application/mets+xml");
+    types.put("maei", "application/mmt-aei+xml");
+    types.put("musd", "application/mmt-usd+xml");
+    types.put("mods", "application/mods+xml");
+    types.put("m21", "application/mp21");
+    types.put("mp21", "application/mp21");
+    types.put("m4p", "application/mp4");
+    types.put("mp4s", "application/mp4");
+    types.put("doc", "application/msword");
+    types.put("dot", "application/msword");
+    types.put("mxf", "application/mxf");
+    types.put("nq", "application/n-quads");
+    types.put("nt", "application/n-triples");
+    types.put("cjs", "application/node");
+    types.put("bin", "application/octet-stream");
+    types.put("bpk", "application/octet-stream");
+    types.put("buffer", "application/octet-stream");
+    types.put("deb", "application/octet-stream");
+    types.put("deploy", "application/octet-stream");
+    types.put("dist", "application/octet-stream");
+    types.put("distz", "application/octet-stream");
+    types.put("dll", "application/octet-stream");
+    types.put("dmg", "application/octet-stream");
+    types.put("dms", "application/octet-stream");
+    types.put("dump", "application/octet-stream");
+    types.put("elc", "application/octet-stream");
+    types.put("exe", "application/octet-stream");
+    types.put("img", "application/octet-stream");
+    types.put("iso", "application/octet-stream");
+    types.put("lrf", "application/octet-stream");
+    types.put("mar", "application/octet-stream");
+    types.put("msi", "application/octet-stream");
+    types.put("msm", "application/octet-stream");
+    types.put("msp", "application/octet-stream");
+    types.put("pkg", "application/octet-stream");
+    types.put("so", "application/octet-stream");
+    types.put("oda", "application/oda");
+    types.put("opf", "application/oebps-package+xml");
+    types.put("ogx", "application/ogg");
+    types.put("omdoc", "application/omdoc+xml");
+    types.put("onepkg", "application/onenote");
+    types.put("onetmp", "application/onenote");
+    types.put("onetoc", "application/onenote");
+    types.put("onetoc2", "application/onenote");
+    types.put("oxps", "application/oxps");
+    types.put("relo", "application/p2p-overlay+xml");
+    types.put("xer", "application/patch-ops-error+xml");
+    types.put("pdf", "application/pdf");
+    types.put("pgp", "application/pgp-encrypted");
+    types.put("asc", "application/pgp-signature");
+    types.put("sig", "application/pgp-signature");
+    types.put("prf", "application/pics-rules");
+    types.put("p10", "application/pkcs10");
+    types.put("p7c", "application/pkcs7-mime");
+    types.put("p7m", "application/pkcs7-mime");
+    types.put("p7s", "application/pkcs7-signature");
+    types.put("p8", "application/pkcs8");
+    types.put("ac", "application/pkix-attr-cert");
+    types.put("cer", "application/pkix-cert");
+    types.put("crl", "application/pkix-crl");
+    types.put("pkipath", "application/pkix-pkipath");
+    types.put("pki", "application/pkixcmp");
+    types.put("pls", "application/pls+xml");
+    types.put("ai", "application/postscript");
+    types.put("eps", "application/postscript");
+    types.put("ps", "application/postscript");
+    types.put("provx", "application/provenance+xml");
+    types.put("pskcxml", "application/pskc+xml");
+    types.put("raml", "application/raml+yaml");
+    types.put("owl", "application/rdf+xml");
+    types.put("rdf", "application/rdf+xml");
+    types.put("rif", "application/reginfo+xml");
+    types.put("rnc", "application/relax-ng-compact-syntax");
+    types.put("rl", "application/resource-lists+xml");
+    types.put("rld", "application/resource-lists-diff+xml");
+    types.put("rs", "application/rls-services+xml");
+    types.put("rapd", "application/route-apd+xml");
+    types.put("sls", "application/route-s-tsid+xml");
+    types.put("rusd", "application/route-usd+xml");
+    types.put("gbr", "application/rpki-ghostbusters");
+    types.put("mft", "application/rpki-manifest");
+    types.put("roa", "application/rpki-roa");
+    types.put("rsd", "application/rsd+xml");
+    types.put("rss", "application/rss+xml");
+    types.put("rtf", "application/rtf");
+    types.put("sbml", "application/sbml+xml");
+    types.put("scq", "application/scvp-cv-request");
+    types.put("scs", "application/scvp-cv-response");
+    types.put("spq", "application/scvp-vp-request");
+    types.put("spp", "application/scvp-vp-response");
+    types.put("sdp", "application/sdp");
+    types.put("senmlx", "application/senml+xml");
+    types.put("sensmlx", "application/sensml+xml");
+    types.put("setpay", "application/set-payment-initiation");
+    types.put("setreg", "application/set-registration-initiation");
+    types.put("shf", "application/shf+xml");
+    types.put("sieve", "application/sieve");
+    types.put("siv", "application/sieve");
+    types.put("smi", "application/smil+xml");
+    types.put("smil", "application/smil+xml");
+    types.put("rq", "application/sparql-query");
+    types.put("srx", "application/sparql-results+xml");
+    types.put("gram", "application/srgs");
+    types.put("grxml", "application/srgs+xml");
+    types.put("sru", "application/sru+xml");
+    types.put("ssdl", "application/ssdl+xml");
+    types.put("ssml", "application/ssml+xml");
+    types.put("swidtag", "application/swid+xml");
+    types.put("tei", "application/tei+xml");
+    types.put("teicorpus", "application/tei+xml");
+    types.put("tfi", "application/thraud+xml");
+    types.put("tsd", "application/timestamped-data");
+    types.put("toml", "application/toml");
+    types.put("trig", "application/trig");
+    types.put("ttml", "application/ttml+xml");
+    types.put("ubj", "application/ubjson");
+    types.put("rsheet", "application/urc-ressheet+xml");
+    types.put("td", "application/urc-targetdesc+xml");
+    types.put("vxml", "application/voicexml+xml");
+    types.put("wasm", "application/wasm");
+    types.put("wgt", "application/widget");
+    types.put("hlp", "application/winhlp");
+    types.put("wsdl", "application/wsdl+xml");
+    types.put("wspolicy", "application/wspolicy+xml");
+    types.put("xaml", "application/xaml+xml");
+    types.put("xav", "application/xcap-att+xml");
+    types.put("xca", "application/xcap-caps+xml");
+    types.put("xdf", "application/xcap-diff+xml");
+    types.put("xel", "application/xcap-el+xml");
+    types.put("xns", "application/xcap-ns+xml");
+    types.put("xenc", "application/xenc+xml");
+    types.put("xht", "application/xhtml+xml");
+    types.put("xhtml", "application/xhtml+xml");
+    types.put("xlf", "application/xliff+xml");
+    types.put("rng", "application/xml");
+    types.put("xml", "application/xml");
+    types.put("xsd", "application/xml");
+    types.put("xsl", "application/xml");
+    types.put("dtd", "application/xml-dtd");
+    types.put("xop", "application/xop+xml");
+    types.put("xpl", "application/xproc+xml");
+    types.put("*xsl", "application/xslt+xml");
+    types.put("xslt", "application/xslt+xml");
+    types.put("xspf", "application/xspf+xml");
+    types.put("mxml", "application/xv+xml");
+    types.put("xhvml", "application/xv+xml");
+    types.put("xvm", "application/xv+xml");
+    types.put("xvml", "application/xv+xml");
+    types.put("yang", "application/yang");
+    types.put("yin", "application/yin+xml");
+    types.put("zip", "application/zip");
+    types.put("*3gpp", "audio/3gpp");
+    types.put("adp", "audio/adpcm");
+    types.put("amr", "audio/amr");
+    types.put("au", "audio/basic");
+    types.put("snd", "audio/basic");
+    types.put("kar", "audio/midi");
+    types.put("mid", "audio/midi");
+    types.put("midi", "audio/midi");
+    types.put("rmi", "audio/midi");
+    types.put("mxmf", "audio/mobile-xmf");
+    types.put("*mp3", "audio/mp3");
+    types.put("m4a", "audio/mp4");
+    types.put("mp4a", "audio/mp4");
+    types.put("m2a", "audio/mpeg");
+    types.put("m3a", "audio/mpeg");
+    types.put("mp2", "audio/mpeg");
+    types.put("mp2a", "audio/mpeg");
+    types.put("mp3", "audio/mpeg");
+    types.put("mpga", "audio/mpeg");
+    types.put("oga", "audio/ogg");
+    types.put("ogg", "audio/ogg");
+    types.put("opus", "audio/ogg");
+    types.put("spx", "audio/ogg");
+    types.put("s3m", "audio/s3m");
+    types.put("sil", "audio/silk");
+    types.put("wav", "audio/wav");
+    types.put("*wav", "audio/wave");
+    types.put("weba", "audio/webm");
+    types.put("xm", "audio/xm");
+    types.put("ttc", "font/collection");
+    types.put("otf", "font/otf");
+    types.put("ttf", "font/ttf");
+    types.put("woff", "font/woff");
+    types.put("woff2", "font/woff2");
+    types.put("exr", "image/aces");
+    types.put("apng", "image/apng");
+    types.put("avif", "image/avif");
+    types.put("bmp", "image/bmp");
+    types.put("cgm", "image/cgm");
+    types.put("drle", "image/dicom-rle");
+    types.put("emf", "image/emf");
+    types.put("fits", "image/fits");
+    types.put("g3", "image/g3fax");
+    types.put("gif", "image/gif");
+    types.put("heic", "image/heic");
+    types.put("heics", "image/heic-sequence");
+    types.put("heif", "image/heif");
+    types.put("heifs", "image/heif-sequence");
+    types.put("hej2", "image/hej2k");
+    types.put("hsj2", "image/hsj2");
+    types.put("ief", "image/ief");
+    types.put("jls", "image/jls");
+    types.put("jp2", "image/jp2");
+    types.put("jpg2", "image/jp2");
+    types.put("jpe", "image/jpeg");
+    types.put("jpeg", "image/jpeg");
+    types.put("jpg", "image/jpeg");
+    types.put("jph", "image/jph");
+    types.put("jhc", "image/jphc");
+    types.put("jpm", "image/jpm");
+    types.put("jpf", "image/jpx");
+    types.put("jpx", "image/jpx");
+    types.put("jxr", "image/jxr");
+    types.put("jxra", "image/jxra");
+    types.put("jxrs", "image/jxrs");
+    types.put("jxs", "image/jxs");
+    types.put("jxsc", "image/jxsc");
+    types.put("jxsi", "image/jxsi");
+    types.put("jxss", "image/jxss");
+    types.put("ktx", "image/ktx");
+    types.put("ktx2", "image/ktx2");
+    types.put("png", "image/png");
+    types.put("sgi", "image/sgi");
+    types.put("svg", "image/svg+xml");
+    types.put("svgz", "image/svg+xml");
+    types.put("t38", "image/t38");
+    types.put("tif", "image/tiff");
+    types.put("tiff", "image/tiff");
+    types.put("tfx", "image/tiff-fx");
+    types.put("webp", "image/webp");
+    types.put("wmf", "image/wmf");
+    types.put("disposition-notification", "message/disposition-notification");
+    types.put("u8msg", "message/global");
+    types.put("u8dsn", "message/global-delivery-status");
+    types.put("u8mdn", "message/global-disposition-notification");
+    types.put("u8hdr", "message/global-headers");
+    types.put("eml", "message/rfc822");
+    types.put("mime", "message/rfc822");
+    types.put("3mf", "model/3mf");
+    types.put("gltf", "model/gltf+json");
+    types.put("glb", "model/gltf-binary");
+    types.put("iges", "model/iges");
+    types.put("igs", "model/iges");
+    types.put("mesh", "model/mesh");
+    types.put("msh", "model/mesh");
+    types.put("silo", "model/mesh");
+    types.put("mtl", "model/mtl");
+    types.put("obj", "model/obj");
+    types.put("stpx", "model/step+xml");
+    types.put("stpz", "model/step+zip");
+    types.put("stpxz", "model/step-xml+zip");
+    types.put("stl", "model/stl");
+    types.put("vrml", "model/vrml");
+    types.put("wrl", "model/vrml");
+    types.put("*x3db", "model/x3d+binary");
+    types.put("x3dbz", "model/x3d+binary");
+    types.put("x3db", "model/x3d+fastinfoset");
+    types.put("*x3dv", "model/x3d+vrml");
+    types.put("x3dvz", "model/x3d+vrml");
+    types.put("x3d", "model/x3d+xml");
+    types.put("x3dz", "model/x3d+xml");
+    types.put("x3dv", "model/x3d-vrml");
+    types.put("appcache", "text/cache-manifest");
+    types.put("manifest", "text/cache-manifest");
+    types.put("ics", "text/calendar");
+    types.put("ifb", "text/calendar");
+    types.put("coffee", "text/coffeescript");
+    types.put("litcoffee", "text/coffeescript");
+    types.put("css", "text/css");
+    types.put("csv", "text/csv");
+    types.put("htm", "text/html");
+    types.put("html", "text/html");
+    types.put("shtml", "text/html");
+    types.put("jade", "text/jade");
+    types.put("jsx", "text/jsx");
+    types.put("less", "text/less");
+    types.put("markdown", "text/markdown");
+    types.put("md", "text/markdown");
+    types.put("mml", "text/mathml");
+    types.put("mdx", "text/mdx");
+    types.put("n3", "text/n3");
+    types.put("conf", "text/plain");
+    types.put("def", "text/plain");
+    types.put("in", "text/plain");
+    types.put("ini", "text/plain");
+    types.put("list", "text/plain");
+    types.put("log", "text/plain");
+    types.put("text", "text/plain");
+    types.put("txt", "text/plain");
+    types.put("rtx", "text/richtext");
+    types.put("*rtf", "text/rtf");
+    types.put("sgm", "text/sgml");
+    types.put("sgml", "text/sgml");
+    types.put("shex", "text/shex");
+    types.put("slim", "text/slim");
+    types.put("slm", "text/slim");
+    types.put("spdx", "text/spdx");
+    types.put("styl", "text/stylus");
+    types.put("stylus", "text/stylus");
+    types.put("tsv", "text/tab-separated-values");
+    types.put("man", "text/troff");
+    types.put("me", "text/troff");
+    types.put("ms", "text/troff");
+    types.put("roff", "text/troff");
+    types.put("t", "text/troff");
+    types.put("tr", "text/troff");
+    types.put("ttl", "text/turtle");
+    types.put("uri", "text/uri-list");
+    types.put("uris", "text/uri-list");
+    types.put("urls", "text/uri-list");
+    types.put("vcard", "text/vcard");
+    types.put("vtt", "text/vtt");
+    types.put("*xml", "text/xml");
+    types.put("yaml", "text/yaml");
+    types.put("yml", "text/yaml");
+    types.put("3gp", "video/3gpp");
+    types.put("3gpp", "video/3gpp");
+    types.put("3g2", "video/3gpp2");
+    types.put("h261", "video/h261");
+    types.put("h263", "video/h263");
+    types.put("h264", "video/h264");
+    types.put("m4s", "video/iso.segment");
+    types.put("jpgv", "video/jpeg");
+    types.put("jpm", "video/jpm");
+    types.put("jpgm", "video/jpm");
+    types.put("mj2", "video/mj2");
+    types.put("mjp2", "video/mj2");
+    types.put("ts", "application/typescript");
+    types.put("mp4", "video/mp4");
+    types.put("mp4v", "video/mp4");
+    types.put("mpg4", "video/mp4");
+    types.put("m1v", "video/mpeg");
+    types.put("m2v", "video/mpeg");
+    types.put("mpe", "video/mpeg");
+    types.put("mpeg", "video/mpeg");
+    types.put("mpg", "video/mpeg");
+    types.put("ogv", "video/ogg");
+    types.put("mov", "video/quicktime");
+    types.put("qt", "video/quicktime");
+    types.put("webm", "video/webm");
+  }
+}

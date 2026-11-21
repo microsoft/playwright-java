@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of jsonPipe.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -27,18 +28,25 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-
 public class JsonPipe extends ChannelOwner implements Transport {
-  private final Queue<JsonObject> incoming = new LinkedList<>();
-  private boolean isClosed;
-  private String closeReason = "Browser has been closed";
-
   final JsonPipeChannel channel = new JsonPipeChannel(this);
+
+  // java: from is not ported, generated results already hold the impl object.
 
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
+
+  JsonPipeChannel channel() {
+    return channel;
+  }
+
+  // java: the members below have no counterpart in jsonPipe.ts, they are JsonPipeTransport of connect.ts in the
+  // order send, onMessage (poll), onClose, close; the pipe is this object and the _owner is not kept, its connect
+  // is in Connect.connectToEndpoint.
+  private final Queue<JsonObject> incoming = new LinkedList<>();
+  private boolean isClosed;
+  private String closeReason = "Browser has been closed";
 
   @Override
   public void send(JsonObject message) {
@@ -77,25 +85,16 @@ public class JsonPipe extends ChannelOwner implements Transport {
     });
   }
 
+  void onClose(Consumer<JsonPipe> handler) {
+    on(Events.JsonPipe.CLOSE, handler);
+  }
+
   @Override
   public void close() throws IOException {
     if (!isClosed) {
       channel.close(NO_TIMEOUT);
     }
   }
-
-  String closeReason() {
-    return closeReason;
-  }
-
-  void onClose(Consumer<JsonPipe> handler) {
-    on(Events.JsonPipe.CLOSE, handler);
-  }
-
-  void offClose(Consumer<JsonPipe> handler) {
-    off(Events.JsonPipe.CLOSE, handler);
-  }
-
 
   @Override
   protected void handleEvent(String event, JsonObject params) {
@@ -111,6 +110,10 @@ public class JsonPipe extends ChannelOwner implements Transport {
       }
       emit(Events.JsonPipe.CLOSE, this);
     }
+  }
+
+  String closeReason() {
+    return closeReason;
   }
 
   private void checkIfClosed() {

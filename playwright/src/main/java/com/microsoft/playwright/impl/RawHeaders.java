@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+// Port of network.ts.
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.impl.protocol.NameValue;
 import com.microsoft.playwright.options.HttpHeader;
 
 import java.util.ArrayList;
@@ -24,44 +27,77 @@ import java.util.List;
 import java.util.Map;
 
 class RawHeaders {
-  private final List<HttpHeader> headersArray;
+  private final List<NameValue> headersArray;
+  // java: MultiMap is a map of lists.
   private final Map<String, List<String>> headersMap = new LinkedHashMap<>();
 
-  RawHeaders(List<HttpHeader> headers) {
-    headersArray = headers;
-    for (HttpHeader h: headers) {
-      String name = h.name.toLowerCase();
+  static RawHeaders fromHeadersObjectLossy(Map<String, String> headers) {
+    List<NameValue> headersArray = new ArrayList<>();
+    for (Map.Entry<String, String> entry : headers.entrySet()) {
+      if (entry.getValue() == null) {
+        continue;
+      }
+      NameValue header = new NameValue();
+      header.name = entry.getKey();
+      header.value = entry.getValue();
+      headersArray.add(header);
+    }
+    return new RawHeaders(headersArray);
+  }
+
+  RawHeaders(List<NameValue> headers) {
+    this.headersArray = headers;
+    for (NameValue header : headers) {
+      String name = header.name.toLowerCase();
       List<String> values = headersMap.get(name);
       if (values == null) {
         values = new ArrayList<>();
         headersMap.put(name, values);
       }
-      values.add(h.value);
+      values.add(header.value);
     }
   }
 
   String get(String name) {
     List<String> values = getAll(name);
-    if (values == null) {
+    if (values == null || values.isEmpty()) {
       return null;
     }
     return String.join("set-cookie".equals(name.toLowerCase()) ? "\n" : ", ", values);
   }
 
   List<String> getAll(String name) {
-    return headersMap.get(name.toLowerCase());
+    List<String> values = headersMap.get(name.toLowerCase());
+    return values == null ? new ArrayList<>() : new ArrayList<>(values);
   }
 
   Map<String, String> headers() {
     Map<String, String> result = new LinkedHashMap<>();
-    for (String name: headersMap.keySet()) {
+    for (String name : headersMap.keySet()) {
       result.put(name, get(name));
     }
     return result;
   }
 
+  // java: a new list of the public HttpHeader type on every call.
   List<HttpHeader> headersArray() {
-    return headersArray;
+    List<HttpHeader> result = new ArrayList<>();
+    for (NameValue header : headersArray) {
+      HttpHeader h = new HttpHeader();
+      h.name = header.name;
+      h.value = header.value;
+      result.add(h);
+    }
+    return result;
   }
 
+  // java: a module-level function of network.ts.
+  static void validateHeaders(Map<String, String> headers) {
+    for (Map.Entry<String, String> entry : headers.entrySet()) {
+      // java: a null value is a JavaScript null, typeof null is "object".
+      if (entry.getValue() == null) {
+        throw new PlaywrightException("Expected value of header \"" + entry.getKey() + "\" to be String, but \"object\" is found.");
+      }
+    }
+  }
 }

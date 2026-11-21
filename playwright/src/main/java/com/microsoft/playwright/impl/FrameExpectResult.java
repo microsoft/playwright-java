@@ -16,23 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.microsoft.playwright.options.PseudoElement;
+import com.microsoft.playwright.impl.protocol.FrameExpectErrorDetails;
+
 import java.util.List;
 
-class FrameExpectOptions {
-  Object expressionArg;
-  List<ExpectedTextValue> expectedText;
-  String selector;
-  Double expectedNumber;
-  SerializedArgument expectedValue;
-  Boolean useInnerText;
-  PseudoElement pseudo;
-  boolean isNot;
-  Double timeout;
-}
-
-// Client-side outcome of Frame.expect: the command has no result, a mismatch arrives as an error with FrameExpectErrorDetails.
+// java: ExpectResult of frame.ts; the command has no result, a mismatch arrives as an error with FrameExpectErrorDetails.
 class FrameExpectResult {
   boolean matches;
   FrameExpectErrorDetails.FrameExpectErrorDetailsReceived received;

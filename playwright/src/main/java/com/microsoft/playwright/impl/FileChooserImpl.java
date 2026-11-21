@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of fileChooser.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.ElementHandle;
@@ -27,18 +28,18 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FileChooserImpl implements FileChooser {
   private final PageImpl page;
-  private final ElementHandleImpl element;
+  private final ElementHandleImpl elementHandle;
   private final boolean isMultiple;
 
-  FileChooserImpl(PageImpl page, ElementHandleImpl element, boolean isMultiple) {
+  FileChooserImpl(PageImpl page, ElementHandleImpl elementHandle, boolean isMultiple) {
     this.page = page;
-    this.element = element;
+    this.elementHandle = elementHandle;
     this.isMultiple = isMultiple;
   }
 
   @Override
   public ElementHandle element() {
-    return element;
+    return elementHandle;
   }
 
   @Override
@@ -51,6 +52,7 @@ class FileChooserImpl implements FileChooser {
     return page;
   }
 
+  // java: overloads for the public API; each delegates to ElementHandle.setInputFiles like upstream setFiles.
   @Override
   public void setFiles(Path files, SetFilesOptions options) {
     setFiles(new Path[]{files}, options);
@@ -58,7 +60,7 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(Path[] files, SetFilesOptions options) {
-    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    elementHandle.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 
   @Override
@@ -68,6 +70,6 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(FilePayload[] files, SetFilesOptions options) {
-    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    elementHandle.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 }

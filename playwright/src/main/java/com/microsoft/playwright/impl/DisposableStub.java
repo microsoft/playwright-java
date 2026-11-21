@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+// Port of disposable.ts.
 package com.microsoft.playwright.impl;
 
+// java: the dispose function is a Runnable.
 class DisposableStub implements AutoCloseable {
   private Runnable dispose;
 
@@ -23,12 +25,21 @@ class DisposableStub implements AutoCloseable {
     this.dispose = dispose;
   }
 
+  // java: Symbol.asyncDispose is AutoCloseable.close().
   @Override
   public void close() {
+    dispose();
+  }
+
+  void dispose() {
     if (dispose == null)
       return;
-    Runnable d = dispose;
-    dispose = null;
-    d.run();
+    try {
+      Runnable dispose = this.dispose;
+      this.dispose = null;
+      dispose.run();
+    } catch (TargetClosedError e) {
+      return;
+    }
   }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of download.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
@@ -25,48 +26,30 @@ import java.nio.file.Path;
 
 class DownloadImpl implements Download {
   private final PageImpl page;
+  private final String url;
+  private final String suggestedFilename;
   private final ArtifactImpl artifact;
-  private final JsonObject initializer;
 
-  DownloadImpl(PageImpl page, ArtifactImpl artifact, JsonObject initializer) {
+  DownloadImpl(PageImpl page, String url, String suggestedFilename, ArtifactImpl artifact) {
     this.page = page;
+    this.url = url;
+    this.suggestedFilename = suggestedFilename;
     this.artifact = artifact;
-    this.initializer = initializer;
-  }
-
-  @Override
-  public String url() {
-    return initializer.get("url").getAsString();
-  }
-
-  @Override
-  public String suggestedFilename() {
-    return initializer.get("suggestedFilename").getAsString();
-  }
-
-  @Override
-  public void cancel() {
-    artifact.cancel();
-  }
-
-  @Override
-  public InputStream createReadStream() {
-    return artifact.createReadStream();
-  }
-
-  @Override
-  public void delete() {
-    artifact.delete();
-  }
-
-  @Override
-  public String failure() {
-    return artifact.failure();
   }
 
   @Override
   public Page page() {
     return page;
+  }
+
+  @Override
+  public String url() {
+    return url;
+  }
+
+  @Override
+  public String suggestedFilename() {
+    return suggestedFilename;
   }
 
   @Override
@@ -77,5 +60,30 @@ class DownloadImpl implements Download {
   @Override
   public void saveAs(Path path) {
     artifact.saveAs(path);
+  }
+
+  @Override
+  public String failure() {
+    return artifact.failure();
+  }
+
+  @Override
+  public InputStream createReadStream() {
+    return artifact.createReadStream();
+  }
+
+  @Override
+  public void cancel() {
+    artifact.cancel();
+  }
+
+  @Override
+  public void delete() {
+    artifact.delete();
+  }
+
+  // java: the constructor PageImpl calls, it reads url and suggestedFilename from the download event.
+  DownloadImpl(PageImpl page, ArtifactImpl artifact, JsonObject initializer) {
+    this(page, initializer.get("url").getAsString(), initializer.get("suggestedFilename").getAsString(), artifact);
   }
 }

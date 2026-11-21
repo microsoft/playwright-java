@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
+// Port of network.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.WebSocket;
 import com.microsoft.playwright.WebSocketFrame;
+import com.microsoft.playwright.impl.protocol.WebSocketChannel;
+import com.microsoft.playwright.impl.protocol.WebSocketFrameReceivedEvent;
+import com.microsoft.playwright.impl.protocol.WebSocketFrameSentEvent;
+import com.microsoft.playwright.impl.protocol.WebSocketInitializer;
+import com.microsoft.playwright.impl.protocol.WebSocketSocketErrorEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -32,12 +35,81 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
   private boolean isClosed;
 
   final WebSocketChannel channel = new WebSocketChannel(this);
+  private final WebSocketInitializer webSocketInitializer;
+
+  // java: from is not ported, generated results already hold the impl object.
 
   WebSocketImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    page = (PageImpl) parent;
+    webSocketInitializer = connection.protocolGson().fromJson(initializer, WebSocketInitializer.class);
+    this.isClosed = false;
+    this.page = (PageImpl) parent;
   }
 
+  // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
+  @Override
+  void handleEvent(String event, JsonObject params) {
+    switch (event) {
+      case "frameSent": {
+        WebSocketFrameSentEvent e = connection.protocolGson().fromJson(params, WebSocketFrameSentEvent.class);
+        if (e.opcode == 1) {
+          emit(Events.WebSocket.FRAME_SENT, new WebSocketFrameImpl(e.data, false));
+        } else if (e.opcode == 2) {
+          emit(Events.WebSocket.FRAME_SENT, new WebSocketFrameImpl(e.data, true));
+        }
+        break;
+      }
+      case "frameReceived": {
+        WebSocketFrameReceivedEvent e = connection.protocolGson().fromJson(params, WebSocketFrameReceivedEvent.class);
+        if (e.opcode == 1) {
+          emit(Events.WebSocket.FRAME_RECEIVED, new WebSocketFrameImpl(e.data, false));
+        } else if (e.opcode == 2) {
+          emit(Events.WebSocket.FRAME_RECEIVED, new WebSocketFrameImpl(e.data, true));
+        }
+        break;
+      }
+      case "socketError": {
+        WebSocketSocketErrorEvent e = connection.protocolGson().fromJson(params, WebSocketSocketErrorEvent.class);
+        emit(Events.WebSocket.ERROR, e.error);
+        break;
+      }
+      case "close": {
+        isClosed = true;
+        emit(Events.WebSocket.CLOSE, this);
+        break;
+      }
+    }
+  }
+
+  @Override
+  public String url() {
+    return webSocketInitializer.url;
+  }
+
+  @Override
+  public boolean isClosed() {
+    return isClosed;
+  }
+
+  // java: the predicate and timeout are passed separately and the code to run is a Runnable; no wrapApiCall
+  // for @apiCall(), so that the calls of the callback are reported on their own (see WorkerImpl).
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
+    double timeoutMs = page.timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.WebSocket.ERROR.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.ERROR, () -> new PlaywrightException("Socket error"));
+    }
+    if (!Events.WebSocket.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.WebSocket.CLOSE, () -> new PlaywrightException("Socket closed"));
+    }
+    waiter.rejectOnEvent(page, Events.Page.CLOSE, () -> page.closeErrorWithReason());
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
+  }
+
+  // java: typed on/off/waitFor overloads of the generated WebSocket interface.
   @Override
   public void onClose(Consumer<WebSocket> handler) {
     on(Events.WebSocket.CLOSE, handler);
@@ -79,84 +151,20 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
   }
 
   @Override
-  public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable code) {
+  public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable callback) {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
-    return waitForEvent(Events.WebSocket.FRAME_RECEIVED, options.predicate, options.timeout, code);
+    return waitForEvent(Events.WebSocket.FRAME_RECEIVED, options.predicate, options.timeout, callback);
   }
 
   @Override
-  public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable code) {
+  public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable callback) {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
-    return waitForEvent(Events.WebSocket.FRAME_SENT, options.predicate, options.timeout, code);
+    return waitForEvent(Events.WebSocket.FRAME_SENT, options.predicate, options.timeout, callback);
   }
 
-  @Override
-  public boolean isClosed() {
-    return isClosed;
-  }
-
-  @Override
-  public String url() {
-    return initializer.get("url").getAsString();
-  }
-
-  // waitForEvent in network.ts
-  private WebSocketFrame waitForEvent(String event, Predicate<WebSocketFrame> predicate, Double timeout, Runnable code) {
-    double timeoutMs = page.timeoutSettings.timeout(timeout);
-    Waiter waiter = Waiter.createForEvent(this, event);
-    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
-    if (!Events.WebSocket.ERROR.equals(event)) {
-      waiter.rejectOnEvent(this, Events.WebSocket.ERROR, () -> new PlaywrightException("Socket error"));
-    }
-    if (!Events.WebSocket.CLOSE.equals(event)) {
-      waiter.rejectOnEvent(this, Events.WebSocket.CLOSE, () -> new PlaywrightException("Socket closed"));
-    }
-    waiter.rejectOnEvent(page, Events.Page.CLOSE, () -> page.closeErrorWithReason());
-    WebSocketFrame result = waiter.waitForEvent(this, event, predicate, code);
-    waiter.dispose();
-    return result;
-  }
-
-  @Override
-  void handleEvent(String event, JsonObject parameters) {
-    switch (event) {
-      case "frameSent": {
-        int opCode = parameters.get("opcode").getAsInt();
-        if (opCode != 1 && opCode != 2) {
-          break;
-        }
-        WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
-          parameters.get("data").getAsString(), opCode == 2);
-        emit(Events.WebSocket.FRAME_SENT, WebSocketFrame);
-        break;
-      }
-      case "frameReceived": {
-        int opCode = parameters.get("opcode").getAsInt();
-        if (opCode != 1 && opCode != 2) {
-          break;
-        }
-        WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
-          parameters.get("data").getAsString(), opCode == 2);
-        emit(Events.WebSocket.FRAME_RECEIVED, WebSocketFrame);
-        break;
-      }
-      case "socketError": {
-        String error = parameters.get("error").getAsString();
-        emit(Events.WebSocket.ERROR, error);
-        break;
-      }
-      case "close": {
-        isClosed = true;
-        emit(Events.WebSocket.CLOSE, this);
-        break;
-      }
-      default: {
-        throw new PlaywrightException("Unknown event: " + event);
-      }
-    }
-  }
+  // java: validateHeaders of network.ts is RawHeaders.validateHeaders, BrowserContextImpl and PageImpl call it there.
 }

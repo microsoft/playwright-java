@@ -567,7 +567,7 @@ public class TestGlobalFetch {
       PlaywrightException exception = assertThrows(PlaywrightException.class,
         () -> request.fetch(server.PREFIX + "/a/redirect1",
           RequestOptions.create().setMethod(method).setMaxRedirects(-1)));
-      assertTrue(exception.getMessage().contains("'maxRedirects' should be greater than or equal to '0'"), exception.getMessage());
+      assertTrue(exception.getMessage().contains("'maxRedirects' must be greater than or equal to '0'"), exception.getMessage());
     }
     request.dispose();
   }

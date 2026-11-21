@@ -14,163 +14,182 @@
  * limitations under the License.
  */
 
+// Port of network.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
+import com.microsoft.playwright.impl.protocol.NameValue;
+import com.microsoft.playwright.impl.protocol.RequestChannel;
+import com.microsoft.playwright.impl.protocol.RequestInitializer;
+import com.microsoft.playwright.impl.protocol.RequestSizes;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.Sizes;
 import com.microsoft.playwright.options.Timing;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.Utils.toHeadersMap;
-import static java.util.Arrays.asList;
 
 public class RequestImpl extends ChannelOwner implements Request {
-  private final byte[] postData;
-  private RequestImpl redirectedFrom;
-  private RequestImpl redirectedTo;
-  private final RawHeaders headers;
-  private RawHeaders rawHeaders;
-  String failure;
-  Timing timing;
-  boolean didFailOrFinish;
-  ResponseImpl existingResponse;
-  private FallbackOverrides fallbackOverrides;
-  private final FrameImpl frame;
+  // java: toClearCookiesParams is Serialization.toClearCookiesParams, BrowserContextImpl calls it there.
 
+  // java: SerializedFallbackOverrides.
+  static class SerializedFallbackOverrides {
+    String url;
+    String method;
+    Map<String, String> headers;
+    byte[] postDataBuffer;
+  }
+
+  // java: FallbackOverrides, built by RouteImpl from the Route options classes.
   static class FallbackOverrides {
     String url;
     String method;
-    byte[] postData;
     Map<String, String> headers;
+    Object postData;
   }
 
+  private RequestImpl redirectedFrom;
+  private RequestImpl redirectedTo;
+  String failureText;
+  ResponseImpl response;
+  private final RawHeaders provisionalHeaders;
+  // java: the resolved value of _actualHeadersPromise.
+  private RawHeaders actualHeadersPromise;
+  final Timing timing;
+  private final SerializedFallbackOverrides fallbackOverrides = new SerializedFallbackOverrides();
+
   final RequestChannel channel = new RequestChannel(this);
+  final RequestInitializer requestInitializer;
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-
-    if (initializer.has("frame")) {
-      frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
-    } else {
-      frame = null;
+    requestInitializer = connection.protocolGson().fromJson(initializer, RequestInitializer.class);
+    this.redirectedFrom = requestInitializer.redirectedFrom;
+    if (this.redirectedFrom != null) {
+      this.redirectedFrom.redirectedTo = this;
     }
-    if (initializer.has("redirectedFrom")) {
-      redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
-      redirectedFrom.redirectedTo = this;
-    }
-    headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
-    if (initializer.has("postData")) {
-      postData = Base64.getDecoder().decode(initializer.get("postData").getAsString());
-    } else {
-      postData = null;
-    }
+    this.provisionalHeaders = new RawHeaders(requestInitializer.headers);
+    this.timing = new Timing();
+    this.timing.startTime = 0;
+    this.timing.domainLookupStart = -1;
+    this.timing.domainLookupEnd = -1;
+    this.timing.connectStart = -1;
+    this.timing.secureConnectionStart = -1;
+    this.timing.connectEnd = -1;
+    this.timing.requestStart = -1;
+    this.timing.responseStart = -1;
+    this.timing.responseEnd = -1;
   }
 
   @Override
-  public ResponseImpl existingResponse() {
-    return existingResponse;
-  }
-
-  @Override
-  public Map<String, String> allHeaders() {
-    return getRawHeaders().headers();
-  }
-
-  @Override
-  public String failure() {
-    return failure;
-  }
-
-  PageImpl safePage() {
-    return frame == null ? null : frame.page;
-  }
-
-  @Override
-  public FrameImpl frame() {
-    if (frame == null) {
-      throw new PlaywrightException("Service Worker requests do not have an associated frame.");
-    }
-    if (frame.page == null) {
-      throw new PlaywrightException("Frame for this navigation request is not available, because the request\n" +
-        "was issued before the frame is created. You can check whether the request\n" +
-        "is a navigation request by calling isNavigationRequest() method.");
-    }
-    return frame;
-  }
-
-  @Override
-  public Map<String, String> headers() {
-    if (fallbackOverrides != null && fallbackOverrides.headers != null) {
-      return new RawHeaders(Utils.toHeadersList(fallbackOverrides.headers)).headers();
-    }
-    return headers.headers();
-  }
-
-  @Override
-  public List<HttpHeader> headersArray() {
-    return getRawHeaders().headersArray();
-  }
-
-  @Override
-  public String headerValue(String name) {
-    return getRawHeaders().get(name);
-  }
-
-  @Override
-  public boolean isNavigationRequest() {
-    return initializer.get("isNavigationRequest").getAsBoolean();
-  }
-
-  @Override
-  public String method() {
-    if (fallbackOverrides != null && fallbackOverrides.method != null) {
-      return fallbackOverrides.method;
-    }
-    return initializer.get("method").getAsString();
-  }
-
-  @Override
-  public String postData() {
-    byte[] buffer = postDataBuffer();
-    if (buffer == null) {
-      return null;
-    }
-    return new String(buffer, StandardCharsets.UTF_8);
-  }
-
-  @Override
-  public byte[] postDataBuffer() {
-    if (fallbackOverrides != null && fallbackOverrides.postData != null) {
-      return fallbackOverrides.postData;
-    }
-    return postData;
-  }
-
-  @Override
-  public Request redirectedFrom() {
-    return redirectedFrom;
-  }
-
-  @Override
-  public Request redirectedTo() {
-    return redirectedTo;
+  public String url() {
+    return fallbackOverrides.url != null && !fallbackOverrides.url.isEmpty() ? fallbackOverrides.url : requestInitializer.url;
   }
 
   @Override
   public String resourceType() {
-    return initializer.get("resourceType").getAsString();
+    return requestInitializer.resourceType;
+  }
+
+  @Override
+  public String method() {
+    return fallbackOverrides.method != null && !fallbackOverrides.method.isEmpty() ? fallbackOverrides.method : requestInitializer.method;
+  }
+
+  @Override
+  public String postData() {
+    byte[] buffer = fallbackOverrides.postDataBuffer != null ? fallbackOverrides.postDataBuffer : requestInitializer.postData;
+    return buffer != null ? new String(buffer, StandardCharsets.UTF_8) : null;
+  }
+
+  @Override
+  public byte[] postDataBuffer() {
+    if (fallbackOverrides.postDataBuffer != null) {
+      return fallbackOverrides.postDataBuffer;
+    }
+    return requestInitializer.postData;
+  }
+
+  // java: the parsed JSON is a JsonElement and the form entries are a JsonObject of strings.
+  JsonElement postDataJSON() {
+    String postData = postData();
+    if (postData == null || postData.isEmpty()) {
+      return null;
+    }
+
+    String contentType = headers().get("content-type");
+    if (contentType != null && contentType.contains("application/x-www-form-urlencoded")) {
+      JsonObject entries = new JsonObject();
+      // java: new URLSearchParams(postData).entries(), parsed here.
+      String query = postData.startsWith("?") ? postData.substring(1) : postData;
+      for (String pair : query.split("&")) {
+        if (pair.isEmpty()) {
+          continue;
+        }
+        int index = pair.indexOf('=');
+        String k = index == -1 ? pair : pair.substring(0, index);
+        String v = index == -1 ? "" : pair.substring(index + 1);
+        entries.addProperty(decodeURLSearchParam(k), decodeURLSearchParam(v));
+      }
+      return entries;
+    }
+
+    try {
+      return parseJSON(postData);
+    } catch (JsonSyntaxException e) {
+      throw new PlaywrightException("POST data is not a valid JSON object: " + postData);
+    }
+  }
+
+  @Override
+  public Map<String, String> headers() {
+    if (fallbackOverrides.headers != null) {
+      return RawHeaders.fromHeadersObjectLossy(fallbackOverrides.headers).headers();
+    }
+    return provisionalHeaders.headers();
+  }
+
+  RawHeaders actualHeaders() {
+    if (fallbackOverrides.headers != null) {
+      return RawHeaders.fromHeadersObjectLossy(fallbackOverrides.headers);
+    }
+
+    if (actualHeadersPromise == null) {
+      List<NameValue> headers = channel.rawRequestHeaders(NO_TIMEOUT).headers;
+      // java: a nested call may have set it while this one waited, the values are the same.
+      actualHeadersPromise = new RawHeaders(headers);
+    }
+    return actualHeadersPromise;
+  }
+
+  @Override
+  public Map<String, String> allHeaders() {
+    return wrapApiCall(() -> actualHeaders().headers(), null, true);
+  }
+
+  @Override
+  public List<HttpHeader> headersArray() {
+    return wrapApiCall(() -> actualHeaders().headersArray(), null, true);
+  }
+
+  @Override
+  public String headerValue(String name) {
+    return wrapApiCall(() -> actualHeaders().get(name), null, true);
   }
 
   @Override
@@ -178,19 +197,62 @@ public class RequestImpl extends ChannelOwner implements Request {
     return channel.response(NO_TIMEOUT).response;
   }
 
+  ResponseImpl internalResponse() {
+    return channel.response(NO_TIMEOUT).response;
+  }
+
   @Override
-  public Sizes sizes() {
-    ResponseImpl response = response();
-    if (response == null) {
-      throw new PlaywrightException("Unable to fetch sizes for failed request");
+  public ResponseImpl existingResponse() {
+    return response;
+  }
+
+  @Override
+  public FrameImpl frame() {
+    if (requestInitializer.frame == null) {
+      if (serviceWorker() == null) {
+        throw new PlaywrightException("Assertion error");
+      }
+      throw new PlaywrightException("Service Worker requests do not have an associated frame.");
     }
-    RequestSizes s = response.channel.sizes(NO_TIMEOUT).sizes;
-    Sizes result = new Sizes();
-    result.requestBodySize = s.requestBodySize;
-    result.requestHeadersSize = s.requestHeadersSize;
-    result.responseBodySize = s.responseBodySize;
-    result.responseHeadersSize = s.responseHeadersSize;
-    return result;
+    FrameImpl frame = requestInitializer.frame;
+    if (frame.page == null) {
+      throw new PlaywrightException(String.join("\n",
+        "Frame for this navigation request is not available, because the request",
+        "was issued before the frame is created. You can check whether the request",
+        "is a navigation request by calling isNavigationRequest() method."));
+    }
+    return frame;
+  }
+
+  PageImpl safePage() {
+    FrameImpl frame = requestInitializer.frame;
+    return frame != null ? frame.page : null;
+  }
+
+  // java: not in the Java API, kept for targetClosedScope().
+  WorkerImpl serviceWorker() {
+    return requestInitializer.serviceWorker;
+  }
+
+  @Override
+  public boolean isNavigationRequest() {
+    return requestInitializer.isNavigationRequest != null && requestInitializer.isNavigationRequest;
+  }
+
+  @Override
+  public RequestImpl redirectedFrom() {
+    return redirectedFrom;
+  }
+
+  @Override
+  public RequestImpl redirectedTo() {
+    return redirectedTo;
+  }
+
+  // java: the error text itself, the Java API returns a String.
+  @Override
+  public String failure() {
+    return failureText;
   }
 
   @Override
@@ -199,35 +261,18 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
-  public String url() {
-    if (fallbackOverrides != null && fallbackOverrides.url != null) {
-      return fallbackOverrides.url;
+  public Sizes sizes() {
+    ResponseImpl response = response();
+    if (response == null) {
+      throw new PlaywrightException("Unable to fetch sizes for failed request");
     }
-    return initializer.get("url").getAsString();
-  }
-
-  Request finalRequest() {
-    return redirectedTo != null ? redirectedTo.finalRequest() : this;
-  }
-
-  private RawHeaders getRawHeaders() {
-    if (fallbackOverrides != null && fallbackOverrides.headers != null) {
-      return new RawHeaders(Utils.toHeadersList(fallbackOverrides.headers));
-    }
-    if (rawHeaders != null) {
-      return rawHeaders;
-    }
-    List<HttpHeader> headers = new ArrayList<>();
-    for (NameValue nv : channel.rawRequestHeaders(NO_TIMEOUT).headers) {
-      HttpHeader h = new HttpHeader();
-      h.name = nv.name;
-      h.value = nv.value;
-      headers.add(h);
-    }
-
-    // The field may have been initialized in a nested call but it is ok.
-    rawHeaders = new RawHeaders(headers);
-    return rawHeaders;
+    RequestSizes sizes = response.channel.sizes(NO_TIMEOUT).sizes;
+    Sizes result = new Sizes();
+    result.requestBodySize = sizes.requestBodySize;
+    result.requestHeadersSize = sizes.requestHeadersSize;
+    result.responseBodySize = sizes.responseBodySize;
+    result.responseHeadersSize = sizes.responseHeadersSize;
+    return result;
   }
 
   void setResponseEndTiming(double responseEndTiming) {
@@ -237,25 +282,64 @@ public class RequestImpl extends ChannelOwner implements Request {
     }
   }
 
+  RequestImpl finalRequest() {
+    return redirectedTo != null ? redirectedTo.finalRequest() : this;
+  }
+
   void applyFallbackOverrides(FallbackOverrides overrides) {
-    if (fallbackOverrides == null) {
-      fallbackOverrides = new FallbackOverrides();
-    }
-    if (overrides.url != null) {
+    if (overrides.url != null && !overrides.url.isEmpty()) {
       fallbackOverrides.url = overrides.url;
     }
-    if (overrides.method != null) {
+    if (overrides.method != null && !overrides.method.isEmpty()) {
       fallbackOverrides.method = overrides.method;
     }
     if (overrides.headers != null) {
       fallbackOverrides.headers = overrides.headers;
     }
-    if (overrides.postData != null) {
-      fallbackOverrides.postData = overrides.postData;
+
+    if (overrides.postData instanceof String) {
+      fallbackOverrides.postDataBuffer = ((String) overrides.postData).getBytes(StandardCharsets.UTF_8);
+    } else if (overrides.postData instanceof byte[]) {
+      fallbackOverrides.postDataBuffer = (byte[]) overrides.postData;
+    } else if (overrides.postData != null) {
+      fallbackOverrides.postDataBuffer = gson().toJson(overrides.postData).getBytes(StandardCharsets.UTF_8);
     }
   }
 
-  FallbackOverrides fallbackOverridesForResume() {
+  SerializedFallbackOverrides fallbackOverridesForContinue() {
     return fallbackOverrides;
+  }
+
+  LongStandingScope targetClosedScope() {
+    WorkerImpl serviceWorker = serviceWorker();
+    if (serviceWorker != null)
+      return serviceWorker.closedScope;
+    PageImpl page = safePage();
+    if (page != null)
+      return page.closedOrCrashedScope;
+    return new LongStandingScope(this);
+  }
+
+  // java: JSON.parse and the decoding of URLSearchParams, which have no Java counterpart.
+  static JsonElement parseJSON(String text) {
+    try {
+      JsonReader reader = new JsonReader(new StringReader(text));
+      reader.setLenient(false);
+      JsonElement result = gson().getAdapter(JsonElement.class).read(reader);
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        throw new JsonSyntaxException("Unexpected non-whitespace character after JSON");
+      }
+      return result;
+    } catch (IOException e) {
+      throw new JsonSyntaxException(e);
+    }
+  }
+
+  private static String decodeURLSearchParam(String value) {
+    try {
+      return URLDecoder.decode(value, "UTF-8");
+    } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+      return value.replace('+', ' ');
+    }
   }
 }

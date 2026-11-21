@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of webStorage.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;

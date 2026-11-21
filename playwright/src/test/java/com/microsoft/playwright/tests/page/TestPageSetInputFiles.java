@@ -179,7 +179,6 @@ public class TestPageSetInputFiles {
 
   @PlaywrightTest
   @DisplayName("IF-010 should throw an error if the file does not exist")
-  @Fixme("java: the message is 'Cannot get absolute file path', it has no 'ENOENT: no such file or directory' and no file name")
   void shouldThrowAnErrorIfTheFileDoesNotExist(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/fileupload.html");
     ElementHandle input = page.querySelector("input");

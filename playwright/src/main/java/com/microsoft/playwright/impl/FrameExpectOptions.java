@@ -16,14 +16,21 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.microsoft.playwright.impl.protocol.ExpectedTextValue;
+import com.microsoft.playwright.impl.protocol.SerializedArgument;
+import com.microsoft.playwright.options.PseudoElement;
 
-public class RemoteBrowser extends ChannelOwner {
-  RemoteBrowser(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
-  }
+import java.util.List;
 
-  BrowserImpl browser() {
-    return connection.getExistingObject(initializer.getAsJsonObject("browser").get("guid").getAsString());
-  }
+// java: the options of Frame._expect, FrameExpectParams of types.ts.
+class FrameExpectOptions {
+  Object expressionArg;
+  List<ExpectedTextValue> expectedText;
+  String selector;
+  Double expectedNumber;
+  SerializedArgument expectedValue;
+  Boolean useInnerText;
+  PseudoElement pseudo;
+  boolean isNot;
+  Double timeout;
 }

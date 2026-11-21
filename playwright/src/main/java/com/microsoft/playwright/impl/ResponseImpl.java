@@ -14,45 +14,106 @@
  * limitations under the License.
  */
 
+// Port of network.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Response;
+import com.microsoft.playwright.impl.protocol.RemoteAddr;
+import com.microsoft.playwright.impl.protocol.ResourceTiming;
+import com.microsoft.playwright.impl.protocol.ResponseChannel;
+import com.microsoft.playwright.impl.protocol.ResponseInitializer;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.SecurityDetails;
 import com.microsoft.playwright.options.ServerAddr;
-import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static java.util.Arrays.asList;
-
 public class ResponseImpl extends ChannelOwner implements Response {
-  private final RawHeaders headers;
-  private RawHeaders rawHeaders;
-  final RequestImpl request;
+  private final RawHeaders provisionalHeaders;
+  // java: the resolved value of _actualHeadersPromise.
+  private RawHeaders actualHeadersPromise;
+  private final RequestImpl request;
+  final WaitableResult<String> finishedPromise = new WaitableResult<>();
 
   final ResponseChannel channel = new ResponseChannel(this);
+  final ResponseInitializer responseInitializer;
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
-    request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
-    request.existingResponse = this;
-    request.timing = gson().fromJson(initializer.get("timing"), Timing.class);
+    responseInitializer = connection.protocolGson().fromJson(initializer, ResponseInitializer.class);
+    this.provisionalHeaders = new RawHeaders(responseInitializer.headers);
+    this.request = responseInitializer.request;
+    this.request.response = this;
+    assignTiming(this.request, responseInitializer.timing);
+  }
+
+  @Override
+  public String url() {
+    return responseInitializer.url;
+  }
+
+  @Override
+  public boolean ok() {
+    // Status 0 is for file:// URLs
+    return responseInitializer.status == 0 || (responseInitializer.status >= 200 && responseInitializer.status <= 299);
+  }
+
+  @Override
+  public int status() {
+    return responseInitializer.status;
+  }
+
+  @Override
+  public String statusText() {
+    return responseInitializer.statusText;
+  }
+
+  @Override
+  public boolean fromServiceWorker() {
+    return responseInitializer.fromServiceWorker != null && responseInitializer.fromServiceWorker;
+  }
+
+  @Override
+  public Map<String, String> headers() {
+    return provisionalHeaders.headers();
+  }
+
+  RawHeaders actualHeaders() {
+    if (actualHeadersPromise == null) {
+      actualHeadersPromise = new RawHeaders(channel.rawResponseHeaders(NO_TIMEOUT).headers);
+    }
+    return actualHeadersPromise;
   }
 
   @Override
   public Map<String, String> allHeaders() {
-    return getRawHeaders().headers();
+    return actualHeaders().headers();
+  }
+
+  @Override
+  public List<HttpHeader> headersArray() {
+    return actualHeaders().headersArray();
+  }
+
+  @Override
+  public String headerValue(String name) {
+    return actualHeaders().get(name);
+  }
+
+  @Override
+  public List<String> headerValues(String name) {
+    return actualHeaders().getAll(name);
+  }
+
+  @Override
+  public String finished() {
+    return request().targetClosedScope().race(finishedPromise);
   }
 
   @Override
@@ -61,65 +122,15 @@ public class ResponseImpl extends ChannelOwner implements Response {
   }
 
   @Override
-  public String finished() {
-    List<Waitable<String>> waitables = new ArrayList<>();
-    waitables.add(new WaitableNever<String>() {
-      @Override
-      public boolean isDone() {
-        return request.didFailOrFinish;
-      }
-      @Override
-      public String get() {
-        return request.failure();
-      }
-    });
-    PageImpl page = request.safePage();
-    if (page != null) {
-      waitables.add(page.createWaitForCloseHelper());
-      waitables.add(page.createWaitableTimeout(null));
-    }
-    runUntil(() -> {}, new WaitableRace<>(waitables));
-    return request.failure();
+  public String text() {
+    byte[] content = body();
+    return new String(content, StandardCharsets.UTF_8);
   }
 
-  @Override
-  public Frame frame() {
-    return request().frame();
-  }
-
-  @Override
-  public boolean fromServiceWorker() {
-    return initializer.get("fromServiceWorker").getAsBoolean();
-  }
-
-  @Override
-  public String httpVersion() {
-    return channel.httpVersion(NO_TIMEOUT).value;
-  }
-
-  @Override
-  public Map<String, String> headers() {
-    return headers.headers();
-  }
-
-  @Override
-  public List<HttpHeader> headersArray() {
-    return getRawHeaders().headersArray();
-  }
-
-  @Override
-  public String headerValue(String name) {
-    return getRawHeaders().get(name);
-  }
-
-  @Override
-  public List<String> headerValues(String name) {
-    return getRawHeaders().getAll(name);
-  }
-
-  @Override
-  public boolean ok() {
-    return status() == 0 || (status() >= 200 && status() <= 299);
+  // java: the parsed JSON is a JsonElement.
+  JsonElement json() {
+    String content = text();
+    return RequestImpl.parseJSON(content);
   }
 
   @Override
@@ -128,11 +139,30 @@ public class ResponseImpl extends ChannelOwner implements Response {
   }
 
   @Override
+  public FrameImpl frame() {
+    return request.frame();
+  }
+
+  @Override
+  public ServerAddr serverAddr() {
+    RemoteAddr value = channel.serverAddr(NO_TIMEOUT).value;
+    if (value == null) {
+      return null;
+    }
+    // java: the protocol struct is converted to the public options type.
+    ServerAddr result = new ServerAddr();
+    result.ipAddress = value.ipAddress;
+    result.port = value.port;
+    return result;
+  }
+
+  @Override
   public SecurityDetails securityDetails() {
     com.microsoft.playwright.impl.protocol.SecurityDetails value = channel.securityDetails(NO_TIMEOUT).value;
     if (value == null) {
       return null;
     }
+    // java: the protocol struct is converted to the public options type.
     SecurityDetails result = new SecurityDetails();
     result.issuer = value.issuer;
     result.protocol = value.protocol;
@@ -143,48 +173,19 @@ public class ResponseImpl extends ChannelOwner implements Response {
   }
 
   @Override
-  public ServerAddr serverAddr() {
-    RemoteAddr value = channel.serverAddr(NO_TIMEOUT).value;
-    if (value == null) {
-      return null;
-    }
-    ServerAddr result = new ServerAddr();
-    result.ipAddress = value.ipAddress;
-    result.port = value.port;
-    return result;
+  public String httpVersion() {
+    return channel.httpVersion(NO_TIMEOUT).value;
   }
 
-  @Override
-  public int status() {
-    return initializer.get("status").getAsInt();
-  }
-
-  @Override
-  public String statusText() {
-    return initializer.get("statusText").getAsString();
-  }
-
-  @Override
-  public String text() {
-    return new String(body(), StandardCharsets.UTF_8);
-  }
-
-  @Override
-  public String url() {
-    return initializer.get("url").getAsString();
-  }
-
-  private RawHeaders getRawHeaders() {
-    if (rawHeaders == null) {
-      List<HttpHeader> headers = new ArrayList<>();
-      for (NameValue nv : channel.rawResponseHeaders(NO_TIMEOUT).headers) {
-        HttpHeader h = new HttpHeader();
-        h.name = nv.name;
-        h.value = nv.value;
-        headers.add(h);
-      }
-      rawHeaders = new RawHeaders(headers);
-    }
-    return rawHeaders;
+  // java: Object.assign(this._request._timing, this._initializer.timing), field by field.
+  private static void assignTiming(RequestImpl request, ResourceTiming timing) {
+    request.timing.startTime = timing.startTime;
+    request.timing.domainLookupStart = timing.domainLookupStart;
+    request.timing.domainLookupEnd = timing.domainLookupEnd;
+    request.timing.connectStart = timing.connectStart;
+    request.timing.secureConnectionStart = timing.secureConnectionStart;
+    request.timing.connectEnd = timing.connectEnd;
+    request.timing.requestStart = timing.requestStart;
+    request.timing.responseStart = timing.responseStart;
   }
 }

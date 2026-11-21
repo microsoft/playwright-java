@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of cdpSession.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -27,10 +28,13 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
 
   final CDPSessionChannel channel = new CDPSessionChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   protected CDPSessionImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
+  // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
   @Override
   void handleEvent(String event, JsonObject parameters) {
     super.handleEvent(event, parameters);
@@ -47,32 +51,8 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     }
   }
 
-  @Override
-  public void onClose(Consumer<CDPSession> handler) {
-    on(Events.CDPSession.CLOSE, handler);
-  }
-
-  @Override
-  public void offClose(Consumer<CDPSession> handler) {
-    off(Events.CDPSession.CLOSE, handler);
-  }
-
-  public JsonObject send(String method) {
-    return send(method, null);
-  }
-
-  @Override
-  public JsonObject send(String method, JsonObject params, SendOptions options) {
-    CDPSessionSendParams args = new CDPSessionSendParams();
-    args.params = params;
-    args.method = method;
-    Double timeout = options == null || options.timeout == null ? Double.valueOf(0) : options.timeout;
-    CDPSessionSendResult response = channel.send(args, timeout);
-    if (response == null) return null;
-    else return response.result.getAsJsonObject();
-  }
-
-  // java: the raw parameter type overrides EventEmitter.on(String, Consumer<?>) and implements CDPSession.on at once.
+  // java: upstream rebinds on/addListener/off/removeListener/once to the EventEmitter ones; here the raw-typed overrides
+  // below do that, since the raw parameter type implements CDPSession.on and overrides EventEmitter.on at once.
   @Override
   @SuppressWarnings("rawtypes")
   public void on(String event, Consumer handler) {
@@ -85,8 +65,36 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     super.off(event, handler);
   }
 
+  // java: the AbortSignal of options.signal is not ported.
+  @Override
+  public JsonObject send(String method, JsonObject params, SendOptions options) {
+    CDPSessionSendParams args = new CDPSessionSendParams();
+    args.params = params;
+    args.method = method;
+    Double timeout = options == null || options.timeout == null ? Double.valueOf(0) : options.timeout;
+    CDPSessionSendResult response = channel.send(args, timeout);
+    // java: a missing result maps to null instead of throwing.
+    if (response == null) return null;
+    else return response.result.getAsJsonObject();
+  }
+
   @Override
   public void detach() {
     channel.detach(NO_TIMEOUT);
+  }
+
+  // java: typed close handlers and the no-options overload of the generated CDPSession interface.
+  @Override
+  public void onClose(Consumer<CDPSession> handler) {
+    on(Events.CDPSession.CLOSE, handler);
+  }
+
+  @Override
+  public void offClose(Consumer<CDPSession> handler) {
+    off(Events.CDPSession.CLOSE, handler);
+  }
+
+  public JsonObject send(String method) {
+    return send(method, null);
   }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of credentials.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -28,36 +29,36 @@ import static com.microsoft.playwright.impl.Utils.toProtocol;
 import static java.util.Arrays.asList;
 
 class CredentialsImpl implements Credentials {
-  private final BrowserContextImpl context;
+  private final BrowserContextImpl browserContext;
 
-  CredentialsImpl(BrowserContextImpl context) {
-    this.context = context;
+  CredentialsImpl(BrowserContextImpl browserContext) {
+    this.browserContext = browserContext;
   }
 
   @Override
   public void install() {
-    context.channel.credentialsInstall(NO_TIMEOUT);
+    browserContext.channel.credentialsInstall(NO_TIMEOUT);
   }
 
   @Override
   public VirtualCredential create(String rpId, CreateOptions options) {
     BrowserContextCredentialsCreateParams params = toProtocol(options, BrowserContextCredentialsCreateParams.class);
     params.rpId = rpId;
-    BrowserContextCredentialsCreateResult result = context.channel.credentialsCreate(params, NO_TIMEOUT);
+    BrowserContextCredentialsCreateResult result = browserContext.channel.credentialsCreate(params, NO_TIMEOUT);
     return gson().fromJson(gson().toJsonTree(result.credential), VirtualCredential.class);
+  }
+
+  @Override
+  public List<VirtualCredential> get(GetOptions options) {
+    BrowserContextCredentialsGetParams params = toProtocol(options, BrowserContextCredentialsGetParams.class);
+    BrowserContextCredentialsGetResult result = browserContext.channel.credentialsGet(params, NO_TIMEOUT);
+    return asList(gson().fromJson(gson().toJsonTree(result.credentials), VirtualCredential[].class));
   }
 
   @Override
   public void delete(String id) {
     BrowserContextCredentialsDeleteParams params = new BrowserContextCredentialsDeleteParams();
     params.id = id;
-    context.channel.credentialsDelete(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public List<VirtualCredential> get(GetOptions options) {
-    BrowserContextCredentialsGetParams params = toProtocol(options, BrowserContextCredentialsGetParams.class);
-    BrowserContextCredentialsGetResult result = context.channel.credentialsGet(params, NO_TIMEOUT);
-    return asList(gson().fromJson(gson().toJsonTree(result.credentials), VirtualCredential[].class));
+    browserContext.channel.credentialsDelete(params, NO_TIMEOUT);
   }
 }

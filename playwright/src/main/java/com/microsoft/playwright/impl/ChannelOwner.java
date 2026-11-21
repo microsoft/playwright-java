@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-// Port of packages/playwright-core/src/client/channelOwner.ts
+// Port of channelOwner.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ChannelOwner extends EventEmitter {
   final Connection connection;
   private ChannelOwner parent;
-  private final Map<String, ChannelOwner> objects = new HashMap<>();
+  private final Map<String, ChannelOwner> objects = new LinkedHashMap<>();
 
   final String type;
   final String guid;
+  // java: _channel is the generated <Name>Channel field of each subclass.
   final JsonObject initializer;
+  // java: the Java API has no Logger, the field keeps upstream's Logger | undefined as an opaque Object.
+  Object logger;
+  final ClientInstrumentation instrumentation;
   private Map<String, String> eventToSubscriptionMapping = new HashMap<>();
   boolean wasCollected;
-
-  // java: a call without a timeout; the server does not enforce one.
-  static Double NO_TIMEOUT = null;
 
   protected ChannelOwner(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     this(parent.connection, parent, type, guid, initializer);
@@ -52,16 +54,20 @@ public class ChannelOwner extends EventEmitter {
   }
 
   private ChannelOwner(Connection connection, ChannelOwner parent, String type, String guid, JsonObject initializer) {
+    setMaxListeners(0);
     this.connection = connection;
     this.type = type;
     this.guid = guid;
     this.parent = parent;
+    this.instrumentation = this.connection.instrumentation;
 
     this.connection.registerObject(guid, this);
     if (this.parent != null) {
       this.parent.objects.put(guid, this);
+      this.logger = this.parent.logger;
     }
 
+    // java: _channel = _createChannel(new EventEmitter()) is the channel field of the subclass.
     this.initializer = initializer;
   }
 
@@ -86,7 +92,10 @@ public class ChannelOwner extends EventEmitter {
   // java: the listener is added first so that a null listener fails before anything is sent.
   @Override
   void on(String event, Consumer<?> listener) {
-    addListener(event, listener);
+    super.on(event, listener);
+    if (listenerCount(event) == 1) {
+      updateSubscription(event, true);
+    }
   }
 
   @Override
@@ -98,8 +107,17 @@ public class ChannelOwner extends EventEmitter {
   }
 
   @Override
+  void prependListener(String event, Consumer<?> listener) {
+    super.prependListener(event, listener);
+    if (listenerCount(event) == 1) {
+      updateSubscription(event, true);
+    }
+  }
+
+  // java: super.off calls removeListener below, which updates the subscription; upstream updates it a second time here.
+  @Override
   void off(String event, Consumer<?> listener) {
-    removeListener(event, listener);
+    super.off(event, listener);
   }
 
   @Override
@@ -144,21 +162,44 @@ public class ChannelOwner extends EventEmitter {
     objects.clear();
   }
 
+  JsonObject debugScopeState() {
+    JsonObject result = new JsonObject();
+    result.addProperty("_guid", guid);
+    JsonArray objects = new JsonArray();
+    for (ChannelOwner o : this.objects.values()) {
+      objects.add(o.debugScopeState());
+    }
+    result.add("objects", objects);
+    return result;
+  }
+
+  // java: _validatorToWireContext is not ported, there are no protocol validators; Connection.protocolGson()
+  // serializes the params (channel owners as {guid}, binary as base64).
+
   // java: upstream's createChannel() wraps every channel call in wrapApiCall and sends the message
-  // from there. This builds the options of that message; the zone of a call without wrapApiCall is
-  // not installed, so that the calls of event handlers dispatched while the call waits are reported on their own.
-  private Connection.CallOptions callOptions(Double timeout) {
+  // from there; the sendMessage family at the bottom sends it, and this builds the options of that message.
+  // The zone of a call without wrapApiCall is not installed, so that the calls of event handlers dispatched
+  // while the call waits are reported on their own. The metainfo `internal` flag of a method has no Java counterpart.
+  private Connection.CallOptions callOptions(String method, JsonObject params, Double timeout) {
     ApiZone apiZone = connection.apiZone;
     if (apiZone == null) {
-      apiZone = new ApiZone(null, false);
+      apiZone = new ApiZone(null, null, false);
     }
     Connection.CallOptions options = new Connection.CallOptions();
     options.timeout = timeout;
     if (!apiZone.internal && !apiZone.reported) {
       // Reporting/tracing/logging this api call for the first time.
       apiZone.reported = true;
+      // java: the stack trace is captured by the first reported message, not by wrapApiCall.
+      apiZone.frames = connection.captureLibraryStackTrace();
+      instrumentation.onApiCallBegin(apiZone, type, method, params);
+      // java: without an api name from the stack, the log names the protocol call.
+      apiZone.logName = apiZone.apiName != null ? apiZone.apiName : Character.toLowerCase(type.charAt(0)) + type.substring(1) + "." + method;
+      logApiCall(logger, "=> " + apiZone.logName + " started");
+      options.apiName = apiZone.apiName;
       options.title = apiZone.title;
-      options.frames = connection.captureLibraryStackTrace();
+      options.frames = apiZone.frames;
+      options.callId = apiZone.callId;
     } else {
       // Since this api call is either internal, or has already been reported/traced once,
       // passing as internal.
@@ -168,18 +209,72 @@ public class ChannelOwner extends EventEmitter {
   }
 
   <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
-    if (connection.apiZone != null) {
+    Object logger = this.logger;
+    ApiZone existingApiZone = connection.apiZone;
+    if (existingApiZone != null) {
       return func.get();
     }
-    // java: no stack trace is captured here, the first message of the call does it (see callOptions).
-    ApiZone apiZone = new ApiZone(title, internal);
-    connection.apiZone = apiZone;
+
+    // java: captureLibraryStackTrace() runs on the first reported message (see callOptions); its apiName
+    // is not computed (see StackTraceCollector), the title stands in for it.
+    String apiName = title;
+    ApiZone apiZone = new ApiZone(title, apiName, internal);
+
     try {
-      return func.get();
-    } finally {
-      connection.apiZone = null;
+      R result;
+      connection.apiZone = apiZone;
+      try {
+        result = func.get();
+      } finally {
+        connection.apiZone = null;
+      }
+      if (!internal) {
+        if (apiZone.logName != null) {
+          logApiCall(logger, "<= " + apiZone.logName + " succeeded");
+        }
+        instrumentation.onApiCallEnd(apiZone);
+      }
+      return result;
+    } catch (RuntimeException e) {
+      // java: the message is not prefixed with the api name and the stack is not rewritten with the
+      // library frames; Java exceptions keep the message of the server and their own stack.
+      if (!internal) {
+        apiZone.error = e;
+        if (apiZone.logName != null) {
+          logApiCall(logger, "<= " + apiZone.logName + " failed");
+        }
+        instrumentation.onApiCallEnd(apiZone);
+      }
+      throw e;
     }
   }
+
+  // java: upstream's toJSON keeps Jest from printing the object graph.
+  JsonObject toJSON() {
+    // Jest's expect library tries to print objects sometimes.
+    // RPC objects can contain links to lots of other objects,
+    // which can cause jest to crash. Let's help it out
+    // by just returning the important values.
+    JsonObject result = new JsonObject();
+    result.addProperty("_type", type);
+    result.addProperty("_guid", guid);
+    return result;
+  }
+
+  // java: the apiCall and internal decorators and wrapApiCallDecorator are withTitle(title, ...) and
+  // wrapApiCall(..., title, internal) below.
+
+  // java: the logger is an opaque Object, nothing logs to it; debugLogger.log('api', ...) is logApiIfEnabled.
+  static void logApiCall(Object logger, String message) {
+    logApiIfEnabled(message);
+  }
+
+  // java: tChannelImplToWire is toProtocolRef() below and the channel owner adapter of Connection.protocolGson().
+
+  // java: the members below have no counterpart in channelOwner.ts.
+
+  // java: a call without a timeout; the server does not enforce one.
+  static Double NO_TIMEOUT = null;
 
   // java: the Runnable overload for calls without a result.
   void wrapApiCall(Runnable func, String title, boolean internal) {
@@ -204,7 +299,7 @@ public class ChannelOwner extends EventEmitter {
   }
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
-    return connection.sendMessageToServer(this, method, params, callOptions(null));
+    return connection.sendMessageToServer(this, method, params, callOptions(method, params, null));
   }
 
   /** Typed counterpart of {@link #sendMessageAsync(String, JsonObject)}; {@code null} params mean an empty object. */
@@ -229,7 +324,7 @@ public class ChannelOwner extends EventEmitter {
   // Fire-and-forget: Connection.sendMessageToServer registers no callback for __waitInfo__, the only caller,
   // and drops it silently when the object was collected.
   void sendMessageNoReply(String method, JsonObject params) {
-    connection.sendMessageToServer(this, method, params, callOptions(null));
+    connection.sendMessageToServer(this, method, params, callOptions(method, params, null));
   }
 
   JsonElement sendMessage(String method) {
@@ -243,7 +338,7 @@ public class ChannelOwner extends EventEmitter {
     } else if (params.has("timeout")) {
       throw new PlaywrightException("Internal error: timeout must be passed explicitly.");
     }
-    return connection.sendMessage(this, method, params, callOptions(timeout));
+    return connection.sendMessage(this, method, params, callOptions(method, params, timeout));
   }
 
   /**
@@ -286,7 +381,7 @@ public class ChannelOwner extends EventEmitter {
     }
   }
 
-  // java: upstream's Connection.dispatch emits the event on the channel; subclasses override this until EventEmitter is ported.
+  // java: upstream's Connection.dispatch emits the event on the channel; subclasses override this.
   void handleEvent(String event, JsonObject parameters) {
   }
 
@@ -298,13 +393,18 @@ public class ChannelOwner extends EventEmitter {
   }
 }
 
-class ApiZone {
-  String title;
+// java: the ApiZone type of channelOwner.ts; ApiCallData is its structural supertype upstream.
+class ApiZone extends ApiCallData {
+  String apiName;
   final boolean internal;
   boolean reported;
 
-  ApiZone(String title, boolean internal) {
+  // java: the name the pw:api log prints for the call, set by its first reported message.
+  String logName;
+
+  ApiZone(String title, String apiName, boolean internal) {
     this.title = title;
+    this.apiName = apiName;
     this.internal = internal;
   }
 }

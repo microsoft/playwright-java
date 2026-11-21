@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of writableStream.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -25,8 +26,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+// java: the Writable is an OutputStream; _write becomes write(), _final becomes close().
 public class WritableStream extends ChannelOwner {
   final WritableStreamChannel channel = new WritableStreamChannel(this);
+
+  // java: from is not ported, generated results already hold the impl object.
 
   WritableStream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);

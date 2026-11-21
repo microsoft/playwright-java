@@ -22,7 +22,7 @@ import com.microsoft.playwright.assertions.PageAssertions;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.UrlMatcher.resolveUrl;
+import static com.microsoft.playwright.impl.UrlMatcher.constructURLBasedOnBaseURL;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 public class PageAssertionsImpl extends AssertionsBase implements PageAssertions {
@@ -61,7 +61,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   public void hasURL(String url, HasURLOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     if (actualPage.context().baseUrl() != null) {
-      url = resolveUrl(actualPage.context().baseUrl(), url);
+      url = constructURLBasedOnBaseURL(actualPage.context().baseUrl().toString(), url);
     }
     expected.string = url;
     expected.ignoreCase = shouldIgnoreCase(options);

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of waiter.ts.
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
@@ -27,7 +28,7 @@ import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.Utils.createGuid;
 
-// Port of waiter.ts. java: promises are Waitables, the API thread pumps the connection in waitForPromise(),
+// java: promises are Waitables, the API thread pumps the connection in waitForPromise(),
 // there are no zones to save and no AbortSignal.
 class Waiter {
   private final List<Runnable> dispose = new ArrayList<>();
@@ -66,23 +67,41 @@ class Waiter {
 
   private void sendWaitInfo(JsonObject info, String title, boolean internal) {
     // Fire-and-forget: server intentionally never replies, and we never throw to the caller.
+    ChannelOwner owner = channelOwner;
     try {
-      channelOwner.wrapApiCall(() -> {
-        ApiZone apiZone = channelOwner.connection.apiZone;
-        if (!apiZone.internal && !apiZone.reported && apiZone.title == null) {
-          // An outer wrapApiCall may have set its own title (e.g. "Wait for navigation");
-          // fall back to ours only when the outer zone left it blank.
+      owner.wrapApiCall(() -> {
+        ApiZone apiZone = owner.connection.apiZone;
+        // java: timeout: 0 is not sent, a null timeout stays absent from the metadata (see Connection.sendMessageToServer).
+        if (apiZone.internal || apiZone.reported) {
+          Connection.CallOptions options = new Connection.CallOptions();
+          options.internal = true;
+          owner.connection.sendMessageToServer(owner, "__waitInfo__", info, options);
+          return;
+        }
+        apiZone.reported = true;
+        // An outer `_wrapApiCall` may have set its own title (e.g. "Wait for navigation");
+        // fall back to ours only when the outer zone left it blank. The title is read both by
+        // `onApiCallBegin` (drives the test runner step title) and by `sendMessageToServer`
+        // (drives the trace viewer action title), so set it on the zone itself.
+        if (apiZone.title == null || apiZone.title.isEmpty()) {
           apiZone.title = title;
         }
-        // sendMessageNoReply reports the call when it is the first message of the zone and sends it
-        // as internal otherwise.
-        channelOwner.sendMessageNoReply("__waitInfo__", info);
+        // java: the stack trace is captured by the first reported message, see ChannelOwner.callOptions.
+        apiZone.frames = owner.connection.captureLibraryStackTrace();
+        owner.instrumentation.onApiCallBegin(apiZone, owner.type, "__waitInfo__", info);
+        Connection.CallOptions options = new Connection.CallOptions();
+        options.apiName = apiZone.apiName;
+        options.title = apiZone.title;
+        options.frames = apiZone.frames;
+        options.callId = apiZone.callId;
+        owner.connection.sendMessageToServer(owner, "__waitInfo__", info, options);
       }, title, internal);
     } catch (RuntimeException e) {
       // Fire-and-forget: never throw to the caller.
     }
   }
 
+  // java: returns the waitable instead of awaiting waitForPromise; the callback overload at the bottom waits.
   <T> Waitable<T> waitForEvent(EventEmitter emitter, String event, Predicate<T> predicate) {
     return new WaitableEvent<>(emitter, event, predicate);
   }
@@ -100,6 +119,7 @@ class Waiter {
     });
   }
 
+  // java: the AbortSignal branch is not ported, there is no AbortSignal.
   void rejectOnTimeout(Double timeout, String timeoutMessage) {
     if (timeout != null && timeout != 0) {
       rejectOn(new WaitableTimeout<Object>(timeout) {
@@ -169,6 +189,7 @@ class Waiter {
 
   void log(String s) {
     logs.add(s);
+    // java: also printed with DEBUG=pw:api, as the Java client always did.
     LoggingSupport.logApiIfEnabled(s);
     JsonObject info = new JsonObject();
     info.addProperty("waitId", waitId);
@@ -181,6 +202,8 @@ class Waiter {
     failures.add(failure);
     dispose.add(failure::dispose);
   }
+
+  // java: the module functions waitForEvent and waitForTimeout are WaitableEvent and WaitableTimeout.
 
   // java: exceptions are immutable, so a new one of the same class carries the message with the logs.
   private RuntimeException rewriteErrorMessage(RuntimeException e) {

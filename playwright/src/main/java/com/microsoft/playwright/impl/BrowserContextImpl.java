@@ -14,58 +14,123 @@
  * limitations under the License.
  */
 
+// Port of browserContext.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.JsonArray;
+import com.microsoft.playwright.impl.isomorphic.Headers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.*;
+import com.microsoft.playwright.APIRequestContext;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.CDPSession;
+import com.microsoft.playwright.ConsoleMessage;
+import com.microsoft.playwright.Credentials;
+import com.microsoft.playwright.Dialog;
+import com.microsoft.playwright.Download;
+import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.Request;
+import com.microsoft.playwright.Response;
+import com.microsoft.playwright.Route;
+import com.microsoft.playwright.WebError;
+import com.microsoft.playwright.WebSocketRoute;
+import com.microsoft.playwright.impl.protocol.*;
+import com.microsoft.playwright.options.BindingCallback;
+import com.microsoft.playwright.options.ClientCertificate;
+import com.microsoft.playwright.options.Cookie;
+import com.microsoft.playwright.options.FunctionCallback;
+import com.microsoft.playwright.options.Geolocation;
+import com.microsoft.playwright.options.HarContentPolicy;
+import com.microsoft.playwright.options.HarMode;
+import com.microsoft.playwright.options.HarNotFound;
+import com.microsoft.playwright.options.WebErrorLocation;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.*;
-import static com.microsoft.playwright.impl.Errors.isSafeCloseError;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.readAllBytes;
-import static java.util.Arrays.asList;
+import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
+import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
-  protected BrowserImpl browser;
-  private final TracingImpl tracing;
-  private final DebuggerImpl debugger;
-  private final APIRequestContextImpl request;
-  private final ClockImpl clock;
-  private final CredentialsImpl credentials;
-  final List<PageImpl> pages = new ArrayList<>();
+  // java: the optional methods are default no-ops; actions.Action and actions.Signal are the raw JSON of the event.
+  interface RecorderEventSink {
+    default void actionAdded(PageImpl page, JsonElement action, String code) {
+    }
 
-  final Router routes = new Router();
-  final WebSocketRouter webSocketRoutes = new WebSocketRouter();
-  private boolean closingOrClosed;
-  private final WaitableEvent<?> closePromise;
-  final Map<String, BindingCallback> bindings = new HashMap<>();
+    default void actionUpdated(PageImpl page, JsonElement action, String code) {
+    }
+
+    default void signalAdded(PageImpl page, JsonElement signal, String code) {
+    }
+  }
+
+  final Set<PageImpl> pages = new LinkedHashSet<>();
+  List<RouteHandler> routes = new ArrayList<>();
+  List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
+  // Browser is null for browser contexts created outside of normal browser, e.g. android or electron.
+  BrowserImpl browser = null;
+  final Map<String, BindingCallback> bindings = new LinkedHashMap<>();
+  final TimeoutSettings timeoutSettings;
   PageImpl ownerPage;
-  private String closeReason;
+  boolean forReuse = false;
+  private final WaitableEvent<BrowserContextImpl> closedPromise;
+  final BrowserContextInitializer.BrowserContextInitializerOptions options;
 
-  final TimeoutSettings timeoutSettings = new TimeoutSettings();
+  final DebuggerImpl debugger;
+  final APIRequestContextImpl request;
+  final TracingImpl tracing;
+  final ClockImpl clock;
+  final CredentialsImpl credentials;
+
+  final Set<WorkerImpl> serviceWorkers = new LinkedHashSet<>();
+  private String closingStatus = "none";
+  private String closeReason;
+  private List<HarRouter> harRouters = new ArrayList<>();
+  private RecorderEventSink onRecorderEventSink;
 
   final BrowserContextChannel channel = new BrowserContextChannel(this);
 
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
+
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    Map<String, String> mapping = new HashMap<>();
+    BrowserContextInitializer contextInitializer = connection.protocolGson().fromJson(initializer, BrowserContextInitializer.class);
+    this.options = contextInitializer.options;
+    this.timeoutSettings = new TimeoutSettings();
+    this.debugger = contextInitializer.debugger;
+    this.tracing = contextInitializer.tracing;
+    this.request = contextInitializer.requestContext;
+    this.request.timeoutSettings = this.timeoutSettings;
+    this.clock = new ClockImpl(this);
+    this.credentials = new CredentialsImpl(this);
+
+    this.closedPromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
+
+    Map<String, String> mapping = new LinkedHashMap<>();
     mapping.put(Events.BrowserContext.CONSOLE, "console");
     mapping.put(Events.BrowserContext.DIALOG, "dialog");
     mapping.put(Events.BrowserContext.DIALOG_CLOSED, "dialogClosed");
@@ -74,56 +139,932 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     mapping.put(Events.BrowserContext.REQUEST_FINISHED, "requestFinished");
     mapping.put(Events.BrowserContext.REQUEST_FAILED, "requestFailed");
     setEventToSubscriptionMapping(mapping);
-    tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
-    debugger = connection.getExistingObject(initializer.getAsJsonObject("debugger").get("guid").getAsString());
-    request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
-    request.timeoutSettings = timeoutSettings;
-    clock = new ClockImpl(this);
-    credentials = new CredentialsImpl(this);
-    closePromise = new WaitableEvent<>(this, Events.BrowserContext.CLOSE);
   }
 
-  URL baseUrl() {
-    JsonElement url = initializer.getAsJsonObject("options").get("baseURL");
-    if (url != null) {
-      try {
-        return new URL(url.getAsString());
-      } catch (MalformedURLException e) {
+  // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
+  @Override
+  void handleEvent(String event, JsonObject params) {
+    switch (event) {
+      case "bindingCall": {
+        BrowserContextBindingCallEvent e = connection.protocolGson().fromJson(params, BrowserContextBindingCallEvent.class);
+        onBinding(e.binding);
+        break;
+      }
+      case "close":
+        onClose();
+        break;
+      case "page": {
+        BrowserContextPageEvent e = connection.protocolGson().fromJson(params, BrowserContextPageEvent.class);
+        onPage(e.page);
+        break;
+      }
+      case "route": {
+        BrowserContextRouteEvent e = connection.protocolGson().fromJson(params, BrowserContextRouteEvent.class);
+        onRoute(e.route);
+        break;
+      }
+      case "webSocketRoute": {
+        BrowserContextWebSocketRouteEvent e = connection.protocolGson().fromJson(params, BrowserContextWebSocketRouteEvent.class);
+        onWebSocketRoute(e.webSocketRoute);
+        break;
+      }
+      case "serviceWorker": {
+        BrowserContextServiceWorkerEvent e = connection.protocolGson().fromJson(params, BrowserContextServiceWorkerEvent.class);
+        WorkerImpl serviceWorker = e.worker;
+        serviceWorker.context = this;
+        serviceWorkers.add(serviceWorker);
+        emit(Events.BrowserContext.SERVICE_WORKER, serviceWorker);
+        break;
+      }
+      case "console": {
+        BrowserContextConsoleEvent e = connection.protocolGson().fromJson(params, BrowserContextConsoleEvent.class);
+        WorkerImpl worker = e.worker;
+        PageImpl page = e.page;
+        ConsoleMessageImpl consoleMessage = new ConsoleMessageImpl(e);
+        if (worker != null) {
+          worker.emit(Events.Worker.CONSOLE, consoleMessage);
+        }
+        if (page != null) {
+          page.emit(Events.Page.CONSOLE, consoleMessage);
+        }
+        if (worker != null && serviceWorkers.contains(worker)) {
+          String scope = serviceWorkerScope(worker);
+          // java: a copy, a listener that closes a page would modify the set while it is iterated.
+          for (PageImpl p : new ArrayList<>(pages)) {
+            if (scope != null && p.url().startsWith(scope)) {
+              p.emit(Events.Page.CONSOLE, consoleMessage);
+            }
+          }
+        }
+        emit(Events.BrowserContext.CONSOLE, consoleMessage);
+        break;
+      }
+      case "pageError": {
+        BrowserContextPageErrorEvent e = connection.protocolGson().fromJson(params, BrowserContextPageErrorEvent.class);
+        PageImpl pageObject = e.page;
+        // java: the error is the formatted string that Page.onPageError and WebError.error() return.
+        String parsedError = Serialization.parseError(params.getAsJsonObject("error"));
+        WebErrorLocation location = null;
+        if (params.has("location")) {
+          location = gson().fromJson(params.getAsJsonObject("location"), WebErrorLocation.class);
+        }
+        emit(Events.BrowserContext.WEB_ERROR, new WebErrorImpl(pageObject, parsedError, location));
+        if (pageObject != null) {
+          pageObject.emit(Events.Page.PAGE_ERROR, parsedError);
+        }
+        break;
+      }
+      case "dialog": {
+        BrowserContextDialogEvent e = connection.protocolGson().fromJson(params, BrowserContextDialogEvent.class);
+        DialogImpl dialogObject = e.dialog;
+        // java: emit() does not report whether there were listeners, they are counted before.
+        boolean hasListeners = listenerCount(Events.BrowserContext.DIALOG) > 0;
+        emit(Events.BrowserContext.DIALOG, dialogObject);
+        PageImpl page = dialogObject.page();
+        if (page != null) {
+          hasListeners = page.listenerCount(Events.Page.DIALOG) > 0 || hasListeners;
+          page.emit(Events.Page.DIALOG, dialogObject);
+        }
+        if (!hasListeners) {
+          // Although we do similar handling on the server side, we still need this logic
+          // on the client side due to a possible race condition between two async calls:
+          // a) removing "dialog" listener subscription (client->server)
+          // b) actual "dialog" event (server->client)
+          try {
+            if ("beforeunload".equals(dialogObject.type())) {
+              dialogObject.channel.accept(new DialogAcceptParams(), NO_TIMEOUT);
+            } else {
+              dialogObject.channel.dismiss(new DialogDismissParams(), NO_TIMEOUT);
+            }
+          } catch (PlaywrightException ex) {
+          }
+        }
+        break;
+      }
+      case "dialogClosed": {
+        BrowserContextDialogClosedEvent e = connection.protocolGson().fromJson(params, BrowserContextDialogClosedEvent.class);
+        DialogImpl dialogObject = e.dialog;
+        emit(Events.BrowserContext.DIALOG_CLOSED, dialogObject);
+        PageImpl page = dialogObject.page();
+        if (page != null) {
+          page.emit(Events.Page.DIALOG_CLOSED, dialogObject);
+        }
+        break;
+      }
+      case "request": {
+        BrowserContextRequestEvent e = connection.protocolGson().fromJson(params, BrowserContextRequestEvent.class);
+        onRequest(e.request, e.page);
+        break;
+      }
+      case "requestFailed": {
+        BrowserContextRequestFailedEvent e = connection.protocolGson().fromJson(params, BrowserContextRequestFailedEvent.class);
+        onRequestFailed(e.request, e.responseEndTiming, e.failureText, e.page);
+        break;
+      }
+      case "requestFinished": {
+        BrowserContextRequestFinishedEvent e = connection.protocolGson().fromJson(params, BrowserContextRequestFinishedEvent.class);
+        onRequestFinished(e);
+        break;
+      }
+      case "response": {
+        BrowserContextResponseEvent e = connection.protocolGson().fromJson(params, BrowserContextResponseEvent.class);
+        onResponse(e.response, e.page);
+        break;
+      }
+      case "recorderEvent": {
+        BrowserContextRecorderEventEvent e = connection.protocolGson().fromJson(params, BrowserContextRecorderEventEvent.class);
+        if ("actionAdded".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.actionAdded(e.page, e.data, e.code);
+          }
+        } else if ("actionUpdated".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.actionUpdated(e.page, e.data, e.code);
+          }
+        } else if ("signalAdded".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.signalAdded(e.page, e.data, e.code);
+          }
+        }
+        break;
       }
     }
-    return null;
+  }
+
+  // java: upstream takes options.recordHar; Java has the flat recordHar* options.
+  void initializeHarFromOptions(Browser.NewContextOptions recordHar) {
+    if (recordHar == null || recordHar.recordHarPath == null) {
+      return;
+    }
+    HarContentPolicy defaultContent = Pattern.compile("\\.zip$", Pattern.CASE_INSENSITIVE).matcher(recordHar.recordHarPath.toString()).find() ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+    HarContentPolicy content = recordHar.recordHarContent != null ? recordHar.recordHarContent
+      : (recordHar.recordHarOmitContent != null && recordHar.recordHarOmitContent ? HarContentPolicy.OMIT : defaultContent);
+    tracing.recordIntoHAR(recordHar.recordHarPath, null, recordHar.recordHarUrlFilter, content,
+      recordHar.recordHarMode != null ? recordHar.recordHarMode : HarMode.FULL, null);
+  }
+
+  private void onPage(PageImpl page) {
+    pages.add(page);
+    emit(Events.BrowserContext.PAGE, page);
+    if (page.opener != null && !page.opener.isClosed()) {
+      page.opener.emit(Events.Page.POPUP, page);
+    }
+  }
+
+  private void onRequest(RequestImpl request, PageImpl page) {
+    emit(Events.BrowserContext.REQUEST, request);
+    if (page != null) {
+      page.emit(Events.Page.REQUEST, request);
+    }
+  }
+
+  private void onResponse(ResponseImpl response, PageImpl page) {
+    emit(Events.BrowserContext.RESPONSE, response);
+    if (page != null) {
+      page.emit(Events.Page.RESPONSE, response);
+    }
+  }
+
+  private void onRequestFailed(RequestImpl request, Double responseEndTiming, String failureText, PageImpl page) {
+    request.failureText = failureText == null || failureText.isEmpty() ? null : failureText;
+    request.setResponseEndTiming(responseEndTiming);
+    emit(Events.BrowserContext.REQUEST_FAILED, request);
+    if (page != null) {
+      page.emit(Events.Page.REQUEST_FAILED, request);
+    }
+  }
+
+  private void onRequestFinished(BrowserContextRequestFinishedEvent params) {
+    Double responseEndTiming = params.responseEndTiming;
+    RequestImpl request = params.request;
+    ResponseImpl response = params.response;
+    PageImpl page = params.page;
+    request.setResponseEndTiming(responseEndTiming);
+    emit(Events.BrowserContext.REQUEST_FINISHED, request);
+    if (page != null) {
+      page.emit(Events.Page.REQUEST_FINISHED, request);
+    }
+    if (response != null) {
+      response.finishedPromise.complete(null);
+    }
+  }
+
+  void onRoute(RouteImpl route) {
+    route.context = this;
+    PageImpl page = ((RequestImpl) route.request()).safePage();
+    List<RouteHandler> routeHandlers = this.routes;
+    for (RouteHandler routeHandler : new ArrayList<>(routeHandlers)) {
+      // If the page or the context was closed we stall all requests right away.
+      if ((page != null && page.closeWasCalled) || isClosed()) {
+        return;
+      }
+      if (!routeHandler.matches(route.request().url())) {
+        continue;
+      }
+      int index = this.routes.indexOf(routeHandler);
+      if (index == -1) {
+        continue;
+      }
+      if (routeHandler.willExpire()) {
+        this.routes.remove(index);
+      }
+      boolean handled = routeHandler.handle(route);
+      // unrouteAll() replaces _routes and updates interception after waiting for handlers.
+      if (routeHandlers == this.routes && this.routes.isEmpty()) {
+        try {
+          disableInterception();
+        } catch (PlaywrightException e) {
+        }
+      }
+      if (handled) {
+        return;
+      }
+    }
+    // If the page is closed or unrouteAll() was called without waiting and interception disabled,
+    // the method will throw an error - silence it.
+    try {
+      route.innerContinue(true /* isFallback */);
+    } catch (PlaywrightException e) {
+    }
+  }
+
+  void onWebSocketRoute(WebSocketRouteImpl webSocketRoute) {
+    WebSocketRouteHandler routeHandler = null;
+    for (WebSocketRouteHandler route : webSocketRoutes) {
+      if (route.matches(webSocketRoute.url())) {
+        routeHandler = route;
+        break;
+      }
+    }
+    if (routeHandler != null) {
+      routeHandler.handle(webSocketRoute);
+    } else {
+      webSocketRoute.connectToServer();
+    }
+  }
+
+  void onBinding(BindingCall bindingCall) {
+    BindingCallback func = bindings.get(bindingCall.bindingCallInitializer.name);
+    if (func == null) {
+      return;
+    }
+    bindingCall.call(func);
+  }
+
+  private String serviceWorkerScope(WorkerImpl serviceWorker) {
+    try {
+      String url = new URL(new URL(serviceWorker.url()), ".").toString();
+      if (!url.endsWith("/")) {
+        url += "/";
+      }
+      return url;
+    } catch (MalformedURLException e) {
+      return null;
+    }
+  }
+
+  @Override
+  public void setDefaultNavigationTimeout(double timeout) {
+    timeoutSettings.setDefaultNavigationTimeout(timeout);
+  }
+
+  @Override
+  public void setDefaultTimeout(double timeout) {
+    timeoutSettings.setDefaultTimeout(timeout);
+  }
+
+  @Override
+  public BrowserImpl browser() {
+    return browser;
+  }
+
+  @Override
+  public List<Page> pages() {
+    return new ArrayList<>(pages);
+  }
+
+  @Override
+  public boolean isClosed() {
+    return !"none".equals(closingStatus);
+  }
+
+  @Override
+  public PageImpl newPage() {
+    if (ownerPage != null) {
+      throw new PlaywrightException("Please use browser.newContext()");
+    }
+    return channel.newPage(new BrowserContextNewPageParams(), NO_TIMEOUT).page;
+  }
+
+  @Override
+  public List<Cookie> cookies(String urls) {
+    return cookies(urls == null ? new ArrayList<>() : Collections.singletonList(urls));
+  }
+
+  @Override
+  public List<Cookie> cookies(List<String> urls) {
+    if (urls == null) {
+      urls = new ArrayList<>();
+    }
+    BrowserContextCookiesParams params = new BrowserContextCookiesParams();
+    params.urls = urls;
+    List<NetworkCookie> cookies = channel.cookies(params, NO_TIMEOUT).cookies;
+    // java: the protocol cookies are converted to the public Cookie type.
+    return Arrays.asList(gson().fromJson(connection.protocolGson().toJsonTree(cookies), Cookie[].class));
+  }
+
+  @Override
+  public void addCookies(List<Cookie> cookies) {
+    BrowserContextAddCookiesParams params = new BrowserContextAddCookiesParams();
+    // java: the public Cookie type is converted to the protocol one.
+    params.cookies = connection.protocolGson().fromJson(gson().toJsonTree(cookies), new TypeToken<List<SetNetworkCookie>>() {}.getType());
+    channel.addCookies(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void clearCookies(ClearCookiesOptions options) {
+    if (options == null) {
+      options = new ClearCookiesOptions();
+    }
+    BrowserContextClearCookiesParams params = connection.protocolGson().fromJson(
+      Serialization.toClearCookiesParams(options.name, options.domain, options.path), BrowserContextClearCookiesParams.class);
+    channel.clearCookies(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
+    if (options == null) {
+      options = new GrantPermissionsOptions();
+    }
+    BrowserContextGrantPermissionsParams params = toProtocol(options, BrowserContextGrantPermissionsParams.class);
+    params.permissions = permissions;
+    channel.grantPermissions(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void clearPermissions() {
+    channel.clearPermissions(new BrowserContextClearPermissionsParams(), NO_TIMEOUT);
+  }
+
+  @Override
+  public void setGeolocation(Geolocation geolocation) {
+    BrowserContextSetGeolocationParams params = new BrowserContextSetGeolocationParams();
+    params.geolocation = geolocation == null ? null
+      : toProtocol(geolocation, BrowserContextSetGeolocationParams.BrowserContextSetGeolocationParamsGeolocation.class);
+    channel.setGeolocation(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void setExtraHTTPHeaders(Map<String, String> headers) {
+    RawHeaders.validateHeaders(headers);
+    BrowserContextSetExtraHTTPHeadersParams params = new BrowserContextSetExtraHTTPHeadersParams();
+    params.headers = Headers.headersObjectToArray(headers);
+    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void setOffline(boolean offline) {
+    BrowserContextSetOfflineParams params = new BrowserContextSetOfflineParams();
+    params.offline = offline;
+    channel.setOffline(params, NO_TIMEOUT);
+  }
+
+  // java: httpCredentials is an HttpCredentials, a List of them or null.
+  void setHTTPCredentials(Object httpCredentials) {
+    BrowserContextSetHTTPCredentialsParams params = new BrowserContextSetHTTPCredentialsParams();
+    params.httpCredentials = toHttpCredentialsProtocol(httpCredentials);
+    channel.setHTTPCredentials(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public AutoCloseable addInitScript(String script) {
+    return addInitScript(script, null, null);
+  }
+
+  @Override
+  public AutoCloseable addInitScript(Path script) {
+    return addInitScript(script, null, null);
+  }
+
+  // java: the core of the String and Path overloads. evaluationScript takes no arg: a Java script is not a function.
+  AutoCloseable addInitScript(Object script, Object arg, Serialization.ExposeFunctionsOptions options) {
+    assertEvaluateOptions(options);
+    if (options != null && Boolean.TRUE.equals(options.exposeFunctions)) {
+      return PageImpl.addInitScriptWithExposedFunctions(this, script, arg);
+    }
+    String source = evaluationScript(script, true);
+    BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
+    params.source = source;
+    return channel.addInitScript(params, NO_TIMEOUT).disposable;
+  }
+
+  @Override
+  public AutoCloseable exposeBinding(String name, BindingCallback callback) {
+    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
+    params.name = name;
+    BrowserContextExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    bindings.put(name, callback);
+    return result.disposable;
+  }
+
+  // java: the JS Function callback is a FunctionCallback.
+  DisposableObject exposeCallbackBinding(String name, FunctionCallback callback) {
+    bindings.put(name, (source, args) -> callback.call(args));
+    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
+    params.name = name;
+    params.noGlobal = true;
+    BrowserContextExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    return result.disposable;
+  }
+
+  @Override
+  public AutoCloseable exposeFunction(String name, FunctionCallback callback) {
+    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
+    params.name = name;
+    BrowserContextExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    BindingCallback binding = (source, args) -> callback.call(args);
+    bindings.put(name, binding);
+    return result.disposable;
+  }
+
+  @Override
+  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
+    return route(UrlMatcher.forGlob(baseUrl(), url, connection.localUtils(), false), handler, options);
+  }
+
+  @Override
+  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+    return route(new UrlMatcher(url), handler, options);
+  }
+
+  @Override
+  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+    return route(new UrlMatcher(url), handler, options);
+  }
+
+  AutoCloseable route(UrlMatcher url, Consumer<Route> handler, RouteOptions options) {
+    return withTitle("Route requests", () -> {
+      routes.add(0, new RouteHandler(this.options.baseURL, url, handler, options == null ? null : options.times));
+      updateInterceptionPatterns();
+      return new DisposableStub(() -> unroute(url, handler));
+    });
+  }
+
+  @Override
+  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(UrlMatcher.forGlob(baseUrl(), url, connection.localUtils(), true), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Pattern url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void routeWebSocket(Predicate<String> url, Consumer<WebSocketRoute> handler) {
+    routeWebSocket(new UrlMatcher(url), handler);
+  }
+
+  private void routeWebSocket(UrlMatcher url, Consumer<WebSocketRoute> handler) {
+    withTitle("Route WebSockets", () -> {
+      webSocketRoutes.add(0, new WebSocketRouteHandler(options.baseURL, url, handler));
+      updateWebSocketInterceptionPatterns();
+    });
+  }
+
+  @Override
+  public void routeFromHAR(Path har, RouteFromHAROptions options) {
+    if (options == null) {
+      options = new RouteFromHAROptions();
+    }
+    LocalUtils localUtils = connection.localUtils();
+    if (localUtils == null) {
+      throw new PlaywrightException("Route from har is not supported in thin clients");
+    }
+    if (options.update != null && options.update) {
+      tracing.recordIntoHAR(har, null, options.url, convertType(options.updateContent, HarContentPolicy.class), options.updateMode, null);
+      return;
+    }
+    HarRouter harRouter = HarRouter.create(localUtils, har, options.notFound != null ? options.notFound : HarNotFound.ABORT, options.url);
+    harRouters.add(harRouter);
+    harRouter.addContextRoute(this);
+  }
+
+  private void disposeHarRouters() {
+    for (HarRouter router : harRouters) {
+      router.dispose();
+    }
+    harRouters = new ArrayList<>();
+  }
+
+  // java: the Java API has no behavior option, unrouteAll() passes none.
+  @Override
+  public void unrouteAll() {
+    withTitle("Unroute requests", () -> {
+      unrouteInternal(routes, new ArrayList<>(), null);
+      disposeHarRouters();
+    });
+  }
+
+  @Override
+  public void unroute(String url, Consumer<Route> handler) {
+    unroute(UrlMatcher.forGlob(baseUrl(), url, connection.localUtils(), false), handler);
+  }
+
+  @Override
+  public void unroute(Pattern url, Consumer<Route> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void unroute(Predicate<String> url, Consumer<Route> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  void unroute(UrlMatcher url, Consumer<Route> handler) {
+    withTitle("Unroute requests", () -> {
+      List<RouteHandler> removed = new ArrayList<>();
+      List<RouteHandler> remaining = new ArrayList<>();
+      for (RouteHandler route : routes) {
+        if (route.url.equals(url) && (handler == null || route.handler == handler)) {
+          removed.add(route);
+        } else {
+          remaining.add(route);
+        }
+      }
+      unrouteInternal(removed, remaining, "default");
+    });
+  }
+
+  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining, String behavior) {
+    routes = remaining;
+    if (behavior != null && !"default".equals(behavior)) {
+      // java: Promise.all over the removed handlers is a loop, each stop() returns when done.
+      for (RouteHandler routeHandler : removed) {
+        routeHandler.stop(behavior);
+      }
+    }
+    updateInterceptionPatterns();
+  }
+
+  private void disableInterception() {
+    wrapApiCall(() -> updateInterceptionPatterns(), null, true);
+  }
+
+  private void updateInterceptionPatterns() {
+    BrowserContextSetNetworkInterceptionPatternsParams params = new BrowserContextSetNetworkInterceptionPatternsParams();
+    params.patterns = RouteHandler.prepareInterceptionPatterns(routes);
+    channel.setNetworkInterceptionPatterns(params, NO_TIMEOUT);
+  }
+
+  private void updateWebSocketInterceptionPatterns() {
+    BrowserContextSetWebSocketInterceptionPatternsParams params = new BrowserContextSetWebSocketInterceptionPatternsParams();
+    params.patterns = WebSocketRouteHandler.prepareInterceptionPatterns(webSocketRoutes);
+    channel.setWebSocketInterceptionPatterns(params, NO_TIMEOUT);
   }
 
   String effectiveCloseReason() {
     if (closeReason != null) {
       return closeReason;
     }
+    return browser != null ? browser.closeReason : null;
+  }
+
+  // java: the predicate and timeout are passed separately and the code to run is a Runnable.
+  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
+    double timeoutMs = timeoutSettings.timeout(timeout);
+    Waiter waiter = Waiter.createForEvent(this, event);
+    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
+    if (!Events.BrowserContext.CLOSE.equals(event)) {
+      waiter.rejectOnEvent(this, Events.BrowserContext.CLOSE, () -> new TargetClosedError(effectiveCloseReason()));
+    }
+    T result = waiter.waitForEvent(this, event, predicate, code);
+    waiter.dispose();
+    return result;
+  }
+
+  @Override
+  public String storageState(StorageStateOptions options) {
+    if (options == null) {
+      options = new StorageStateOptions();
+    }
+    BrowserContextStorageStateParams params = new BrowserContextStorageStateParams();
+    params.indexedDB = options.indexedDB;
+    params.opfs = options.opfs;
+    params.credentials = options.credentials;
+    // java: the state is returned as the raw JSON of the reply: a typed round trip would print -1 as -1.0
+    // and differ from the string of APIRequestContext.storageState().
+    JsonElement state = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT);
+    String storageState = state.toString();
+    if (options.path != null) {
+      FileUtils.mkdirIfNeeded(options.path);
+      Utils.writeToFile(Serialization.toPrettyJson(storageState).getBytes(StandardCharsets.UTF_8), options.path);
+    }
+    return storageState;
+  }
+
+  @Override
+  public void setStorageState(Path storageState) {
+    JsonElement state = prepareStorageState(storageState);
+    BrowserContextSetStorageStateParams params = new BrowserContextSetStorageStateParams();
+    params.storageState = connection.protocolGson().fromJson(state, BrowserContextSetStorageStateParams.BrowserContextSetStorageStateParamsStorageState.class);
+    channel.setStorageState(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public List<Page> backgroundPages() {
+    return Collections.emptyList();
+  }
+
+  List<WorkerImpl> serviceWorkers() {
+    return new ArrayList<>(serviceWorkers);
+  }
+
+  // java: the 'page: expected Page or Frame' check is not ported, the overloads take a Page or a Frame.
+  @Override
+  public CDPSession newCDPSession(Page page) {
+    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
+    params.page = (PageImpl) page;
+    return channel.newCDPSession(params, NO_TIMEOUT).session;
+  }
+
+  @Override
+  public CDPSession newCDPSession(Frame page) {
+    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
+    params.frame = (FrameImpl) page;
+    return channel.newCDPSession(params, NO_TIMEOUT).session;
+  }
+
+  void onClose() {
+    closingStatus = "closed";
     if (browser != null) {
-      return browser.closeReason;
+      browser.contexts.remove(this);
+      browser.browserType.contexts.remove(this);
+      browser.browserType.playwright.selectors.contextsForSelectors.remove(this);
+    }
+    disposeHarRouters();
+    tracing.resetStackCounter();
+    request.tracing.resetStackCounter();
+    emit(Events.BrowserContext.CLOSE, this);
+  }
+
+  // java: Symbol.asyncDispose is not ported.
+
+  @Override
+  public void close(CloseOptions options) {
+    if (options == null) {
+      options = new CloseOptions();
+    }
+    if (isClosed()) {
+      return;
+    }
+    closeReason = options.reason;
+    closingStatus = "closing";
+    request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
+    instrumentation.runBeforeCloseBrowserContext(this);
+    RuntimeException harError = null;
+    try {
+      tracing.exportAllHars();
+    } catch (RuntimeException e) {
+      harError = e;
+    }
+    channel.close(toProtocol(options, BrowserContextCloseParams.class), NO_TIMEOUT);
+    runUntil(() -> {}, closedPromise);
+    if (harError != null) {
+      throw harError;
+    }
+  }
+
+  void showRecorder(BrowserContextShowRecorderParams params) {
+    channel.showRecorder(params, NO_TIMEOUT);
+  }
+
+  void startRecording(BrowserContextStartRecordingParams params, RecorderEventSink eventSink) {
+    onRecorderEventSink = eventSink;
+    channel.startRecording(params, NO_TIMEOUT);
+  }
+
+  void stopRecording() {
+    try {
+      channel.stopRecording(NO_TIMEOUT);
+    } finally {
+      onRecorderEventSink = null;
+    }
+  }
+
+  void exposeConsoleApi() {
+    channel.exposeConsoleApi(NO_TIMEOUT);
+  }
+
+  // java: upstream reads a path given as a string and passes an object through; Java options hold a Path.
+  static JsonElement prepareStorageState(Path storageState) {
+    try {
+      return JsonParser.parseString(new String(Files.readAllBytes(storageState), StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      // java: the message the Java client always had, tests match on it.
+      throw new PlaywrightException("Failed to read storage state from file", e);
+    } catch (JsonParseException e) {
+      throw new PlaywrightException("Error reading storage state from " + storageState + ":\n" + e.getMessage(), e);
+    }
+  }
+
+  // java: the result is the params of Browser.newContext, BrowserType.launchPersistentContext copies it into its own params.
+  static BrowserNewContextParams prepareBrowserContextParams(Browser.NewContextOptions options) {
+    if (options == null) {
+      options = new Browser.NewContextOptions();
+    }
+    if (options.extraHTTPHeaders != null) {
+      RawHeaders.validateHeaders(options.extraHTTPHeaders);
+    }
+    // java: the options whose Java type differs from the protocol are converted one by one below,
+    // the others are copied by toProtocol, which also maps an empty Optional to 'no-override'
+    // for colorScheme, reducedMotion, forcedColors and contrast.
+    Browser.NewContextOptions rest = Utils.clone(options);
+    rest.viewportSize = null;
+    rest.extraHTTPHeaders = null;
+    rest.screenSize = null;
+    rest.storageState = null;
+    rest.storageStatePath = null;
+    rest.acceptDownloads = null;
+    rest.clientCertificates = null;
+    rest.httpCredentials = null;
+    rest.recordVideoDir = null;
+    rest.recordVideoSize = null;
+    rest.recordVideoFps = null;
+    rest.recordHarContent = null;
+    rest.recordHarMode = null;
+    rest.recordHarOmitContent = null;
+    rest.recordHarPath = null;
+    rest.recordHarUrlFilter = null;
+    BrowserNewContextParams contextParams = toProtocol(rest, BrowserNewContextParams.class);
+    if (options.viewportSize != null && options.viewportSize.isPresent()) {
+      contextParams.viewport = new BrowserNewContextParams.BrowserNewContextParamsViewport();
+      contextParams.viewport.width = options.viewportSize.get().width;
+      contextParams.viewport.height = options.viewportSize.get().height;
+    }
+    contextParams.noDefaultViewport = options.viewportSize != null && !options.viewportSize.isPresent();
+    contextParams.extraHTTPHeaders = options.extraHTTPHeaders != null ? Headers.headersObjectToArray(options.extraHTTPHeaders) : null;
+    if (options.screenSize != null) {
+      contextParams.screen = new BrowserNewContextParams.BrowserNewContextParamsScreen();
+      contextParams.screen.width = options.screenSize.width;
+      contextParams.screen.height = options.screenSize.height;
+    }
+    // java: storageState is the JSON text of the state, storageStatePath the file to read it from.
+    JsonElement storageState = null;
+    if (options.storageState != null) {
+      storageState = JsonParser.parseString(options.storageState);
+    } else if (options.storageStatePath != null) {
+      storageState = prepareStorageState(options.storageStatePath);
+    }
+    if (storageState != null) {
+      contextParams.storageState = toProtocol(storageState, BrowserNewContextParams.BrowserNewContextParamsStorageState.class);
+    }
+    contextParams.acceptDownloads = toAcceptDownloadsProtocol(options.acceptDownloads);
+    List<PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates> clientCertificates = toClientCertificatesProtocol(options.clientCertificates);
+    if (clientCertificates != null) {
+      contextParams.clientCertificates = new ArrayList<>();
+      for (PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates cert : clientCertificates) {
+        contextParams.clientCertificates.add(convertType(cert, BrowserNewContextParams.BrowserNewContextParamsClientCertificates.class));
+      }
+    }
+    contextParams.httpCredentials = toHttpCredentialsProtocol(options.httpCredentials);
+    // java: recordVideo is the flat recordVideoDir, recordVideoSize and recordVideoFps options; a size or fps
+    // without a dir is an error instead of being dropped.
+    if (options.recordVideoDir != null) {
+      contextParams.recordVideo = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo();
+      contextParams.recordVideo.dir = options.recordVideoDir.toAbsolutePath().toString();
+      if (options.recordVideoSize != null) {
+        contextParams.recordVideo.size = new BrowserNewContextParams.BrowserNewContextParamsRecordVideo.BrowserNewContextParamsRecordVideoSize();
+        contextParams.recordVideo.size.width = options.recordVideoSize.width;
+        contextParams.recordVideo.size.height = options.recordVideoSize.height;
+      }
+      contextParams.recordVideo.fps = options.recordVideoFps;
+    } else if (options.recordVideoSize != null) {
+      throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
+    } else if (options.recordVideoFps != null) {
+      throw new PlaywrightException("recordVideoFps is set but recordVideoDir is null");
+    }
+    // java: the flat recordHar* options are checked here, initializeHarFromOptions starts the recording.
+    if (options.recordHarPath == null) {
+      if (options.recordHarOmitContent != null) {
+        throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
+      }
+      if (options.recordHarUrlFilter != null) {
+        throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
+      }
+      if (options.recordHarMode != null) {
+        throw new PlaywrightException("recordHarMode is set but recordHarPath is null");
+      }
+      if (options.recordHarContent != null) {
+        throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
+      }
+    }
+    return contextParams;
+  }
+
+  // java: the option is a single HttpCredentials or a list of them.
+  @SuppressWarnings("unchecked")
+  static List<HttpCredentials> toHttpCredentialsProtocol(Object credentials) {
+    if (credentials == null) {
+      return null;
+    }
+    List<com.microsoft.playwright.options.HttpCredentials> list = credentials instanceof List
+      ? (List<com.microsoft.playwright.options.HttpCredentials>) credentials
+      : Collections.singletonList((com.microsoft.playwright.options.HttpCredentials) credentials);
+    if (list.isEmpty()) {
+      return null;
+    }
+    // java: converted to the protocol struct, the send enum becomes its lower-case name.
+    return gson().fromJson(gson().toJsonTree(list), new TypeToken<List<HttpCredentials>>() {}.getType());
+  }
+
+  private static String toAcceptDownloadsProtocol(Boolean acceptDownloads) {
+    if (acceptDownloads == null) {
+      return null;
+    }
+    if (acceptDownloads) {
+      return "accept";
+    }
+    return "deny";
+  }
+
+  static List<PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates> toClientCertificatesProtocol(List<ClientCertificate> certs) {
+    if (certs == null) {
+      return null;
+    }
+    List<PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates> result = new ArrayList<>();
+    for (ClientCertificate cert : certs) {
+      PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates c = new PlaywrightNewRequestParams.PlaywrightNewRequestParamsClientCertificates();
+      c.origin = cert.origin;
+      c.cert = bufferizeContent(cert.cert, cert.certPath);
+      c.key = bufferizeContent(cert.key, cert.keyPath);
+      c.pfx = bufferizeContent(cert.pfx, cert.pfxPath);
+      c.passphrase = cert.passphrase;
+      result.add(c);
+    }
+    return result;
+  }
+
+  // java: the local function of toClientCertificatesProtocol.
+  private static byte[] bufferizeContent(byte[] value, Path filePath) {
+    if (value != null) {
+      return value;
+    }
+    if (filePath != null) {
+      try {
+        return Files.readAllBytes(filePath);
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read from file", e);
+      }
+    }
+    return null;
+  }
+
+  // java: members of the generated BrowserContext interface without an upstream counterpart:
+  // the fields' accessors, typed listeners, callback waits, waitForCondition, and the parsed baseURL.
+  @Override
+  public ClockImpl clock() {
+    return clock;
+  }
+
+  @Override
+  public Credentials credentials() {
+    return credentials;
+  }
+
+  @Override
+  public DebuggerImpl debugger() {
+    return debugger;
+  }
+
+  @Override
+  public APIRequestContextImpl request() {
+    return request;
+  }
+
+  @Override
+  public TracingImpl tracing() {
+    return tracing;
+  }
+
+  URL baseUrl() {
+    if (options.baseURL != null) {
+      try {
+        return new URL(options.baseURL);
+      } catch (MalformedURLException e) {
+      }
     }
     return null;
   }
 
   @Override
   public void onBackgroundPage(Consumer<Page> handler) {
+    on(Events.BrowserContext.BACKGROUND_PAGE, handler);
   }
 
   @Override
   public void offBackgroundPage(Consumer<Page> handler) {
-  }
-
-  @Override
-  public void onDownload(Consumer<Download> handler) {
-    on(Events.BrowserContext.DOWNLOAD, handler);
-  }
-
-  @Override
-  public void offDownload(Consumer<Download> handler) {
-    off(Events.BrowserContext.DOWNLOAD, handler);
-  }
-
-  void notifyDownload(Download download) {
-    emit(Events.BrowserContext.DOWNLOAD, download);
+    off(Events.BrowserContext.BACKGROUND_PAGE, handler);
   }
 
   @Override
@@ -167,13 +1108,13 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void onPage(Consumer<Page> handler) {
-    on(Events.BrowserContext.PAGE, handler);
+  public void onDownload(Consumer<Download> handler) {
+    on(Events.BrowserContext.DOWNLOAD, handler);
   }
 
   @Override
-  public void offPage(Consumer<Page> handler) {
-    off(Events.BrowserContext.PAGE, handler);
+  public void offDownload(Consumer<Download> handler) {
+    off(Events.BrowserContext.DOWNLOAD, handler);
   }
 
   @Override
@@ -186,10 +1127,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     off(Events.BrowserContext.FRAME_ATTACHED, handler);
   }
 
-  void notifyFrameAttached(FrameImpl frame) {
-    emit(Events.BrowserContext.FRAME_ATTACHED, frame);
-  }
-
   @Override
   public void onFrameDetached(Consumer<Frame> handler) {
     on(Events.BrowserContext.FRAME_DETACHED, handler);
@@ -198,10 +1135,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offFrameDetached(Consumer<Frame> handler) {
     off(Events.BrowserContext.FRAME_DETACHED, handler);
-  }
-
-  void notifyFrameDetached(FrameImpl frame) {
-    emit(Events.BrowserContext.FRAME_DETACHED, frame);
   }
 
   @Override
@@ -214,8 +1147,14 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     off(Events.BrowserContext.FRAME_NAVIGATED, handler);
   }
 
-  void notifyFrameNavigated(FrameImpl frame) {
-    emit(Events.BrowserContext.FRAME_NAVIGATED, frame);
+  @Override
+  public void onPage(Consumer<Page> handler) {
+    on(Events.BrowserContext.PAGE, handler);
+  }
+
+  @Override
+  public void offPage(Consumer<Page> handler) {
+    off(Events.BrowserContext.PAGE, handler);
   }
 
   @Override
@@ -228,10 +1167,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     off(Events.BrowserContext.PAGE_CLOSE, handler);
   }
 
-  void notifyPageClose(PageImpl page) {
-    emit(Events.BrowserContext.PAGE_CLOSE, page);
-  }
-
   @Override
   public void onPageLoad(Consumer<Page> handler) {
     on(Events.BrowserContext.PAGE_LOAD, handler);
@@ -240,10 +1175,6 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offPageLoad(Consumer<Page> handler) {
     off(Events.BrowserContext.PAGE_LOAD, handler);
-  }
-
-  void notifyPageLoad(PageImpl page) {
-    emit(Events.BrowserContext.PAGE_LOAD, page);
   }
 
   @Override
@@ -297,627 +1228,32 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public ClockImpl clock() {
-    return clock;
-  }
-
-  @Override
-  public Credentials credentials() {
-    return credentials;
-  }
-
-  @Override
-  public Page waitForPage(WaitForPageOptions options, Runnable code) {
+  public Page waitForPage(WaitForPageOptions options, Runnable callback) {
     if (options == null) {
       options = new WaitForPageOptions();
     }
-    return waitForEvent(Events.BrowserContext.PAGE, options.predicate, options.timeout, code);
-  }
-
-  // waitForEvent in browserContext.ts
-  private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
-    double timeoutMs = timeoutSettings.timeout(timeout);
-    Waiter waiter = Waiter.createForEvent(this, event);
-    waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
-    if (!Events.BrowserContext.CLOSE.equals(event)) {
-      waiter.rejectOnEvent(this, Events.BrowserContext.CLOSE, () -> new TargetClosedError(effectiveCloseReason()));
-    }
-    T result = waiter.waitForEvent(this, event, predicate, code);
-    waiter.dispose();
-    return result;
+    return waitForEvent(Events.BrowserContext.PAGE, options.predicate, options.timeout, callback);
   }
 
   @Override
-  public CDPSession newCDPSession(Page page) {
-    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
-    params.page = (PageImpl) page;
-    return channel.newCDPSession(params, NO_TIMEOUT).session;
-  }
-
-  @Override
-  public CDPSession newCDPSession(Frame frame) {
-    BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
-    params.frame = (FrameImpl) frame;
-    return channel.newCDPSession(params, NO_TIMEOUT).session;
-  }
-
-  @Override
-  public boolean isClosed() {
-    return closingOrClosed;
-  }
-
-  @Override
-  public void close(CloseOptions options) {
-    RuntimeException harError = null;
-    if (!closingOrClosed) {
-      closingOrClosed = true;
-      if (options == null) {
-        options = new CloseOptions();
-      }
-      closeReason = options.reason;
-      try {
-        request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
-      } catch (TargetClosedError e) {
-        // The request context was disposed by the user already.
-      }
-      try {
-        tracing.exportAllHars();
-      } catch (RuntimeException e) {
-        harError = e;
-      }
-      BrowserContextCloseParams params = toProtocol(options, BrowserContextCloseParams.class);
-      channel.close(params, NO_TIMEOUT);
-    }
-    runUntil(() -> {}, closePromise);
-    if (harError != null) {
-      throw harError;
-    }
-  }
-
-  @Override
-  public List<Cookie> cookies(String url) {
-    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
-  }
-
-
-  @Override
-  public void addCookies(List<Cookie> cookies) {
-    BrowserContextAddCookiesParams params = new BrowserContextAddCookiesParams();
-    params.cookies = connection.protocolGson().fromJson(gson().toJsonTree(cookies), TypeToken.getParameterized(List.class, SetNetworkCookie.class).getType());
-    channel.addCookies(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public AutoCloseable addInitScript(String script) {
-    BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
-    params.source = script;
-    return channel.addInitScript(params, NO_TIMEOUT).disposable;
-  }
-
-  @Override
-  public AutoCloseable addInitScript(Path path) {
-    try {
-      byte[] bytes = readAllBytes(path);
-      return addInitScript(new String(bytes, UTF_8));
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read script from file", e);
-    }
-  }
-
-  @Override
-  public List<Page> backgroundPages() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public BrowserImpl browser() {
-    return browser;
-  }
-
-  @Override
-  public void clearCookies(ClearCookiesOptions options) {
-    if (options == null) {
-      options = new ClearCookiesOptions();
-    }
-    BrowserContextClearCookiesParams params = connection.protocolGson().fromJson(toClearCookiesParams(options.name, options.domain, options.path), BrowserContextClearCookiesParams.class);
-    channel.clearCookies(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void clearPermissions() {
-    channel.clearPermissions(NO_TIMEOUT);
-  }
-
-  @Override
-  public List<Cookie> cookies(List<String> urls) {
-    BrowserContextCookiesParams params = new BrowserContextCookiesParams();
-    params.urls = urls == null ? new ArrayList<>() : urls;
-    BrowserContextCookiesResult result = channel.cookies(params, NO_TIMEOUT);
-    Cookie[] cookies = gson().fromJson(gson().toJsonTree(result.cookies), Cookie[].class);
-    return asList(cookies);
-  }
-
-  @Override
-  public AutoCloseable exposeBinding(String name, BindingCallback playwrightBinding) {
-    return exposeBindingImpl(name, playwrightBinding);
-  }
-
-  private AutoCloseable exposeBindingImpl(String name, BindingCallback playwrightBinding) {
-    if (bindings.containsKey(name)) {
-      throw new PlaywrightException("Function \"" + name + "\" has been already registered");
-    }
-    for (PageImpl page : pages) {
-      if (page.bindings.containsKey(name)) {
-        throw new PlaywrightException("Function \"" + name + "\" has been already registered in one of the pages");
-      }
-    }
-    bindings.put(name, playwrightBinding);
-
-    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
-    params.name = name;
-    return channel.exposeBinding(params, NO_TIMEOUT).disposable;
-  }
-
-  @Override
-  public AutoCloseable exposeFunction(String name, FunctionCallback playwrightFunction) {
-    return exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args));
-  }
-
-  @Override
-  public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
-    if (options == null) {
-      options = new GrantPermissionsOptions();
-    }
-    if (permissions == null) {
-      permissions = new ArrayList<>();
-    }
-    BrowserContextGrantPermissionsParams params = toProtocol(options, BrowserContextGrantPermissionsParams.class);
-    params.permissions = permissions;
-    channel.grantPermissions(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public PageImpl newPage() {
-    if (ownerPage != null) {
-      throw new PlaywrightException("Please use browser.newContext()");
-    }
-    return channel.newPage(NO_TIMEOUT).page;
-  }
-
-  @Override
-  public List<Page> pages() {
-    return new ArrayList<>(pages);
-  }
-
-  @Override
-  public APIRequestContextImpl request() {
-    return request;
-  }
-
-  @Override
-  public AutoCloseable route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils(), false), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public AutoCloseable route(Pattern url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public AutoCloseable route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(url), handler, options);
-    return new DisposableStub(() -> unroute(url, handler));
-  }
-
-  @Override
-  public void routeFromHAR(Path har, RouteFromHAROptions options) {
-    if (options == null) {
-      options = new RouteFromHAROptions();
-    }
-    if (options.update != null && options.update) {
-      recordIntoHar(null, har, options, null);
-      return;
-    }
-    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl(), options.url, this.connection.localUtils(), false);
-    HARRouter harRouter = new HARRouter(connection.localUtils(), har, options.notFound);
-    onClose(context -> harRouter.dispose());
-    route(matcher, route -> harRouter.handle(route), null);
-  }
-
-  private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
-    routes.add(matcher, handler, options == null ? null : options.times);
-    updateInterceptionPatterns();
-  }
-
-  @Override
-  public void routeWebSocket(String url, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(UrlMatcher.forGlob(baseUrl(), url, this.connection.localUtils(), true), handler);
-  }
-
-  @Override
-  public void routeWebSocket(Pattern pattern, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(pattern), handler);
-  }
-
-  @Override
-  public void routeWebSocket(Predicate<String> predicate, Consumer<WebSocketRoute> handler) {
-    routeWebSocketImpl(new UrlMatcher(predicate), handler);
-  }
-
-  private void routeWebSocketImpl(UrlMatcher matcher, Consumer<WebSocketRoute> handler) {
-    webSocketRoutes.add(matcher, handler);
-    updateWebSocketInterceptionPatterns();
-  }
-
-  void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options, HarContentPolicy contentPolicy) {
-    if (contentPolicy == null) {
-      contentPolicy = Utils.convertType(options.updateContent, HarContentPolicy.class);
-    }
-    tracing.recordIntoHar(page, har, options.url, contentPolicy, options.updateMode, null);
-  }
-
-  @Override
-  public void setDefaultNavigationTimeout(double timeout) {
-    timeoutSettings.setDefaultNavigationTimeout(timeout);
-  }
-
-  @Override
-  public void setDefaultTimeout(double timeout) {
-    timeoutSettings.setDefaultTimeout(timeout);
-  }
-
-  @Override
-  public void setExtraHTTPHeaders(Map<String, String> headers) {
-    BrowserContextSetExtraHTTPHeadersParams params = new BrowserContextSetExtraHTTPHeadersParams();
-    params.headers = new ArrayList<>();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      NameValue header = new NameValue();
-      header.name = e.getKey();
-      header.value = e.getValue();
-      params.headers.add(header);
-    }
-    channel.setExtraHTTPHeaders(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void setGeolocation(Geolocation geolocation) {
-    BrowserContextSetGeolocationParams params = new BrowserContextSetGeolocationParams();
-    if (geolocation != null) {
-      params.geolocation = toProtocol(geolocation, BrowserContextSetGeolocationParams.BrowserContextSetGeolocationParamsGeolocation.class);
-    }
-    channel.setGeolocation(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void setOffline(boolean offline) {
-    BrowserContextSetOfflineParams params = new BrowserContextSetOfflineParams();
-    params.offline = offline;
-    channel.setOffline(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void setStorageState(Path storageState) {
-    try {
-      String state = new String(readAllBytes(storageState), UTF_8);
-      BrowserContextSetStorageStateParams params = new BrowserContextSetStorageStateParams();
-      params.storageState = connection.protocolGson().fromJson(state, BrowserContextSetStorageStateParams.BrowserContextSetStorageStateParamsStorageState.class);
-      channel.setStorageState(params, NO_TIMEOUT);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read storage state from file", e);
-    }
-  }
-
-  @Override
-  public String storageState(StorageStateOptions options) {
-    if (options == null) {
-      options = new StorageStateOptions();
-    }
-    BrowserContextStorageStateParams params = toProtocol(options, BrowserContextStorageStateParams.class);
-    // The reply is returned to the user verbatim: a typed round trip would print -1 as -1.0 and
-    // differ from the raw string of APIRequestContext.storageState(), so the typed params go through
-    // the JsonObject overload and the result stays a JsonElement.
-    JsonElement json = sendMessage("storageState", connection.protocolGson().toJsonTree(params).getAsJsonObject(), NO_TIMEOUT);
-
-    String storageState = json.toString();
-    if (options.path != null) {
-      Utils.writeToFile(Serialization.toPrettyJson(storageState).getBytes(StandardCharsets.UTF_8), options.path);
-    }
-    return storageState;
-  }
-
-  @Override
-  public DebuggerImpl debugger() {
-    return debugger;
-  }
-
-  void setTracesDir(Path tracesDir) {
-    tracing.setTracesDir(tracesDir);
-    request.tracing().setTracesDir(tracesDir);
-  }
-
-  @Override
-  public TracingImpl tracing() {
-    return tracing;
-  }
-
-  @Override
-  public void unrouteAll() {
-    routes.removeAll();
-    updateInterceptionPatterns();
-  }
-
-  @Override
-  public void unroute(String url, Consumer<Route> handler) {
-    unroute(UrlMatcher.forGlob(this.baseUrl(), url, this.connection.localUtils(), false), handler);
-  }
-
-  @Override
-  public void unroute(Pattern url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
-  }
-
-  @Override
-  public void unroute(Predicate<String> url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
-  }
-
-  @Override
-  public void waitForCondition(BooleanSupplier predicate, WaitForConditionOptions options) {
-    List<Waitable<Void>> waitables = new ArrayList<>();
-    waitables.add(new WaitableContextClose<>());
-    waitables.add(timeoutSettings.createWaitable(options == null ? null : options.timeout));
-    waitables.add(new WaitablePredicate<>(predicate));
-    runUntil(() -> {}, new WaitableRace<>(waitables));
-  }
-
-  @Override
-  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
+  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEvent(Events.BrowserContext.CONSOLE, options.predicate, options.timeout, code);
-  }
-
-  private class WaitableContextClose<R> extends WaitableEvent<R> {
-    WaitableContextClose() {
-      super(BrowserContextImpl.this, Events.BrowserContext.CLOSE);
-    }
-
-    @Override
-    public R get() {
-      throw new TargetClosedError(effectiveCloseReason());
-    }
-  }
-
-  private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.remove(matcher, handler);
-    updateInterceptionPatterns();
-  }
-
-  private void updateInterceptionPatterns() {
-    BrowserContextSetNetworkInterceptionPatternsParams params = connection.protocolGson().fromJson(routes.interceptionPatterns(), BrowserContextSetNetworkInterceptionPatternsParams.class);
-    channel.setNetworkInterceptionPatterns(params, NO_TIMEOUT);
-  }
-
-  private void updateWebSocketInterceptionPatterns() {
-    BrowserContextSetWebSocketInterceptionPatternsParams params = connection.protocolGson().fromJson(webSocketRoutes.interceptionPatterns(), BrowserContextSetWebSocketInterceptionPatternsParams.class);
-    channel.setWebSocketInterceptionPatterns(params, NO_TIMEOUT);
-  }
-
-  void handleRoute(RouteImpl route) {
-    Router.HandleResult handled = routes.handle(route);
-    if (handled != Router.HandleResult.NoMatchingHandler) {
-      try {
-        updateInterceptionPatterns();
-      } catch (PlaywrightException e) {
-        // Like the Node.js client, ignore the error when the page or the context was closed meanwhile.
-        if (!isSafeCloseError(e)) {
-          throw e;
-        }
-      }
-    }
-    if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
-      route.continueAsFallback();
-    }
-  }
-
-  void handleWebSocketRoute(WebSocketRouteImpl route) {
-    if (!webSocketRoutes.handle(route)) {
-      route.connectToServer();
-    }
-  }
-
-  WaitableResult<JsonElement> pause() {
-    return sendMessageAsync("pause", new BrowserContextPauseParams());
+    return waitForEvent(Events.BrowserContext.CONSOLE, options.predicate, options.timeout, callback);
   }
 
   @Override
-  protected void handleEvent(String event, JsonObject params) {
-    if ("dialog".equals(event)) {
-      String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
-      DialogImpl dialog = connection.getExistingObject(guid);
-      boolean hasListeners = false;
-      if (listenerCount(Events.BrowserContext.DIALOG) > 0) {
-        hasListeners = true;
-        emit(Events.BrowserContext.DIALOG, dialog);
+  public void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options) {
+    List<Waitable<Void>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<Void>(this, Events.BrowserContext.CLOSE) {
+      @Override
+      public Void get() {
+        throw new TargetClosedError(effectiveCloseReason());
       }
-      PageImpl page = dialog.page();
-      if (page != null) {
-        if (page.listenerCount(Events.Page.DIALOG) > 0) {
-          hasListeners = true;
-          page.emit(Events.Page.DIALOG, dialog);
-        }
-      }
-      // Although we do similar handling on the server side, we still need this logic
-      // on the client side due to a possible race condition between two async calls:
-      // a) removing "dialog" listener subscription (client->server)
-      // b) actual "dialog" event (server->client)
-      if (!hasListeners) {
-        if ("beforeunload".equals(dialog.type())) {
-          try {
-            dialog.accept();
-          } catch (PlaywrightException e) {
-          }
-        } else {
-          dialog.dismiss();
-        }
-      }
-    } else if ("dialogClosed".equals(event)) {
-      DialogImpl dialog = connection.getExistingObject(params.getAsJsonObject("dialog").get("guid").getAsString());
-      emit(Events.BrowserContext.DIALOG_CLOSED, dialog);
-      PageImpl page = dialog.page();
-      if (page != null) {
-        page.emit(Events.Page.DIALOG_CLOSED, dialog);
-      }
-    } else if ("route".equals(event)) {
-      RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
-      route.browserContext = this;
-      handleRoute(route);
-    } else if ("webSocketRoute".equals(event)) {
-      WebSocketRouteImpl route = connection.getExistingObject(params.getAsJsonObject("webSocketRoute").get("guid").getAsString());
-      handleWebSocketRoute(route);
-    } else if ("page".equals(event)) {
-      PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-      pages.add(page);
-      emit(Events.BrowserContext.PAGE, page);
-      if (page.opener() != null && !page.opener().isClosed()) {
-        page.opener().notifyPopup(page);
-      }
-    } else if ("bindingCall".equals(event)) {
-      BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());
-      BindingCallback binding = bindings.get(bindingCall.name());
-      if (binding != null) {
-        bindingCall.call(binding);
-      }
-    } else if ("console".equals(event)) {
-      BrowserContextConsoleEvent consoleEvent = connection.protocolGson().fromJson(params, BrowserContextConsoleEvent.class);
-      PageImpl page = consoleEvent.page;
-      WorkerImpl worker = consoleEvent.worker;
-      ConsoleMessageImpl message = new ConsoleMessageImpl(consoleEvent);
-      emit(Events.BrowserContext.CONSOLE, message);
-      if (worker != null) {
-        worker.emit(Events.Worker.CONSOLE, message);
-      }
-      if (page != null) {
-        page.emit(Events.Page.CONSOLE, message);
-      }
-    } else if ("request".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      RequestImpl request = connection.getExistingObject(guid);
-      emit(Events.BrowserContext.REQUEST, request);
-      if (params.has("page")) {
-        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.emit(Events.Page.REQUEST, request);
-      }
-    } else if ("requestFailed".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      RequestImpl request = connection.getExistingObject(guid);
-      request.didFailOrFinish = true;
-      if (params.has("failureText")) {
-        request.failure = params.get("failureText").getAsString();
-      }
-      if (request.timing != null) {
-        request.setResponseEndTiming(params.get("responseEndTiming").getAsDouble());
-      }
-      emit(Events.BrowserContext.REQUEST_FAILED, request);
-      if (params.has("page")) {
-        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.emit(Events.Page.REQUEST_FAILED, request);
-      }
-    } else if ("requestFinished".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      RequestImpl request = connection.getExistingObject(guid);
-      request.didFailOrFinish = true;
-      if (request.timing != null) {
-        request.setResponseEndTiming(params.get("responseEndTiming").getAsDouble());
-      }
-      emit(Events.BrowserContext.REQUEST_FINISHED, request);
-      if (params.has("page")) {
-        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.emit(Events.Page.REQUEST_FINISHED, request);
-      }
-    } else if ("response".equals(event)) {
-      String guid = params.getAsJsonObject("response").get("guid").getAsString();
-      ResponseImpl response = connection.getExistingObject(guid);
-      emit(Events.BrowserContext.RESPONSE, response);
-      if (params.has("page")) {
-        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-        page.emit(Events.Page.RESPONSE, response);
-      }
-    } else if ("pageError".equals(event)) {
-      String errorStr = parseError(params.getAsJsonObject("error"));
-      PageImpl page;
-      try {
-        page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-      } catch (PlaywrightException e) {
-        page = null;
-      }
-      WebErrorLocation location = null;
-      if (params.has("location")) {
-        location = gson().fromJson(params.getAsJsonObject("location"), WebErrorLocation.class);
-      }
-      emit(Events.BrowserContext.WEB_ERROR, new WebErrorImpl(page, errorStr, location));
-      if (page != null) {
-        page.emit(Events.Page.PAGE_ERROR, errorStr);
-      }
-    } else if ("close".equals(event)) {
-      didClose();
-    }
-  }
-
-  void didClose() {
-    closingOrClosed = true;
-    if (browser != null) {
-      browser.contexts.remove(this);
-      browser.browserType.playwright.selectors.contextsForSelectors.remove(this);
-    }
-    tracing.resetStackCounter();
-    request.tracing().resetStackCounter();
-    emit(Events.BrowserContext.CLOSE, this);
-  }
-
-  protected void initializeHarFromOptions(Browser.NewContextOptions options) {
-    if (options.recordHarPath == null) {
-      if (options.recordHarOmitContent != null) {
-        throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
-      }
-      if (options.recordHarUrlFilter != null) {
-        throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
-      }
-      if (options.recordHarMode != null) {
-        throw new PlaywrightException("recordHarMode is set but recordHarPath is null");
-      }
-      if (options.recordHarContent != null) {
-        throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
-      }
-      return;
-    }
-
-    HarContentPolicy contentPolicy = options.recordHarContent;
-    if (contentPolicy == null && options.recordHarOmitContent != null && options.recordHarOmitContent == true) {
-      contentPolicy = HarContentPolicy.OMIT;
-    }
-    if (contentPolicy == null) {
-      contentPolicy = TracingImpl.isZip(options.recordHarPath) ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
-    }
-    RouteFromHAROptions routeFromHAROptions = new RouteFromHAROptions();
-
-    if (options.recordHarUrlFilter instanceof String) {
-      routeFromHAROptions.setUrl((String) options.recordHarUrlFilter);
-    } else if (options.recordHarUrlFilter instanceof Pattern) {
-      routeFromHAROptions.setUrl((Pattern) options.recordHarUrlFilter);
-    }
-
-    if (options.recordHarMode != null) {
-      routeFromHAROptions.updateMode = options.recordHarMode;
-    } else {
-      routeFromHAROptions.updateMode = HarMode.FULL;
-    }
-    routeFromHAROptions.url = options.recordHarUrlFilter;
-
-    recordIntoHar(null, options.recordHarPath, routeFromHAROptions, contentPolicy);
+    });
+    waitables.add(timeoutSettings.createWaitable(options == null ? null : options.timeout));
+    waitables.add(new WaitablePredicate<>(condition));
+    runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 }

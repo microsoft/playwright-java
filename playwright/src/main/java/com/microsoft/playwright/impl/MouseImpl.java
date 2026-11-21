@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+// Port of input.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Mouse;
+
+import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.convertType;
@@ -30,34 +33,8 @@ class MouseImpl implements Mouse {
     this.page = page;
   }
 
-  @Override
-  public void click(double x, double y, ClickOptions options) {
-    PageMouseClickParams params = toProtocol(options, PageMouseClickParams.class);
-    params.x = x;
-    params.y = y;
-    page.channel.mouseClick(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void dblclick(double x, double y, DblclickOptions options) {
-    page.withTitle("Double click", () -> dblclickImpl(x, y, options));
-  }
-
-  private void dblclickImpl(double x, double y, DblclickOptions options) {
-    ClickOptions clickOptions;
-    if (options == null) {
-      clickOptions = new ClickOptions();
-    } else {
-      clickOptions = convertType(options, ClickOptions.class);
-    }
-    clickOptions.clickCount = 2;
-    click(x, y, clickOptions);
-  }
-
-  @Override
-  public void down(DownOptions options) {
-    PageMouseDownParams params = toProtocol(options, PageMouseDownParams.class);
-    page.channel.mouseDown(params, NO_TIMEOUT);
+  <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
+    return page.wrapApiCall(func, title, internal);
   }
 
   @Override
@@ -69,9 +46,40 @@ class MouseImpl implements Mouse {
   }
 
   @Override
+  public void down(DownOptions options) {
+    PageMouseDownParams params = toProtocol(options, PageMouseDownParams.class);
+    page.channel.mouseDown(params, NO_TIMEOUT);
+  }
+
+  @Override
   public void up(UpOptions options) {
     PageMouseUpParams params = toProtocol(options, PageMouseUpParams.class);
     page.channel.mouseUp(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void click(double x, double y, ClickOptions options) {
+    PageMouseClickParams params = toProtocol(options, PageMouseClickParams.class);
+    params.x = x;
+    params.y = y;
+    page.channel.mouseClick(params, NO_TIMEOUT);
+  }
+
+  @Override
+  public void dblclick(double x, double y, DblclickOptions options) {
+    // java: @apiCall({ title: 'Double click' }) is wrapApiCall with the title.
+    wrapApiCall(() -> {
+      ClickOptions clickOptions;
+      if (options == null) {
+        // java: options is nullable, upstream defaults it to {}.
+        clickOptions = new ClickOptions();
+      } else {
+        clickOptions = convertType(options, ClickOptions.class);
+      }
+      clickOptions.clickCount = 2;
+      click(x, y, clickOptions);
+      return null;
+    }, "Double click", false);
   }
 
   @Override

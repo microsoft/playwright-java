@@ -14,57 +14,78 @@
  * limitations under the License.
  */
 
+// Port of localUtils.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.nio.file.Path;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
+import com.microsoft.playwright.impl.protocol.LocalUtilsInitializer.LocalUtilsInitializerDeviceDescriptors;
+import com.microsoft.playwright.impl.protocol.LocalUtilsInitializer.LocalUtilsInitializerDeviceDescriptors.LocalUtilsInitializerDeviceDescriptorsDescriptor;
 
 public class LocalUtils extends ChannelOwner {
   final LocalUtilsChannel channel = new LocalUtilsChannel(this);
+  // java: DeviceDescriptor is the generated descriptor type of the initializer.
+  final Map<String, LocalUtilsInitializerDeviceDescriptorsDescriptor> devices;
 
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    LocalUtilsInitializer init = connection.protocolGson().fromJson(initializer, LocalUtilsInitializer.class);
+    this.devices = new LinkedHashMap<>();
+    for (LocalUtilsInitializerDeviceDescriptors device : init.deviceDescriptors)
+      this.devices.put(device.name, device.descriptor);
   }
 
+  void zip(LocalUtilsZipParams params) {
+    channel.zip(params, NO_TIMEOUT);
+  }
+
+  LocalUtilsHarOpenResult harOpen(LocalUtilsHarOpenParams params) {
+    return channel.harOpen(params, NO_TIMEOUT);
+  }
+
+  LocalUtilsHarLookupResult harLookup(LocalUtilsHarLookupParams params) {
+    return channel.harLookup(params, NO_TIMEOUT);
+  }
+
+  // java: the pending reply, as the only caller does not await it.
+  WaitableResult<JsonElement> harClose(LocalUtilsHarCloseParams params) {
+    return sendMessageAsync("harClose", params);
+  }
+
+  void harUnzip(LocalUtilsHarUnzipParams params) {
+    channel.harUnzip(params, NO_TIMEOUT);
+  }
+
+  LocalUtilsTracingStartedResult tracingStarted(LocalUtilsTracingStartedParams params) {
+    return channel.tracingStarted(params, NO_TIMEOUT);
+  }
+
+  void traceDiscarded(LocalUtilsTraceDiscardedParams params) {
+    channel.traceDiscarded(params, NO_TIMEOUT);
+  }
+
+  // java: the pending reply, as the only caller does not await it; it is sent while the connection sends another
+  // message, so the params stay JSON (the stack is the JsonArray of CallOptions.frames) and the call is internal.
+  WaitableResult<JsonElement> addStackToTracingNoReply(JsonObject params) {
+    Connection.CallOptions options = new Connection.CallOptions();
+    options.internal = true;
+    return connection.sendMessageToServer(this, "addStackToTracingNoReply", params, options);
+  }
+
+  // java: the members below have no counterpart in localUtils.ts.
+  // java: the raw initializer array, which the junit DeviceDescriptor reads.
   JsonArray deviceDescriptors() {
     return initializer.getAsJsonArray("deviceDescriptors");
   }
 
-  void zip(Path zipFile, List<NameValue> entries, String stacksId, boolean appendMode, boolean includeSources, List<String> additionalSources) {
-    LocalUtilsZipParams params = new LocalUtilsZipParams();
-    params.zipFile = zipFile.toString();
-    params.entries = entries;
-    params.mode = appendMode ? "append" : "write";
-    params.stacksId = stacksId;
-    params.includeSources = includeSources;
-    if (!additionalSources.isEmpty()) {
-      params.additionalSources = additionalSources;
-    }
-    channel.zip(params, NO_TIMEOUT);
-  }
-
-  void traceDiscarded(String stacksId) {
-    LocalUtilsTraceDiscardedParams params = new LocalUtilsTraceDiscardedParams();
-    params.stacksId = stacksId;
-    channel.traceDiscarded(params, NO_TIMEOUT);
-  }
-
-  String tracingStarted(String tracesDir, String traceName) {
-    LocalUtilsTracingStartedParams params = new LocalUtilsTracingStartedParams();
-    if (tracesDir != null) {
-      params.tracesDir = "";
-    }
-    params.traceName = traceName;
-    return connection.localUtils().channel.tracingStarted(params, NO_TIMEOUT).stacksId;
-  }
-
+  // java: the Java API matches globs on the driver.
   public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     LocalUtilsGlobToRegexParams params = new LocalUtilsGlobToRegexParams();
     params.glob = glob;

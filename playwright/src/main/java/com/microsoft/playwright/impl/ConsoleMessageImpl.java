@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of consoleMessage.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -35,14 +36,20 @@ public class ConsoleMessageImpl implements ConsoleMessage {
   private final int columnNumber;
   private final double timestamp;
 
-  ConsoleMessageImpl(BrowserContextConsoleEvent event) {
-    this(event.page, event.worker, event.type, event.text, event.args,
+  // java: the event is one of three generated types, its fields are copied by one constructor per type.
+  ConsoleMessageImpl(BrowserContextConsoleEvent event, PageImpl page, WorkerImpl worker) {
+    this(page, worker, event.type, event.text, event.args,
       event.location.url, event.location.lineNumber, event.location.columnNumber, event.timestamp);
   }
 
-  ConsoleMessageImpl(PageImpl page, PageConsoleMessagesResult.PageConsoleMessagesResultMessages message) {
-    this(page, null, message.type, message.text, message.args,
-      message.location.url, message.location.lineNumber, message.location.columnNumber, message.timestamp);
+  ConsoleMessageImpl(WorkerConsoleEvent event, PageImpl page, WorkerImpl worker) {
+    this(page, worker, event.type, event.text, event.args,
+      event.location.url, event.location.lineNumber, event.location.columnNumber, event.timestamp);
+  }
+
+  ConsoleMessageImpl(PageConsoleMessagesResult.PageConsoleMessagesResultMessages event, PageImpl page, WorkerImpl worker) {
+    this(page, worker, event.type, event.text, event.args,
+      event.location.url, event.location.lineNumber, event.location.columnNumber, event.timestamp);
   }
 
   private ConsoleMessageImpl(PageImpl page, WorkerImpl worker, String type, String text, List<JSHandleImpl> args,
@@ -56,15 +63,7 @@ public class ConsoleMessageImpl implements ConsoleMessage {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.timestamp = timestamp;
-  }
-
-  @Override
-  public double timestamp() {
-    return timestamp;
-  }
-
-  public String type() {
-    return type;
+    // java: inspect.custom is not ported, Java has no inspect hook.
   }
 
   @Override
@@ -72,6 +71,17 @@ public class ConsoleMessageImpl implements ConsoleMessage {
     return worker;
   }
 
+  @Override
+  public PageImpl page() {
+    return page;
+  }
+
+  @Override
+  public String type() {
+    return type;
+  }
+
+  @Override
   public String text() {
     return text;
   }
@@ -83,11 +93,23 @@ public class ConsoleMessageImpl implements ConsoleMessage {
 
   @Override
   public String location() {
+    // java: the public API returns a formatted string, upstream returns { url, line, column }.
     return url + ":" + lineNumber + ":" + columnNumber;
   }
 
   @Override
-  public PageImpl page() {
-    return page;
+  public double timestamp() {
+    return timestamp;
+  }
+
+  // java: _inspect is not ported, Java has no inspect hook.
+
+  // java: the constructors BrowserContextImpl and PageImpl call.
+  ConsoleMessageImpl(BrowserContextConsoleEvent event) {
+    this(event, event.page, event.worker);
+  }
+
+  ConsoleMessageImpl(PageImpl page, PageConsoleMessagesResult.PageConsoleMessagesResultMessages message) {
+    this(message, page, null);
   }
 }

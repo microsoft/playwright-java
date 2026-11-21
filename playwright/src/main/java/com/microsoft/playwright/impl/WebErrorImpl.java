@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of webError.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.WebError;
@@ -21,6 +22,7 @@ import com.microsoft.playwright.options.WebErrorLocation;
 
 public class WebErrorImpl implements WebError {
   private final PageImpl page;
+  // java: the error is the message string, upstream keeps an Error.
   private final String error;
   private final WebErrorLocation location;
 

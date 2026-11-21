@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Port of screencast.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -24,10 +25,12 @@ import com.microsoft.playwright.ScreencastFrame;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
+// java: onFrame receives a ScreencastFrame and the frame event arrives through handleScreencastFrame.
 class ScreencastImpl implements Screencast {
   private final PageImpl page;
   private boolean started;
@@ -53,50 +56,71 @@ class ScreencastImpl implements Screencast {
       // The server sends the next frame only after the previous one is acknowledged.
       PageScreencastFrameAckParams ackParams = new PageScreencastFrameAckParams();
       ackParams.frameId = params.get("frameId").getAsInt();
-      page.sendMessageAsync("screencastFrameAck", ackParams);
+      try {
+        page.sendMessageAsync("screencastFrameAck", ackParams);
+      } catch (PlaywrightException e) {
+      }
     }
+  }
+
+  <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
+    return page.wrapApiCall(func, title, internal);
   }
 
   @Override
   public AutoCloseable start(StartOptions options) {
+    if (options == null) {
+      options = new StartOptions();
+    }
     if (started) {
       throw new PlaywrightException("Screencast is already started");
     }
     started = true;
+    if (options.onFrame != null) {
+      onFrame = options.onFrame;
+    }
     PageScreencastStartParams params = new PageScreencastStartParams();
-    if (options != null) {
-      if (options.onFrame != null) {
-        onFrame = options.onFrame;
-      }
-      if (options.size != null) {
-        params.size = toProtocol(options.size, PageScreencastStartParams.PageScreencastStartParamsSize.class);
-      }
-      params.quality = options.quality;
-      params.fps = options.fps;
-      params.sendFrames = options.onFrame != null;
-      params.record = options.path != null;
-      savePath = options.path;
-    } else {
-      params.sendFrames = false;
-      params.record = false;
+    if (options.size != null) {
+      params.size = toProtocol(options.size, PageScreencastStartParams.PageScreencastStartParamsSize.class);
     }
+    params.quality = options.quality;
+    params.fps = options.fps;
+    params.sendFrames = options.onFrame != null;
+    params.record = options.path != null;
     PageScreencastStartResult result = page.channel.screencastStart(params, NO_TIMEOUT);
-    if (result != null && result.artifact != null) {
+    if (result.artifact != null) {
       artifact = result.artifact;
+      savePath = options.path;
     }
-    return new DisposableStub(this::stop);
+    return new DisposableStub(() -> stop());
   }
 
   @Override
   public void stop() {
-    started = false;
-    onFrame = null;
-    page.channel.screencastStop(NO_TIMEOUT);
-    if (savePath != null && artifact != null) {
-      artifact.saveAs(savePath);
-    }
-    artifact = null;
-    savePath = null;
+    // java: @apiCall() is wrapApiCall without a title.
+    wrapApiCall(() -> {
+      started = false;
+      onFrame = null;
+      page.channel.screencastStop(NO_TIMEOUT);
+      if (savePath != null && artifact != null) {
+        artifact.saveAs(savePath);
+      }
+      artifact = null;
+      savePath = null;
+      return null;
+    }, null, false);
+  }
+
+  @Override
+  public AutoCloseable showActions(ShowActionsOptions options) {
+    PageScreencastShowActionsParams params = toProtocol(options, PageScreencastShowActionsParams.class);
+    page.channel.screencastShowActions(params, NO_TIMEOUT);
+    return new DisposableStub(() -> page.channel.screencastHideActions(NO_TIMEOUT));
+  }
+
+  @Override
+  public void hideActions() {
+    page.channel.screencastHideActions(NO_TIMEOUT);
   }
 
   @Override
@@ -105,11 +129,11 @@ class ScreencastImpl implements Screencast {
     params.html = html;
     PageScreencastShowOverlayResult result = page.channel.screencastShowOverlay(params, NO_TIMEOUT);
     String id = result.id;
-    return () -> {
+    return new DisposableStub(() -> {
       PageScreencastRemoveOverlayParams removeParams = new PageScreencastRemoveOverlayParams();
       removeParams.id = id;
       page.channel.screencastRemoveOverlay(removeParams, NO_TIMEOUT);
-    };
+    });
   }
 
   @Override
@@ -120,22 +144,10 @@ class ScreencastImpl implements Screencast {
   }
 
   @Override
-  public AutoCloseable showActions(ShowActionsOptions options) {
-    PageScreencastShowActionsParams params = toProtocol(options, PageScreencastShowActionsParams.class);
-    page.channel.screencastShowActions(params, NO_TIMEOUT);
-    return new DisposableStub(this::hideActions);
-  }
-
-  @Override
   public void showOverlays() {
     PageScreencastSetOverlayVisibleParams params = new PageScreencastSetOverlayVisibleParams();
     params.visible = true;
     page.channel.screencastSetOverlayVisible(params, NO_TIMEOUT);
-  }
-
-  @Override
-  public void hideActions() {
-    page.channel.screencastHideActions(NO_TIMEOUT);
   }
 
   @Override

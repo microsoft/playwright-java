@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+// Port of page.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.options.BindingCallback;
 
 import java.util.ArrayList;
@@ -31,69 +31,69 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.*;
 
 public class BindingCall extends ChannelOwner {
-  private static class SourceImpl implements BindingCallback.Source {
+  final BindingCallChannel channel = new BindingCallChannel(this);
+  // java: the initializer parsed once, upstream reads this._initializer.
+  final BindingCallInitializer bindingCallInitializer;
+
+  // java: from is not ported, generated results already hold the impl object.
+
+  BindingCall(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+    super(parent, type, guid, initializer);
+    bindingCallInitializer = connection.protocolGson().fromJson(initializer, BindingCallInitializer.class);
+  }
+
+  void call(BindingCallback func) {
+    try {
+      FrameImpl frame = bindingCallInitializer.frame;
+      BindingCallback.Source source = new Source(frame.page.context(), frame.page, frame);
+      List<Object> args = new ArrayList<>();
+      for (SerializedValue arg : bindingCallInitializer.args) {
+        args.add(deserialize(arg));
+      }
+      Object result = func.call(source, args.toArray());
+      BindingCallResolveParams params = new BindingCallResolveParams();
+      params.result = serializeArgument(result);
+      // java: channel.resolve(...).catch(() => {}) is not awaited upstream; sendMessageAsync does not pump.
+      try {
+        sendMessageAsync("resolve", params);
+      } catch (PlaywrightException e) {
+      }
+    } catch (RuntimeException e) {
+      // java: an Error thrown by the callback, such as a failed assertion, reaches the caller instead.
+      BindingCallRejectParams params = new BindingCallRejectParams();
+      params.error = serializeError(e);
+      try {
+        sendMessageAsync("reject", params);
+      } catch (PlaywrightException e2) {
+      }
+    }
+  }
+
+  // java: the { context, page, frame } object literal of call().
+  private static class Source implements BindingCallback.Source {
+    private final BrowserContext context;
+    private final Page page;
     private final Frame frame;
 
-    public SourceImpl(Frame frame) {
+    Source(BrowserContext context, Page page, Frame frame) {
+      this.context = context;
+      this.page = page;
       this.frame = frame;
     }
 
     @Override
     public BrowserContext context() {
-      return page().context();
+      return context;
     }
 
     @Override
     public Page page() {
-      return frame.page();
+      return page;
     }
 
     @Override
     public Frame frame() {
       return frame;
     }
-  }
-
-  final BindingCallChannel channel = new BindingCallChannel(this);
-
-  BindingCall(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
-  }
-
-  String name() {
-    return initializer.get("name").getAsString();
-  }
-
-  void call(BindingCallback binding) {
-    String method;
-    Object params;
-    try {
-      BindingCallResolveParams resolveParams = new BindingCallResolveParams();
-      resolveParams.result = serializeArgument(invoke(binding));
-      params = resolveParams;
-      method = "resolve";
-    } catch (RuntimeException exception) {
-      BindingCallRejectParams rejectParams = new BindingCallRejectParams();
-      rejectParams.error = serializeError(exception);
-      params = rejectParams;
-      method = "reject";
-    }
-    // Like the Node client, do not fail when the page was closed before the result arrived.
-    sendMessageAsync(method, params);
-  }
-
-  private Object invoke(BindingCallback binding) {
-    Frame frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
-    BindingCallback.Source source = new SourceImpl(frame);
-    List<Object> args = new ArrayList<>();
-    if (initializer.has("handle")) {
-      JSHandle handle = connection.getExistingObject(initializer.getAsJsonObject("handle").get("guid").getAsString());
-      args.add(handle);
-    } else {
-      for (JsonElement arg : initializer.getAsJsonArray("args")) {
-        args.add(deserialize(gson().fromJson(arg, SerializedValue.class)));
-      }
-    }
-    return binding.call(source, args.toArray());
   }
 }
