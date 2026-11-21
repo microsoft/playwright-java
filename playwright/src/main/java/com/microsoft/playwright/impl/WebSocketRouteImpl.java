@@ -42,6 +42,8 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
+  // java: from is not ported, generated results already hold the impl object.
+
   private Consumer<WebSocketFrame> onPageMessage;
   private BiConsumer<Integer, String> onPageClose;
   private Consumer<WebSocketFrame> onServerMessage;
@@ -111,6 +113,8 @@ public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
         params.isBase64 = true;
         sendNoWait("sendToServer", params);
       }
+
+      // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
     };
   }
 
@@ -230,6 +234,8 @@ public class WebSocketRouteImpl extends ChannelOwner implements WebSocketRoute {
   public void onClose(BiConsumer<Integer, String> handler) {
     onPageClose = handler;
   }
+
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
 
   void afterHandle() {
     if (connected) {

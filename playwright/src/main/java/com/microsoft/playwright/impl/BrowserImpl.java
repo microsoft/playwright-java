@@ -44,7 +44,7 @@ import static com.microsoft.playwright.impl.Utils.writeToFile;
 public class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContextImpl> contexts = new LinkedHashSet<>();
   private boolean isConnected = true;
-  // java: no _closedPromise, close() waits until isConnected turns false, which happens when Disconnected is emitted.
+  private final WaitableResult<Void> closedPromise;
   boolean shouldCloseConnectionOnClose = false;
   BrowserTypeImpl browserType;
   private BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
@@ -55,11 +55,22 @@ public class BrowserImpl extends ChannelOwner implements Browser {
 
   final BrowserChannel channel = new BrowserChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     BrowserInitializer browserInitializer = connection.protocolGson().fromJson(initializer, BrowserInitializer.class);
     name = browserInitializer.name;
     browserName = browserInitializer.browserName;
+    // java: the promise is a WaitableResult completed by a listener that removes itself, the once() of upstream.
+    closedPromise = new WaitableResult<>();
+    on(Events.Browser.DISCONNECTED, new Consumer<BrowserImpl>() {
+      @Override
+      public void accept(BrowserImpl browser) {
+        off(Events.Browser.DISCONNECTED, this);
+        closedPromise.complete(null);
+      }
+    });
   }
 
   @Override
@@ -81,31 +92,66 @@ public class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
-    return innerNewContext(options);
+    return innerNewContext(options, false);
   }
 
-  // java: no forReuse parameter, newContextForReuse is not in the Java API.
-  BrowserContextImpl innerNewContext(NewContextOptions userOptions) {
+  BrowserContextImpl newContextForReuse(NewContextOptions options) {
+    return innerNewContext(options, true);
+  }
+
+  void disconnectFromReusedContext(String reason) {
+    BrowserContextImpl context = null;
+    for (BrowserContextImpl c : contexts) {
+      if (c.forReuse) {
+        context = c;
+        break;
+      }
+    }
+    if (context == null) {
+      return;
+    }
+    instrumentation.runBeforeCloseBrowserContext(context);
+    for (Page page : context.pages()) {
+      ((PageImpl) page).onClose();
+    }
+    context.onClose();
+    BrowserDisconnectFromReusedContextParams params = new BrowserDisconnectFromReusedContextParams();
+    params.reason = reason;
+    channel.disconnectFromReusedContext(params, NO_TIMEOUT);
+  }
+
+  BrowserContextImpl innerNewContext(NewContextOptions userOptions, boolean forReuse) {
     if (userOptions == null) {
       userOptions = new NewContextOptions();
     }
-    BrowserNewContextParams contextOptions = BrowserContextImpl.prepareBrowserContextParams(userOptions);
-    // java: _withSelectorOptions, the Java options have no selector fields, so they are set on the params.
+    // java: _withSelectorOptions, the Java options have no selector fields, so they are set on the params below.
+    NewContextOptions options = userOptions;
+    instrumentation.runBeforeCreateBrowserContext(options);
+    BrowserNewContextParams contextOptions = BrowserContextImpl.prepareBrowserContextParams(options);
     contextOptions.selectorEngines = new ArrayList<>(browserType.playwright.selectors.selectorEngines);
     contextOptions.testIdAttributeName = browserType.playwright.selectors.testIdAttributeName;
-    BrowserContextImpl context = channel.newContext(contextOptions, NO_TIMEOUT).context;
+    // java: newContextForReuse takes its own params class with the same fields.
+    BrowserContextImpl context = forReuse
+      ? channel.newContextForReuse(connection.protocolGson().fromJson(connection.protocolGson().toJsonTree(contextOptions), BrowserNewContextForReuseParams.class), NO_TIMEOUT).context
+      : channel.newContext(contextOptions, NO_TIMEOUT).context;
+    if (forReuse) {
+      context.forReuse = true;
+    }
+    // java: no options.logger to set on the context, the Java options have no logger.
     // java: the HAR options are the recordHar* fields of the options, upstream passes options.recordHar.
-    context.initializeHarFromOptions(userOptions);
+    context.initializeHarFromOptions(options);
+    instrumentation.runAfterCreateBrowserContext(context);
     return context;
   }
 
-  // java: no logger parameter, the Java API has no logger option.
-  void connectToBrowserType(BrowserTypeImpl browserType, BrowserType.LaunchOptions browserOptions) {
+  // java: logger is Object, the Java API has no Logger.
+  void connectToBrowserType(BrowserTypeImpl browserType, BrowserType.LaunchOptions browserOptions, Object logger) {
     // Note: when using connect(), `browserType` is different from `this._parent`.
     // This is why browser type is not wired up in the constructor,
     // and instead this separate method is called later on.
     this.browserType = browserType;
     this.options = browserOptions;
+    this.logger = logger;
     for (BrowserContextImpl context : contexts) {
       setupBrowserContext(context);
     }
@@ -123,11 +169,15 @@ public class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   private void setupBrowserContext(BrowserContextImpl context) {
+    context.logger = this.logger;
     context.tracing.tracesDir = options.tracesDir;
     context.request.tracing.tracesDir = options.tracesDir;
     browserType.contexts.add(context);
     browserType.playwright.selectors.contextsForSelectors.add(context);
-    // java: no _defaultContextTimeout and _defaultContextNavigationTimeout, the test runner sets them upstream.
+    // java: setDefaultTimeout and setDefaultNavigationTimeout of the Java API take a double, an unset (null)
+    // default goes to the TimeoutSettings directly.
+    context.timeoutSettings.setDefaultTimeout(browserType.playwright.defaultContextTimeout);
+    context.timeoutSettings.setDefaultNavigationTimeout(browserType.playwright.defaultContextNavigationTimeout);
   }
 
   @Override
@@ -201,6 +251,8 @@ public class BrowserImpl extends ChannelOwner implements Browser {
     return buffer;
   }
 
+  // java: Symbol.asyncDispose is not ported.
+
   @Override
   public void close(CloseOptions options) {
     if (options == null) {
@@ -214,7 +266,7 @@ public class BrowserImpl extends ChannelOwner implements Browser {
       } else {
         channel.close(toProtocol(options, BrowserCloseParams.class), NO_TIMEOUT);
       }
-      runUntil(() -> {}, new WaitablePredicate<Void>(() -> !isConnected));
+      runUntil(() -> {}, closedPromise);
     } catch (PlaywrightException e) {
       // java: also the safe close errors of the driver, which do not all arrive as TargetClosedError.
       if (isTargetClosedError(e) || isSafeCloseError(e)) {

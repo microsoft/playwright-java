@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Port of serializers.ts (packages/protocol) and of serializeArgument and parseResult of jsHandle.ts.
+// Port of serializers.ts (packages/protocol) and of the module-level functions and types of jsHandle.ts.
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
@@ -43,11 +43,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Utils.createGuid;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
-// java: systemErrorCode and systemErrorMessage read Node.js system errors and are not ported.
 class Serialization {
+  // java: no systemErrorCode and systemErrorMessage, a Java exception has no Node.js system error code.
+
   static Object parseSerializedValue(SerializedValue value, List<Object> handles) {
     return innerParseSerializedValue(value, handles, new HashMap<>(), new ArrayList<>());
   }
@@ -125,13 +127,29 @@ class Serialization {
         throw new PlaywrightException("Unexpected handle");
       return handles.get(value.h);
     }
-    // java: Java has no function value, so value.fn is unexpected.
+    if (value.fn != null) {
+      // java: a FunctionCallback stands for a JS function, its toString() is the function name.
+      String name = value.fn;
+      FunctionCallback dummy = new FunctionCallback() {
+        @Override
+        public Object call(Object... args) {
+          return null;
+        }
+
+        @Override
+        public String toString() {
+          return name;
+        }
+      };
+      return dummy;
+    }
     throw new PlaywrightException("Attempting to deserialize unexpected value" + accessChainToDisplayString(accessChain) + ": " + gson().toJson(value));
   }
 
-  // java: HandleOrValue is a class with a flag for 'fallThrough' in handle; Java has no fn.
+  // java: HandleOrValue is a class with a flag for 'fallThrough' in handle.
   static class HandleOrValue {
     Integer h;
+    String fn;
     boolean hasFallThrough;
     Object fallThrough;
   }
@@ -157,6 +175,7 @@ class Serialization {
     } else {
       SerializedValue result = new SerializedValue();
       result.h = handle.h;
+      result.fn = handle.fn;
       return result;
     }
 
@@ -333,8 +352,15 @@ class Serialization {
 
   // jsHandle.ts
 
-  // java: Java cannot pass a function, so there is no registerCallback.
+  // java: the optional registerCallback is an overload.
   static SerializedArgument serializeArgument(Object arg) {
+    return serializeArgument(arg, null);
+  }
+
+  // This function takes care of converting all JSHandles to their channels,
+  // so that generic channel serializer converts them to guids.
+  // java: a FunctionCallback stands for a JS function.
+  static SerializedArgument serializeArgument(Object arg, Function<FunctionCallback, String> registerCallback) {
     List<ChannelOwner> handles = new ArrayList<>();
     Function<ChannelOwner, Integer> pushHandle = channel -> {
       handles.add(channel);
@@ -344,6 +370,8 @@ class Serialization {
       // java: a JSHandleImpl is its own channel.
       if (v instanceof JSHandleImpl)
         return handle(pushHandle.apply((JSHandleImpl) v));
+      if (v instanceof FunctionCallback && registerCallback != null)
+        return fn(registerCallback.apply((FunctionCallback) v));
       return fallThrough(v);
     });
     SerializedArgument result = new SerializedArgument();
@@ -352,11 +380,46 @@ class Serialization {
     return result;
   }
 
+  // java: the ExposeFunctionsOptions type, a null exposeFunctions is undefined.
+  static class ExposeFunctionsOptions {
+    Boolean exposeFunctions;
+  }
+
+  // java: the EvaluateOptions alias of ExposeFunctionsOptions is a subclass.
+  static class EvaluateOptions extends ExposeFunctionsOptions {
+  }
+
+  // java: each exposeEvaluateCallback() call returns once the callback is exposed, so there is no Promise.all.
+  static SerializedArgument serializeArgumentWithCallbacks(ChannelOwner owner, PageImpl page, Object arg) {
+    return owner.wrapApiCall(() -> {
+      SerializedArgument serialized = serializeArgument(arg, callback -> {
+        if (page == null)
+          throw new PlaywrightException("Passing a function is not supported as an argument here");
+        String name = kFunctionBindingPrefix + createGuid();
+        page.exposeEvaluateCallback(name, callback);
+        return name;
+      });
+      return serialized;
+    }, null, true);
+  }
+
   static Object parseResult(SerializedValue value) {
     return parseSerializedValue(value, null);
   }
 
+  // java: no assertMaxArguments, it checks the JS arguments count.
+
+  // java: options is an Object so that the check keeps its meaning: a null is undefined, a String, Number, Boolean
+  // or FunctionCallback is not a JS object, a List or a Java array is a JS array.
+  static void assertEvaluateOptions(Object options) {
+    if (options != null && (options instanceof String || options instanceof Number || options instanceof Boolean || options instanceof FunctionCallback || options instanceof List || options.getClass().isArray()))
+      throw new PlaywrightException("Too many arguments. If you need to pass more than 1 argument to the function wrap them in an object.");
+  }
+
   // java: helpers of the ported part.
+
+  // java: kFunctionBindingPrefix of isomorphic/utilityScriptSerializers.ts, which has no Java port.
+  static final String kFunctionBindingPrefix = "__pw_fn_";
 
   // java: parseResult cast to the caller's result type, the name other files call.
   @SuppressWarnings("unchecked")
@@ -367,6 +430,12 @@ class Serialization {
   private static HandleOrValue handle(int h) {
     HandleOrValue result = new HandleOrValue();
     result.h = h;
+    return result;
+  }
+
+  private static HandleOrValue fn(String fn) {
+    HandleOrValue result = new HandleOrValue();
+    result.fn = fn;
     return result;
   }
 

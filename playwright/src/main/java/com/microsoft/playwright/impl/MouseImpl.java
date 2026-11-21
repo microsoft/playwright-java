@@ -20,6 +20,8 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Mouse;
 
+import java.util.function.Supplier;
+
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
@@ -29,6 +31,10 @@ class MouseImpl implements Mouse {
 
   MouseImpl(PageImpl page) {
     this.page = page;
+  }
+
+  <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
+    return page.wrapApiCall(func, title, internal);
   }
 
   @Override
@@ -61,7 +67,8 @@ class MouseImpl implements Mouse {
 
   @Override
   public void dblclick(double x, double y, DblclickOptions options) {
-    page.withTitle("Double click", () -> {
+    // java: @apiCall({ title: 'Double click' }) is wrapApiCall with the title.
+    wrapApiCall(() -> {
       ClickOptions clickOptions;
       if (options == null) {
         // java: options is nullable, upstream defaults it to {}.
@@ -71,7 +78,8 @@ class MouseImpl implements Mouse {
       }
       clickOptions.clickCount = 2;
       click(x, y, clickOptions);
-    });
+      return null;
+    }, "Double click", false);
   }
 
   @Override

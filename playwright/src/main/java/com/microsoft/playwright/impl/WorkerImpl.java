@@ -35,11 +35,14 @@ import java.util.function.Predicate;
 import static com.microsoft.playwright.impl.Serialization.*;
 
 public class WorkerImpl extends ChannelOwner implements Worker {
-  PageImpl page;
-  // java: no service worker or connectToWorker API, so there is no _context, _closeReason or _disconnect.
+  PageImpl page;  // Set for web workers.
+  BrowserContextImpl context;  // Set for service workers.
   final LongStandingScope closedScope = new LongStandingScope(this);
+  private String closeReason;
 
   final WorkerChannel channel = new WorkerChannel(this);
+
+  // java: fromNullable and from are not ported, generated results already hold the impl object.
 
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -58,15 +61,30 @@ public class WorkerImpl extends ChannelOwner implements Worker {
   // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
   @Override
   protected void handleEvent(String event, JsonObject params) {
-    if ("close".equals(event)) {
-      if (page != null) {
-        page.workers.remove(this);
+    switch (event) {
+      case "console": {
+        WorkerConsoleEvent e = connection.protocolGson().fromJson(params, WorkerConsoleEvent.class);
+        // Note: we only receive console events here for workers from "chromium._connectToWorker".
+        emit(Events.Worker.CONSOLE, new ConsoleMessageImpl(e, null, this));
+        break;
       }
-      emit(Events.Worker.CLOSE, this);
+      case "close": {
+        if (page != null) {
+          page.workers.remove(this);
+        }
+        if (context != null) {
+          context.serviceWorkers.remove(this);
+        }
+        emit(Events.Worker.CLOSE, this);
+        break;
+      }
     }
   }
 
   TargetClosedError closeErrorWithReason() {
+    if (closeReason != null) {
+      return new TargetClosedError(closeReason);
+    }
     if (page != null) {
       return page.closeErrorWithReason();
     }
@@ -78,6 +96,7 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     return initializer.get("url").getAsString();
   }
 
+  // java: assertMaxArguments is not ported, a JS typing check; isFunction is not sent, the Java pageFunction is a string.
   @Override
   public Object evaluate(String pageFunction, Object arg) {
     WorkerEvaluateExpressionParams params = new WorkerEvaluateExpressionParams();
@@ -94,9 +113,10 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     return channel.evaluateExpressionHandle(params, NO_TIMEOUT).handle;
   }
 
-  // java: the predicate and timeout are passed separately and the code to run is a Runnable.
+  // java: the predicate and timeout are passed separately and the code to run is a Runnable; @apiCall() is not
+  // applied, the Runnable runs inside the wait and its calls would join the api zone.
   private <T> T waitForEvent(String event, Predicate<T> predicate, Double timeout, Runnable code) {
-    TimeoutSettings timeoutSettings = page != null ? page.timeoutSettings : new TimeoutSettings();
+    TimeoutSettings timeoutSettings = page != null ? page.timeoutSettings : context != null ? context.timeoutSettings : new TimeoutSettings();
     double timeoutMs = timeoutSettings.timeout(timeout);
     Waiter waiter = Waiter.createForEvent(this, event);
     waiter.rejectOnTimeout(timeoutMs, "Timeout " + Waiter.formatTimeout(timeoutMs) + "ms exceeded while waiting for event \"" + event + "\"");
@@ -106,6 +126,19 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     T result = waiter.waitForEvent(this, event, predicate, code);
     waiter.dispose();
     return result;
+  }
+
+  // java: the { reason } options are the protocol params.
+  void disconnect(WorkerDisconnectParams options) {
+    if (options == null) {
+      options = new WorkerDisconnectParams();
+    }
+    closeReason = options.reason;
+    try {
+      channel.disconnect(options, NO_TIMEOUT);
+    } catch (TargetClosedError e) {
+      return;
+    }
   }
 
   // java: typed on/off/waitFor overloads of the generated Worker interface.

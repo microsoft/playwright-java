@@ -21,19 +21,28 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.escapeForAttributeSelector;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.escapeForTextSelector;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.jsonStringify;
 
+// java: the ByRoleOptions type is Locator.GetByRoleOptions.
 public final class LocatorUtils {
+  private LocatorUtils() {
+  }
+
   // java: each getBy* method has its own options class, so the exact flag is passed instead of the options.
   private static String getByAttributeTextSelector(String attrName, Object text, Boolean exact) {
     return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector(text, exact != null && exact) + "]";
   }
 
   // Multiple test id attribute names can be joined with a comma. Attribute names cannot contain commas.
+  public static List<String> splitTestIdAttributeNames(String testIdAttributeName) {
+    return new ArrayList<>(Arrays.asList(testIdAttributeName.split(",", -1)));
+  }
+
   public static String encodeTestIdAttributeName(String testIdAttributeName) {
     return testIdAttributeName.contains(",") ? jsonStringify(testIdAttributeName) : testIdAttributeName;
   }

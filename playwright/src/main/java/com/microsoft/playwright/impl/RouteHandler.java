@@ -36,6 +36,7 @@ class RouteHandler {
   final Consumer<Route> handler;
   private boolean ignoreException = false;
   private final Set<HandlerInvocation> activeInvocations = new LinkedHashSet<>();
+  // java: _savedZone is not ported, there are no zones.
 
   // java: { complete: Promise<void>, route: Route }.
   private static class HandlerInvocation {
@@ -83,7 +84,7 @@ class RouteHandler {
     return url.test(requestURL);
   }
 
-  // java: there are no zones to restore.
+  // java: no _savedZone.run(), there are no zones.
   boolean handle(RouteImpl route) {
     return handleImpl(route);
   }

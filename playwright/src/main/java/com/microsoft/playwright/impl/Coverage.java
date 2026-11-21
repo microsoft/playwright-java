@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Port of coverage.ts.
+package com.microsoft.playwright.impl;
+
+import com.microsoft.playwright.impl.protocol.*;
+
+import java.util.List;
+
+import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
+
+// java: no public Coverage interface in the Java API, the class is package-private.
+class Coverage {
+  private final PageChannel channel;
+
+  Coverage(PageChannel channel) {
+    this.channel = channel;
+  }
+
+  void startJSCoverage(PageStartJSCoverageParams options) {
+    if (options == null) {
+      options = new PageStartJSCoverageParams();
+    }
+    channel.startJSCoverage(options, NO_TIMEOUT);
+  }
+
+  List<PageStopJSCoverageResult.PageStopJSCoverageResultEntries> stopJSCoverage() {
+    return channel.stopJSCoverage(new PageStopJSCoverageParams(), NO_TIMEOUT).entries;
+  }
+
+  void startCSSCoverage(PageStartCSSCoverageParams options) {
+    if (options == null) {
+      options = new PageStartCSSCoverageParams();
+    }
+    channel.startCSSCoverage(options, NO_TIMEOUT);
+  }
+
+  List<PageStopCSSCoverageResult.PageStopCSSCoverageResultEntries> stopCSSCoverage() {
+    return channel.stopCSSCoverage(new PageStopCSSCoverageParams(), NO_TIMEOUT).entries;
+  }
+}

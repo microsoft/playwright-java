@@ -47,12 +47,19 @@ public class TracingImpl extends ChannelOwner implements Tracing {
 
   final TracingChannel channel = new TracingChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
   @Override
   public AutoCloseable start(StartOptions options) {
+    return start(options, null);
+  }
+
+  // java: coverage is the _coverage option of upstream, which StartOptions does not have.
+  AutoCloseable start(StartOptions options, Boolean coverage) {
     StartOptions o = options == null ? new StartOptions() : options;
     return wrapApiCall(() -> {
       includeSources = o.sources != null && o.sources;
@@ -64,6 +71,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       params.snapshotAria = o.ariaSnapshots;
       params.snapshotScreen = o.screenSnapshots;
       params.screencast = o.screenshots;
+      params.coverage = coverage;
       params.live = o.live;
       channel.tracingStart(params, NO_TIMEOUT);
       TracingTracingStartChunkParams chunkParams = new TracingTracingStartChunkParams();

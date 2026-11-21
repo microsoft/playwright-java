@@ -39,7 +39,9 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.serializeArgumentWithCallbacks;
 import static com.microsoft.playwright.impl.Utils.*;
 
 public class FrameImpl extends ChannelOwner implements Frame {
@@ -55,10 +57,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   final FrameChannel channel = new FrameChannel(this);
 
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
+
   FrameImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     FrameInitializer init = connection.protocolGson().fromJson(initializer, FrameInitializer.class);
     eventEmitter = new EventEmitter();
+    // java: setMaxListeners(0) is not ported, EventEmitter has no listener limit.
     webmcp = new WebMCPImpl(this);
     parentFrame = init.parentFrame;
     if (parentFrame != null) {
@@ -92,7 +97,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
       FrameNavigatedEvent navigatedEvent = connection.protocolGson().fromJson(params, FrameNavigatedEvent.class);
       url = navigatedEvent.url;
       name = navigatedEvent.name;
-      // java: no exposeFunctions option of evaluate(), so no _eraseEvaluateCallbacks().
+      // Main frame navigation destroys all execution contexts in the page,
+      // erase the bindings backing the functions passed to evaluate().
+      if (parentFrame == null && navigatedEvent.newDocument != null && page != null) {
+        page.eraseEvaluateCallbacks();
+      }
       eventEmitter.emit(Events.Frame.NAVIGATED, navigatedEvent);
       if (navigatedEvent.error == null && page != null) {
         page.emit(Events.Page.FRAME_NAVIGATED, this);
@@ -262,14 +271,38 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public JSHandle evaluateHandle(String expression, Object arg) {
+    return evaluateHandle(expression, arg, null);
+  }
+
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments
+  // is a JS typing check; isFunction is left out, the expression is a String.
+  JSHandle evaluateHandle(String expression, Object arg, Serialization.EvaluateOptions options) {
+    assertEvaluateOptions(options);
+    SerializedArgument serializedArg = options != null && Boolean.TRUE.equals(options.exposeFunctions) ? serializeArgumentWithCallbacks(this, page, arg) : serializeArgument(arg);
     FrameEvaluateExpressionHandleParams params = new FrameEvaluateExpressionHandleParams();
     params.expression = expression;
-    params.arg = serializeArgument(arg);
+    params.arg = serializedArg;
     return channel.evaluateExpressionHandle(params, NO_TIMEOUT).handle;
   }
 
   @Override
   public Object evaluate(String expression, Object arg) {
+    return evaluate(expression, arg, null);
+  }
+
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments
+  // is a JS typing check; isFunction is left out, the expression is a String.
+  Object evaluate(String expression, Object arg, Serialization.EvaluateOptions options) {
+    assertEvaluateOptions(options);
+    SerializedArgument serializedArg = options != null && Boolean.TRUE.equals(options.exposeFunctions) ? serializeArgumentWithCallbacks(this, page, arg) : serializeArgument(arg);
+    FrameEvaluateExpressionParams params = new FrameEvaluateExpressionParams();
+    params.expression = expression;
+    params.arg = serializedArg;
+    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
+  }
+
+  // java: assertMaxArguments is a JS typing check; isFunction is left out, the expression is a String.
+  Object evaluateExposeUtilityScript(String expression, Object arg) {
     FrameEvaluateExpressionParams params = new FrameEvaluateExpressionParams();
     params.expression = expression;
     params.arg = serializeArgument(arg);
@@ -288,6 +321,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
+    // java: the visibility and waitFor checks are not ported, WaitForSelectorOptions has no such fields.
     FrameWaitForSelectorParams params = toProtocol(options, FrameWaitForSelectorParams.class);
     params.selector = selector;
     return channel.waitForSelector(params, timeout(options.timeout)).element;
@@ -305,6 +339,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     channel.dispatchEvent(params, timeout(options.timeout));
   }
 
+  // java: assertMaxArguments is a JS typing check; isFunction is left out, the expression is a String.
   @Override
   public Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options) {
     FrameEvalOnSelectorParams params = toProtocol(options, FrameEvalOnSelectorParams.class);
@@ -314,6 +349,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return deserialize(channel.evalOnSelector(params, NO_TIMEOUT).value);
   }
 
+  // java: assertMaxArguments is a JS typing check; isFunction is left out, the expression is a String.
   @Override
   public Object evalOnSelectorAll(String selector, String expression, Object arg) {
     FrameEvalOnSelectorAllParams params = new FrameEvalOnSelectorAllParams();
@@ -515,12 +551,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
   // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(LocatorImpl.testIdAttributeName(connection.playwright.selectors), testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(LocatorImpl.testIdAttributeName(connection.playwright.selectors), testId));
   }
 
   @Override

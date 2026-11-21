@@ -53,6 +53,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   FrameImpl frame;
   final ElementHandleChannel elementChannel = new ElementHandleChannel(this);
 
+  // java: no from and fromNullable, generated results already hold the ElementHandleImpl.
+
   ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.frame = (FrameImpl) parent;

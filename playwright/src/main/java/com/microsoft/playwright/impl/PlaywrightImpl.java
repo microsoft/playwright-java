@@ -19,26 +19,39 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.impl.protocol.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
-  // java: Android and Electron are not ported.
+  // java: _android and _electron are not ported, android.ts and electron.ts are not ported.
   final BrowserTypeImpl chromium;
   final BrowserTypeImpl firefox;
   final BrowserTypeImpl webkit;
-  // java: no devices field, deviceDescriptors() reads them from LocalUtils.
+  // java: devices is `any` upstream, the Object is the devices of LocalUtils or an empty map.
+  final Object devices;
   SelectorsImpl selectors;
   final APIRequestImpl request;
-  // java: no errors field, TimeoutError is a public class. No _defaultLaunchOptions, _defaultContextTimeout and
-  // _defaultContextNavigationTimeout, the test runner sets them upstream.
+  // java: errors maps the name of each error class to the class.
+  final Map<String, Class<? extends PlaywrightException>> errors;
+
+  // Instrumentation.
+  BrowserType.LaunchOptions defaultLaunchOptions;
+  Double defaultContextTimeout;
+  Double defaultContextNavigationTimeout;
 
   final PlaywrightChannel channel = new PlaywrightChannel(this);
 
@@ -52,10 +65,45 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     firefox.playwright = this;
     webkit = playwrightInitializer.webkit;
     webkit.playwright = this;
+    // java: _android and _electron are not created, android.ts and electron.ts are not ported.
+    LocalUtils localUtils = connection.localUtils();
+    devices = localUtils != null && localUtils.devices != null ? localUtils.devices : new LinkedHashMap<String, Object>();
     selectors = new SelectorsImpl();
+    errors = new LinkedHashMap<>();
+    errors.put("TimeoutError", TimeoutError.class);
   }
 
-  // java: no _browserTypes, _preLaunchedBrowser, _allContexts and _allPages, they serve the test runner upstream.
+  // java: from is not ported, generated results already hold the impl object.
+
+  private List<BrowserTypeImpl> browserTypes() {
+    return Arrays.asList(chromium, firefox, webkit);
+  }
+
+  BrowserImpl preLaunchedBrowser() {
+    BrowserImpl browser = connection.protocolGson().fromJson(initializer, PlaywrightInitializer.class).preLaunchedBrowser;
+    // java: this[browser._name] is a switch over the three browser type fields.
+    BrowserTypeImpl browserType = "chromium".equals(browser.name) ? chromium : "firefox".equals(browser.name) ? firefox : "webkit".equals(browser.name) ? webkit : null;
+    browser.connectToBrowserType(browserType, new BrowserType.LaunchOptions(), null);
+    return browser;
+  }
+
+  List<BrowserContextImpl> allContexts() {
+    List<BrowserContextImpl> result = new ArrayList<>();
+    for (BrowserTypeImpl type : browserTypes()) {
+      result.addAll(type.contexts);
+    }
+    return result;
+  }
+
+  List<PageImpl> allPages() {
+    List<PageImpl> result = new ArrayList<>();
+    for (BrowserContextImpl context : allContexts()) {
+      for (Page page : context.pages()) {
+        result.add((PageImpl) page);
+      }
+    }
+    return result;
+  }
 
   // java: the entry point of the Java client and the getters of the Java API, playwright.ts has no counterpart.
   private Process driverProcess;

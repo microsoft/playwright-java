@@ -22,18 +22,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.microsoft.playwright.impl.protocol.LocalUtilsInitializer.LocalUtilsInitializerDeviceDescriptors;
+import com.microsoft.playwright.impl.protocol.LocalUtilsInitializer.LocalUtilsInitializerDeviceDescriptors.LocalUtilsInitializerDeviceDescriptorsDescriptor;
 
 public class LocalUtils extends ChannelOwner {
   final LocalUtilsChannel channel = new LocalUtilsChannel(this);
+  // java: DeviceDescriptor is the generated descriptor type of the initializer.
+  final Map<String, LocalUtilsInitializerDeviceDescriptorsDescriptor> devices;
 
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-  }
-
-  // java: devices stay the raw initializer array, DeviceDescriptor is not a Java type.
-  JsonArray deviceDescriptors() {
-    return initializer.getAsJsonArray("deviceDescriptors");
+    LocalUtilsInitializer init = connection.protocolGson().fromJson(initializer, LocalUtilsInitializer.class);
+    this.devices = new LinkedHashMap<>();
+    for (LocalUtilsInitializerDeviceDescriptors device : init.deviceDescriptors)
+      this.devices.put(device.name, device.descriptor);
   }
 
   void zip(LocalUtilsZipParams params) {
@@ -73,7 +79,13 @@ public class LocalUtils extends ChannelOwner {
     return connection.sendMessageToServer(this, "addStackToTracingNoReply", params, options);
   }
 
-  // java: no counterpart upstream, the Java API matches globs on the driver.
+  // java: the members below have no counterpart in localUtils.ts.
+  // java: the raw initializer array, which the junit DeviceDescriptor reads.
+  JsonArray deviceDescriptors() {
+    return initializer.getAsJsonArray("deviceDescriptors");
+  }
+
+  // java: the Java API matches globs on the driver.
   public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     LocalUtilsGlobToRegexParams params = new LocalUtilsGlobToRegexParams();
     params.glob = glob;

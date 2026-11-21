@@ -23,6 +23,8 @@ import com.microsoft.playwright.Dialog;
 
 public class DialogImpl extends ChannelOwner implements Dialog {
   final DialogChannel channel = new DialogChannel(this);
+  // java: from is not ported, generated results already hold the impl object.
+
   private PageImpl page;
 
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {

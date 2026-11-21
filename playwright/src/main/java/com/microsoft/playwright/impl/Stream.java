@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.*;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,8 @@ import java.io.InputStream;
 public class Stream extends ChannelOwner {
   private final InputStream stream = new InputStreamImpl();
   final StreamChannel channel = new StreamChannel(this);
+
+  // java: from is not ported, generated results already hold the impl object.
 
   public Stream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -67,7 +70,11 @@ public class Stream extends ChannelOwner {
     @Override
     public void close() throws IOException {
       super.close();
-      channel.close(NO_TIMEOUT);
+      // Stream might be destroyed after the connection was closed.
+      try {
+        channel.close(NO_TIMEOUT);
+      } catch (PlaywrightException e) {
+      }
     }
   }
 }

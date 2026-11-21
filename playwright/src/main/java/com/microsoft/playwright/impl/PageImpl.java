@@ -18,6 +18,7 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.isomorphic.Headers;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.impl.protocol.*;
@@ -36,7 +37,8 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
-import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.ClientHelper.initScriptSourceWithExposedFunctions;
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.trimStringWithEllipsis;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
@@ -46,6 +48,7 @@ public class PageImpl extends ChannelOwner implements Page {
   final PageChannel channel = new PageChannel(this);
   private final BrowserContextImpl browserContext;
   BrowserContextImpl ownedContext;
+  String apiName = "Page";
 
   private final FrameImpl mainFrame;
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
@@ -56,6 +59,7 @@ public class PageImpl extends ChannelOwner implements Page {
   List<RouteHandler> routes = new ArrayList<>();
   List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
 
+  final Coverage coverage;
   final KeyboardImpl keyboard;
   final MouseImpl mouse;
   final APIRequestContextImpl request;
@@ -75,9 +79,13 @@ public class PageImpl extends ChannelOwner implements Page {
   private List<HarRouter> harRouters = new ArrayList<>();
 
   private final Map<Integer, LocatorHandler> locatorHandlers = new LinkedHashMap<>();
+  private List<ExposedCallback> evaluateCallbacks = new ArrayList<>();
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    instrumentation.onPage(this);
     PageInitializer pageInitializer = connection.protocolGson().fromJson(initializer, PageInitializer.class);
     browserContext = (BrowserContextImpl) parent;
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
@@ -101,6 +109,8 @@ public class PageImpl extends ChannelOwner implements Page {
     opener = pageInitializer.opener;
     video = new VideoImpl(this, pageInitializer.video);
     screencast = new ScreencastImpl(this);
+
+    coverage = new Coverage(channel);
 
     on(Events.Page.CLOSE, new Consumer<Page>() {
       @Override
@@ -412,14 +422,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public JSHandle evaluateHandle(String expression, Object arg) {
-    return mainFrame.evaluateHandle(expression, arg);
+    return evaluateHandle(expression, arg, null);
   }
 
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments is
+  // a JS typing check.
+  JSHandle evaluateHandle(String expression, Object arg, Serialization.EvaluateOptions options) {
+    return mainFrame.evaluateHandle(expression, arg, options);
+  }
+
+  // java: assertMaxArguments is a JS typing check.
   @Override
   public Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options) {
     return mainFrame.evalOnSelector(selector, expression, arg, convertType(options, Frame.EvalOnSelectorOptions.class));
   }
 
+  // java: assertMaxArguments is a JS typing check.
   @Override
   public Object evalOnSelectorAll(String selector, String expression, Object arg) {
     return mainFrame.evalOnSelectorAll(selector, expression, arg);
@@ -459,8 +477,32 @@ public class PageImpl extends ChannelOwner implements Page {
     return result.disposable;
   }
 
-  // java: no exposeFunctions option for evaluate() or addInitScript(), so there is no _exposeCallbackBinding,
-  // _exposeEvaluateCallback or _eraseEvaluateCallbacks.
+  // java: the callback Function is a FunctionCallback.
+  DisposableObject exposeCallbackBinding(String name, FunctionCallback callback) {
+    bindings.put(name, (source, args) -> callback.call(args));
+    PageExposeBindingParams params = new PageExposeBindingParams();
+    params.name = name;
+    params.noGlobal = true;
+    PageExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    return result.disposable;
+  }
+
+  void exposeEvaluateCallback(String name, FunctionCallback callback) {
+    DisposableObject disposable = exposeCallbackBinding(name, callback);
+    evaluateCallbacks.add(new ExposedCallback(name, disposable));
+  }
+
+  void eraseEvaluateCallbacks() {
+    for (ExposedCallback callback : evaluateCallbacks) {
+      bindings.remove(callback.name);
+      // java: dispose() is not awaited upstream; sendMessageAsync does not pump.
+      try {
+        callback.disposable.sendMessageAsync("dispose");
+      } catch (PlaywrightException e) {
+      }
+    }
+    evaluateCallbacks = new ArrayList<>();
+  }
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
@@ -600,8 +642,9 @@ public class PageImpl extends ChannelOwner implements Page {
     return waitForRequest(null, urlOrPredicate, null, options, callback);
   }
 
-  // java: the url matcher or the predicate of urlOrPredicate, with trimUrl(urlOrPredicate) computed by the overload.
-  // No @apiCall() zone around the waits: the callback runs inside the wait and its calls would join that zone.
+  // java: the url matcher or the predicate of urlOrPredicate, with trimUrl(urlOrPredicate) computed by the overload;
+  // no signal (AbortSignal). No @apiCall() zone around the waits: the callback runs inside the wait and its calls
+  // would join that zone.
   private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> urlOrPredicate, String trimmedUrl, WaitForRequestOptions options, Runnable callback) {
     if (options == null) {
       options = new WaitForRequestOptions();
@@ -788,22 +831,33 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Object evaluate(String expression, Object arg) {
-    return mainFrame.evaluate(expression, arg);
+    return evaluate(expression, arg, null);
   }
 
-  // java: the script is a string or a file; there is no function to serialize and no exposeFunctions option.
+  // java: the public API has no evaluate options, so the options overload is package-private. assertMaxArguments is
+  // a JS typing check.
+  Object evaluate(String expression, Object arg, Serialization.EvaluateOptions options) {
+    return mainFrame.evaluate(expression, arg, options);
+  }
+
+  // java: the script is a String or a Path, the Java API has no arg and no options.
   @Override
   public AutoCloseable addInitScript(String script) {
-    return addInitScriptImpl(script);
+    return addInitScript(script, null, null);
   }
 
   @Override
   public AutoCloseable addInitScript(Path script) {
-    return addInitScriptImpl(script);
+    return addInitScript(script, null, null);
   }
 
-  // java: the core of the String and Path overloads; the exposeFunctions option and arg have no Java API.
-  private AutoCloseable addInitScriptImpl(Object script) {
+  // java: the core of the String and Path overloads, package-private. evaluationScript takes no arg: a Java script
+  // is not a function.
+  AutoCloseable addInitScript(Object script, Object arg, Serialization.ExposeFunctionsOptions options) {
+    assertEvaluateOptions(options);
+    if (options != null && Boolean.TRUE.equals(options.exposeFunctions)) {
+      return addInitScriptWithExposedFunctions(this, script, arg);
+    }
     String source = evaluationScript(script, true);
     PageAddInitScriptParams params = new PageAddInitScriptParams();
     params.source = source;
@@ -881,11 +935,11 @@ public class PageImpl extends ChannelOwner implements Page {
     harRouters = new ArrayList<>();
   }
 
-  // java: the Java API has no behavior option, unrouteAll() is behavior 'default'.
+  // java: the Java API has no behavior option, unrouteAll() passes none.
   @Override
   public void unrouteAll() {
     withTitle("Unroute requests", () -> {
-      unrouteInternal(routes, new ArrayList<>());
+      unrouteInternal(routes, new ArrayList<>(), null);
       disposeHarRouters();
     });
   }
@@ -916,13 +970,18 @@ public class PageImpl extends ChannelOwner implements Page {
           remaining.add(route);
         }
       }
-      unrouteInternal(removed, remaining);
+      unrouteInternal(removed, remaining, "default");
     });
   }
 
-  // java: no behavior parameter, the 'wait' and 'ignoreErrors' branches that stop the removed handlers are unreachable.
-  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining) {
+  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining, String behavior) {
     routes = remaining;
+    if (behavior != null && !"default".equals(behavior)) {
+      // java: Promise.all over the removed handlers is a loop, each stop() returns when done.
+      for (RouteHandler routeHandler : removed) {
+        routeHandler.stop(behavior);
+      }
+    }
     updateInterceptionPatterns();
   }
 
@@ -971,6 +1030,69 @@ public class PageImpl extends ChannelOwner implements Page {
     return result.binary;
   }
 
+  // java: no signal (AbortSignal), so no AbortError branch.
+  ExpectScreenshotResult expectScreenshot(ExpectScreenshotOptions options) {
+    double timeout = options.timeout;
+    String title = options.title;
+    return wrapApiCall(() -> {
+      List<PageExpectScreenshotParams.PageExpectScreenshotParamsMask> mask = null;
+      if (options.mask != null) {
+        mask = new ArrayList<>();
+        for (Locator locator : options.mask) {
+          PageExpectScreenshotParams.PageExpectScreenshotParamsMask item = new PageExpectScreenshotParams.PageExpectScreenshotParamsMask();
+          item.frame = ((LocatorImpl) locator).frame;
+          item.selector = ((LocatorImpl) locator).selector;
+          mask.add(item);
+        }
+      }
+      PageExpectScreenshotParams.PageExpectScreenshotParamsLocator locator = null;
+      if (options.locator != null) {
+        locator = new PageExpectScreenshotParams.PageExpectScreenshotParamsLocator();
+        locator.frame = ((LocatorImpl) options.locator).frame;
+        locator.selector = ((LocatorImpl) options.locator).selector;
+      }
+      try {
+        // java: { ...optionsWithoutTimeout, isNot, locator, mask } copies the protocol fields of the options.
+        PageExpectScreenshotParams params = new PageExpectScreenshotParams();
+        params.expected = options.expected;
+        params.comparator = options.comparator;
+        params.maxDiffPixels = options.maxDiffPixels;
+        params.maxDiffPixelRatio = options.maxDiffPixelRatio;
+        params.threshold = options.threshold;
+        params.fullPage = options.fullPage;
+        params.clip = options.clip;
+        params.type = options.type;
+        params.omitBackground = options.omitBackground;
+        params.caret = options.caret;
+        params.animations = options.animations;
+        params.scale = options.scale;
+        params.maskColor = options.maskColor;
+        params.style = options.style;
+        params.isNot = options.isNot;
+        params.locator = locator;
+        params.mask = mask;
+        PageExpectScreenshotResult result = channel.expectScreenshot(params, timeout);
+        ExpectScreenshotResult expectResult = new ExpectScreenshotResult();
+        expectResult.actual = result.actual;
+        return expectResult;
+      } catch (ServerErrorWithDetails e) {
+        // java: a PlaywrightError with details is a ServerErrorWithDetails, other errors pass through.
+        PageExpectScreenshotErrorDetails details = connection.protocolGson().fromJson(e.errorDetails(), PageExpectScreenshotErrorDetails.class);
+        if (details.customErrorMessage == null) {
+          throw e;
+        }
+        ExpectScreenshotResult expectResult = new ExpectScreenshotResult();
+        expectResult.diff = details.diff;
+        expectResult.actual = details.actual;
+        expectResult.previous = details.previous;
+        expectResult.timedOut = details.timedOut;
+        expectResult.log = details.log;
+        expectResult.errorMessage = details.customErrorMessage;
+        return expectResult;
+      }
+    }, title, false);
+  }
+
   @Override
   public String title() {
     return mainFrame.title();
@@ -980,6 +1102,8 @@ public class PageImpl extends ChannelOwner implements Page {
   public void bringToFront() {
     channel.bringToFront(NO_TIMEOUT);
   }
+
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
 
   @Override
   public void close(CloseOptions options) {
@@ -1060,13 +1184,20 @@ public class PageImpl extends ChannelOwner implements Page {
     channel.clearPageErrors(NO_TIMEOUT);
   }
 
-  // java: the Java API returns the errors as strings, not as parsed Error objects; there is no filter option.
   @Override
   public List<String> pageErrors() {
-    PagePageErrorsResult result = channel.pageErrors(new PagePageErrorsParams(), NO_TIMEOUT);
+    return pageErrors(null);
+  }
+
+  // java: the Java API returns the errors as strings, not as parsed Error objects; options is its filter, the
+  // public pageErrors() passes none.
+  List<String> pageErrors(String filter) {
+    PagePageErrorsParams params = new PagePageErrorsParams();
+    params.filter = filter;
+    PagePageErrorsResult result = channel.pageErrors(params, NO_TIMEOUT);
     List<String> errors = new ArrayList<>();
     for (SerializedError error : result.errors) {
-      errors.add(Serialization.parseError(gson().toJsonTree(error).getAsJsonObject()));
+      errors.add(Serialization.parseError(connection.protocolGson().toJsonTree(error).getAsJsonObject()));
     }
     return errors;
   }
@@ -1312,26 +1443,52 @@ public class PageImpl extends ChannelOwner implements Page {
     return new ArrayList<>(workers);
   }
 
-  // java: there is no JS debugger to detect and no instrumentation to notify.
   @Override
   public void pause() {
+    pause(false);
+  }
+
+  // java: _options is its __testHookKeepTestTimeout flag, the public pause() passes false. The inspector.url()
+  // check is not ported: it detects a Node.js debugger, the Java client has none to detect.
+  void pause(boolean testHookKeepTestTimeout) {
     Double defaultNavigationTimeout = browserContext.timeoutSettings.defaultNavigationTimeout();
     Double defaultTimeout = browserContext.timeoutSettings.defaultTimeout();
     browserContext.setDefaultNavigationTimeout(0);
     browserContext.setDefaultTimeout(0);
+    instrumentation.onWillPause(testHookKeepTestTimeout);
     closedOrCrashedScope.safeRace(browserContext.sendMessageAsync("pause"));
     // java: the saved defaults may be unset, which the public double setters cannot express.
     browserContext.timeoutSettings.setDefaultNavigationTimeout(defaultNavigationTimeout);
     browserContext.timeoutSettings.setDefaultTimeout(defaultTimeout);
   }
 
-  // java: width, height and the margins are strings in the Java API, there is nothing to convert to px.
   @Override
   public byte[] pdf(PdfOptions options) {
     if (options == null) {
       options = new PdfOptions();
     }
+    // java: toProtocol makes a copy of the margin too.
     PagePdfParams transportOptions = toProtocol(options, PagePdfParams.class);
+    // java: width, height and the margins are Strings in the Java API, a number never reaches these checks.
+    if ((Object) options.width instanceof Number) {
+      transportOptions.width = options.width + "px";
+    }
+    if ((Object) options.height instanceof Number) {
+      transportOptions.height = options.height + "px";
+    }
+    // java: the loop over 'top', 'right', 'bottom' and 'left' is unrolled, Java has no field access by name.
+    if (options.margin != null && (Object) options.margin.top instanceof Number) {
+      transportOptions.margin.top = transportOptions.margin.top + "px";
+    }
+    if (options.margin != null && (Object) options.margin.right instanceof Number) {
+      transportOptions.margin.right = transportOptions.margin.right + "px";
+    }
+    if (options.margin != null && (Object) options.margin.bottom instanceof Number) {
+      transportOptions.margin.bottom = transportOptions.margin.bottom + "px";
+    }
+    if (options.margin != null && (Object) options.margin.left instanceof Number) {
+      transportOptions.margin.left = transportOptions.margin.left + "px";
+    }
     PagePdfResult result = channel.pdf(transportOptions, NO_TIMEOUT);
     if (options.path != null) {
       Utils.writeToFile(result.pdf, options.path);
@@ -1345,11 +1502,33 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new AriaSnapshotOptions();
     }
     FrameAriaSnapshotParams params = new FrameAriaSnapshotParams();
+    // java: the AriaSnapshotMode enum is sent as its lower-case protocol string.
     params.mode = options.mode == null ? null : options.mode.toString().toLowerCase();
     params.depth = options.depth;
     params.boxes = options.boxes;
     return mainFrame().channel.ariaSnapshot(params, timeoutSettings.timeout(options.timeout)).snapshot;
   }
+
+  // java: the AriaSnapshotJSON result is parsed JSON, a JsonElement.
+  JsonElement ariaSnapshotJSON(AriaSnapshotOptions options) {
+    if (options == null) {
+      options = new AriaSnapshotOptions();
+    }
+    FrameAriaSnapshotJSONParams params = new FrameAriaSnapshotJSONParams();
+    // java: the AriaSnapshotMode enum is sent as its lower-case protocol string.
+    params.mode = options.mode == null ? null : options.mode.toString().toLowerCase();
+    params.depth = options.depth;
+    params.boxes = options.boxes;
+    return mainFrame().channel.ariaSnapshotJSON(params, timeoutSettings.timeout(options.timeout)).snapshot;
+  }
+
+  void setDockTile(byte[] image) {
+    PageSetDockTileParams params = new PageSetDockTileParams();
+    params.image = image;
+    channel.setDockTile(params, NO_TIMEOUT);
+  }
+
+  // java: class BindingCall is in BindingCall.java.
 
   private static String trimUrl(Object param) {
     if (param instanceof Pattern) {
@@ -1360,6 +1539,45 @@ public class PageImpl extends ChannelOwner implements Page {
       return "\"" + trimStringWithEllipsis((String) param, 50) + "\"";
     }
     return null;
+  }
+
+  // java: owner is a PageImpl or a BrowserContextImpl, the members it needs are reached through its class. The
+  // init script function is its source, a String; the callbacks in arg are FunctionCallbacks.
+  static DisposableStub addInitScriptWithExposedFunctions(ChannelOwner owner, Object script, Object arg) {
+    if (!(script instanceof String)) {
+      throw new PlaywrightException("Passing functions requires the init script to be a function");
+    }
+    List<ExposedCallback> callbacks = new ArrayList<>();
+    String source = owner.wrapApiCall(() -> {
+      return initScriptSourceWithExposedFunctions((String) script, arg, (name, callback) -> {
+        DisposableObject disposable = owner instanceof PageImpl
+          ? ((PageImpl) owner).exposeCallbackBinding(name, callback)
+          : ((BrowserContextImpl) owner).exposeCallbackBinding(name, callback);
+        callbacks.add(new ExposedCallback(name, disposable));
+      });
+    }, null, true);
+    DisposableObject initScriptDisposable;
+    if (owner instanceof PageImpl) {
+      PageAddInitScriptParams params = new PageAddInitScriptParams();
+      params.source = source;
+      initScriptDisposable = ((PageImpl) owner).channel.addInitScript(params, NO_TIMEOUT).disposable;
+    } else {
+      BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
+      params.source = source;
+      initScriptDisposable = ((BrowserContextImpl) owner).channel.addInitScript(params, NO_TIMEOUT).disposable;
+    }
+    return new DisposableStub(() -> {
+      Map<String, BindingCallback> bindings = owner instanceof PageImpl ? ((PageImpl) owner).bindings : ((BrowserContextImpl) owner).bindings;
+      for (ExposedCallback callback : callbacks) {
+        bindings.remove(callback.name);
+        // java: dispose() is not awaited upstream; sendMessageAsync does not pump.
+        try {
+          callback.disposable.sendMessageAsync("dispose");
+        } catch (PlaywrightException e) {
+        }
+      }
+      initScriptDisposable.close();
+    });
   }
 
   // java: the value object of _locatorHandlers.
@@ -1373,6 +1591,51 @@ public class PageImpl extends ChannelOwner implements Page {
       this.handler = handler;
       this.times = times;
     }
+  }
+
+  // java: the { name, disposable } entries of _evaluateCallbacks and of the callbacks of addInitScriptWithExposedFunctions.
+  static class ExposedCallback {
+    final String name;
+    final DisposableObject disposable;
+
+    ExposedCallback(String name, DisposableObject disposable) {
+      this.name = name;
+      this.disposable = disposable;
+    }
+  }
+
+  // java: ExpectScreenshotOptions of page.ts: the protocol options with Locator objects for locator and mask, the
+  // timeout and the title; no signal (AbortSignal).
+  static class ExpectScreenshotOptions {
+    byte[] expected;
+    Locator locator;
+    double timeout;
+    boolean isNot;
+    List<Locator> mask;
+    String title;
+    String comparator;
+    Integer maxDiffPixels;
+    Double maxDiffPixelRatio;
+    Double threshold;
+    Boolean fullPage;
+    Rect clip;
+    String type;
+    Boolean omitBackground;
+    String caret;
+    String animations;
+    String scale;
+    String maskColor;
+    String style;
+  }
+
+  // java: the result type of _expectScreenshot.
+  static class ExpectScreenshotResult {
+    byte[] actual;
+    byte[] previous;
+    byte[] diff;
+    String errorMessage;
+    List<String> log;
+    Boolean timedOut;
   }
 
   // java: the public API members with no upstream counterpart: accessors of the readonly fields, typed

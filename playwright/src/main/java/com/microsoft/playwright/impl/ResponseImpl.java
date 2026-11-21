@@ -17,6 +17,7 @@
 // Port of network.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Response;
 import com.microsoft.playwright.impl.protocol.RemoteAddr;
@@ -40,6 +41,8 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   final ResponseChannel channel = new ResponseChannel(this);
   final ResponseInitializer responseInitializer;
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -124,7 +127,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
     return new String(content, StandardCharsets.UTF_8);
   }
 
-  // java: json() is not in the Java API.
+  // java: the parsed JSON is a JsonElement.
+  JsonElement json() {
+    String content = text();
+    return RequestImpl.parseJSON(content);
+  }
 
   @Override
   public RequestImpl request() {

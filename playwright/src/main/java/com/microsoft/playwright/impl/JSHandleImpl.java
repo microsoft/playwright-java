@@ -25,15 +25,19 @@ import com.microsoft.playwright.impl.protocol.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.serializeArgumentWithCallbacks;
 
-// java: serializeArgument and parseResult are Serialization.serializeArgument and Serialization.deserialize;
-// Java has no evaluate options, so EvaluateOptions, serializeArgumentWithCallbacks and the argument assertions are not ported.
+// java: the module-level serializeArgument, ExposeFunctionsOptions, EvaluateOptions, serializeArgumentWithCallbacks,
+// parseResult and assertEvaluateOptions are in Serialization.
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
   private String preview;
 
   final JSHandleChannel channel = new JSHandleChannel(this);
+
+  // java: no from, generated results already hold the JSHandleImpl.
 
   JSHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -50,20 +54,33 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
+    return evaluate(pageFunction, arg, null);
+  }
+
+  // java: the public API has no evaluate options, so the options overload is package-private.
+  Object evaluate(String pageFunction, Object arg, Serialization.EvaluateOptions options) {
+    assertEvaluateOptions(options);
+    SerializedArgument serializedArg = options != null && options.exposeFunctions != null && options.exposeFunctions ? serializeArgumentWithCallbacks(this, (PageImpl) parentOfType("Page"), arg) : serializeArgument(arg);
     JSHandleEvaluateExpressionParams params = new JSHandleEvaluateExpressionParams();
     params.expression = pageFunction;
     // java: functions are passed as strings, so isFunction is not sent and the server detects it.
-    params.arg = serializeArgument(arg);
+    params.arg = serializedArg;
     JSHandleEvaluateExpressionResult result = channel.evaluateExpression(params, NO_TIMEOUT);
     return deserialize(result.value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
+    return evaluateHandle(pageFunction, arg, null);
+  }
+
+  JSHandle evaluateHandle(String pageFunction, Object arg, Serialization.EvaluateOptions options) {
+    assertEvaluateOptions(options);
+    SerializedArgument serializedArg = options != null && options.exposeFunctions != null && options.exposeFunctions ? serializeArgumentWithCallbacks(this, (PageImpl) parentOfType("Page"), arg) : serializeArgument(arg);
     JSHandleEvaluateExpressionHandleParams params = new JSHandleEvaluateExpressionHandleParams();
     params.expression = pageFunction;
     // java: functions are passed as strings, so isFunction is not sent and the server detects it.
-    params.arg = serializeArgument(arg);
+    params.arg = serializedArg;
     JSHandleEvaluateExpressionHandleResult result = channel.evaluateExpressionHandle(params, NO_TIMEOUT);
     return result.handle;
   }
@@ -94,6 +111,8 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
   public ElementHandle asElement() {
     return null;
   }
+
+  // java: no [Symbol.asyncDispose].
 
   @Override
   public void dispose() {

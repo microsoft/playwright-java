@@ -35,6 +35,8 @@ public class BindingCall extends ChannelOwner {
   // java: the initializer parsed once, upstream reads this._initializer.
   final BindingCallInitializer bindingCallInitializer;
 
+  // java: from is not ported, generated results already hold the impl object.
+
   BindingCall(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     bindingCallInitializer = connection.protocolGson().fromJson(initializer, BindingCallInitializer.class);

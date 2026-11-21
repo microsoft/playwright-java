@@ -17,16 +17,42 @@
 // Port of isomorphic/time.ts.
 package com.microsoft.playwright.impl.isomorphic;
 
-// java: no setTimeOrigin and timeOrigin, the client does not use them.
+// Hopefully, this file is never used in injected sources,
+// because it does not use `builtins.performance`,
+// and can break when clock emulation is engaged.
+
+// java: the time of class loading stands for performance.timeOrigin, System.nanoTime() since then for
+// performance.now().
 public final class Time {
   private Time() {
   }
 
-  // java: System.nanoTime() stands for performance.now(), in milliseconds.
+  private static final long performanceStartNanos = System.nanoTime();
+  private static final double performanceTimeOrigin = System.currentTimeMillis();
+
+  private static double timeOrigin = performanceTimeOrigin;
+  private static double timeShift = 0;
+
+  public static void setTimeOrigin(double origin) {
+    timeOrigin = origin;
+    timeShift = performanceTimeOrigin - origin;
+  }
+
+  public static double timeOrigin() {
+    return timeOrigin;
+  }
+
   public static double monotonicTime() {
-    return Math.floor(System.nanoTime() / 1000.0) / 1000;
+    return Math.floor((performanceNow() + timeShift) * 1000) / 1000;
   }
 
   public static final int DEFAULT_PLAYWRIGHT_TIMEOUT = 30_000;
   public static final int DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+
+  // java: helpers with no counterpart upstream.
+
+  // java: performance.now(), in milliseconds.
+  private static double performanceNow() {
+    return (System.nanoTime() - performanceStartNanos) / 1_000_000.0;
+  }
 }

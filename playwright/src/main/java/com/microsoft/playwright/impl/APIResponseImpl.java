@@ -17,19 +17,25 @@
 // Port of fetch.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.protocol.APIRequestContextDisposeAPIResponseParams;
 import com.microsoft.playwright.impl.protocol.APIRequestContextFetchLogParams;
 import com.microsoft.playwright.impl.protocol.APIRequestContextFetchResponseBodyParams;
 import com.microsoft.playwright.impl.protocol.APIRequestContextFetchResponseBodyResult;
+import com.microsoft.playwright.impl.protocol.FormField;
+import com.microsoft.playwright.impl.protocol.NameValue;
 import com.microsoft.playwright.impl.protocol.ResourceTiming;
+import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.SecurityDetails;
 import com.microsoft.playwright.options.ServerAddr;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -41,11 +47,14 @@ class APIResponseImpl implements APIResponse {
   private final com.microsoft.playwright.impl.protocol.APIResponse initializer;
   private final RawHeaders headers;
   final APIRequestContextImpl request;
+  String apiName = "APIResponse";
 
   APIResponseImpl(APIRequestContextImpl context, com.microsoft.playwright.impl.protocol.APIResponse initializer) {
     this.request = context;
     this.initializer = initializer;
     this.headers = new RawHeaders(this.initializer.headers);
+
+    // java: no inspect.custom, Node.js inspection has no Java counterpart.
   }
 
   <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
@@ -163,7 +172,13 @@ class APIResponseImpl implements APIResponse {
     return new String(content, StandardCharsets.UTF_8);
   }
 
-  // java: json() is not in the Java API.
+  // java: the parsed JSON is a JsonElement.
+  JsonElement json() {
+    String content = text();
+    return RequestImpl.parseJSON(content);
+  }
+
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
 
   @Override
   public void dispose() {
@@ -171,6 +186,8 @@ class APIResponseImpl implements APIResponse {
     params.fetchUid = fetchUid();
     request.channel.disposeAPIResponse(params, NO_TIMEOUT);
   }
+
+  // java: _inspect is not ported, Node.js inspection has no Java counterpart.
 
   String fetchUid() {
     return initializer.fetchUid;
@@ -180,5 +197,55 @@ class APIResponseImpl implements APIResponse {
     APIRequestContextFetchLogParams params = new APIRequestContextFetchLogParams();
     params.fetchUid = fetchUid();
     return request.channel.fetchLog(params, NO_TIMEOUT).log;
+  }
+
+  static FormField.FormFieldFile filePayloadToJson(FilePayload payload) {
+    FormField.FormFieldFile file = new FormField.FormFieldFile();
+    file.name = payload.name;
+    file.mimeType = payload.mimeType;
+    file.buffer = payload.buffer;
+    return file;
+  }
+
+  // java: a file Path stands in for upstream's fs.ReadStream.
+  static FormField.FormFieldFile readStreamToJson(Path path) {
+    FilePayload payload = Utils.toFilePayload(path);
+    FormField.FormFieldFile file = new FormField.FormFieldFile();
+    file.name = payload.name;
+    file.buffer = payload.buffer;
+    return file;
+  }
+
+  static boolean isJsonContentType(List<NameValue> headers) {
+    if (headers == null) {
+      return false;
+    }
+    for (NameValue header : headers) {
+      if ("content-type".equals(header.name.toLowerCase())) {
+        return "application/json".equals(header.value.split(";", -1)[0].trim().toLowerCase());
+      }
+    }
+    return false;
+  }
+
+  static List<NameValue> objectToArray(Map<String, ?> map) {
+    if (map == null) {
+      return null;
+    }
+    List<NameValue> result = new ArrayList<>();
+    for (Map.Entry<String, ?> entry : map.entrySet()) {
+      if (entry.getValue() != null) {
+        NameValue nameValue = new NameValue();
+        nameValue.name = entry.getKey();
+        nameValue.value = String.valueOf(entry.getValue());
+        result.add(nameValue);
+      }
+    }
+    return result;
+  }
+
+  // java: the Java type decides it; a FilePayload with an empty name or mimeType is still a file payload.
+  static boolean isFilePayload(Object value) {
+    return value instanceof FilePayload;
   }
 }

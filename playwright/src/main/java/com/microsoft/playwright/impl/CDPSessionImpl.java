@@ -28,6 +28,8 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
 
   final CDPSessionChannel channel = new CDPSessionChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   protected CDPSessionImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -63,6 +65,7 @@ public class CDPSessionImpl extends ChannelOwner implements CDPSession {
     super.off(event, handler);
   }
 
+  // java: the AbortSignal of options.signal is not ported.
   @Override
   public JsonObject send(String method, JsonObject params, SendOptions options) {
     CDPSessionSendParams args = new CDPSessionSendParams();

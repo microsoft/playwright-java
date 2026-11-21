@@ -48,6 +48,8 @@ public class RouteImpl extends ChannelOwner implements Route {
   final RouteChannel channel = new RouteChannel(this);
   private final RouteInitializer routeInitializer;
 
+  // java: from is not ported, generated results already hold the impl object.
+
   RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     routeInitializer = connection.protocolGson().fromJson(initializer, RouteInitializer.class);
@@ -121,14 +123,19 @@ public class RouteImpl extends ChannelOwner implements Route {
       requestOptions.maxRedirects = fetchOptions.maxRedirects;
       requestOptions.maxRetries = fetchOptions.maxRetries;
       requestOptions.timeout = fetchOptions.timeout;
-      return ((APIRequestContextImpl) context.request()).innerFetch(fetchOptions.url, request(), requestOptions);
+      return ((APIRequestContextImpl) context.request()).innerFetch(fetchOptions.url, request(), requestOptions, null);
     }, null, false);
   }
 
   @Override
   public void fulfill(FulfillOptions options) {
+    fulfill(options, null);
+  }
+
+  // java: json is the json option of upstream, which FulfillOptions does not have; the value is a JsonElement.
+  void fulfill(FulfillOptions options, JsonElement json) {
     handleRoute(() -> {
-      innerFulfill(options);
+      innerFulfill(options, json);
     });
   }
 
@@ -143,15 +150,22 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
   }
 
-  private void innerFulfill(FulfillOptions options) {
+  private void innerFulfill(FulfillOptions options, JsonElement json) {
     if (options == null) {
       options = new FulfillOptions();
     }
     String fetchResponseUid = null;
     Integer statusOption = options.status;
     Map<String, String> headersOption = options.headers;
-    // java: body is a String (body) or a byte[] (bodyBytes); there is no json option.
+    // java: body is a String (body) or a byte[] (bodyBytes).
     Object body = options.body != null ? options.body : options.bodyBytes;
+
+    if (json != null) {
+      if (body != null) {
+        throw new PlaywrightException("Can specify either body or json parameters");
+      }
+      body = json.toString();
+    }
 
     if (options.response instanceof APIResponseImpl) {
       APIResponseImpl response = (APIResponseImpl) options.response;
@@ -195,6 +209,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
     if (options.contentType != null) {
       headers.put("content-type", options.contentType);
+    } else if (json != null && !json.isJsonNull()) {
+      headers.put("content-type", "application/json");
     } else if (options.path != null) {
       String mimeType = getMimeTypeForPath(options.path.toString());
       headers.put("content-type", mimeType != null ? mimeType : "application/octet-stream");

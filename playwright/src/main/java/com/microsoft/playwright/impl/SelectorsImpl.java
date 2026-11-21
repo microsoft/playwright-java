@@ -24,16 +24,19 @@ import com.microsoft.playwright.Selectors;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
 import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
+import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class SelectorsImpl extends LoggingSupport implements Selectors {
   protected final List<SelectorEngine> selectorEngines = new ArrayList<>();
   // java: defaults to data-testid, upstream leaves it undefined until set.
   String testIdAttributeName = "data-testid";
-  protected final List<BrowserContextImpl> contextsForSelectors = new ArrayList<>();
+  protected final Set<BrowserContextImpl> contextsForSelectors = new LinkedHashSet<>();
 
   @Override
   public void register(String name, String script, RegisterOptions options) {
@@ -72,7 +75,9 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       throw new PlaywrightException("Test id attribute cannot be null");
     }
     testIdAttributeName = attributeName;
+    LocatorImpl.setTestIdAttribute(this, attributeName);
     for (BrowserContextImpl context : contextsForSelectors) {
+      context.options.testIdAttributeName = attributeName;
       try {
         BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
         params.testIdAttributeName = attributeName;
@@ -80,5 +85,14 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
       } catch (PlaywrightException e) {
       }
     }
+  }
+
+  // java: { ...options } of any options type is a JSON round-trip through the same class.
+  @SuppressWarnings("unchecked")
+  <T> T withSelectorOptions(T options) {
+    JsonObject json = gson().toJsonTree(options).getAsJsonObject();
+    json.add("selectorEngines", gson().toJsonTree(selectorEngines));
+    json.addProperty("testIdAttributeName", testIdAttributeName);
+    return (T) gson().fromJson(json, options.getClass());
   }
 }

@@ -79,6 +79,14 @@ final class Connect {
     // java: raceAgainstDeadline is the deadline of Connection.initializePlaywright, which throws a TimeoutError
     // with the message "Timeout <timeout>ms exceeded".
     try {
+      // For tests.
+      // java: __testHookBeforeCreateBrowser is a public Runnable field testHookBeforeCreateBrowser of a ConnectOptions
+      // subclass; it runs before the deadline race, which is inside initializePlaywright.
+      Runnable testHookBeforeCreateBrowser = testHook(params, "testHookBeforeCreateBrowser");
+      if (testHookBeforeCreateBrowser != null) {
+        testHookBeforeCreateBrowser.run();
+      }
+
       PlaywrightImpl remotePlaywright = deadline == 0 ? connection.initializePlaywright() : connection.initializePlaywright(deadline, timeout);
       BrowserImpl preLaunchedBrowser = connection.protocolGson().fromJson(remotePlaywright.initializer, PlaywrightInitializer.class).preLaunchedBrowser;
       if (preLaunchedBrowser == null) {
@@ -102,10 +110,10 @@ final class Connect {
   // pipe closes, which happens both when the server goes away and when Connection.close closes the pipe.
   static Connection connectToEndpoint(Connection parentConnection, LocalUtilsConnectParams params, double timeout, Runnable onClose) {
     LocalUtils localUtils = parentConnection.localUtils();
-    // java: the JsonPipe is the transport (JsonPipeTransport upstream), there is no WebSocketTransport. The headers
-    // of the connect result are not used by the Java Connection.
+    // java: the JsonPipe is the transport (JsonPipeTransport upstream); there is no WebSocketTransport for a
+    // connection without localUtils. The headers of the connect result are not used by the Java Connection.
     JsonPipe transport = localUtils.channel.connect(params, timeout).pipe;
-    Connection connection = new Connection(transport, parentConnection.env, localUtils);
+    Connection connection = new Connection(transport, parentConnection.env, localUtils, parentConnection.instrumentation);
     connection.markAsRemote();
     // java: Connection.close closes the transport itself, there is no connection.on('close', () => transport.close()).
 
@@ -117,6 +125,21 @@ final class Connect {
     // java: there is no onmessage/onMessage wiring, the Connection sends to the JsonPipe and polls it for messages,
     // and an error of dispatch propagates out of the call that pumped the message.
     return connection;
+  }
+
+  // java: class JsonPipeTransport is the transport part of JsonPipe.java.
+
+  // java: class WebSocketTransport is not ported, it wraps the browser's window.WebSocket and the JDK 8 has no
+  // WebSocket client; the Java client always connects through LocalUtils.
+
+  // java: the helpers below have no counterpart in connect.ts.
+  private static Runnable testHook(Object params, String name) {
+    try {
+      Object value = params.getClass().getField(name).get(params);
+      return value instanceof Runnable ? (Runnable) value : null;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      return null;
+    }
   }
 
   // java: Connection.close declares IOException.

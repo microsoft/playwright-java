@@ -17,7 +17,11 @@
 // Port of network.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.impl.protocol.NameValue;
@@ -28,6 +32,10 @@ import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.Sizes;
 import com.microsoft.playwright.options.Timing;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +43,8 @@ import java.util.Map;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class RequestImpl extends ChannelOwner implements Request {
+  // java: toClearCookiesParams is Serialization.toClearCookiesParams, BrowserContextImpl calls it there.
+
   // java: SerializedFallbackOverrides.
   static class SerializedFallbackOverrides {
     String url;
@@ -63,6 +73,8 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   final RequestChannel channel = new RequestChannel(this);
   final RequestInitializer requestInitializer;
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -113,7 +125,36 @@ public class RequestImpl extends ChannelOwner implements Request {
     return requestInitializer.postData;
   }
 
-  // java: postDataJSON() is not in the Java API.
+  // java: the parsed JSON is a JsonElement and the form entries are a JsonObject of strings.
+  JsonElement postDataJSON() {
+    String postData = postData();
+    if (postData == null || postData.isEmpty()) {
+      return null;
+    }
+
+    String contentType = headers().get("content-type");
+    if (contentType != null && contentType.contains("application/x-www-form-urlencoded")) {
+      JsonObject entries = new JsonObject();
+      // java: new URLSearchParams(postData).entries(), parsed here.
+      String query = postData.startsWith("?") ? postData.substring(1) : postData;
+      for (String pair : query.split("&")) {
+        if (pair.isEmpty()) {
+          continue;
+        }
+        int index = pair.indexOf('=');
+        String k = index == -1 ? pair : pair.substring(0, index);
+        String v = index == -1 ? "" : pair.substring(index + 1);
+        entries.addProperty(decodeURLSearchParam(k), decodeURLSearchParam(v));
+      }
+      return entries;
+    }
+
+    try {
+      return parseJSON(postData);
+    } catch (JsonSyntaxException e) {
+      throw new PlaywrightException("POST data is not a valid JSON object: " + postData);
+    }
+  }
 
   @Override
   public Map<String, String> headers() {
@@ -168,6 +209,9 @@ public class RequestImpl extends ChannelOwner implements Request {
   @Override
   public FrameImpl frame() {
     if (requestInitializer.frame == null) {
+      if (serviceWorker() == null) {
+        throw new PlaywrightException("Assertion error");
+      }
       throw new PlaywrightException("Service Worker requests do not have an associated frame.");
     }
     FrameImpl frame = requestInitializer.frame;
@@ -274,5 +318,28 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (page != null)
       return page.closedOrCrashedScope;
     return new LongStandingScope(this);
+  }
+
+  // java: JSON.parse and the decoding of URLSearchParams, which have no Java counterpart.
+  static JsonElement parseJSON(String text) {
+    try {
+      JsonReader reader = new JsonReader(new StringReader(text));
+      reader.setLenient(false);
+      JsonElement result = gson().getAdapter(JsonElement.class).read(reader);
+      if (reader.peek() != JsonToken.END_DOCUMENT) {
+        throw new JsonSyntaxException("Unexpected non-whitespace character after JSON");
+      }
+      return result;
+    } catch (IOException e) {
+      throw new JsonSyntaxException(e);
+    }
+  }
+
+  private static String decodeURLSearchParam(String value) {
+    try {
+      return URLDecoder.decode(value, "UTF-8");
+    } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+      return value.replace('+', ' ');
+    }
   }
 }

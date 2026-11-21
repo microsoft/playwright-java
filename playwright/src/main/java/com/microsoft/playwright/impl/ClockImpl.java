@@ -17,13 +17,17 @@
 // Port of clock.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Clock;
 
 import java.util.Date;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
+import static com.microsoft.playwright.impl.Serialization.gson;
 
+// java: each number | string | Date parameter is one public overload per type of the generated Clock interface,
+// all delegating to one private core that takes an Object.
 class ClockImpl implements Clock {
   private final BrowserContextImpl browserContext;
 
@@ -31,56 +35,47 @@ class ClockImpl implements Clock {
     this.browserContext = browserContext;
   }
 
-  // java: parseTime/parseTicks are inlined into the typed overloads (long, String, Date) of the generated Clock interface.
-
   @Override
   public void install(InstallOptions options) {
-    BrowserContextClockInstallParams params = new BrowserContextClockInstallParams();
-    if (options != null) {
-      Object time = options.time;
-      if (time instanceof Long) {
-        params.timeNumber = (double) (Long) time;
-      } else if (time instanceof Date) {
-        params.timeNumber = (double) ((Date) time).getTime();
-      } else if (time instanceof String) {
-        params.timeString = (String) time;
-      }
+    if (options == null) {
+      options = new InstallOptions();
     }
+    BrowserContextClockInstallParams params = gson().fromJson(options.time != null ? parseTime(options.time) : new JsonObject(), BrowserContextClockInstallParams.class);
     browserContext.channel.clockInstall(params, NO_TIMEOUT);
   }
 
   @Override
   public void fastForward(long ticks) {
-    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
-    params.ticksNumber = (double) ticks;
-    browserContext.channel.clockFastForward(params, NO_TIMEOUT);
+    fastForward((Object) ticks);
   }
 
   @Override
   public void fastForward(String ticks) {
-    BrowserContextClockFastForwardParams params = new BrowserContextClockFastForwardParams();
-    params.ticksString = ticks;
+    fastForward((Object) ticks);
+  }
+
+  private void fastForward(Object ticks) {
+    BrowserContextClockFastForwardParams params = gson().fromJson(parseTicks(ticks), BrowserContextClockFastForwardParams.class);
     browserContext.channel.clockFastForward(params, NO_TIMEOUT);
   }
 
   @Override
   public void pauseAt(long time) {
-    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
-    params.timeNumber = (double) time;
-    browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
+    pauseAt((Object) time);
   }
 
   @Override
   public void pauseAt(String time) {
-    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
-    params.timeString = time;
-    browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
+    pauseAt((Object) time);
   }
 
   @Override
   public void pauseAt(Date time) {
-    BrowserContextClockPauseAtParams params = new BrowserContextClockPauseAtParams();
-    params.timeNumber = (double) time.getTime();
+    pauseAt((Object) time);
+  }
+
+  private void pauseAt(Object time) {
+    BrowserContextClockPauseAtParams params = gson().fromJson(parseTime(time), BrowserContextClockPauseAtParams.class);
     browserContext.channel.clockPauseAt(params, NO_TIMEOUT);
   }
 
@@ -91,57 +86,83 @@ class ClockImpl implements Clock {
 
   @Override
   public void runFor(long ticks) {
-    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
-    params.ticksNumber = (double) ticks;
-    browserContext.channel.clockRunFor(params, NO_TIMEOUT);
+    runFor((Object) ticks);
   }
 
   @Override
   public void runFor(String ticks) {
-    BrowserContextClockRunForParams params = new BrowserContextClockRunForParams();
-    params.ticksString = ticks;
+    runFor((Object) ticks);
+  }
+
+  private void runFor(Object ticks) {
+    BrowserContextClockRunForParams params = gson().fromJson(parseTicks(ticks), BrowserContextClockRunForParams.class);
     browserContext.channel.clockRunFor(params, NO_TIMEOUT);
   }
 
   @Override
   public void setFixedTime(long time) {
-    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
-    params.timeNumber = (double) time;
-    browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
+    setFixedTime((Object) time);
   }
 
   @Override
   public void setFixedTime(String time) {
-    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
-    params.timeString = time;
-    browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
+    setFixedTime((Object) time);
   }
 
   @Override
   public void setFixedTime(Date time) {
-    BrowserContextClockSetFixedTimeParams params = new BrowserContextClockSetFixedTimeParams();
-    params.timeNumber = (double) time.getTime();
+    setFixedTime((Object) time);
+  }
+
+  private void setFixedTime(Object time) {
+    BrowserContextClockSetFixedTimeParams params = gson().fromJson(parseTime(time), BrowserContextClockSetFixedTimeParams.class);
     browserContext.channel.clockSetFixedTime(params, NO_TIMEOUT);
   }
 
   @Override
   public void setSystemTime(long time) {
-    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
-    params.timeNumber = (double) time;
-    browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
+    setSystemTime((Object) time);
   }
 
   @Override
   public void setSystemTime(String time) {
-    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
-    params.timeString = time;
-    browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
+    setSystemTime((Object) time);
   }
 
   @Override
   public void setSystemTime(Date time) {
-    BrowserContextClockSetSystemTimeParams params = new BrowserContextClockSetSystemTimeParams();
-    params.timeNumber = (double) time.getTime();
+    setSystemTime((Object) time);
+  }
+
+  private void setSystemTime(Object time) {
+    BrowserContextClockSetSystemTimeParams params = gson().fromJson(parseTime(time), BrowserContextClockSetSystemTimeParams.class);
     browserContext.channel.clockSetSystemTime(params, NO_TIMEOUT);
+  }
+
+  // java: the returned { timeNumber?, timeString? } is a JsonObject, spread into the params by Gson.
+  static JsonObject parseTime(Object time) {
+    JsonObject result = new JsonObject();
+    if (time instanceof Long) {
+      result.addProperty("timeNumber", (Long) time);
+      return result;
+    }
+    if (time instanceof String) {
+      result.addProperty("timeString", (String) time);
+      return result;
+    }
+    // java: the isFinite(time.getTime()) check is not ported, a Java Date always holds a finite time.
+    result.addProperty("timeNumber", ((Date) time).getTime());
+    return result;
+  }
+
+  static JsonObject parseTicks(Object ticks) {
+    JsonObject result = new JsonObject();
+    if (ticks instanceof Long) {
+      result.addProperty("ticksNumber", (Long) ticks);
+    }
+    if (ticks instanceof String) {
+      result.addProperty("ticksString", (String) ticks);
+    }
+    return result;
   }
 }

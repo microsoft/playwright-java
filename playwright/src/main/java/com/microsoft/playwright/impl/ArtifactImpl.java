@@ -32,6 +32,8 @@ import static com.microsoft.playwright.impl.Utils.writeToFile;
 public class ArtifactImpl extends ChannelOwner {
   final ArtifactChannel channel = new ArtifactChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   public ArtifactImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -64,8 +66,8 @@ public class ArtifactImpl extends ChannelOwner {
     return channel.stream(NO_TIMEOUT).stream.stream();
   }
 
-  // java: upstream readIntoBuffer collects the 'data' chunks of the stream.
-  byte[] readAllBytes() {
+  // java: the 'data' chunks of the stream are read in a loop.
+  byte[] readIntoBuffer() {
     final int bufLen = 1024 * 1024;
     byte[] buf = new byte[bufLen];
     int readLen;
@@ -85,5 +87,10 @@ public class ArtifactImpl extends ChannelOwner {
 
   public void delete() {
     channel.delete(NO_TIMEOUT);
+  }
+
+  // java: the old name of readIntoBuffer, BrowserImpl calls it.
+  byte[] readAllBytes() {
+    return readIntoBuffer();
   }
 }

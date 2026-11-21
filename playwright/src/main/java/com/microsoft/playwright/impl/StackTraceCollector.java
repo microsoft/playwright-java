@@ -29,8 +29,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // java: clientStackTrace.ts exports one function, captureLibraryStackTrace(), which returns the frames
-// outside of the library and the api name. The api name is not used here (the tracing titles come from
-// wrapApiCall), and the frames are mapped to source files of PLAYWRIGHT_JAVA_SRC; hence a class with state.
+// outside of the library and the api name. The api name and its normalizeAPIName are not ported: the Java
+// frames name impl classes, not the API, and the titles of wrapApiCall stand in for it (ChannelOwner.wrapApiCall).
+// The frames are mapped to source files of PLAYWRIGHT_JAVA_SRC; hence a class with state.
 class StackTraceCollector {
   static final String PLAYWRIGHT_JAVA_SRC = "PLAYWRIGHT_JAVA_SRC";
   private final List<Path> srcDirs;

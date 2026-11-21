@@ -19,11 +19,23 @@ package com.microsoft.playwright.impl.isomorphic;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-// java: only getMimeTypeForPath and its table; isJsonMimeType, isXmlMimeType, isTextualMimeType and
-// getExtensionForMimeType have no caller in the client.
+// java: a match() of a regex anchored with ^ and $ is find(); a Java $ also matches before a final line terminator.
 public final class MimeType {
   private MimeType() {
+  }
+
+  public static boolean isJsonMimeType(String mimeType) {
+    return Pattern.compile("^(application\\/json|application\\/.*?\\+json|text\\/(x-)?json)(;\\s*charset=.*)?$").matcher(mimeType).find();
+  }
+
+  public static boolean isXmlMimeType(String mimeType) {
+    return Pattern.compile("^(application\\/xml|application\\/.*?\\+xml|text\\/xml)(;\\s*charset=.*)?$").matcher(mimeType).find();
+  }
+
+  public static boolean isTextualMimeType(String mimeType) {
+    return Pattern.compile("^(text\\/.*?|application\\/(json|(x-)?javascript|xml.*?|ecmascript|graphql|x-www-form-urlencoded)|image\\/svg(\\+xml)?|application\\/.*?(\\+json|\\+xml))(;\\s*charset=.*)?$").matcher(mimeType).find();
   }
 
   public static String getMimeTypeForPath(String path) {
@@ -32,6 +44,30 @@ public final class MimeType {
       return null;
     String extension = path.substring(dotIndex + 1).toLowerCase();
     return types.get(extension);
+  }
+
+  // java: a null contentType is undefined.
+  public static String getExtensionForMimeType(String contentType) {
+    String[] parts = (contentType != null ? contentType : "").split(";", -1)[0].split("/", -1);
+    String subtype = parts.length > 1 ? parts[1].trim().toLowerCase() : "";
+    if (subtype.isEmpty())
+      return "bin";
+    // image/svg+xml → xml, application/ld+json → json
+    String tail;
+    if (subtype.contains("+")) {
+      String[] subtypeParts = subtype.split("\\+", -1);
+      tail = subtypeParts[subtypeParts.length - 1];
+    } else {
+      tail = subtype;
+    }
+    if (tail.equals("plain"))
+      return "txt";
+    if (tail.equals("javascript") || tail.equals("ecmascript"))
+      return "js";
+    if (tail.equals("jpeg"))
+      return "jpg";
+    String result = tail.replaceAll("[^a-z0-9]", "");
+    return !result.isEmpty() ? result : "bin";
   }
 
   private static final Map<String, String> types = new LinkedHashMap<>();

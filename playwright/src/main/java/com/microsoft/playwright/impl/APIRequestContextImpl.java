@@ -53,11 +53,15 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
 
   final APIRequestContextChannel channel = new APIRequestContextChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     this.tracing = connection.protocolGson().fromJson(initializer, APIRequestContextInitializer.class).tracing;
     this.timeoutSettings = new TimeoutSettings();
   }
+
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
 
   @Override
   public void dispose(DisposeOptions options) {
@@ -65,6 +69,7 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
       options = new DisposeOptions();
     }
     closeReason = options.reason;
+    instrumentation.runBeforeCloseRequestContext(this);
     tracing.exportAllHars();
     try {
       APIRequestContextDisposeParams params = new APIRequestContextDisposeParams();
@@ -155,16 +160,17 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
   // java: the string | Request parameter is two overloads.
   @Override
   public APIResponse fetch(String urlOrRequest, RequestOptions options) {
-    return wrapApiCall(() -> innerFetch(urlOrRequest, null, (RequestOptionsImpl) options), null, false);
+    return wrapApiCall(() -> innerFetch(urlOrRequest, null, (RequestOptionsImpl) options, null), null, false);
   }
 
   @Override
   public APIResponse fetch(Request urlOrRequest, RequestOptions options) {
-    return wrapApiCall(() -> innerFetch(null, urlOrRequest, (RequestOptionsImpl) options), null, false);
+    return wrapApiCall(() -> innerFetch(null, urlOrRequest, (RequestOptionsImpl) options, null), null, false);
   }
 
-  // java: upstream takes one object { url, request, ...options }.
-  APIResponseImpl innerFetch(String url, Request request, RequestOptionsImpl options) {
+  // java: upstream takes one object { url, request, ...options }. RequestOptions holds the object form of
+  // params only; paramsString is the string or URLSearchParams form, which RequestOptions has no setter for.
+  APIResponseImpl innerFetch(String url, Request request, RequestOptionsImpl options, String paramsString) {
     if (options == null) {
       options = new RequestOptionsImpl();
     }
@@ -187,7 +193,11 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
       url = request.url();
     }
     String method = options.method != null ? options.method : (request != null ? request.method() : null);
-    // java: RequestOptions has no string or URLSearchParams form of params, so there are no encodedParams.
+    String encodedParams = null;
+    // java: a URLSearchParams is its toString() in paramsString too.
+    if (paramsString != null) {
+      encodedParams = paramsString;
+    }
     // Cannot call allHeaders() here as the request may be paused inside route handler.
     Map<String, String> headersObj = options.headers != null ? options.headers : (request != null ? request.headers() : null);
     List<NameValue> headers = headersObj != null ? headersObjectToArray(headersObj) : null;
@@ -198,7 +208,7 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     if (options.data != null) {
       if (options.data instanceof String) {
         String data = (String) options.data;
-        if (isJsonContentType(headers)) {
+        if (APIResponseImpl.isJsonContentType(headers)) {
           jsonData = isJsonParsable(data) ? data : jsonDataSerializer.toJson(data);
         } else {
           postDataBuffer = data.getBytes(StandardCharsets.UTF_8);
@@ -206,7 +216,7 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
       } else if (options.data instanceof byte[]) {
         postDataBuffer = (byte[]) options.data;
       } else {
-        // java: any other object is serialized with Gson, there is no 'Unexpected data type' case.
+        // java: every other Java value is an object, a number or a boolean, so there is no "Unexpected 'data' type" error.
         jsonData = jsonDataSerializer.toJson(options.data);
       }
     } else if (options.form != null) {
@@ -228,9 +238,11 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     if (postDataBuffer == null && jsonData == null && formData == null && multipartData == null) {
       postDataBuffer = request != null ? request.postDataBuffer() : null;
     }
+    // java: no __testHookLookup fixture, a test hook function cannot be sent to the driver from Java.
     APIRequestContextFetchParams params = new APIRequestContextFetchParams();
     params.url = url;
-    params.params = objectToArray(options.params);
+    params.params = APIResponseImpl.objectToArray(options.params);
+    params.encodedParams = encodedParams;
     params.method = method;
     params.headers = headers;
     params.postData = postDataBuffer;
@@ -267,12 +279,16 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
   static FormField toFormField(String name, Object value) {
     FormField field = new FormField();
     field.name = name;
-    if (value instanceof FilePayload) {
-      field.file = filePayloadToJson((FilePayload) value);
-    } else if (value instanceof Path) {
-      field.file = readStreamToJson((Path) value);
-    } else {
+    if (APIResponseImpl.isFilePayload(value)) {
+      FilePayload payload = (FilePayload) value;
+      if (payload.buffer == null) {
+        throw new PlaywrightException("Unexpected buffer type of 'data." + name + "'");
+      }
+      field.file = APIResponseImpl.filePayloadToJson(payload);
+    } else if (value instanceof String || value instanceof Number || value instanceof Boolean) {
       field.value = String.valueOf(value);
+    } else {
+      field.file = APIResponseImpl.readStreamToJson((Path) value);
     }
     return field;
   }
@@ -296,47 +312,7 @@ public class APIRequestContextImpl extends ChannelOwner implements APIRequestCon
     }
   }
 
-  static FormField.FormFieldFile filePayloadToJson(FilePayload payload) {
-    FormField.FormFieldFile file = new FormField.FormFieldFile();
-    file.name = payload.name;
-    file.mimeType = payload.mimeType;
-    file.buffer = payload.buffer;
-    return file;
-  }
-
-  // java: a file Path stands in for upstream's fs.ReadStream.
-  static FormField.FormFieldFile readStreamToJson(Path path) {
-    FilePayload payload = Utils.toFilePayload(path);
-    FormField.FormFieldFile file = new FormField.FormFieldFile();
-    file.name = payload.name;
-    file.buffer = payload.buffer;
-    return file;
-  }
-
-  static boolean isJsonContentType(List<NameValue> headers) {
-    if (headers == null) {
-      return false;
-    }
-    for (NameValue header : headers) {
-      if ("content-type".equals(header.name.toLowerCase())) {
-        return "application/json".equals(header.value.split(";", -1)[0].trim().toLowerCase());
-      }
-    }
-    return false;
-  }
-
-  static List<NameValue> objectToArray(Map<String, ?> map) {
-    if (map == null) {
-      return null;
-    }
-    List<NameValue> result = new ArrayList<>();
-    for (Map.Entry<String, ?> e : map.entrySet()) {
-      if (e.getValue() != null) {
-        result.add(nameValue(e.getKey(), String.valueOf(e.getValue())));
-      }
-    }
-    return result;
-  }
+  // java: class APIResponse and the module functions after it are in APIResponseImpl.java.
 
   // java: the accessor of the tracing field, the { ...options, method } of the get/post/... shortcuts and the { name, value } literal.
   @Override

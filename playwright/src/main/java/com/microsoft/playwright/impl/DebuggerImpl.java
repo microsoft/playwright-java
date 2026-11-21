@@ -23,18 +23,20 @@ import com.microsoft.playwright.Debugger;
 import com.microsoft.playwright.options.Location;
 import com.microsoft.playwright.options.DebuggerPausedDetails;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class DebuggerImpl extends ChannelOwner implements Debugger {
   private DebuggerPausedDetails pausedDetails;
-  // java: handlers of onPausedStateChanged(Runnable); upstream emits Events.Debugger.PausedStateChanged. apiCallsUpdated has no Java API.
-  private final List<Runnable> pausedStateChangedHandlers = new ArrayList<>();
 
   final DebuggerChannel channel = new DebuggerChannel(this);
+
+  // java: from is not ported, generated results already hold the impl object.
 
   DebuggerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -43,19 +45,27 @@ public class DebuggerImpl extends ChannelOwner implements Debugger {
   // java: upstream subscribes in the constructor with this._channel.on(...); the Java channel dispatches events here.
   @Override
   protected void handleEvent(String event, JsonObject params) {
-    if ("pausedStateChanged".equals(event)) {
-      if (params.has("pausedDetails") && !params.get("pausedDetails").isJsonNull()) {
-        pausedDetails = gson().fromJson(params.get("pausedDetails"), DebuggerPausedDetails.class);
-      } else {
-        pausedDetails = null;
+    switch (event) {
+      case "pausedStateChanged": {
+        if (params.has("pausedDetails") && !params.get("pausedDetails").isJsonNull()) {
+          pausedDetails = gson().fromJson(params.get("pausedDetails"), DebuggerPausedDetails.class);
+        } else {
+          pausedDetails = null;
+        }
+        emit(Events.Debugger.PAUSED_STATE_CHANGED, null);
+        break;
       }
-      for (Runnable handler : new ArrayList<>(pausedStateChangedHandlers)) {
-        handler.run();
+      case "apiCallsUpdated": {
+        DebuggerApiCallsUpdatedEvent e = connection.protocolGson().fromJson(params, DebuggerApiCallsUpdatedEvent.class);
+        emit(Events.Debugger.API_CALLS_UPDATED, e.apiCalls);
+        break;
       }
     }
   }
 
-  // java: _enable has no Java API.
+  void enable() {
+    channel.enable(NO_TIMEOUT);
+  }
 
   @Override
   public void requestPause() {
@@ -84,13 +94,23 @@ public class DebuggerImpl extends ChannelOwner implements Debugger {
     return pausedDetails;
   }
 
+  // java: the Runnable handlers of the public API, each registered as a listener of Events.Debugger.PAUSED_STATE_CHANGED.
+  private final List<SimpleEntry<Runnable, Consumer<Object>>> pausedStateChangedListeners = new ArrayList<>();
+
   @Override
   public void onPausedStateChanged(Runnable handler) {
-    pausedStateChangedHandlers.add(handler);
+    Consumer<Object> listener = unused -> handler.run();
+    pausedStateChangedListeners.add(new SimpleEntry<>(handler, listener));
+    on(Events.Debugger.PAUSED_STATE_CHANGED, listener);
   }
 
   @Override
   public void offPausedStateChanged(Runnable handler) {
-    pausedStateChangedHandlers.remove(handler);
+    for (int i = 0; i < pausedStateChangedListeners.size(); i++) {
+      if (pausedStateChangedListeners.get(i).getKey() == handler) {
+        off(Events.Debugger.PAUSED_STATE_CHANGED, pausedStateChangedListeners.remove(i).getValue());
+        return;
+      }
+    }
   }
 }

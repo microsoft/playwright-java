@@ -30,6 +30,8 @@ import java.util.Arrays;
 public class WritableStream extends ChannelOwner {
   final WritableStreamChannel channel = new WritableStreamChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   WritableStream(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }

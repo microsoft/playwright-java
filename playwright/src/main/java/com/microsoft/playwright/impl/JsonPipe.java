@@ -31,12 +31,19 @@ import java.util.function.Consumer;
 public class JsonPipe extends ChannelOwner implements Transport {
   final JsonPipeChannel channel = new JsonPipeChannel(this);
 
+  // java: from is not ported, generated results already hold the impl object.
+
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
+  JsonPipeChannel channel() {
+    return channel;
+  }
+
   // java: the members below have no counterpart in jsonPipe.ts, they are JsonPipeTransport of connect.ts in the
-  // order send, onMessage (poll), onClose, close; its connect is in Connect.connectToEndpoint.
+  // order send, onMessage (poll), onClose, close; the pipe is this object and the _owner is not kept, its connect
+  // is in Connect.connectToEndpoint.
   private final Queue<JsonObject> incoming = new LinkedList<>();
   private boolean isClosed;
   private String closeReason = "Browser has been closed";

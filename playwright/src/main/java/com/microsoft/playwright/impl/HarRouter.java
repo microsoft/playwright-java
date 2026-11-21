@@ -154,6 +154,8 @@ class HarRouter {
     }
   }
 
+  // java: [Symbol.asyncDispose] is not ported, Java has no async dispose.
+
   void dispose() {
     LocalUtilsHarCloseParams params = new LocalUtilsHarCloseParams();
     params.harId = harId;

@@ -28,18 +28,18 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FileChooserImpl implements FileChooser {
   private final PageImpl page;
-  private final ElementHandleImpl element;
+  private final ElementHandleImpl elementHandle;
   private final boolean isMultiple;
 
-  FileChooserImpl(PageImpl page, ElementHandleImpl element, boolean isMultiple) {
+  FileChooserImpl(PageImpl page, ElementHandleImpl elementHandle, boolean isMultiple) {
     this.page = page;
-    this.element = element;
+    this.elementHandle = elementHandle;
     this.isMultiple = isMultiple;
   }
 
   @Override
   public ElementHandle element() {
-    return element;
+    return elementHandle;
   }
 
   @Override
@@ -60,7 +60,7 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(Path[] files, SetFilesOptions options) {
-    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    elementHandle.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 
   @Override
@@ -70,6 +70,6 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(FilePayload[] files, SetFilesOptions options) {
-    element.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
+    elementHandle.setInputFiles(files, convertType(options, ElementHandle.SetInputFilesOptions.class));
   }
 }

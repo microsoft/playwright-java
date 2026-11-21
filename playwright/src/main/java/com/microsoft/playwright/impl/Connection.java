@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -93,22 +94,28 @@ interface ChannelOwnerFactory {
   ChannelOwner create(ChannelOwner parent, String type, String guid, JsonObject initializer);
 }
 
-public class Connection {
+public class Connection extends EventEmitter {
   final Map<String, ChannelOwner> objects = new HashMap<>();
+  // java: onmessage is the transport, sendMessageToServer sends to it.
+  // Upstream creates the ids with createCallIdGenerator(); the prefix is unique for each client to avoid id clashes in a trace.
+  private final String callIdPrefix = createCallIdPrefix();
+  private int lastId = 0;
   // java: upstream keeps { resolve, reject, signal, title, type, method } per call, nothing but the result is needed here.
   private final Map<String, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private final Root rootObject;
   private TargetClosedError closedError;
   private boolean isRemote = false;
   private LocalUtils localUtils;
+  private boolean rawBuffers = false;
+  // java: toImpl is not ported, there are no in-process dispatchers.
   private int tracingCount;
+  final ClientInstrumentation instrumentation;
+  // Used from @playwright/test fixtures -> TODO remove?
+  final List<NameValue> headers;
   private final Map<String, ChannelOwnerFactory> objectFactories = new HashMap<>();
 
   // java: everything below has no counterpart in connection.ts.
   private final Transport transport;
-  // Upstream creates the ids with createCallIdGenerator(); the prefix is unique for each client to avoid id clashes in a trace.
-  private final String callIdPrefix = createCallIdPrefix();
-  private int lastId = 0;
   private final StackTraceCollector stackTraceCollector;
   private final Gson protocolGson = gson().newBuilder()
     .registerTypeAdapterFactory(new ChannelOwnerAdapterFactory())
@@ -127,75 +134,94 @@ public class Connection {
 
   /** The options of upstream's sendMessageToServer; {@code timeout == null} means that no timeout is sent. */
   static class CallOptions {
+    String apiName;
     String title;
     boolean internal;
-    Double timeout;
     JsonArray frames;
+    String callId;
+    // java: the AbortSignal is not ported.
+    Double timeout;
   }
 
   // java: the connection of a connect() call is remote and shares LocalUtils with the driver connection.
   Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils) {
-    this(pipe, env, localUtils, true);
+    this(pipe, env, localUtils, null, new ArrayList<>(), true);
+  }
+
+  // java: connect.ts passes the instrumentation of the parent connection.
+  Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils, ClientInstrumentation instrumentation) {
+    this(pipe, env, localUtils, instrumentation, new ArrayList<>(), true);
+  }
+
+  // java: connect.ts also passes the headers of the connect result.
+  Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils, ClientInstrumentation instrumentation, List<NameValue> headers) {
+    this(pipe, env, localUtils, instrumentation, headers, true);
   }
 
   Connection(Transport transport, Map<String, String> env) {
-    this(transport, env, null, false);
+    this(transport, env, null, null, new ArrayList<>(), false);
   }
 
-  private Connection(Transport transport, Map<String, String> env, LocalUtils localUtils, boolean remote) {
+  private Connection(Transport transport, Map<String, String> env, LocalUtils localUtils, ClientInstrumentation instrumentation, List<NameValue> headers, boolean remote) {
     this.env = env;
     if (isLogging) {
       transport = new TransportLogger(transport);
     }
     this.transport = transport;
     stackTraceCollector = StackTraceCollector.createFromEnv(env);
+    this.instrumentation = instrumentation != null ? instrumentation : ClientInstrumentation.createInstrumentation();
     this.localUtils = localUtils;
     this.rootObject = new Root(this);
+    this.headers = headers;
     if (remote) {
       markAsRemote();
     }
-    registerObjectFactories();
-  }
-
-  private void registerObjectFactories() {
-    // java: Android and Electron are not ported, their objects are ignored.
-    objectFactories.put("Android", (parent, type, guid, init) -> null);
-    objectFactories.put("AndroidDevice", (parent, type, guid, init) -> null);
-    objectFactories.put("AndroidSocket", (parent, type, guid, init) -> null);
-    objectFactories.put("APIRequestContext", (parent, type, guid, init) -> new APIRequestContextImpl(parent, type, guid, init));
-    objectFactories.put("Artifact", (parent, type, guid, init) -> new ArtifactImpl(parent, type, guid, init));
-    objectFactories.put("BindingCall", (parent, type, guid, init) -> new BindingCall(parent, type, guid, init));
-    objectFactories.put("Browser", (parent, type, guid, init) -> new BrowserImpl(parent, type, guid, init));
-    objectFactories.put("BrowserContext", (parent, type, guid, init) -> new BrowserContextImpl(parent, type, guid, init));
-    objectFactories.put("BrowserType", (parent, type, guid, init) -> new BrowserTypeImpl(parent, type, guid, init));
-    objectFactories.put("CDPSession", (parent, type, guid, init) -> new CDPSessionImpl(parent, type, guid, init));
-    objectFactories.put("Debugger", (parent, type, guid, init) -> new DebuggerImpl(parent, type, guid, init));
-    objectFactories.put("Dialog", (parent, type, guid, init) -> new DialogImpl(parent, type, guid, init));
-    objectFactories.put("Disposable", (parent, type, guid, init) -> new DisposableObject(parent, type, guid, init));
-    objectFactories.put("Electron", (parent, type, guid, init) -> null);
-    objectFactories.put("ElementHandle", (parent, type, guid, init) -> new ElementHandleImpl(parent, type, guid, init));
-    objectFactories.put("Frame", (parent, type, guid, init) -> new FrameImpl(parent, type, guid, init));
-    objectFactories.put("JSHandle", (parent, type, guid, init) -> new JSHandleImpl(parent, type, guid, init));
-    objectFactories.put("JsonPipe", (parent, type, guid, init) -> new JsonPipe(parent, type, guid, init));
-    objectFactories.put("LocalUtils", (parent, type, guid, init) -> {
+    Map<String, ChannelOwnerFactory> factories = new LinkedHashMap<>();
+    // java: android.ts and electron.ts are not ported, their objects are ignored.
+    factories.put("Android", (parent, type, guid, init) -> null);
+    factories.put("AndroidDevice", (parent, type, guid, init) -> null);
+    factories.put("AndroidSocket", (parent, type, guid, init) -> null);
+    factories.put("APIRequestContext", (parent, type, guid, init) -> new APIRequestContextImpl(parent, type, guid, init));
+    factories.put("Artifact", (parent, type, guid, init) -> new ArtifactImpl(parent, type, guid, init));
+    factories.put("BindingCall", (parent, type, guid, init) -> new BindingCall(parent, type, guid, init));
+    factories.put("Browser", (parent, type, guid, init) -> new BrowserImpl(parent, type, guid, init));
+    factories.put("BrowserContext", (parent, type, guid, init) -> new BrowserContextImpl(parent, type, guid, init));
+    factories.put("BrowserType", (parent, type, guid, init) -> new BrowserTypeImpl(parent, type, guid, init));
+    factories.put("CDPSession", (parent, type, guid, init) -> new CDPSessionImpl(parent, type, guid, init));
+    factories.put("Debugger", (parent, type, guid, init) -> new DebuggerImpl(parent, type, guid, init));
+    factories.put("Dialog", (parent, type, guid, init) -> new DialogImpl(parent, type, guid, init));
+    factories.put("Disposable", (parent, type, guid, init) -> new DisposableObject(parent, type, guid, init));
+    factories.put("Electron", (parent, type, guid, init) -> null);
+    factories.put("ElectronApplication", (parent, type, guid, init) -> null);
+    factories.put("ElementHandle", (parent, type, guid, init) -> new ElementHandleImpl(parent, type, guid, init));
+    factories.put("Frame", (parent, type, guid, init) -> new FrameImpl(parent, type, guid, init));
+    factories.put("JSHandle", (parent, type, guid, init) -> new JSHandleImpl(parent, type, guid, init));
+    factories.put("JsonPipe", (parent, type, guid, init) -> new JsonPipe(parent, type, guid, init));
+    factories.put("LocalUtils", (parent, type, guid, init) -> {
       LocalUtils result = new LocalUtils(parent, type, guid, init);
-      if (localUtils == null) {
-        localUtils = result;
+      if (this.localUtils == null) {
+        this.localUtils = result;
       }
       return result;
     });
-    objectFactories.put("Page", (parent, type, guid, init) -> new PageImpl(parent, type, guid, init));
-    objectFactories.put("Playwright", (parent, type, guid, init) -> new PlaywrightImpl(parent, type, guid, init));
-    objectFactories.put("Request", (parent, type, guid, init) -> new RequestImpl(parent, type, guid, init));
-    objectFactories.put("Response", (parent, type, guid, init) -> new ResponseImpl(parent, type, guid, init));
-    objectFactories.put("Route", (parent, type, guid, init) -> new RouteImpl(parent, type, guid, init));
-    objectFactories.put("Stream", (parent, type, guid, init) -> new Stream(parent, type, guid, init));
-    objectFactories.put("SocksSupport", (parent, type, guid, init) -> new DummyChannelOwner(parent, type, guid, init));
-    objectFactories.put("Tracing", (parent, type, guid, init) -> new TracingImpl(parent, type, guid, init));
-    objectFactories.put("WebSocket", (parent, type, guid, init) -> new WebSocketImpl(parent, type, guid, init));
-    objectFactories.put("WebSocketRoute", (parent, type, guid, init) -> new WebSocketRouteImpl(parent, type, guid, init));
-    objectFactories.put("Worker", (parent, type, guid, init) -> new WorkerImpl(parent, type, guid, init));
-    objectFactories.put("WritableStream", (parent, type, guid, init) -> new WritableStream(parent, type, guid, init));
+    factories.put("Page", (parent, type, guid, init) -> new PageImpl(parent, type, guid, init));
+    factories.put("Playwright", (parent, type, guid, init) -> new PlaywrightImpl(parent, type, guid, init));
+    factories.put("Request", (parent, type, guid, init) -> new RequestImpl(parent, type, guid, init));
+    factories.put("Response", (parent, type, guid, init) -> new ResponseImpl(parent, type, guid, init));
+    factories.put("Route", (parent, type, guid, init) -> new RouteImpl(parent, type, guid, init));
+    factories.put("Stream", (parent, type, guid, init) -> new Stream(parent, type, guid, init));
+    factories.put("SocksSupport", (parent, type, guid, init) -> new DummyChannelOwner(parent, type, guid, init));
+    factories.put("Tracing", (parent, type, guid, init) -> new TracingImpl(parent, type, guid, init));
+    factories.put("WebSocket", (parent, type, guid, init) -> new WebSocketImpl(parent, type, guid, init));
+    factories.put("WebSocketRoute", (parent, type, guid, init) -> new WebSocketRouteImpl(parent, type, guid, init));
+    factories.put("Worker", (parent, type, guid, init) -> new WorkerImpl(parent, type, guid, init));
+    factories.put("WritableStream", (parent, type, guid, init) -> new WritableStream(parent, type, guid, init));
+    registerObjectFactories(factories);
+  }
+
+  void registerObjectFactories(Map<String, ChannelOwnerFactory> factories) {
+    for (Map.Entry<String, ChannelOwnerFactory> entry : factories.entrySet())
+      objectFactories.put(entry.getKey(), entry.getValue());
   }
 
   void markAsRemote() {
@@ -204,6 +230,15 @@ public class Connection {
 
   boolean isRemote() {
     return isRemote;
+  }
+
+  void useRawBuffers() {
+    rawBuffers = true;
+  }
+
+  // java: protocolGson() always converts binary to base64; the flag is kept but changes nothing.
+  boolean rawBuffers() {
+    return rawBuffers;
   }
 
   LocalUtils localUtils() {
@@ -222,27 +257,16 @@ public class Connection {
     return playwright;
   }
 
-  // java: upstream has getObjectWithKnownName(guid) for the same lookup; this one throws for an unknown guid.
-  public <T> T getExistingObject(String guid) {
-    @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
-    if (result == null)
-      throw new PlaywrightException("Object doesn't exist: " + guid);
-    return result;
+  @SuppressWarnings("unchecked")
+  <T> T getObjectWithKnownName(String guid) {
+    return (T) objects.get(guid);
   }
 
-  void registerObject(String guid, ChannelOwner object) {
-    objects.put(guid, object);
-  }
-
-  void unregisterObject(String guid) {
-    objects.remove(guid);
-  }
-
-  void setIsTracing(boolean tracing) {
-    if (tracing) {
-      ++tracingCount;
+  void setIsTracing(boolean isTracing) {
+    if (isTracing) {
+      tracingCount++;
     } else {
-      --tracingCount;
+      tracingCount--;
     }
   }
 
@@ -261,14 +285,17 @@ public class Connection {
       throw new PlaywrightException("The object has been collected to prevent unbounded heap growth.");
     }
 
+    // java: the signal.aborted check is not ported, there is no AbortSignal.
+
     String guid = object.guid;
     String type = object.type;
-    String id = callIdPrefix + "@" + (++lastId);
+    String id = options.callId != null ? options.callId : nextCallId();
     JsonObject message = new JsonObject();
     message.addProperty("id", id);
     message.addProperty("guid", guid);
     message.addProperty("method", method);
     message.add("params", params);
+    // java: the debugLogger 'channel' log is TransportLogger, installed for DEBUG=pw:channel.
     JsonObject metadata = new JsonObject();
     if (options.title != null) {
       metadata.addProperty("title", options.title);
@@ -296,6 +323,7 @@ public class Connection {
     if (expectsReply) {
       callbacks.put(id, result);
     }
+    // java: the stack goes to tracing after the message is sent, the zones of emptyZone.run are not ported.
     transport.send(message);
     if (tracingCount > 0 && options.frames != null && !"LocalUtils".equals(type)) {
       JsonObject callData = new JsonObject();
@@ -306,51 +334,15 @@ public class Connection {
       // java: LocalUtils belongs to the driver connection, which is not this one when the browser came from connect().
       localUtils.addStackToTracingNoReply(stackParams);
     }
+    // java: the abort listener is not ported, there is no AbortSignal.
     return expectsReply ? result : completed();
   }
 
-  private static WaitableResult<JsonElement> completed() {
-    WaitableResult<JsonElement> result = new WaitableResult<>();
-    result.complete(null);
-    return result;
-  }
+  // java: _validatorFromWireContext is not ported, there are no protocol validators; protocolGson() parses
+  // the results, events and initializers (channel owners from {guid}, binary from base64).
 
-  // java: sends the message and pumps messages until the reply arrives; upstream awaits the promise of sendMessageToServer.
-  JsonElement sendMessage(ChannelOwner object, String method, JsonObject params, CallOptions options) {
-    if (closedError != null && transport instanceof JsonPipe) {
-      // java: a call over a closed JsonPipe fails like the pipe does, with the reason the server gave
-      // ('Browser closed' after it went away); async calls and waits get the closedError.
-      throw new TargetClosedError(((JsonPipe) transport).closeReason(), closedError);
-    }
-    WaitableResult<JsonElement> result = sendMessageToServer(object, method, params, options);
-    Double timeout = options.timeout;
-    if (timeout == null || timeout == 0) {
-      return rootObject.runUntil(() -> {}, result);
-    }
-    // The driver enforces the timeout, but the driver itself may hang.
-    long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
-    while (!result.isDone()) {
-      if (!processOneMessage() && System.nanoTime() - deadline > 0) {
-        result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
-          method + ". The driver is not responding."));
-      }
-    }
-    return result.get();
-  }
-
-  // java: upstream receives messages through onmessage(); here the pump polls the transport.
-  boolean processOneMessage() {
-    JsonObject message = transport.poll(Duration.ofMillis(10));
-    if (message == null) {
-      return false;
-    }
-    Gson gson = gson();
-    Message messageObj = gson.fromJson(message, Message.class);
-    dispatch(messageObj);
-    return true;
-  }
-
-  private void dispatch(Message message) {
+  // java: the message is the parsed wire shape, see Message below.
+  void dispatch(Message message) {
     if (closedError != null) {
       return;
     }
@@ -361,19 +353,24 @@ public class Connection {
         throw new PlaywrightException("Cannot find command to respond: " + message.id);
       }
       callbacks.remove(message.id);
-      if (message.error == null) {
-        callback.complete(message.result);
-      } else {
+      if (message.error != null && message.result == null) {
+        // java: the AbortError cause is not ported, there is no AbortSignal. The call log is appended by parseError;
+        // the log and the error details (not validated, there are no validators) are kept by ServerErrorWithDetails.
         PlaywrightException parsedError = Errors.parseError(message.error, formatCallLog(message.log));
         if (message.errorDetails != null) {
           parsedError = new ServerErrorWithDetails(parsedError, message.errorDetails, message.log);
         }
         callback.completeExceptionally(parsedError);
+      } else {
+        // java: the result is parsed by the caller with protocolGson(), there are no validators.
+        callback.complete(message.result);
       }
       return;
     }
 
-    // TODO: throw?
+    // java: the debugLogger 'channel' log is TransportLogger.
+
+    // java: a message with neither id nor method is ignored.
     if (message.method == null) {
       return;
     }
@@ -384,13 +381,13 @@ public class Connection {
 
     ChannelOwner object = objects.get(message.guid);
     if (object == null) {
-      throw new PlaywrightException("Cannot find object to call " + message.method + ": " + message.guid);
+      throw new PlaywrightException("Cannot find object to \"" + message.method + "\": " + message.guid);
     }
     if (message.method.equals("__adopt__")) {
       String childGuid = message.params.get("guid").getAsString();
       ChannelOwner child = objects.get(childGuid);
       if (child == null) {
-        throw new PlaywrightException("Unknown new child:  " + childGuid);
+        throw new PlaywrightException("Unknown new child: " + childGuid);
       }
       object.adopt(child);
       return;
@@ -401,7 +398,8 @@ public class Connection {
       return;
     }
 
-    // java: upstream emits the event on the channel, ChannelOwner.handleEvent does the same until EventEmitter is ported.
+    // java: upstream validates the params and emits the event on the channel; ChannelOwner.handleEvent of the
+    // object parses them with protocolGson() and handles the event.
     object.handleEvent(message.method, message.params);
   }
 
@@ -418,9 +416,27 @@ public class Connection {
       callback.completeExceptionally(closedError);
     }
     callbacks.clear();
-    // java: upstream emits 'close' here; the transport has to be closed as well.
+    emit("close", null);
+    // java: the transport is closed here, the 'close' listener of connect.ts closes it upstream.
     transport.close();
   }
+
+  // java: _tChannelImplFromWire is the read() of ChannelOwnerAdapterFactory below, through getExistingObject.
+
+  private ChannelOwner createRemoteObject(String parentGuid, String type, String guid, JsonObject initializer) {
+    ChannelOwner parent = objects.get(parentGuid);
+    if (parent == null) {
+      throw new PlaywrightException("Cannot find parent object " + parentGuid + " to create " + guid);
+    }
+    // java: the initializer is not validated, there are no validators; each object parses it with protocolGson().
+    ChannelOwnerFactory factory = objectFactories.get(type);
+    if (factory == null) {
+      throw new PlaywrightException("Missing type " + type);
+    }
+    return factory.create(parent, type, guid, initializer);
+  }
+
+  // java: helpers with no counterpart in connection.ts.
 
   // java: upstream's _tChannelImplFromWire and, in channelOwner.ts, tChannelImplToWire; Gson adapters instead of validator hooks.
   /** Gson that serializes channel owners as {guid} and resolves them back through this connection. */
@@ -483,21 +499,72 @@ public class Connection {
     }
   }
 
-  private ChannelOwner createRemoteObject(String parentGuid, String type, String guid, JsonObject initializer) {
-    ChannelOwner parent = objects.get(parentGuid);
-    if (parent == null) {
-      throw new PlaywrightException("Cannot find parent object " + parentGuid + " to create " + guid);
-    }
-    ChannelOwnerFactory factory = objectFactories.get(type);
-    if (factory == null) {
-      throw new PlaywrightException("Unknown type " + type);
-    }
-    return factory.create(parent, type, guid, initializer);
-  }
-
   // java: upstream's captureLibraryStackTrace() lives in clientStackTrace.ts; null when PLAYWRIGHT_JAVA_SRC is not set.
   JsonArray captureLibraryStackTrace() {
     return stackTraceCollector == null ? null : stackTraceCollector.captureLibraryStackTrace();
+  }
+
+  // java: the generator function of _nextCallId.
+  private String nextCallId() {
+    return callIdPrefix + "@" + (++lastId);
+  }
+
+  // java: upstream has getObjectWithKnownName(guid) for the same lookup; this one throws for an unknown guid.
+  public <T> T getExistingObject(String guid) {
+    @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
+    if (result == null)
+      throw new PlaywrightException("Object doesn't exist: " + guid);
+    return result;
+  }
+
+  // java: the _objects.set / _objects.delete of channelOwner.ts.
+  void registerObject(String guid, ChannelOwner object) {
+    objects.put(guid, object);
+  }
+
+  void unregisterObject(String guid) {
+    objects.remove(guid);
+  }
+
+  private static WaitableResult<JsonElement> completed() {
+    WaitableResult<JsonElement> result = new WaitableResult<>();
+    result.complete(null);
+    return result;
+  }
+
+  // java: sends the message and pumps messages until the reply arrives; upstream awaits the promise of sendMessageToServer.
+  JsonElement sendMessage(ChannelOwner object, String method, JsonObject params, CallOptions options) {
+    if (closedError != null && transport instanceof JsonPipe) {
+      // java: a call over a closed JsonPipe fails like the pipe does, with the reason the server gave
+      // ('Browser closed' after it went away); async calls and waits get the closedError.
+      throw new TargetClosedError(((JsonPipe) transport).closeReason(), closedError);
+    }
+    WaitableResult<JsonElement> result = sendMessageToServer(object, method, params, options);
+    Double timeout = options.timeout;
+    if (timeout == null || timeout == 0) {
+      return rootObject.runUntil(() -> {}, result);
+    }
+    // The driver enforces the timeout, but the driver itself may hang.
+    long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout.longValue() + DRIVER_RESPONSE_GRACE_MS);
+    while (!result.isDone()) {
+      if (!processOneMessage() && System.nanoTime() - deadline > 0) {
+        result.completeExceptionally(new TimeoutError("Timeout " + timeout.longValue() + "ms exceeded while waiting for the driver to respond to " +
+          method + ". The driver is not responding."));
+      }
+    }
+    return result.get();
+  }
+
+  // java: upstream receives messages through onmessage(); here the pump polls the transport.
+  boolean processOneMessage() {
+    JsonObject message = transport.poll(Duration.ofMillis(10));
+    if (message == null) {
+      return false;
+    }
+    Gson gson = gson();
+    Message messageObj = gson.fromJson(message, Message.class);
+    dispatch(messageObj);
+    return true;
   }
 
   private static String createCallIdPrefix() {
@@ -509,6 +576,7 @@ public class Connection {
     return prefix.toString();
   }
 
+  // java: each line is prefixed with "- " and not dimmed, as the Java client always printed it.
   private static String formatCallLog(JsonArray log) {
     if (log == null) {
       return "";

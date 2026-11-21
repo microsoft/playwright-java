@@ -70,11 +70,24 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ClientHelper.evaluationScript;
+import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toProtocol;
 
 public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
+  // java: the optional methods are default no-ops; actions.Action and actions.Signal are the raw JSON of the event.
+  interface RecorderEventSink {
+    default void actionAdded(PageImpl page, JsonElement action, String code) {
+    }
+
+    default void actionUpdated(PageImpl page, JsonElement action, String code) {
+    }
+
+    default void signalAdded(PageImpl page, JsonElement signal, String code) {
+    }
+  }
+
   final Set<PageImpl> pages = new LinkedHashSet<>();
   List<RouteHandler> routes = new ArrayList<>();
   List<WebSocketRouteHandler> webSocketRoutes = new ArrayList<>();
@@ -83,6 +96,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final Map<String, BindingCallback> bindings = new LinkedHashMap<>();
   final TimeoutSettings timeoutSettings;
   PageImpl ownerPage;
+  boolean forReuse = false;
   private final WaitableEvent<BrowserContextImpl> closedPromise;
   final BrowserContextInitializer.BrowserContextInitializerOptions options;
 
@@ -96,8 +110,11 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private String closingStatus = "none";
   private String closeReason;
   private List<HarRouter> harRouters = new ArrayList<>();
+  private RecorderEventSink onRecorderEventSink;
 
   final BrowserContextChannel channel = new BrowserContextChannel(this);
+
+  // java: from and fromNullable are not ported, generated results already hold the impl object.
 
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -154,7 +171,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       case "serviceWorker": {
         BrowserContextServiceWorkerEvent e = connection.protocolGson().fromJson(params, BrowserContextServiceWorkerEvent.class);
         WorkerImpl serviceWorker = e.worker;
-        // java: no service worker API, so the worker has no _context to set.
+        serviceWorker.context = this;
         serviceWorkers.add(serviceWorker);
         emit(Events.BrowserContext.SERVICE_WORKER, serviceWorker);
         break;
@@ -254,7 +271,23 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         onResponse(e.response, e.page);
         break;
       }
-      // java: no recorder API, the recorderEvent event is not handled.
+      case "recorderEvent": {
+        BrowserContextRecorderEventEvent e = connection.protocolGson().fromJson(params, BrowserContextRecorderEventEvent.class);
+        if ("actionAdded".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.actionAdded(e.page, e.data, e.code);
+          }
+        } else if ("actionUpdated".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.actionUpdated(e.page, e.data, e.code);
+          }
+        } else if ("signalAdded".equals(e.event)) {
+          if (onRecorderEventSink != null) {
+            onRecorderEventSink.signalAdded(e.page, e.data, e.code);
+          }
+        }
+        break;
+      }
     }
   }
 
@@ -293,7 +326,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void onRequestFailed(RequestImpl request, Double responseEndTiming, String failureText, PageImpl page) {
-    request.failureText = failureText;
+    request.failureText = failureText == null || failureText.isEmpty() ? null : failureText;
     request.setResponseEndTiming(responseEndTiming);
     emit(Events.BrowserContext.REQUEST_FAILED, request);
     if (page != null) {
@@ -496,20 +529,29 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     channel.setOffline(params, NO_TIMEOUT);
   }
 
-  // java: setHTTPCredentials has no Java API.
+  // java: httpCredentials is an HttpCredentials, a List of them or null.
+  void setHTTPCredentials(Object httpCredentials) {
+    BrowserContextSetHTTPCredentialsParams params = new BrowserContextSetHTTPCredentialsParams();
+    params.httpCredentials = toHttpCredentialsProtocol(httpCredentials);
+    channel.setHTTPCredentials(params, NO_TIMEOUT);
+  }
 
   @Override
   public AutoCloseable addInitScript(String script) {
-    return addInitScriptImpl(script);
+    return addInitScript(script, null, null);
   }
 
   @Override
   public AutoCloseable addInitScript(Path script) {
-    return addInitScriptImpl(script);
+    return addInitScript(script, null, null);
   }
 
-  // java: the core of the String and Path overloads; the exposeFunctions option and arg have no Java API.
-  private AutoCloseable addInitScriptImpl(Object script) {
+  // java: the core of the String and Path overloads. evaluationScript takes no arg: a Java script is not a function.
+  AutoCloseable addInitScript(Object script, Object arg, Serialization.ExposeFunctionsOptions options) {
+    assertEvaluateOptions(options);
+    if (options != null && Boolean.TRUE.equals(options.exposeFunctions)) {
+      return PageImpl.addInitScriptWithExposedFunctions(this, script, arg);
+    }
     String source = evaluationScript(script, true);
     BrowserContextAddInitScriptParams params = new BrowserContextAddInitScriptParams();
     params.source = source;
@@ -525,7 +567,15 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return result.disposable;
   }
 
-  // java: _exposeCallbackBinding serves the exposeFunctions option of addInitScript, which has no Java API.
+  // java: the JS Function callback is a FunctionCallback.
+  DisposableObject exposeCallbackBinding(String name, FunctionCallback callback) {
+    bindings.put(name, (source, args) -> callback.call(args));
+    BrowserContextExposeBindingParams params = new BrowserContextExposeBindingParams();
+    params.name = name;
+    params.noGlobal = true;
+    BrowserContextExposeBindingResult result = channel.exposeBinding(params, NO_TIMEOUT);
+    return result.disposable;
+  }
 
   @Override
   public AutoCloseable exposeFunction(String name, FunctionCallback callback) {
@@ -607,10 +657,11 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     harRouters = new ArrayList<>();
   }
 
+  // java: the Java API has no behavior option, unrouteAll() passes none.
   @Override
   public void unrouteAll() {
     withTitle("Unroute requests", () -> {
-      unrouteInternal(routes, new ArrayList<>());
+      unrouteInternal(routes, new ArrayList<>(), null);
       disposeHarRouters();
     });
   }
@@ -641,13 +692,18 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
           remaining.add(route);
         }
       }
-      unrouteInternal(removed, remaining);
+      unrouteInternal(removed, remaining, "default");
     });
   }
 
-  // java: unrouteAll() has no behavior option, so the removed handlers are never stopped.
-  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining) {
+  private void unrouteInternal(List<RouteHandler> removed, List<RouteHandler> remaining, String behavior) {
     routes = remaining;
+    if (behavior != null && !"default".equals(behavior)) {
+      // java: Promise.all over the removed handlers is a loop, each stop() returns when done.
+      for (RouteHandler routeHandler : removed) {
+        routeHandler.stop(behavior);
+      }
+    }
     updateInterceptionPatterns();
   }
 
@@ -720,8 +776,11 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return Collections.emptyList();
   }
 
-  // java: serviceWorkers() has no Java API.
+  List<WorkerImpl> serviceWorkers() {
+    return new ArrayList<>(serviceWorkers);
+  }
 
+  // java: the 'page: expected Page or Frame' check is not ported, the overloads take a Page or a Frame.
   @Override
   public CDPSession newCDPSession(Page page) {
     BrowserContextNewCDPSessionParams params = new BrowserContextNewCDPSessionParams();
@@ -749,6 +808,8 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     emit(Events.BrowserContext.CLOSE, this);
   }
 
+  // java: Symbol.asyncDispose is not ported.
+
   @Override
   public void close(CloseOptions options) {
     if (options == null) {
@@ -760,6 +821,7 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     closeReason = options.reason;
     closingStatus = "closing";
     request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
+    instrumentation.runBeforeCloseBrowserContext(this);
     RuntimeException harError = null;
     try {
       tracing.exportAllHars();
@@ -773,7 +835,26 @@ public class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
   }
 
-  // java: showRecorder, startRecording, stopRecording and exposeConsoleApi have no Java API.
+  void showRecorder(BrowserContextShowRecorderParams params) {
+    channel.showRecorder(params, NO_TIMEOUT);
+  }
+
+  void startRecording(BrowserContextStartRecordingParams params, RecorderEventSink eventSink) {
+    onRecorderEventSink = eventSink;
+    channel.startRecording(params, NO_TIMEOUT);
+  }
+
+  void stopRecording() {
+    try {
+      channel.stopRecording(NO_TIMEOUT);
+    } finally {
+      onRecorderEventSink = null;
+    }
+  }
+
+  void exposeConsoleApi() {
+    channel.exposeConsoleApi(NO_TIMEOUT);
+  }
 
   // java: upstream reads a path given as a string and passes an object through; Java options hold a Path.
   static JsonElement prepareStorageState(Path storageState) {

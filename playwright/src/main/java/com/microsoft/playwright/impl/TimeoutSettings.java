@@ -20,8 +20,9 @@ package com.microsoft.playwright.impl;
 import static com.microsoft.playwright.impl.isomorphic.Time.DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
 import static com.microsoft.playwright.impl.isomorphic.Time.DEFAULT_PLAYWRIGHT_TIMEOUT;
 
-// java: no AbortSignal and no PWDEBUG=inspector branch, a timeout is a Double
-// and 0 means no deadline.
+// java: kNoTimeout is ChannelOwner.NO_TIMEOUT.
+
+// java: no AbortSignal, a timeout is a Double and 0 means no deadline.
 class TimeoutSettings {
   private final TimeoutSettings parent;
   private Double defaultTimeout;
@@ -51,12 +52,17 @@ class TimeoutSettings {
     return defaultTimeout;
   }
 
+  // java: navigationTimeout, timeout and launchTimeout return the number of _navigationTimeout, _timeout and
+  // _launchTimeout; the { signal, timeout } object they wrap it in has no signal in Java.
   double navigationTimeout(Double timeout) {
     if (timeout != null) {
       return timeout;
     }
     if (defaultNavigationTimeout != null) {
       return defaultNavigationTimeout;
+    }
+    if ("inspector".equals(debugMode())) {
+      return 0;
     }
     if (defaultTimeout != null) {
       return defaultTimeout;
@@ -71,6 +77,9 @@ class TimeoutSettings {
     if (timeout != null) {
       return timeout;
     }
+    if ("inspector".equals(debugMode())) {
+      return 0;
+    }
     if (defaultTimeout != null) {
       return defaultTimeout;
     }
@@ -84,10 +93,28 @@ class TimeoutSettings {
     if (timeout != null) {
       return timeout;
     }
+    if ("inspector".equals(debugMode())) {
+      return 0;
+    }
     if (parent != null) {
       return parent.launchTimeout(timeout);
     }
     return DEFAULT_PLAYWRIGHT_LAUNCH_TIMEOUT;
+  }
+
+  // java: debugMode() of utils/debug.ts, PWDEBUG of the process environment.
+  static String debugMode() {
+    String debugEnv = System.getenv("PWDEBUG");
+    if (debugEnv == null) {
+      debugEnv = "";
+    }
+    if (debugEnv.equals("console")) {
+      return "console";
+    }
+    if (debugEnv.equals("0") || debugEnv.equals("false")) {
+      return "";
+    }
+    return !debugEnv.isEmpty() ? "inspector" : "";
   }
 
   // java: removed once every wait goes through Waiter.

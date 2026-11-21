@@ -45,6 +45,7 @@ class APIRequestImpl implements APIRequest {
   @Override
   public APIRequestContextImpl newContext(NewContextOptions options) {
     options = options == null ? new NewContextOptions() : Utils.clone(options);
+    playwright.instrumentation.runBeforeCreateRequestContext(options);
     // java: storageState is the JSON text and storageStatePath the file, upstream takes a path string or an object.
     String storageStateJson = options.storageState;
     if (options.storageStatePath != null) {
@@ -68,14 +69,16 @@ class APIRequestImpl implements APIRequest {
     PlaywrightNewRequestParams params = Utils.toProtocol(options, PlaywrightNewRequestParams.class);
     params.extraHTTPHeaders = extraHTTPHeaders != null ? Headers.headersObjectToArray(extraHTTPHeaders) : null;
     params.storageState = storageState;
-    // java: no _defaultLaunchOptions in the Java API, so no tracesDir here and none for context.tracing below.
+    // We do not expose tracesDir in the API, so do not allow options to accidentally override it.
+    params.tracesDir = playwright.defaultLaunchOptions != null && playwright.defaultLaunchOptions.tracesDir != null ? playwright.defaultLaunchOptions.tracesDir.toString() : null;
     params.clientCertificates = BrowserContextImpl.toClientCertificatesProtocol(clientCertificates);
     params.httpCredentials = BrowserContextImpl.toHttpCredentialsProtocol(httpCredentials);
     APIRequestContextImpl context = playwright.channel.newRequest(params, NO_TIMEOUT).request;
     contexts.add(context);
     context.request = this;
-    // java: no _defaultContextTimeout in the Java API.
-    context.timeoutSettings.setDefaultTimeout(options.timeout);
+    context.timeoutSettings.setDefaultTimeout(options.timeout != null ? options.timeout : playwright.defaultContextTimeout);
+    context.tracing.tracesDir = playwright.defaultLaunchOptions != null ? playwright.defaultLaunchOptions.tracesDir : null;
+    context.instrumentation.runAfterCreateRequestContext(context);
     return context;
   }
 }

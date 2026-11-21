@@ -25,6 +25,7 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
+import static com.microsoft.playwright.impl.LocatorImpl.testIdAttributeName;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
@@ -54,15 +55,14 @@ class FrameLocatorImpl implements FrameLocator {
     return new LocatorImpl(frame, childSelector(((LocatorImpl) selectorOrLocator).selector), convertType(options, Locator.LocatorOptions.class));
   }
 
-  // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
   }
 
   @Override

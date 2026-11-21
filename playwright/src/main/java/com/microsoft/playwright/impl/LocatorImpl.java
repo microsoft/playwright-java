@@ -17,6 +17,7 @@
 // Port of locator.ts.
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.impl.protocol.*;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -42,6 +44,7 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 class LocatorImpl implements Locator {
   final FrameImpl frame;
   String selector;
+  String apiName = "Locator";
 
   // java: upstream has one constructor with optional LocatorOptions. Locator.LocatorOptions has no
   // 'visible', so filter() and visible() use the private constructor that takes FilterOptions.
@@ -79,12 +82,15 @@ class LocatorImpl implements Locator {
 
     if (options != null && options.visible != null)
       this.selector += " >> visible=" + (options.visible ? "true" : "false");
+
+    // java: no inspect.custom.
   }
 
   <R> R wrapApiCall(Supplier<R> func, String title, boolean internal) {
     return frame.wrapApiCall(func, title, internal);
   }
 
+  // java: the options are the timeout alone, there is no AbortSignal.
   private <R> R withElement(BiFunction<ElementHandle, Double, R> task, Double timeoutOption) {
     double timeout = frame.timeout(timeoutOption);
     double deadline = timeout != 0 ? monotonicTime() + timeout : 0;
@@ -104,13 +110,16 @@ class LocatorImpl implements Locator {
     }
   }
 
-  // java: upstream _equals(), used by page.ts; equals() so that Java collections and assertEquals agree.
+  boolean equals(LocatorImpl locator) {
+    return frame == locator.frame && selector.equals(locator.selector);
+  }
+
+  // java: equals(Object) so that Java collections and assertEquals agree with _equals().
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof LocatorImpl))
       return false;
-    LocatorImpl locator = (LocatorImpl) obj;
-    return frame == locator.frame && selector.equals(locator.selector);
+    return equals((LocatorImpl) obj);
   }
 
   @Override
@@ -174,6 +183,7 @@ class LocatorImpl implements Locator {
     frame.drop(selector, payload, options);
   }
 
+  // java: Locator.EvaluateOptions has no exposeFunctions, so no evaluate options reach h.evaluate().
   @Override
   public Object evaluate(String expression, Object arg, EvaluateOptions options) {
     return frame.withTitle("Evaluate", () -> withElement((h, timeout) -> h.evaluate(expression, arg), options == null ? null : options.timeout));
@@ -184,6 +194,7 @@ class LocatorImpl implements Locator {
     return frame.evalOnSelectorAll(selector, expression, arg);
   }
 
+  // java: Locator.EvaluateHandleOptions has no exposeFunctions, so no evaluate options reach h.evaluateHandle().
   @Override
   public JSHandle evaluateHandle(String expression, Object arg, EvaluateHandleOptions options) {
     return frame.withTitle("Evaluate", () -> withElement((h, timeout) -> h.evaluateHandle(expression, arg), options == null ? null : options.timeout));
@@ -201,12 +212,19 @@ class LocatorImpl implements Locator {
     frame.withTitle("Clear", () -> fill("", convertType(options, FillOptions.class)));
   }
 
-  // java: HighlightOptions.style is a string only, cssObjectToString() is not needed.
+  // java: _highlight is highlightImpl, highlight() is the public API; the omitted style is null.
+  void highlightImpl() {
+    // VS Code extension uses this one, keep it for now.
+    frame.highlight(selector, null);
+  }
+
+  // java: HighlightOptions.style is a String, never an object for cssObjectToString().
   @Override
   public AutoCloseable highlight(HighlightOptions options) {
     if (options == null)
       options = new HighlightOptions();
-    frame.highlight(selector, options.style);
+    String style = options.style;
+    frame.highlight(selector, style);
     return new DisposableStub(this::hideHighlight);
   }
 
@@ -232,15 +250,14 @@ class LocatorImpl implements Locator {
     return locator.locator(this);
   }
 
-  // java: testIdAttributeName() of locator.ts is a field of SelectorsImpl of the Playwright instance.
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(frame.connection.playwright.selectors.testIdAttributeName, testId));
+    return locator(getByTestIdSelector(testIdAttributeName(frame.connection.playwright.selectors), testId));
   }
 
   @Override
@@ -518,6 +535,16 @@ class LocatorImpl implements Locator {
     return frame.channel.ariaSnapshot(params, frame.timeout(options.timeout)).snapshot;
   }
 
+  // java: the options are those of ariaSnapshot(), the AriaSnapshotJSON result is a Gson JsonElement.
+  JsonElement ariaSnapshotJSON(AriaSnapshotOptions options) {
+    if (options == null)
+      options = new AriaSnapshotOptions();
+    FrameAriaSnapshotJSONParams params = Utils.toProtocol(options, FrameAriaSnapshotJSONParams.class);
+    params.selector = selector;
+    FrameAriaSnapshotJSONResult result = frame.channel.ariaSnapshotJSON(params, frame.timeout(options.timeout));
+    return result.snapshot;
+  }
+
   @Override
   public void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options) {
     ScrollIntoViewIfNeededOptions scrollOptions = options == null ? new ScrollIntoViewIfNeededOptions() : options;
@@ -680,6 +707,8 @@ class LocatorImpl implements Locator {
     return frame.expect(expression, options, title);
   }
 
+  // java: no _inspect, it serves inspect.custom.
+
   // java: there is no port of the locator generators. The text of the old Java client is kept,
   // tests pin it: the server's Java locator code after normalize(), the description, or Locator@<selector>.
   @Override
@@ -690,6 +719,38 @@ class LocatorImpl implements Locator {
     if (description != null)
       return description;
     return "Locator@" + selector;
+  }
+
+  // java: the module-level _testIdAttributeName is SelectorsImpl.testIdAttributeName of the Playwright instance,
+  // so testIdAttributeName() and setTestIdAttribute() take the selectors.
+  static String testIdAttributeName(SelectorsImpl selectors) {
+    return selectors.testIdAttributeName;
+  }
+
+  static void setTestIdAttribute(SelectorsImpl selectors, String attributeName) {
+    selectors.testIdAttributeName = attributeName;
+  }
+
+  // java: a Record<string, string | number> is a Map of String or Number values.
+  static String cssObjectToString(Map<String, Object> style) {
+    List<String> entries = new ArrayList<>();
+    for (Map.Entry<String, Object> entry : style.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+      String property;
+      if (key.startsWith("--")) {
+        property = key;
+      } else {
+        Matcher m = Pattern.compile("[A-Z]").matcher(key);
+        StringBuffer buffer = new StringBuffer();
+        while (m.find())
+          m.appendReplacement(buffer, Matcher.quoteReplacement("-" + m.group().toLowerCase()));
+        m.appendTail(buffer);
+        property = buffer.toString();
+      }
+      entries.add(property + ": " + value);
+    }
+    return String.join("; ", entries);
   }
 
   // java: helpers and members with no upstream counterpart.

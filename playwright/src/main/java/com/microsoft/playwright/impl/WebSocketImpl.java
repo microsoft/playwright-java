@@ -37,6 +37,8 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
   final WebSocketChannel channel = new WebSocketChannel(this);
   private final WebSocketInitializer webSocketInitializer;
 
+  // java: from is not ported, generated results already hold the impl object.
+
   WebSocketImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     webSocketInitializer = connection.protocolGson().fromJson(initializer, WebSocketInitializer.class);
@@ -163,4 +165,6 @@ public class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
     return waitForEvent(Events.WebSocket.FRAME_SENT, options.predicate, options.timeout, callback);
   }
+
+  // java: validateHeaders of network.ts is RawHeaders.validateHeaders, BrowserContextImpl and PageImpl call it there.
 }
