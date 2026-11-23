@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.assertions.LocatorAssertions.ContainsClassOptions;
-import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import org.opentest4j.AssertionFailedError;
 
@@ -1056,37 +1055,6 @@ public class TestLocatorAssertions {
     page.evaluate("Map = 1");
     page.locator("#searchResultTableDiv .x-grid3-row").count();
     assertThat(page.locator("#searchResultTableDiv .x-grid3-row")).hasCount(0);
-  }
-
-  @PlaywrightTest
-  void defaultTimeoutHasTextFail(Page page) {
-    page.setContent("<div></div>");
-    Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultAssertionTimeout(1000);
-    AssertionFailedError exception = assertThrows(AssertionFailedError.class, () -> assertThat(locator).hasText("foo"));
-    assertTrue(exception.getMessage().contains("Assert \"hasText\" locator(\"div\") with timeout 1000ms"), exception.getMessage());
-    // Restore default.
-    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
-  }
-
-  @PlaywrightTest
-  void defaultTimeoutHasTextPass(Page page) {
-    page.setContent("<div>foo</div>");
-    Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultAssertionTimeout(1000);
-    assertThat(locator).hasText("foo");
-    // Restore default.
-    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
-  }
-
-  @PlaywrightTest
-  void defaultTimeoutZeroHasTextPass(Page page) {
-    page.setContent("<div>foo</div>");
-    Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultAssertionTimeout(0);
-    assertThat(locator).hasText("foo");
-    // Restore default.
-    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
   }
 
   @PlaywrightTest

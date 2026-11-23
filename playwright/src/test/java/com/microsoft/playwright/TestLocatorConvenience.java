@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static java.util.Arrays.asList;
@@ -234,5 +236,20 @@ public class TestLocatorConvenience {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div").describe("my div");
     assertEquals("my div", locator.toString());
+  }
+
+  @PlaywrightTest
+  void toStringShouldNotThrowWhenTheConnectionIsClosed(BrowserName browserName) {
+    Locator locator;
+    Locator described;
+    try (Playwright playwright = Playwright.create();
+         Browser browser = browserName.browserType(playwright).launch(Env.launchOptions());
+         Page page = browser.newPage()) {
+      locator = page.locator("div");
+      described = page.locator("div").describe("my div");
+      assertEquals("locator(\"div\")", locator.toString());
+    }
+    assertEquals("Locator@div", locator.toString());
+    assertEquals("my div", described.toString());
   }
 }
