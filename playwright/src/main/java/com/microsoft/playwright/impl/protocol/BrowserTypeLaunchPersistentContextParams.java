@@ -65,6 +65,7 @@ public class BrowserTypeLaunchPersistentContextParams {
   public String baseURL;
   public BrowserTypeLaunchPersistentContextParamsRecordVideo recordVideo;
   public Boolean strictSelectors;
+  public Boolean locateOnlyVisible;
   public String serviceWorkers;
   public List<SelectorEngine> selectorEngines;
   public String testIdAttributeName;

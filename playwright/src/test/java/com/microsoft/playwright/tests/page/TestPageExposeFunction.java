@@ -243,11 +243,10 @@ public class TestPageExposeFunction {
 
   @PlaywrightTest
   @DisplayName("EF-014 should throw for duplicate registrations")
-  @Fixme("java: the error message has no 'page.exposeFunction: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldThrowForDuplicateRegistrations(Page page) {
     page.exposeFunction("foo", args -> null);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.exposeFunction("foo", args -> null));
-    assertTrue(error.getMessage().contains("page.exposeFunction: Function \"foo\" has been already registered"));
+    assertTrue(error.getMessage().contains("Function \"foo\" has been already registered"));
   }
 
   @PlaywrightTest

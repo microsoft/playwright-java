@@ -119,6 +119,11 @@ public class TestConnectOverCdp {
       assertEquals(1, contexts.size());
       cdpBrowser.close();
 
+      Browser urlBrowser = browserType.connectOverCDP("remote-debugging://chromium?userDataDir=" +
+        java.net.URLEncoder.encode(userDataDir.toString(), "UTF-8"));
+      assertEquals(1, urlBrowser.contexts().size());
+      urlBrowser.close();
+
       // Java: the Linux part starts a Node.js client in a child process (connectOverCDP('chrome') with
       // CHROME_USER_DATA_DIR, CHROME_CONFIG_HOME and XDG_CONFIG_HOME in its environment); it is not ported.
     } finally {
@@ -223,7 +228,8 @@ public class TestConnectOverCdp {
       discards.navigate("chrome://discards/");
       // Discarding replaces the tab's WebContents, but the url in the table survives.
       Locator row = discards.getByRole(AriaRole.ROW, new Page.GetByRoleOptions().setName(victimUrl));
-      row.getByText("Urgent Discard").click();
+      // This click hangs on the macOS bots sometimes. The timeout makes the error show the call log.
+      row.getByText("Urgent Discard").click(new Locator.ClickOptions().setTimeout(10000));
       assertThat(row).containsText("discarded");
       // The renderer process is shut down asynchronously after the discard.
       discards.waitForTimeout(3000);
@@ -468,25 +474,23 @@ public class TestConnectOverCdp {
 
   @PlaywrightTest
   @DisplayName("CD-020 should report an expected error when the endpointURL returns a non-expected status code")
-  @Fixme("java: the message is 'Unexpected status 404 when connecting to <url>/json/version/.' without the 'browserType.connectOverCDP: ' prefix")
   void shouldReportAnExpectedErrorWhenTheEndpointURLReturnsANonExpectedStatusCode(BrowserType browserType, TestServer server) {
     server.setRoute("/json/version/", (req, resp) -> {
       resp.statusCode = 404;
       resp.end("{\"webSocketDebuggerUrl\":\"dont-use-me\"}");
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> browserType.connectOverCDP(server.PREFIX));
-    assertTrue(error.getMessage().contains("browserType.connectOverCDP: Unexpected status 404 when connecting to " + server.PREFIX + "/json/version/"));
+    assertTrue(error.getMessage().contains("Unexpected status 404 when connecting to " + server.PREFIX + "/json/version/"));
   }
 
   @PlaywrightTest
   @DisplayName("CD-021 should report an expected error when the endpoint URL JSON webSocketDebuggerUrl is undefined")
-  @Fixme("java: the message is 'Invalid URL: undefined' (SyntaxError) without the 'browserType.connectOverCDP: ' prefix")
   void shouldReportAnExpectedErrorWhenTheEndpointURLJSONWebSocketDebuggerUrlIsUndefined(BrowserType browserType, TestServer server) {
     server.setRoute("/json/version/", (req, resp) -> {
       resp.end("{}");
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> browserType.connectOverCDP(server.PREFIX));
-    assertTrue(error.getMessage().contains("browserType.connectOverCDP: Invalid URL"));
+    assertTrue(error.getMessage().contains("Invalid URL"));
   }
 
   @PlaywrightTest

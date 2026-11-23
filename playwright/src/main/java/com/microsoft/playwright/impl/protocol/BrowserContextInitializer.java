@@ -53,6 +53,7 @@ public class BrowserContextInitializer {
     public String baseURL;
     public BrowserContextInitializerOptionsRecordVideo recordVideo;
     public Boolean strictSelectors;
+    public Boolean locateOnlyVisible;
     public String serviceWorkers;
     public List<SelectorEngine> selectorEngines;
     public String testIdAttributeName;

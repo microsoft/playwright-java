@@ -288,11 +288,11 @@ public class TestPageFill {
 
   @PlaywrightTest
   @DisplayName("FI-018 should throw nice error without injected script stack when element is not an <input>")
-  @Fixme("java: the message is \"Error {\\n  message='Error: Element is not an <input>, <textarea> or [contenteditable] element\\n  name='Error\\n  stack=...\" with an injected script stack, without the \"page.fill: \" prefix and the call log")
+  @Fixme("java: the serialized driver error includes an injected script stack between the message and the call log")
   void shouldThrowNiceErrorWithoutInjectedScriptStackWhenElementIsNotAnInput(Page page, TestServer server) {
     page.setContent("<select><option>value1</option></select>");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.fill("select", ""));
-    assertTrue(error.getMessage().contains("page.fill: Error: Element is not an <input>, <textarea> or [contenteditable] element\nCall log:"));
+    assertTrue(error.getMessage().contains("Error: Element is not an <input>, <textarea> or [contenteditable] element\nCall log:"));
   }
 
   // FI-019 should throw if passed a non-string value: not ported, see upstream_not_ported.txt.

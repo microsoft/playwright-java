@@ -18,13 +18,19 @@ package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
+import com.microsoft.playwright.options.LoadState;
+import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.DisplayName;
 
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/page/page-event-popup.spec.ts. */
 public class TestPageEventPopup {
@@ -164,5 +170,32 @@ public class TestPageEventPopup {
       frame.evaluate("() => window.open('')");
     });
     assertNotNull(popup);
+  }
+
+  @PlaywrightTest
+  @DisplayName("PO-030 should finish loading after opening a popup while a cross-site iframe is loading")
+  void shouldFinishLoadingAfterOpeningAPopupWhileACrossSiteIframeIsLoading(Page page, TestServer server, BrowserName browserName) {
+    assumeFalse(Env.isHeadlessShell(browserName), "fixme: Without site isolation, which is the default in headless shell, the opener never fires the load event");
+
+    CompletableFuture<Void> frameMayFinish = new CompletableFuture<>();
+    server.setRoute("/frame.html", (req, res) -> {
+      frameMayFinish.get();
+      res.setHeader("Content-Type", "text/html");
+      res.end("<body>frame</body>");
+    });
+    server.setRoute("/opener.html", (req, res) -> {
+      res.setHeader("Content-Type", "text/html");
+      res.end("\n" +
+        "      <iframe src=\"" + server.CROSS_PROCESS_PREFIX + "/frame.html\"></iframe>\n" +
+        "      <script>window.open('" + server.EMPTY_PAGE + "')</script>\n" +
+        "    ");
+    });
+
+    Page popup = page.waitForPopup(() -> page.navigate(server.PREFIX + "/opener.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.COMMIT)));
+    // The iframe is still loading when the popup opens.
+    frameMayFinish.complete(null);
+    popup.waitForLoadState(LoadState.LOAD);
+    page.waitForLoadState(LoadState.LOAD);
+    assertEquals("complete", page.evaluate("() => document.readyState"));
   }
 }

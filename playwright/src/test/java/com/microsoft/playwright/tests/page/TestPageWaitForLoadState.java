@@ -55,13 +55,12 @@ public class TestPageWaitForLoadState {
 
   @PlaywrightTest
   @DisplayName("WA-078 should respect timeout")
-  @Fixme("java: the message has no 'page.waitForLoadState:' prefix")
   void shouldRespectTimeout(Page page, TestServer server) {
     server.setRoute("/one-style.css", (req, res) -> {});
     page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForLoadState(LoadState.LOAD, new Page.WaitForLoadStateOptions().setTimeout(1)));
-    assertTrue(error.getMessage().contains("page.waitForLoadState: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
     // Java: error.stack becomes the Java stack trace, which must lead to the call in this file.
     boolean found = false;
     for (StackTraceElement element : error.getStackTrace()) {

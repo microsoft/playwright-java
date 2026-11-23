@@ -29,7 +29,9 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /** Port of tests/library/browsercontext-network-event.spec.ts. */
 public class TestBrowsercontextNetworkEvent {
@@ -180,4 +183,27 @@ public class TestBrowsercontextNetworkEvent {
     assertFalse(events.stream().anyMatch(e -> e.contains(hashedFaviconUrl)));
   }
 
+  @PlaywrightTest
+  @DisplayName("NE-144 should not wait for navigation after background cache revalidation")
+  void shouldNotWaitForNavigationAfterBackgroundCacheRevalidation(BrowserContext context, TestServer server) {
+    server.setRoute("/swr.html", (req, res) -> {
+      Map<String, String> headers = new LinkedHashMap<>();
+      headers.put("Content-Type", "text/html");
+      headers.put("Cache-Control", "s-maxage=900, stale-while-revalidate=31535100");
+      headers.put("ETag", "\"v1\"");
+      if ("\"v1\"".equals(req.headers.get("if-none-match"))) {
+        res.writeHead(304, headers);
+        res.end();
+        return;
+      }
+      res.writeHead(200, headers);
+      res.end("<h1>Hello</h1>");
+    });
+    Page page1 = context.newPage();
+    page1.navigate(server.PREFIX + "/swr.html");
+    Page page2 = context.newPage();
+    page2.navigate(server.PREFIX + "/swr.html");
+    page2.waitForTimeout(1000);
+    assertThat(page2.locator("h1")).hasText("Hello");
+  }
 }

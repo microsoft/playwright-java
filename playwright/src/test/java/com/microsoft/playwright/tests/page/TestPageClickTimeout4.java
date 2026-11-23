@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPageClickTimeout4 {
   @PlaywrightTest
   @DisplayName("CL-120 should timeout waiting for stable position")
-  @Fixme("java: the error message has no 'elementHandle.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWaitingForStablePosition(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
@@ -50,7 +49,7 @@ public class TestPageClickTimeout4 {
     rafraf(page);
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> button.click(new ElementHandle.ClickOptions().setTimeout(3000)));
-    assertTrue(error.getMessage().contains("elementHandle.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
     assertTrue(error.getMessage().contains("waiting for element to be visible, enabled and stable"));
     assertTrue(error.getMessage().contains("element is not stable"));
     assertTrue(error.getMessage().contains("retrying click action"));

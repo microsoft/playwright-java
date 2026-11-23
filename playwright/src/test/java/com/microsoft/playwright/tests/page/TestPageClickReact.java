@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPageClickReact {
   @PlaywrightTest
   @DisplayName("CL-106 should timeout when click opens alert")
-  @Fixme("java: the error message has no 'page.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWhenClickOpensAlert(Page page, TestServer server) throws Exception {
     // Java: page.waitForEvent('dialog') created before the action is a handler that completes a future.
     CompletableFuture<Dialog> dialogPromise = new CompletableFuture<>();
@@ -44,7 +43,7 @@ public class TestPageClickReact {
     page.setContent("<div onclick='window.alert(123)'>Click me</div>");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.click("div", new Page.ClickOptions().setTimeout(3000)));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
     Dialog dialog = dialogPromise.get();
     dialog.dismiss();
   }

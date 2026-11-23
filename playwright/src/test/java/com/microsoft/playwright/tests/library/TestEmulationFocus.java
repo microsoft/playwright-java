@@ -39,6 +39,7 @@ import java.util.concurrent.Callable;
 
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/emulation-focus.spec.ts. */
@@ -287,5 +288,28 @@ public class TestEmulationFocus {
     for (Page page : Arrays.asList(page1, page2, page3)) {
       assertEquals(2, page.evaluate("window.clicked"));
     }
+  }
+
+  @PlaywrightTest
+  @DisplayName("EM-028 should keep mouse drag when interacting with another page/context")
+  void shouldKeepMouseDragWhenInteractingWithAnotherPageContext(ContextFactory contextFactory) {
+    assumeFalse(Env.headed(), "Stray mouse events mess up the test");
+    Page page1 = contextFactory.newContext().newPage();
+    Page page2 = contextFactory.newContext().newPage();
+    for (Page page : Arrays.asList(page1, page2)) {
+      page.setContent("\n" +
+        "      <body style=\"margin: 0\">\n" +
+        "        <input type=\"range\" style=\"margin: 0; width: 200px; height: 20px\" onchange=\"window.changed = true\">\n" +
+        "      </body>\n" +
+        "    ");
+    }
+    page1.mouse().move(100, 10);
+    page1.mouse().down();
+    page1.mouse().move(150, 10);
+    page2.mouse().move(50, 50);
+    page1.mouse().move(180, 10);
+    page1.mouse().up();
+    assertEquals(true, page1.evaluate("() => !!window['changed']"));
+    assertTrue(Double.parseDouble(page1.locator("input").inputValue()) > 80);
   }
 }

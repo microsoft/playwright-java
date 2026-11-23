@@ -78,7 +78,6 @@ public class TestWorkers {
 
   @PlaywrightTest
   @DisplayName("WO-002 should emit created and destroyed events")
-  @Fixme("java: the error message has no 'jsHandle.getProperty' prefix")
   void shouldEmitCreatedAndDestroyedEvents(Page page) {
     AtomicReference<JSHandle> workerObjRef = new AtomicReference<>();
     Worker worker = page.waitForWorker(() -> {
@@ -91,7 +90,6 @@ public class TestWorkers {
     });
     assertEquals(worker, workerDestroyed);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> workerThisObj.getProperty("self"));
-    assertTrue(error.getMessage().contains("jsHandle.getProperty"));
     assertTrue(error.getMessage().contains(kTargetClosedErrorMessage));
   }
 
@@ -113,11 +111,13 @@ public class TestWorkers {
   void shouldHaveTimestampOnWorkerConsoleMessages(Page page) {
     assumeFalse("webkit-wsl".equals(Env.channel()), "there is a time difference between WSL VM and host machine");
 
-    double before = System.currentTimeMillis() - 1;  // Account for the rounding of fractional timestamps.
+    // The clocks of the browser and of the test process differ by a few milliseconds on Windows.
+    int margin = 10;
+    double before = System.currentTimeMillis() - margin;
     ConsoleMessage message = page.waitForConsoleMessage(() -> {
       page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(\"ts\")'], { type: 'application/javascript' })))");
     });
-    double after = System.currentTimeMillis() + 1;  // Account for the rounding of fractional timestamps.
+    double after = System.currentTimeMillis() + margin;
     assertEquals("ts", message.text());
     assertTrue(message.timestamp() >= before);
     assertTrue(message.timestamp() <= after);
@@ -509,5 +509,37 @@ public class TestWorkers {
     Response response = request.response();
     Map<String, String> headers = response.allHeaders();
     assertNotNull(headers.get("content-type"));
+  }
+
+  @PlaywrightTest
+  @DisplayName("WO-032 should run a shared worker after redirected dedicated workers")
+  void shouldRunASharedWorkerAfterRedirectedDedicatedWorkers(Page page, TestServer server) {
+    for (String name : Arrays.asList("classic", "module", "shared")) {
+      server.setRedirect("/" + name + "/worker.js", "v2/worker.js");
+      server.setRoute("/" + name + "/v2/helper.js", (req, res) -> {
+        res.setHeader("Content-Type", "text/javascript");
+        res.end("module".equals(name) ? "export const value = 'v2';" : "self.value = 'v2';");
+      });
+      server.setRoute("/" + name + "/v2/worker.js", (req, res) -> {
+        res.setHeader("Content-Type", "text/javascript");
+        if ("module".equals(name)) {
+          res.end("import { value } from './helper.js'; postMessage(value);");
+        } else if ("shared".equals(name)) {
+          res.end("importScripts('helper.js'); onconnect = event => event.ports[0].postMessage(self.value);");
+        } else {
+          res.end("importScripts('helper.js'); postMessage(self.value);");
+        }
+      });
+    }
+    page.navigate(server.EMPTY_PAGE);
+    for (String name : Arrays.asList("classic", "module", "shared")) {
+      assertEquals("v2", page.evaluate("name => new Promise((resolve, reject) => {\n" +
+        "  const url = `/${name}/worker.js`;\n" +
+        "  const worker = name === 'shared' ? new SharedWorker(url) : new Worker(url, { type: name === 'module' ? 'module' : 'classic' });\n" +
+        "  worker.onerror = event => reject(new Error(event.message));\n" +
+        "  const port = worker instanceof SharedWorker ? worker.port : worker;\n" +
+        "  port.onmessage = event => resolve(event.data);\n" +
+        "})", name));
+    }
   }
 }

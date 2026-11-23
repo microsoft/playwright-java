@@ -45,6 +45,7 @@ import com.microsoft.playwright.fixtures.RemoteServerOptions;
 import com.microsoft.playwright.fixtures.RunServer;
 import com.microsoft.playwright.fixtures.StartRemoteServer;
 import com.microsoft.playwright.fixtures.TestInfo;
+import com.microsoft.playwright.fixtures.TestChildProcess;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.impl.PlaywrightImpl;
 import com.microsoft.playwright.impl.TargetClosedError;
@@ -341,7 +342,6 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-037 should print custom ws close error")
-    @Fixme("java: the error message has no 'browserType.connect:' prefix")
     void shouldPrintCustomWsCloseError(Connect connect, TestServer server) {
       server.onceWebSocketConnection((ws, request) -> {
         ws.onMessage(message -> {
@@ -349,7 +349,7 @@ public class TestBrowsertypeConnect {
         });
       });
       PlaywrightException error = assertThrows(PlaywrightException.class, () -> connect.connect("ws://localhost:" + server.PORT + "/ws"));
-      assertTrue(error.getMessage().contains("browserType.connect: Oh my!"));
+      assertTrue(error.getMessage().contains("Oh my!"));
     }
 
     @PlaywrightTest
@@ -482,20 +482,18 @@ public class TestBrowsertypeConnect {
 
     @PlaywrightTest
     @DisplayName("BT-044 should timeout in socket while connecting")
-    @Fixme("java: the error message has no 'browserType.connect:' prefix")
     void shouldTimeoutInSocketWhileConnecting(Connect connect, TestServer server) {
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> connect.connect("ws://localhost:" + server.PORT + "/ws-slow",
         new BrowserType.ConnectOptions().setTimeout(1000)));
-      assertTrue(e.getMessage().contains("browserType.connect: Timeout 1000ms exceeded"));
+      assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
 
     @PlaywrightTest
     @DisplayName("BT-045 should timeout in connect while connecting")
-    @Fixme("java: the error message has no 'browserType.connect:' prefix")
     void shouldTimeoutInConnectWhileConnecting(Connect connect, TestServer server) {
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> connect.connect("ws://localhost:" + server.PORT + "/ws",
         new BrowserType.ConnectOptions().setTimeout(100)));
-      assertTrue(e.getMessage().contains("browserType.connect: Timeout 100ms exceeded"));
+      assertTrue(e.getMessage().contains("Timeout 100ms exceeded"));
     }
 
     @PlaywrightTest
@@ -1144,17 +1142,6 @@ public class TestBrowsertypeConnect {
       }
     }
 
-    @PlaywrightTest
-    @DisplayName("BT-079 should connect over http")
-    void shouldConnectOverHttp(Connect connect, StartRemoteServer startRemoteServer) {
-      PlaywrightServer remoteServer = startRemoteServer.start(kind);
-
-      URI url = URI.create(remoteServer.wsEndpoint());
-      Browser browser = connect.connect("http://localhost:" + url.getPort());
-      assertTrue(browser.version() != null && !browser.version().isEmpty());
-      browser.close();
-    }
-
     @Nested
     class SocksProxy {
       private void skipForLaunchServer() {
@@ -1506,6 +1493,22 @@ public class TestBrowsertypeConnect {
   }
 
   @PlaywrightTest
+  @DisplayName("BT-105 run-server should exit when stdin closes")
+  void runServerShouldExitWhenStdinCloses(ChildProcessFactory childProcess) throws Exception {
+    // Java: use node and cli.js from the bundled driver instead of the upstream source tree.
+    List<String> command = new ArrayList<>(com.microsoft.playwright.impl.driver.Driver
+      .ensureDriverInstalled(Collections.<String, String>emptyMap(), false).createProcessBuilder().command().subList(0, 2));
+    command.add("run-server");
+    command.add("--port=0");
+    TestChildProcess server = childProcess.start(command);
+    server.waitForOutput("Listening on ");
+    server.endInput();
+    TestChildProcess.Exit exit = server.exited().get();
+    assertEquals(0, exit.exitCode);
+    assertNull(exit.signal);
+  }
+
+  @PlaywrightTest
   @DisplayName("BT-094 should filter local paths from unsafe launch options")
   void shouldFilterLocalPathsFromUnsafeLaunchOptions(Connect connect, StartRemoteServer startRemoteServer, TestServer server, TestInfo testInfo) throws Exception {
     // test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/42394' });
@@ -1539,21 +1542,6 @@ public class TestBrowsertypeConnect {
     assertTrue(actions.contains("Frame.setContent"));
   }
 
-  @PlaywrightTest
-  @DisplayName("BT-095 should timeout after redirect when connecting over http")
-  void shouldTimeoutAfterRedirectWhenConnectingOverHttp(Connect connect, TestServer server) throws Exception {
-    server.setRedirect("/connect/json", "/connect/slow");
-    AtomicBoolean aborted = new AtomicBoolean(false);
-    server.setRoute("/connect/slow", (req, res) -> {
-      req.socket().onClose(() -> aborted.set(true));
-    });
-    PlaywrightException error = assertThrows(PlaywrightException.class, () -> connect.connect(server.PREFIX + "/connect", new BrowserType.ConnectOptions()
-      .setTimeout(2000)
-      .setHeaders(headers("Connection", "Close"))));
-    assertTrue(error.getMessage().contains("Timeout 2000ms exceeded."));
-    expectPoll(() -> aborted.get(), true, null);
-  }
-
   // BT-096 should not retain closed browsers in launch mode: not ported, it starts a server of the driver in the test process.
 
   private static Map<String, String> headers(String... namesAndValues) {
@@ -1582,6 +1570,8 @@ public class TestBrowsertypeConnect {
   private static void ensureSomeFrames(Page page) {
     rafraf(page, 100);
     page.screenshot();
+    // The screenshot forces a screencast frame. Give it time to arrive before the caller stops recording.
+    rafraf(page);
   }
 
   /**

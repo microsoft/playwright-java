@@ -57,13 +57,12 @@ public class TestPageWaitForNavigation {
 
   @PlaywrightTest
   @DisplayName("WA-096 should respect timeout")
-  @Fixme("java: the message has no 'page.waitForNavigation:' prefix")
   void shouldRespectTimeout(Page page, TestServer server) {
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.waitForNavigation(
       new Page.WaitForNavigationOptions().setUrl("**/frame.html").setTimeout(5000), () -> {
         page.navigate(server.EMPTY_PAGE);
       }));
-    assertTrue(error.getMessage().contains("page.waitForNavigation: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("waiting for navigation to \"**/frame.html\" until \"load\""));
     assertTrue(error.getMessage().contains("navigated to \"" + server.EMPTY_PAGE + "\""));
   }

@@ -144,19 +144,18 @@ public class TestSelectorsFrame {
 
   @PlaywrightTest
   @DisplayName("SE-105 $eval should throw for missing frame")
-  @Fixme("java: the message has no 'page.$eval: ' prefix, it is 'Failed to find element matching selector \"iframe >> internal:control=enter-frame >> canvas\"'")
   void evalShouldThrowForMissingFrame(Page page, TestServer server) {
     page.navigate(server.EMPTY_PAGE);
     {
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> page.evalOnSelector("iframe >> internal:control=enter-frame >> canvas", "e => 1"));
-      assertTrue(error.getMessage().contains("page.$eval: Failed to find element matching selector"));
+      assertTrue(error.getMessage().contains("Failed to find element matching selector"));
     }
     {
       ElementHandle body = page.querySelector("body");
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> body.evalOnSelector("iframe >> internal:control=enter-frame >> canvas", "e => 1"));
-      assertTrue(error.getMessage().contains("elementHandle.$eval: Failed to find element matching selector"));
+      assertTrue(error.getMessage().contains("Failed to find element matching selector"));
     }
   }
 

@@ -117,8 +117,16 @@ public class TestHar {
     harSession.page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
     harSession.page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+
+    Page pageWithDialog = harSession.page.context().newPage();
+    CompletableFuture<com.microsoft.playwright.Dialog> dialog = new CompletableFuture<>();
+    pageWithDialog.onDialog(dialog::complete);
+    pageWithDialog.navigate("data:text/html,<body onload=\"alert(1)\">",
+      new Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.COMMIT));
+    pageWithDialog.waitForCondition(dialog::isDone);
+
     JsonObject log = harSession.getLog();
-    assertEquals(1, log.getAsJsonArray("pages").size());
+    assertEquals(2, log.getAsJsonArray("pages").size());
     JsonObject pageEntry = log.getAsJsonArray("pages").get(0).getAsJsonObject();
     assertTrue(truthy(pageEntry.get("id")));
     assertEquals("Hello", pageEntry.get("title").getAsString());

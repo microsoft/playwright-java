@@ -181,6 +181,12 @@ NE-098      Request.serviceWorker() is not in the Java API.
 # page/page-basic
 PA-010      java: concurrent: page.title while page.goto is pending
 PA-019      Iterates over the properties of the Node.js Page object with for...in and Symbol.iterator.
+# library/browsercontext-basic
+BC-084      The locateOnlyVisible context option is JavaScript-only (docs/src/api/params.md).
+# library/chromium/connect-over-cdp
+CD-054      maxPageAttachTime is a private Node.js connectOverCDP option, not in the Java API.
+# page/page-event-pageerror
+ER-022      java: concurrent: waiting for the fetch console event while page.goto is pending.
 # page/page-set-content
 PA-034      TODO harness: page.goto() runs with Utils.async while the test thread calls page.content(); the Java client is not thread safe (Connection.processOneMessage) and the run fails with "Object doesn't exist: response@...".
 PA-036      TODO harness: needs toImpl(page) to tamper with console.debug in the utility world of the driver.
@@ -455,8 +461,6 @@ VI-030      TODO harness: needs videoPlayer (./videoPlayer) to read the frames o
 CR-033      Calls browserType.launchServer(), which is not in the Java API.
 CR-034      Calls browserType.launchServer(), which is not in the Java API.
 # library/chromium/connect-to-worker
-CR-043      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
-CR-044      browserType._connectToWorker() is a private method of the Node.js client, and the test also needs the childProcess fixture (TODO harness: needs childProcess).
 # library/chromium/session
 CD-038      Passes the signal (AbortController) option to cdpSession.send(), which the Java CDPSession.send() does not have; TestBrowserContextCDPSession covers the timeout option.
 CD-040      Passes a BrowserContext and {} to newCDPSession() and checks the runtime type error; the Java newCDPSession() takes only a Page or a Frame.

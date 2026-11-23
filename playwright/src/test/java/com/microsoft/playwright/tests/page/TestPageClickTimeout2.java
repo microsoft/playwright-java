@@ -31,13 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPageClickTimeout2 {
   @PlaywrightTest
   @DisplayName("CL-114 should timeout waiting for display:none to be gone")
-  @Fixme("java: the error message has no 'page.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWaitingForDisplayNoneToBeGone(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.display = 'none'");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.click("button", new Page.ClickOptions().setTimeout(5000)));
-    assertTrue(error.getMessage().contains("page.click: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("waiting for element to be visible, enabled and stable"));
     assertTrue(error.getMessage().contains("element is not visible"));
     assertTrue(error.getMessage().contains("retrying click action"));
@@ -45,13 +44,12 @@ public class TestPageClickTimeout2 {
 
   @PlaywrightTest
   @DisplayName("CL-115 should timeout waiting for visibility:hidden to be gone")
-  @Fixme("java: the error message has no 'page.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWaitingForVisibilityHiddenToBeGone(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.visibility = 'hidden'");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.click("button", new Page.ClickOptions().setTimeout(5000)));
-    assertTrue(error.getMessage().contains("page.click: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("waiting for element to be visible, enabled and stable"));
     assertTrue(error.getMessage().contains("element is not visible"));
     assertTrue(error.getMessage().contains("retrying click action"));

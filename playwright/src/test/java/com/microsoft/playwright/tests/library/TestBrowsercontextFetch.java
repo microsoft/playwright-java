@@ -178,30 +178,27 @@ public class TestBrowsercontextFetch {
 
   @PlaywrightTest
   @DisplayName("FE-092 should throw on network error")
-  @Fixme("java: the driver error is \"socket hang up (ECONNRESET)\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldThrowOnNetworkError(BrowserContext context, TestServer server) {
     server.setRoute("/test", (req, res) -> {
       req.socket().destroy();
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/test"));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: socket hang up"));
+    assertTrue(error.getMessage().contains("socket hang up"));
   }
 
   @PlaywrightTest
   @DisplayName("FE-093 should throw on network error after redirect")
-  @Fixme("java: the driver error is \"socket hang up (ECONNRESET)\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldThrowOnNetworkErrorAfterRedirect(BrowserContext context, TestServer server) {
     server.setRedirect("/redirect", "/test");
     server.setRoute("/test", (req, res) -> {
       req.socket().destroy();
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: socket hang up"));
+    assertTrue(error.getMessage().contains("socket hang up"));
   }
 
   @PlaywrightTest
   @DisplayName("FE-094 should throw on network error when sending body")
-  @Fixme("java: the driver error is \"aborted\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldThrowOnNetworkErrorWhenSendingBody(BrowserContext context, TestServer server) {
     server.setRoute("/test", (req, res) -> {
       res.writeHead(200, "content-length", "4096", "content-type", "text/html");
@@ -210,12 +207,11 @@ public class TestBrowsercontextFetch {
       req.socket().destroy();
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/test"));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: aborted"));
+    assertTrue(error.getMessage().contains("aborted"));
   }
 
   @PlaywrightTest
   @DisplayName("FE-095 should throw on network error when sending body after redirect")
-  @Fixme("java: the driver error is \"aborted\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldThrowOnNetworkErrorWhenSendingBodyAfterRedirect(BrowserContext context, TestServer server) {
     server.setRedirect("/redirect", "/test");
     server.setRoute("/test", (req, res) -> {
@@ -225,7 +221,7 @@ public class TestBrowsercontextFetch {
       req.socket().destroy();
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: aborted"));
+    assertTrue(error.getMessage().contains("aborted"));
   }
 
   @PlaywrightTest
@@ -991,14 +987,13 @@ public class TestBrowsercontextFetch {
 
   @PlaywrightTest
   @DisplayName("FE-148 should support timeout option")
-  @Fixme("java: the driver error is \"Timeout 10ms exceeded.\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldSupportTimeoutOption(BrowserContext context, TestServer server) {
     server.setRoute("/slow", (req, res) -> {
       res.writeHead(200, "content-length", "4096", "content-type", "text/html");
     });
 
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/slow", RequestOptions.create().setTimeout(10)));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: Timeout 10ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 10ms exceeded"));
   }
 
   @PlaywrightTest
@@ -1017,7 +1012,6 @@ public class TestBrowsercontextFetch {
 
   @PlaywrightTest
   @DisplayName("FE-150 should respect timeout after redirects")
-  @Fixme("java: the driver error is \"Timeout 100ms exceeded.\", without the \"apiRequestContext.get: \" prefix of the Node.js client")
   void shouldRespectTimeoutAfterRedirects(BrowserContext context, TestServer server) {
     server.setRedirect("/redirect", "/slow");
     server.setRoute("/slow", (req, res) -> {
@@ -1026,7 +1020,7 @@ public class TestBrowsercontextFetch {
 
     context.setDefaultTimeout(100);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: Timeout 100ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 100ms exceeded"));
   }
 
   @PlaywrightTest

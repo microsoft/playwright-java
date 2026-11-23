@@ -64,7 +64,6 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     switch (event) {
       case "console": {
         WorkerConsoleEvent e = connection.protocolGson().fromJson(params, WorkerConsoleEvent.class);
-        // Note: we only receive console events here for workers from "chromium._connectToWorker".
         emit(Events.Worker.CONSOLE, new ConsoleMessageImpl(e, null, this));
         break;
       }
@@ -126,19 +125,6 @@ public class WorkerImpl extends ChannelOwner implements Worker {
     T result = waiter.waitForEvent(this, event, predicate, code);
     waiter.dispose();
     return result;
-  }
-
-  // java: the { reason } options are the protocol params.
-  void disconnect(WorkerDisconnectParams options) {
-    if (options == null) {
-      options = new WorkerDisconnectParams();
-    }
-    closeReason = options.reason;
-    try {
-      channel.disconnect(options, NO_TIMEOUT);
-    } catch (TargetClosedError e) {
-      return;
-    }
   }
 
   // java: typed on/off/waitFor overloads of the generated Worker interface.

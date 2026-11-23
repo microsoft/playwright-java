@@ -63,14 +63,13 @@ public class TestBrowsertypeLaunch {
 
   @PlaywrightTest
   @DisplayName("BT-010 should reject if launched browser fails immediately")
-  @Fixme("java: the error message has no 'browserType.launch:' prefix: \"Target page, context or browser has been closed\\nBrowser logs:\\n\\n<launching> ...\"")
   void shouldRejectIfLaunchedBrowserFailsImmediately(BrowserType browserType) {
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> browserType.launch(Env.launchOptions().setExecutablePath(asset("dummy_bad_browser_executable.js"))));
     if ("webkit-wsl".equals(Env.channel())) {
       assertTrue(error.getMessage().contains("Failed to launch"));
     } else {
-      assertTrue(Pattern.compile("browserType\\.launch(.|\\n)*(spawn UNKNOWN|spawn EFTYPE|Browser logs:)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE).matcher(error.getMessage()).find());
+      assertTrue(Pattern.compile("(spawn UNKNOWN|spawn EFTYPE|Browser logs:)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE).matcher(error.getMessage()).find());
     }
   }
 

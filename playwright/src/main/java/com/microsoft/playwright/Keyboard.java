@@ -28,6 +28,11 @@ import com.microsoft.playwright.options.*;
  * com.microsoft.playwright.Keyboard#up Keyboard.up()}, and {@link com.microsoft.playwright.Keyboard#insertText
  * Keyboard.insertText()} to manually fire events as if they were generated from a real keyboard.
  *
+ * <p> <strong>NOTE:</strong> Caps Lock state emulation is not supported. Pressing {@code CapsLock} dispatches keyboard events, but does not make
+ * subsequent lowercase input uppercase. To type uppercase text, pass uppercase characters to {@link
+ * com.microsoft.playwright.Locator#pressSequentially Locator.pressSequentially()} or {@link
+ * com.microsoft.playwright.Keyboard#type Keyboard.type()}.
+ *
  * <p> An example of holding down {@code Shift} in order to select and delete some text:
  * <pre>{@code
  * page.keyboard().type("Hello World!");

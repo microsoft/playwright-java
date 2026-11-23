@@ -23,6 +23,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.Fixme;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestServer;
 import org.junit.jupiter.api.DisplayName;
@@ -248,5 +249,14 @@ public class TestPageBasic {
   @DisplayName("PA-018 has navigator.webdriver set to true")
   void hasNavigatorWebdriverSetToTrue(Page page) {
     assertEquals(true, page.evaluate("() => navigator.webdriver"));
+  }
+
+  @PlaywrightTest
+  @DisplayName("PA-057 should prefix the error message with the api name")
+  @Fixme("java: the serialized driver error has no 'page.goto: ' prefix")
+  void shouldPrefixTheErrorMessageWithTheApiName(Page page, TestServer server) {
+    PlaywrightException error = assertThrows(PlaywrightException.class, () ->
+      page.navigate(server.PREFIX + "/empty.html", new Page.NavigateOptions().setTimeout(1)));
+    assertTrue(error.getMessage().contains("page.goto: Timeout 1ms exceeded."));
   }
 }

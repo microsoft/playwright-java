@@ -209,8 +209,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
     if (options.contentType != null) {
       headers.put("content-type", options.contentType);
-    } else if (json != null && !json.isJsonNull()) {
-      headers.put("content-type", "application/json");
+    } else if (json != null) {
+      headers.putIfAbsent("content-type", "application/json");
     } else if (options.path != null) {
       String mimeType = getMimeTypeForPath(options.path.toString());
       headers.put("content-type", mimeType != null ? mimeType : "application/octet-stream");

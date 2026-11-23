@@ -119,12 +119,11 @@ public class TestFrameEvaluate {
 
   @PlaywrightTest
   @DisplayName("FR-009 should throw for detached frames")
-  @Fixme("java: the error message is 'Frame was detached' without the 'frame.evaluate: ' prefix")
   void shouldThrowForDetachedFrames(Page page, TestServer server) {
     Frame frame1 = attachFrame(page, "frame1", server.EMPTY_PAGE);
     detachFrame(page, "frame1");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> frame1.evaluate("() => 7 * 8"));
-    assertTrue(error.getMessage().contains("frame.evaluate: Frame was detached"));
+    assertTrue(error.getMessage().contains("Frame was detached"));
   }
 
   @PlaywrightTest

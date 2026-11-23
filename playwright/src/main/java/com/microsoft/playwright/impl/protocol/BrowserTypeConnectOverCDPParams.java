@@ -27,6 +27,7 @@ public class BrowserTypeConnectOverCDPParams {
   public Boolean isLocal;
   public Boolean noDefaults;
   public Boolean isWebView;
+  public Double maxPageAttachTime;
   public String artifactsDir;
   public byte[] transport;
 }

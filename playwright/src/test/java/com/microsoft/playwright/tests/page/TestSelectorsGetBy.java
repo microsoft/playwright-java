@@ -108,6 +108,26 @@ public class TestSelectorsGetBy {
     assertEquals("INPUT", page.getByLabel("Name").evaluate("e => e.nodeName"));
     assertEquals("INPUT", page.mainFrame().getByLabel("Name").evaluate("e => e.nodeName"));
     assertEquals("INPUT", page.locator("div").getByLabel("Name").evaluate("e => e.nodeName"));
+
+    page.setContent("\n" +
+      "    <label for=\"city\">City</label><my-field id=\"city\" role=\"combobox\">Pick one</my-field>\n" +
+      "    <label>Street <my-field id=\"street\" role=\"combobox\">Pick one</my-field></label>\n" +
+      "  ");
+    page.evaluate("() => {\n" +
+      "  customElements.define('my-field', class extends HTMLElement {\n" +
+      "    static formAssociated = true;\n" +
+      "    constructor() {\n" +
+      "      super();\n" +
+      "      this.attachInternals();\n" +
+      "    }\n" +
+      "  });\n" +
+      "}");
+    assertEquals(asList("city", "street"), page.evaluate("() => [...document.querySelectorAll('label')].map(label => label.control?.id)"));
+    org.junit.jupiter.api.Assertions.assertAll(
+      () -> assertEquals(asList("city"), page.getByLabel("City").evaluateAll("elements => elements.map(e => e.id)")),
+      () -> assertEquals(asList("street"), page.getByLabel("Street").evaluateAll("elements => elements.map(e => e.id)")),
+      () -> assertEquals(asList("city"), page.getByRole(AriaRole.COMBOBOX, new Page.GetByRoleOptions().setName("City").setExact(true)).evaluateAll("elements => elements.map(e => e.id)")),
+      () -> assertEquals(asList("street"), page.getByRole(AriaRole.COMBOBOX, new Page.GetByRoleOptions().setName("Street").setExact(true)).evaluateAll("elements => elements.map(e => e.id)")));
   }
 
   @PlaywrightTest

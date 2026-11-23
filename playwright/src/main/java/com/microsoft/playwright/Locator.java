@@ -3700,6 +3700,8 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
+   * <p> Associated {@code <label>} elements are also supported for form-associated custom elements.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
@@ -3718,6 +3720,8 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
+   * <p> Associated {@code <label>} elements are also supported for form-associated custom elements.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
@@ -3733,6 +3737,8 @@ public interface Locator {
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
+   *
+   * <p> Associated {@code <label>} elements are also supported for form-associated custom elements.
    *
    * <p> <strong>Usage</strong>
    *
@@ -3751,6 +3757,8 @@ public interface Locator {
   /**
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
+   *
+   * <p> Associated {@code <label>} elements are also supported for form-associated custom elements.
    *
    * <p> <strong>Usage</strong>
    *

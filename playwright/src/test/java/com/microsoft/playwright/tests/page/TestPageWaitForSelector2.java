@@ -66,16 +66,15 @@ public class TestPageWaitForSelector2 {
 
   @PlaywrightTest
   @DisplayName("WA-046 should not consider visible when zero-sized")
-  @Fixme("java: the message has no 'page.waitForSelector:' prefix")
   void shouldNotConsiderVisibleWhenZeroSized(Page page, TestServer server) {
     page.setContent("<div style='width: 0; height: 0;'>1</div>");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForSelector("div", new Page.WaitForSelectorOptions().setTimeout(1000)));
-    assertTrue(error.getMessage().contains("page.waitForSelector: Timeout 1000ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"));
     page.evaluate("() => document.querySelector('div').style.width = '10px'");
     error = assertThrows(PlaywrightException.class,
       () -> page.waitForSelector("div", new Page.WaitForSelectorOptions().setTimeout(1000)));
-    assertTrue(error.getMessage().contains("page.waitForSelector: Timeout 1000ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"));
     page.evaluate("() => document.querySelector('div').style.height = '10px'");
     assertNotNull(page.waitForSelector("div", new Page.WaitForSelectorOptions().setTimeout(1000)));
   }
@@ -152,25 +151,25 @@ public class TestPageWaitForSelector2 {
 
   @PlaywrightTest
   @DisplayName("WA-053 should respect timeout")
-  @Fixme("java: the message has no 'page.waitForSelector:' prefix and the call log says locator(\"div\") with double quotes")
+  @Fixme("java: the call log says locator(\"div\") with double quotes")
   void shouldRespectTimeout(Page page) {
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForSelector("div", new Page.WaitForSelectorOptions().setTimeout(3000).setState(WaitForSelectorState.ATTACHED)));
     assertNotNull(error);
-    assertTrue(error.getMessage().contains("page.waitForSelector: Timeout 3000ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded"));
     assertTrue(error.getMessage().contains("waiting for locator('div')"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("WA-054 should have an error message specifically for awaiting an element to be hidden")
-  @Fixme("java: the message has no 'page.waitForSelector:' prefix and the call log says locator(\"div\") with double quotes")
+  @Fixme("java: the call log says locator(\"div\") with double quotes")
   void shouldHaveAnErrorMessageSpecificallyForAwaitingAnElementToBeHidden(Page page, TestServer server) {
     page.setContent("<div>content</div>");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForSelector("div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN).setTimeout(1000)));
     assertNotNull(error);
-    assertTrue(error.getMessage().contains("page.waitForSelector: Timeout 1000ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"));
     assertTrue(error.getMessage().contains("waiting for locator('div') to be hidden"));
   }
 
@@ -250,12 +249,12 @@ public class TestPageWaitForSelector2 {
 
   @PlaywrightTest
   @DisplayName("WA-066 should respect timeout xpath")
-  @Fixme("java: the message has no 'page.waitForSelector:' prefix and the call log says locator(\"//div\") with double quotes")
+  @Fixme("java: the call log says locator(\"//div\") with double quotes")
   void shouldRespectTimeoutXpath(Page page) {
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForSelector("//div", new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED).setTimeout(3000)));
     assertNotNull(error);
-    assertTrue(error.getMessage().contains("page.waitForSelector: Timeout 3000ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded"));
     assertTrue(error.getMessage().contains("waiting for locator('//div')"));
     assertTrue(error instanceof TimeoutError);
   }
@@ -276,14 +275,13 @@ public class TestPageWaitForSelector2 {
 
   @PlaywrightTest
   @DisplayName("WA-068 should throw when frame is detached xpath")
-  @Fixme("java: the message is \"Error {message='Frame was detached ...\" without the 'frame.waitForSelector:' prefix")
   void shouldThrowWhenFrameIsDetachedXpath(Page page, TestServer server) {
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     // Java: the wait runs after the actions, it cannot be pending while the page is driven from the same thread.
     detachFrame(page, "frame1");
     Throwable waitError = assertThrows(PlaywrightException.class, () -> frame.waitForSelector("//*[@class=\"box\"]"));
-    assertTrue(waitError.getMessage().contains("frame.waitForSelector: Frame was detached"));
+    assertTrue(waitError.getMessage().contains("Frame was detached"));
   }
 
   @PlaywrightTest

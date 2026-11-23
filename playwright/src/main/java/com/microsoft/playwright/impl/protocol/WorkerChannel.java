@@ -25,10 +25,6 @@ public class WorkerChannel {
     this.owner = owner;
   }
 
-  public void disconnect(WorkerDisconnectParams params, Double timeout) {
-    owner.sendMessage("disconnect", params, timeout);
-  }
-
   public WorkerEvaluateExpressionResult evaluateExpression(WorkerEvaluateExpressionParams params, Double timeout) {
     return owner.sendMessage("evaluateExpression", params, WorkerEvaluateExpressionResult.class, timeout);
   }

@@ -47,6 +47,7 @@ public class BrowserNewContextParams {
   public String baseURL;
   public BrowserNewContextParamsRecordVideo recordVideo;
   public Boolean strictSelectors;
+  public Boolean locateOnlyVisible;
   public String serviceWorkers;
   public List<SelectorEngine> selectorEngines;
   public String testIdAttributeName;

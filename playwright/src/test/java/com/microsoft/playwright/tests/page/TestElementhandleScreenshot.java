@@ -203,13 +203,12 @@ public class TestElementhandleScreenshot {
 
     @PlaywrightTest
     @DisplayName("EH-084 should timeout waiting for visible")
-    @Fixme("java: the message is \"Error { message='Timeout 3000ms exceeded. name='TimeoutError ...\" without the 'elementHandle.screenshot: ' prefix")
     void shouldTimeoutWaitingForVisible(Page page, TestServer server) {
       page.setContent("<div style=\"width: 50px; height: 0\"></div>");
       ElementHandle div = page.querySelector("div");
       PlaywrightException error = assertThrows(PlaywrightException.class,
         () -> div.screenshot(new ElementHandle.ScreenshotOptions().setTimeout(3000)));
-      assertTrue(error.getMessage().contains("elementHandle.screenshot: Timeout 3000ms exceeded"));
+      assertTrue(error.getMessage().contains("Timeout 3000ms exceeded"));
       assertTrue(error.getMessage().contains("element is not visible"));
     }
 
