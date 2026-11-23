@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
+// Port of matchers.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.assertions.APIResponseAssertions;
-import org.opentest4j.AssertionFailedError;
+import com.microsoft.playwright.impl.MatcherHint.MatcherMessageDetails;
+import com.microsoft.playwright.impl.MatcherHint.MatcherResult;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class APIResponseAssertionsImpl implements APIResponseAssertions {
-  private final APIResponse actual;
-  private final boolean isNot;
+import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
+
+// java: the matcher of an APIResponse, see LocatorAssertionsImpl.
+public class APIResponseAssertionsImpl extends AssertionsBase implements APIResponseAssertions {
+  private final APIResponseImpl actual;
 
   APIResponseAssertionsImpl(APIResponse response, boolean isNot) {
-    this.actual = response;
-    this.isNot = isNot;
+    super(isNot);
+    this.actual = (APIResponseImpl) response;
   }
 
   public APIResponseAssertionsImpl(APIResponse response) {
@@ -44,31 +47,39 @@ public class APIResponseAssertionsImpl implements APIResponseAssertions {
 
   @Override
   public void isOK() {
-    if (actual.ok() == !isNot) {
-      return;
-    }
-    String message = "Response status expected to be within [200..299] range, was " + actual.status();
-    if (isNot) {
-      message = message.replace("expected to", "expected not to");
-    }
-    List<String> logList = ((APIResponseImpl) actual).fetchLog();
-    String log = String.join("\n", logList);
-    if (!log.isEmpty()) {
-      log = "\nCall log:\n" + log;
-    }
+    callMatcherAsStep("isOK", state -> {
+      APIResponseImpl response = actual;
+      String matcherName = "isOK";
 
-    String contentType = actual.headers().get("content-type");
-    boolean isTextEncoding = contentType == null ? false : isTextualMimeType(contentType);
-    String responseText = "";
-    if (isTextEncoding) {
-      String text = actual.text();
-      if (text != null) {
-        responseText = "\nResponse text:\n" + (text.length() > 1000 ? text.substring(0, 1000) : text);
+      String contentType = response.headers().get("content-type");
+      boolean isTextEncoding = contentType != null && !contentType.isEmpty() && isTextualMimeType(contentType);
+      List<String> log = null;
+      String text = null;
+      if (state.isNot == response.ok()) {
+        log = response.fetchLog();
+        text = isTextEncoding ? response.text() : null;
       }
-    }
 
-    throw new AssertionFailedError(message + log + responseText);
+      List<String> finalLog = log;
+      String finalText = text;
+      MatcherResult result = new MatcherResult();
+      result.message = () -> {
+        MatcherMessageDetails details = new MatcherMessageDetails();
+        details.isNot = state.isNot;
+        details.promise = state.promise;
+        details.matcherName = matcherName;
+        details.receiver = "response";
+        details.expectation = "";
+        details.log = finalLog;
+        return formatMatcherMessage(details) + (finalText == null ? "" : "\nResponse text:\n" + (finalText.length() > 1000 ? finalText.substring(0, 1000) : finalText));
+      };
+
+      result.pass = response.ok();
+      return result;
+    });
   }
+
+  // java: isTextualMimeType of isomorphic/mimeType.ts.
   static boolean isTextualMimeType(String mimeType) {
     return Pattern.matches("^(text/.*?|application/(json|(x-)?javascript|xml.*?|ecmascript|graphql|x-www-form-urlencoded)|image/svg(\\+xml)?|application/.*?(\\+json|\\+xml))(;\\s*charset=.*)?$", mimeType);
   }

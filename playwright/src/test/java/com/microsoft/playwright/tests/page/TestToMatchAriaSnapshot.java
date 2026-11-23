@@ -74,13 +74,12 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-110 should fail page with timeout")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void shouldFailPageWithTimeout(Page page) {
     page.setContent("<h1>title</h1>");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
         "    - heading \"wrong\"\n" +
         "  ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(2000)));
-    assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+    assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
     assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  2000ms"));
     assertFalse(stripAnsi(e.getMessage()).contains("Locator"));
   }
@@ -217,7 +216,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-119 checked attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void checkedAttribute(Page page) {
     page.setContent("\n" +
         "    <input type='checkbox' checked />\n" +
@@ -239,7 +237,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - checkbox [checked=false]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -247,7 +245,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - checkbox [checked=mixed]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -261,7 +259,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-120 disabled attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void disabledAttribute(Page page) {
     page.setContent("\n" +
         "    <button disabled>Click me</button>\n" +
@@ -283,7 +280,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - button [disabled=false]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -297,7 +294,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-121 expanded attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void expandedAttribute(Page page) {
     page.setContent("\n" +
         "    <button aria-expanded=\"true\">Toggle</button>\n" +
@@ -319,7 +315,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - button [expanded=false]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -333,7 +329,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-122 level attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void levelAttribute(Page page) {
     page.setContent("\n" +
         "    <h2>Section Title</h2>\n" +
@@ -351,7 +346,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [level=3]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -365,7 +360,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-123 pressed attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"Timeout:  Nms\" line")
   void pressedAttribute(Page page) {
     page.setContent("\n" +
         "    <button aria-pressed=\"true\">Like</button>\n" +
@@ -387,7 +381,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - button [pressed=false]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -404,7 +398,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - button [pressed=true]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
       assertTrue(stripAnsi(e.getMessage()).contains("Timeout:  1000ms"));
     }
 
@@ -418,7 +412,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-124 selected attribute")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void selectedAttribute(Page page) {
     page.setContent("\n" +
         "    <table>\n" +
@@ -458,7 +451,7 @@ public class TestToMatchAriaSnapshot {
           "      - row [selected=false]\n" +
           "      - row [selected=false]\n" +
           "    ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Timeout: 1000ms\n" +
           "- Expected  - 2\n" +
@@ -549,7 +542,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-127 expected formatter")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void expectedFormatter(Page page) {
     page.setContent("\n" +
         "    <div>\n" +
@@ -566,7 +558,7 @@ public class TestToMatchAriaSnapshot {
 
     // Note that error message should not contain any regular expressions,
     // unlike the baseline generated by --update-snapshots.
-    assertTrue(stripAnsi(error.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+    assertTrue(stripAnsi(error.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
         "\n" +
         "Timeout: 1ms\n" +
         "- Expected  - 2\n" +
@@ -674,7 +666,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-129 should report error in YAML")
-  @Fixme("java: the error message is \"Page expected to match Aria snapshot\\nError: Aria snapshot must be a YAML sequence, elements starting with \\\" -\\\"\\nExpected: ...\" with the call log \"Assert \\\"matchesAriaSnapshot\\\" with timeout 5000ms\", not \"expect(page).toMatchAriaSnapshot(expected) failed\\n\\nExpected: ...\" with the call log \"Expect \\\"toMatchAriaSnapshot\\\" with timeout 10000ms\"")
   void shouldReportErrorInYAML(Page page) {
     page.setContent("<h1>title</h1>");
 
@@ -682,20 +673,20 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      heading \"title\"\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"heading \\\"title\\\"\"\n" +
           "Error: Aria snapshot must be a YAML sequence, elements starting with \" -\"\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading: a:\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading: a:\"\n" +
           "Error: Nested mappings are not allowed in compact mappings at line 1, column 12:\n" +
@@ -704,13 +695,12 @@ public class TestToMatchAriaSnapshot {
           "           ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
   }
 
   @PlaywrightTest
   @DisplayName("AR-130 should report error in YAML keys")
-  @Fixme("java: the error message is \"Page expected to match Aria snapshot\\nError: Unterminated string:\\n...\" with the call log \"Assert \\\"matchesAriaSnapshot\\\" with timeout 5000ms\", not \"expect(page).toMatchAriaSnapshot(expected) failed\\n\\nExpected: ...\" with the call log \"Expect \\\"toMatchAriaSnapshot\\\" with timeout 10000ms\"")
   void shouldReportErrorInYAMLKeys(Page page) {
     page.setContent("<h1>title</h1>");
 
@@ -718,7 +708,7 @@ public class TestToMatchAriaSnapshot {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading \"title\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading \\\"title\"\n" +
           "Error: Unterminated string:\n" +
@@ -727,14 +717,14 @@ public class TestToMatchAriaSnapshot {
           "              ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading /title\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading /title\"\n" +
           "Error: Unterminated regex:\n" +
@@ -743,14 +733,14 @@ public class TestToMatchAriaSnapshot {
           "              ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [level=a]\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading [level=a]\"\n" +
           "Error: Value of \"level\" attribute must be a number:\n" +
@@ -759,14 +749,14 @@ public class TestToMatchAriaSnapshot {
           "               ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [expanded=FALSE]\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading [expanded=FALSE]\"\n" +
           "Error: Value of \"expanded\" attribute must be a boolean:\n" +
@@ -775,14 +765,14 @@ public class TestToMatchAriaSnapshot {
           "                  ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [checked=foo]\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading [checked=foo]\"\n" +
           "Error: Value of \"checked\" attribute must be a boolean or \"mixed\":\n" +
@@ -791,14 +781,14 @@ public class TestToMatchAriaSnapshot {
           "                 ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [level=]\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading [level=]\"\n" +
           "Error: Value of \"level\" attribute must be a number:\n" +
@@ -807,14 +797,14 @@ public class TestToMatchAriaSnapshot {
           "               ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading [bogus]\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading [bogus]\"\n" +
           "Error: Unsupported attribute [bogus]:\n" +
@@ -823,14 +813,14 @@ public class TestToMatchAriaSnapshot {
           "         ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
 
     {
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
           "      - heading invalid\n" +
           "    "));
-      assertEquals("expect(page).toMatchAriaSnapshot(expected) failed\n" +
+      assertEquals("assertThat(page).matchesAriaSnapshot(expected) failed\n" +
           "\n" +
           "Expected: \"- heading invalid\"\n" +
           "Error: Unexpected input:\n" +
@@ -839,7 +829,7 @@ public class TestToMatchAriaSnapshot {
           "        ^\n" +
           "\n" +
           "Call log:\n" +
-          "  - Expect \"toMatchAriaSnapshot\" with timeout 10000ms\n", stripAnsi(error.getMessage()));
+          "  - Assert \"matchesAriaSnapshot\" with timeout 5000ms\n", stripAnsi(error.getMessage()));
     }
   }
 
@@ -878,7 +868,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-133 should not unshift actual template text")
-  @Fixme("java: the assertion error message has no \"- Expected  - N / + Received  + M\" diff with the \"+ - heading ...\" lines, only the Expected: and Received: dumps")
   void shouldNotUnshiftActualTemplateText(Page page) {
     page.setContent("\n" +
         "    <h1>title</h1>\n" +
@@ -895,7 +884,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-134 should not match what is not matched")
-  @Fixme("java: the assertion error message has no \"- Expected  - N / + Received  + M\" diff with the \"+ - heading ...\" lines, only the Expected: and Received: dumps")
   void shouldNotMatchWhatIsNotMatched(Page page) {
     page.setContent("<p>Text</p>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
@@ -923,7 +911,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-136 should detect unexpected children: equal")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void shouldDetectUnexpectedChildrenEqual(Page page) {
     page.setContent("\n" +
         "    <ul>\n" +
@@ -946,13 +933,12 @@ public class TestToMatchAriaSnapshot {
         "      - listitem: \"Three\"\n" +
         "  ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
 
-    assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+    assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
     assertTrue(stripAnsi(e.getMessage()).contains("+   - listitem: Two"));
   }
 
   @PlaywrightTest
   @DisplayName("AR-137 should detect unexpected children: deep-equal")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void shouldDetectUnexpectedChildrenDeepequal(Page page) {
     page.setContent("\n" +
         "    <ul>\n" +
@@ -988,13 +974,12 @@ public class TestToMatchAriaSnapshot {
         "          - listitem: 1.1\n" +
         "  ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
 
-    assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+    assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
     assertTrue(stripAnsi(e.getMessage()).contains("+       - listitem: \"1.2\""));
   }
 
   @PlaywrightTest
   @DisplayName("AR-138 should allow restoring contain mode inside deep-equal")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void shouldAllowRestoringContainModeInsideDeepequal(Page page) {
     page.setContent("\n" +
         "    <ul>\n" +
@@ -1015,7 +1000,7 @@ public class TestToMatchAriaSnapshot {
         "          - listitem: 1.1\n" +
         "  ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
 
-    assertTrue(stripAnsi(e.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+    assertTrue(stripAnsi(e.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
     assertTrue(stripAnsi(e.getMessage()).contains("+       - listitem: \"1.2\""));
 
     assertThat(page).matchesAriaSnapshot("\n" +
@@ -1030,7 +1015,6 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-139 top-level deep-equal")
-  @Fixme("java: the assertion error message has no \"- Expected  - N / + Received  + M\" diff with the \"+ - heading ...\" lines, only the Expected: and Received: dumps")
   void toplevelDeepequal(Page page) {
     page.setContent("\n" +
         "    <ul>\n" +
@@ -1078,14 +1062,13 @@ public class TestToMatchAriaSnapshot {
 
   @PlaywrightTest
   @DisplayName("AR-141 treat bad regex as a string")
-  @Fixme("java: the assertion error message starts with \"Page expected to match Aria snapshot\" (for a locator \"Locator expected to match Aria snapshot\"), not \"expect(page).toMatchAriaSnapshot(expected) failed\" and has no \"- Expected  - N / + Received  + M\" diff, only the Expected: and Received: dumps")
   void treatBadRegexAsAString(Page page) {
     page.setContent("<a href=\"/foo\">Log in</a>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page).matchesAriaSnapshot("\n" +
         "    - link \"Log in\":\n" +
         "      - /url: /[a/\n" +
         "  ", new PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1)));
-    assertTrue(stripAnsi(error.getMessage()).contains("expect(page).toMatchAriaSnapshot(expected) failed"));
+    assertTrue(stripAnsi(error.getMessage()).contains("assertThat(page).matchesAriaSnapshot(expected) failed"));
     assertTrue(stripAnsi(error.getMessage()).contains("-   - /url: /[a/"));
     assertTrue(stripAnsi(error.getMessage()).contains("+   - /url: /foo"));
   }

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
+// Port of matchers.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.assertions.PageAssertions;
+import com.microsoft.playwright.impl.protocol.ExpectedTextValue;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorAssertionsImpl.serializeExpectedTextValues;
+import static com.microsoft.playwright.impl.ToMatchAriaSnapshot.toMatchAriaSnapshot;
+import static com.microsoft.playwright.impl.ToMatchText.toMatchText;
 import static com.microsoft.playwright.impl.UrlMatcher.constructURLBasedOnBaseURL;
-import static com.microsoft.playwright.impl.Utils.convertType;
 
+// java: the matchers of a Page, see LocatorAssertionsImpl.
 public class PageAssertionsImpl extends AssertionsBase implements PageAssertions {
   private final PageImpl actualPage;
 
@@ -38,55 +43,64 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   }
 
   @Override
-  FrameExpectResult doExpect(String expression, FrameExpectOptions expectOptions, String title) {
-    FrameImpl frame = (FrameImpl) actualPage.mainFrame();
-    return frame.expect(expression, expectOptions, title);
-  }
-
-  @Override
-  public void hasTitle(String title, HasTitleOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.string = title;
-    expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.title", expected, title, "Page title expected to be", convertType(options, FrameExpectOptions.class), "Assert \"hasTitle\"");
-  }
-
-  @Override
-  public void hasTitle(Pattern pattern, HasTitleOptions options) {
-    ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertType(options, FrameExpectOptions.class), "Assert \"hasTitle\"");
-  }
-
-  @Override
-  public void hasURL(String url, HasURLOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    if (actualPage.context().baseUrl() != null) {
-      url = constructURLBasedOnBaseURL(actualPage.context().baseUrl().toString(), url);
-    }
-    expected.string = url;
-    expected.ignoreCase = shouldIgnoreCase(options);
-    expectImpl("to.have.url", expected, url, "Page URL expected to be", convertType(options, FrameExpectOptions.class), "Assert \"hasURL\"");
-  }
-
-  @Override
-  public void hasURL(Pattern pattern, HasURLOptions options) {
-    ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertType(options, FrameExpectOptions.class), "Assert \"hasURL\"");
-  }
-
-  @Override
-  public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions snapshotOptions) {
-    if (snapshotOptions == null) {
-      snapshotOptions = new MatchesAriaSnapshotOptions();
-    }
-    FrameExpectOptions options = convertType(snapshotOptions, FrameExpectOptions.class);
-    options.expectedValue = Serialization.serializeArgument(expected);
-    expectImpl("to.match.aria", options, expected, "Page expected to match Aria snapshot", "Assert \"matchesAriaSnapshot\"");
-  }
-
-  @Override
   public PageAssertions not() {
     return new PageAssertionsImpl(actualPage, !isNot);
   }
-}
 
+  @Override
+  public void hasTitle(String expected, HasTitleOptions options) {
+    toHaveTitle(expected, options);
+  }
+
+  @Override
+  public void hasTitle(Pattern expected, HasTitleOptions options) {
+    toHaveTitle(expected, options);
+  }
+
+  private void toHaveTitle(Object expected, HasTitleOptions options) {
+    callMatcherAsStep("hasTitle", state -> {
+      return toMatchText(state, "hasTitle", actualPage, "Page", (isNot, timeout) -> {
+        List<ExpectedTextValue> expectedText = serializeExpectedTextValues(new Object[] {expected}, null, true, null);
+        FrameExpectOptions expectOptions = new FrameExpectOptions();
+        expectOptions.expectedText = expectedText;
+        expectOptions.isNot = isNot;
+        expectOptions.timeout = timeout;
+        expectOptions.title = state.title;
+        return actualPage.mainFrame().expect("to.have.title", expectOptions);
+      }, expected, options == null ? null : options.timeout, false);
+    });
+  }
+
+  @Override
+  public void hasURL(String expected, HasURLOptions options) {
+    toHaveURL(expected, options);
+  }
+
+  @Override
+  public void hasURL(Pattern expected, HasURLOptions options) {
+    toHaveURL(expected, options);
+  }
+
+  // java: the public API has no URLPattern and no predicate, so toHaveURLWithPredicate of toHaveURL.ts is not ported.
+  private void toHaveURL(Object expectedParam, HasURLOptions options) {
+    callMatcherAsStep("hasURL", state -> {
+      String baseURL = actualPage.context().options.baseURL;
+      Object expected = expectedParam instanceof String ? constructURLBasedOnBaseURL(baseURL, (String) expectedParam) : expectedParam;
+      return toMatchText(state, "hasURL", actualPage, "Page", (isNot, timeout) -> {
+        List<ExpectedTextValue> expectedText = serializeExpectedTextValues(new Object[] {expected}, null, null, options == null ? null : options.ignoreCase);
+        FrameExpectOptions expectOptions = new FrameExpectOptions();
+        expectOptions.expectedText = expectedText;
+        expectOptions.isNot = isNot;
+        expectOptions.timeout = timeout;
+        expectOptions.title = state.title;
+        return actualPage.mainFrame().expect("to.have.url", expectOptions);
+      }, expected, options == null ? null : options.timeout, false);
+    });
+  }
+
+  // java: toMatchAriaSnapshot of toMatchAriaSnapshot.ts.
+  @Override
+  public void matchesAriaSnapshot(String expected, MatchesAriaSnapshotOptions options) {
+    callMatcherAsStep("matchesAriaSnapshot", state -> toMatchAriaSnapshot(state, actualPage, expected, options == null ? null : options.timeout));
+  }
+}

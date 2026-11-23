@@ -106,7 +106,6 @@ public class TestExpectToHaveValue {
 
     @PlaywrightTest
     @DisplayName("EX-308 exact match with text failure")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have values\nExpected: [R, G]\nReceived: [RR, GG]\n\nCall log:\n- Assert \"hasValues\" locator(\"select\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void exactMatchWithTextFailure(Page page) {
       page.setContent("\n" +
         "      <select multiple>\n" +
@@ -139,7 +138,6 @@ public class TestExpectToHaveValue {
 
     @PlaywrightTest
     @DisplayName("EX-310 fails when items not selected")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have values matching regex\nExpected: [R, G]\nReceived: [B]\n\nCall log:\n- Assert \"hasValues\" locator(\"select\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failsWhenItemsNotSelected(Page page) {
       page.setContent("\n" +
         "      <select multiple>\n" +

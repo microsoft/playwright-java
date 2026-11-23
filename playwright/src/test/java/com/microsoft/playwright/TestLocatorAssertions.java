@@ -69,7 +69,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("ex2", e.getExpected().getStringRepresentation());
     assertEquals("Text   content", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Locator expected to contain regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).containsText(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -116,7 +116,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("Text 2", e.getExpected().getStringRepresentation());
     assertEquals("Text   content", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Locator expected to have text matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasText(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -141,7 +141,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("Text", e.getExpected().getStringRepresentation());
     assertEquals("Text content", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasText(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -195,7 +195,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[]", e.getExpected().getStringRepresentation());
     assertEquals("[]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().hasText(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -222,8 +222,8 @@ public class TestLocatorAssertions {
     });
     assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
     assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have text\nExpected: [Text 1, Text 3, Extra]"), e.getMessage());
-    assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasText(expected) failed"), e.getMessage());
+    assertTrue(e.getMessage().contains("-   \"Extra\","), e.getMessage());
   }
 
   @PlaywrightTest
@@ -244,7 +244,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[Text 1, Text   \\d, Extra]", e.getExpected().getStringRepresentation());
     assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasText(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -271,7 +271,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("foo", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id'\nExpected: foo\nReceived: node"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasAttribute(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -290,7 +290,7 @@ public class TestLocatorAssertions {
     });
     assertEquals(".Nod..", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex\nExpected: .Nod..\nReceived: node"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasAttribute(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -309,7 +309,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("foo bar baz", e.getExpected().getStringRepresentation());
     assertEquals("bar baz", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasClass(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -328,7 +328,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("foo Z.*", e.getExpected().getStringRepresentation());
     assertEquals("bar baz", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasClass(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -347,7 +347,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[foo, bar, missing]", e.getExpected().getStringRepresentation());
     assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasClass(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -366,7 +366,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[fo.*, .ar, baz, extra]", e.getExpected().getStringRepresentation());
     assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasClass(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -385,7 +385,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("1", e.getExpected().getStringRepresentation());
     assertEquals("2", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have count"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasCount(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -412,7 +412,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("red", e.getExpected().getStringRepresentation());
     assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color'"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasCSS(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -431,7 +431,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("red", e.getExpected().getStringRepresentation());
     assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color' matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasCSS(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -450,7 +450,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("foo", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have ID"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasId(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -480,7 +480,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("1", e.getExpected().getStringRepresentation());
     assertEquals("2021", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasJSProperty(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -493,7 +493,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("{a=2}", e.getExpected().getStringRepresentation());
     assertEquals("{a=1, b=string}", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasJSProperty(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -505,7 +505,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("foo", e.getExpected().getStringRepresentation());
     assertEquals("node", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'id'"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasJSProperty(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -526,7 +526,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("Text2", e.getExpected().getStringRepresentation());
     assertEquals("Text content", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have value"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasValue(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -555,7 +555,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("Text2", e.getExpected().getStringRepresentation());
     assertEquals("Text content", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have value matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasValue(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -596,7 +596,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[R, G]", e.getExpected().getStringRepresentation());
     assertEquals("[RR, GG]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have values"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasValues(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -625,7 +625,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("[R, G]", e.getExpected().getStringRepresentation());
     assertEquals("[B]", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to have values matching regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).hasValues(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -669,7 +669,7 @@ public class TestLocatorAssertions {
     });
     assertEquals("checked", e.getExpected().getStringRepresentation());
     assertEquals("unchecked", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected to be\nExpected: checked"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).isChecked() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -682,7 +682,7 @@ public class TestLocatorAssertions {
 
     assertEquals("checked", e.getExpected().getStringRepresentation());
     assertEquals("checked", e.getActual().getStringRepresentation());
-    assertTrue(e.getMessage().contains("Locator expected not to be\nExpected: checked"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isChecked() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -698,7 +698,7 @@ public class TestLocatorAssertions {
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be\nExpected: unchecked"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isChecked({ checked: false }) failed"), error.getMessage());
   }
 
   @PlaywrightTest
@@ -715,9 +715,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isDisabled(new LocatorAssertions.IsDisabledOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be disabled"), e.getMessage());
+    assertEquals("disabled", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isDisabled() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -727,9 +726,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isDisabled(new LocatorAssertions.IsDisabledOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be disabled"), e.getMessage());
+    assertEquals("disabled", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isDisabled() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -746,9 +744,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be editable"), e.getMessage());
+    assertEquals("editable", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isEditable() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -757,7 +754,7 @@ public class TestLocatorAssertions {
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be readonly"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isEditable({ editable: false }) failed"), error.getMessage());
   }
 
   @PlaywrightTest
@@ -767,9 +764,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEditable(new LocatorAssertions.IsEditableOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be editable"), e.getMessage());
+    assertEquals("editable", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isEditable() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -822,9 +818,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEmpty(new LocatorAssertions.IsEmptyOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be empty"), e.getMessage());
+    assertEquals("empty", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isEmpty() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -834,9 +829,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEmpty(new LocatorAssertions.IsEmptyOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be empty"), e.getMessage());
+    assertEquals("empty", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isEmpty() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -853,9 +847,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be enabled"), e.getMessage());
+    assertEquals("enabled", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isEnabled() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -865,9 +858,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEnabled(new LocatorAssertions.IsEnabledOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be enabled"), e.getMessage());
+    assertEquals("enabled", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isEnabled() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -890,7 +882,7 @@ public class TestLocatorAssertions {
     Locator locator = page.locator("button");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setEnabled(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be disabled"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isEnabled({ enabled: false }) failed"), error.getMessage());
   }
 
   @PlaywrightTest
@@ -935,9 +927,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isFocused(new LocatorAssertions.IsFocusedOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be focused"), e.getMessage());
+    assertEquals("focused", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isFocused() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -948,9 +939,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isFocused(new LocatorAssertions.IsFocusedOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be focused"), e.getMessage());
+    assertEquals("focused", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isFocused() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -967,9 +957,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isHidden(new LocatorAssertions.IsHiddenOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be hidden"), e.getMessage());
+    assertEquals("hidden", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isHidden() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -979,9 +968,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isHidden(new LocatorAssertions.IsHiddenOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be hidden"), e.getMessage());
+    assertEquals("hidden", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isHidden() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -998,9 +986,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected to be visible"), e.getMessage());
+    assertEquals("visible", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).isVisible() failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -1009,7 +996,7 @@ public class TestLocatorAssertions {
     Locator locator = page.locator("input");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setVisible(false).setTimeout(1000)));
-    assertTrue(error.getMessage().contains("Locator expected to be hidden"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isVisible({ visible: false }) failed"), error.getMessage());
   }
 
   @PlaywrightTest
@@ -1019,9 +1006,8 @@ public class TestLocatorAssertions {
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(1000));
     });
-    assertNull(e.getExpected());
-    assertNull(e.getActual());
-    assertTrue(e.getMessage().contains("Locator expected not to be visible"), e.getMessage());
+    assertEquals("visible", e.getExpected().getValue());
+    assertTrue(e.getMessage().contains("assertThat(locator).not().isVisible() failed"), e.getMessage());
   }
 
   @PlaywrightTest

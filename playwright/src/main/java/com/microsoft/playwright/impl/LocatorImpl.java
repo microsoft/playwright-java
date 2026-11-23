@@ -692,9 +692,9 @@ class LocatorImpl implements Locator {
   }
 
   // java: upstream options.title is the separate title parameter, as in FrameImpl.expect.
-  FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
+  FrameExpectResult expect(String expression, FrameExpectOptions options) {
     options.selector = selector;
-    return frame.expect(expression, options, title);
+    return frame.expect(expression, options);
   }
 
   // java: no _inspect, it serves inspect.custom.

@@ -344,7 +344,7 @@ public class TestPageAriaSnapshot {
     AssertionFailedError e = assertThrows(AssertionFailedError.class,
       () -> assertThat(page).matchesAriaSnapshot("- heading \"world\"",
         new com.microsoft.playwright.assertions.PageAssertions.MatchesAriaSnapshotOptions().setTimeout(1000)));
-    org.junit.jupiter.api.Assertions.assertTrue(e.getMessage().contains("Page expected to match Aria snapshot"), e.getMessage());
+    org.junit.jupiter.api.Assertions.assertTrue(e.getMessage().contains("assertThat(page).matchesAriaSnapshot(expected) failed"), e.getMessage());
   }
 
 }

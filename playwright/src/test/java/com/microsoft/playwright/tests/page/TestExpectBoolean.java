@@ -87,19 +87,18 @@ public class TestExpectBoolean {
 
     @PlaywrightTest
     @DisplayName("EX-006 fail")
-    @Fixme("java: the message is the Java assertion format, 'Locator expected to be\\nExpected: checked\\nReceived: unchecked\\n\\nCall log:\\n  - Assert \"isChecked\" locator(\"input\") with timeout 1000ms ...', not the 'expect(locator).toBeChecked() failed' message of the Node.js client")
     void fail(Page page) {
       page.setContent("<input type=checkbox></input>");
       Locator locator = page.locator("input");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toBeChecked() failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).isChecked() failed\n" +
         "\n" +
-        "Locator:  locator('input')\n" +
+        "Locator:  locator(\"input\")\n" +
         "Expected: checked\n" +
         "Received: unchecked\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toBeChecked\" locator('input') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"isChecked\" locator(\"input\") with timeout 1000ms"));
     }
 
     @PlaywrightTest
@@ -120,75 +119,71 @@ public class TestExpectBoolean {
 
     @PlaywrightTest
     @DisplayName("EX-009 fail with not")
-    @Fixme("java: the message is the Java assertion format, 'Locator expected to be\\nExpected: checked\\nReceived: unchecked\\n\\nCall log:\\n  - Assert \"isChecked\" locator(\"input\") with timeout 1000ms ...', not the 'expect(locator).not.toBeChecked() failed' message of the Node.js client")
     void failWithNot(Page page) {
       page.setContent("<input type=checkbox checked></input>");
       Locator locator = page.locator("input");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).not().isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toBeChecked() failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().isChecked() failed\n" +
         "\n" +
-        "Locator:  locator('input')\n" +
+        "Locator:  locator(\"input\")\n" +
         "Expected: not checked\n" +
         "Received: checked\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"not toBeChecked\" locator('input') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"not isChecked\" locator(\"input\") with timeout 1000ms"));
       assertTrue(stripAnsi(error.getMessage()).contains("locator resolved to <input checked type=\"checkbox\"/>"));
     }
 
     @PlaywrightTest
     @DisplayName("EX-010 fail with checked:false")
-    @Fixme("java: the message is the Java assertion format, 'Locator expected to be\\nExpected: checked\\nReceived: unchecked\\n\\nCall log:\\n  - Assert \"isChecked\" locator(\"input\") with timeout 1000ms ...', not the 'expect(locator).toBeChecked({ checked: false }) failed' message of the Node.js client")
     void failWithCheckedFalse(Page page) {
       page.setContent("<input type=checkbox checked></input>");
       Locator locator = page.locator("input");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false).setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toBeChecked({ checked: false }) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).isChecked({ checked: false }) failed\n" +
         "\n" +
-        "Locator:  locator('input')\n" +
+        "Locator:  locator(\"input\")\n" +
         "Expected: unchecked\n" +
         "Received: checked\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toBeChecked\" locator('input') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"isChecked\" locator(\"input\") with timeout 1000ms"));
       assertTrue(stripAnsi(error.getMessage()).contains("locator resolved to <input checked type=\"checkbox\"/>"));
     }
 
     @PlaywrightTest
     @DisplayName("EX-011 fail with indeterminate: true")
-    @Fixme("java: the message is the Java assertion format, 'Locator expected to be\\nExpected: checked\\nReceived: unchecked\\n\\nCall log:\\n  - Assert \"isChecked\" locator(\"input\") with timeout 1000ms ...', not the 'expect(locator).toBeChecked({ indeterminate: true }) failed' message of the Node.js client")
     void failWithIndeterminateTrue(Page page) {
       page.setContent("<input type=checkbox></input>");
       Locator locator = page.locator("input");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setIndeterminate(true).setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toBeChecked({ indeterminate: true }) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).isChecked({ indeterminate: true }) failed\n" +
         "\n" +
-        "Locator:  locator('input')\n" +
+        "Locator:  locator(\"input\")\n" +
         "Expected: indeterminate\n" +
         "Received: unchecked\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toBeChecked\" locator('input') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"isChecked\" locator(\"input\") with timeout 1000ms"));
     }
 
     @PlaywrightTest
     @DisplayName("EX-012 fail missing")
-    @Fixme("java: the message is the Java assertion format, 'Locator expected to be\\nExpected: checked\\nReceived: unchecked\\n\\nCall log:\\n  - Assert \"isChecked\" locator(\"input\") with timeout 1000ms ...', not the 'expect(locator).not.toBeChecked() failed' message of the Node.js client")
     void failMissing(Page page) {
       page.setContent("<div>no inputs here</div>");
       Locator locator2 = page.locator("input2");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator2).not().isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toBeChecked() failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().isChecked() failed\n" +
         "\n" +
-        "Locator: locator('input2')\n" +
+        "Locator: locator(\"input2\")\n" +
         "Expected: not checked\n" +
         "Timeout: 1000ms\n" +
         "Error: element(s) not found\n" +
         "\n" +
         "Call log:\n" +
-        "  - Expect \"not toBeChecked\" locator('input2') with timeout 1000ms\n" +
-        "  - waiting for locator('input2')\n"));
+        "  - Assert \"not isChecked\" locator(\"input2\") with timeout 1000ms\n" +
+        "  - waiting for locator(\"input2\")\n"));
     }
 
     @PlaywrightTest
@@ -605,21 +600,20 @@ public class TestExpectBoolean {
 
     @PlaywrightTest
     @DisplayName("EX-059 fail with not when nothing matching")
-    @Fixme("java: the message is 'Locator expected not to be hidden\\nError: element(s) not found\\nCall log:\\n  - Assert \"isHidden\" locator(\"button\") with timeout 1000ms ...', not the 'expect(locator).not.toBeHidden() failed' message of the Node.js client")
     void failWithNotWhenNothingMatching(Page page) {
       page.setContent("<div></div>");
       Locator locator = page.locator("button");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).not().isHidden(new LocatorAssertions.IsHiddenOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toBeHidden() failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().isHidden() failed\n" +
         "\n" +
-        "Locator: locator('button')\n" +
+        "Locator: locator(\"button\")\n" +
         "Expected: not hidden\n" +
         "Timeout: 1000ms\n" +
         "Error: element(s) not found\n" +
         "\n" +
         "Call log:\n" +
-        "  - Expect \"not toBeHidden\" locator('button') with timeout 1000ms\n"));
+        "  - Assert \"not isHidden\" locator(\"button\") with timeout 1000ms\n"));
     }
 
     @PlaywrightTest
@@ -717,11 +711,10 @@ public class TestExpectBoolean {
 
     @PlaywrightTest
     @DisplayName("EX-070 text content type")
-    @Fixme("java: the message is 'Response status expected to be within [200..299] range, was 404\\nCall log:\\n→ GET ...', without the 'expect(response).toBeOK() failed' line of the Node.js client")
     void textContentType(Page page, TestServer server) {
       APIResponse res = page.request().get(server.PREFIX + "/text-content-type");
       AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(response).toBeOK() failed"));
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(response).isOK() failed"));
       assertTrue(error.getMessage().contains("→ GET " + server.PREFIX + "/text-content-type"));
       assertTrue(error.getMessage().contains("← 404 Not Found"));
       assertTrue(stripAnsi(error.getMessage()).contains("Response text:\nText error"));

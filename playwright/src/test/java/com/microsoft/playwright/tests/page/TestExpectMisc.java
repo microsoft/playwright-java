@@ -99,36 +99,34 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-186 fail zero")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have count\nExpected: 0\nReceived: 1\n\nCall log:\n- Assert \"hasCount\" locator(\"span\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failZero(Page page) {
       page.setContent("<div><span></span></div>");
       Locator locator = page.locator("span");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasCount(0, new LocatorAssertions.HasCountOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveCount(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasCount(expected) failed\n" +
         "\n" +
-        "Locator:  locator('span')\n" +
+        "Locator:  locator(\"span\")\n" +
         "Expected: 0\n" +
         "Received: 1\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveCount\" locator('span') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasCount\" locator(\"span\") with timeout 1000ms"));
     }
 
     @PlaywrightTest
     @DisplayName("EX-187 fail zero 2")
-    @Fixme("java: the assertion error has another format: 'Locator expected not to have count\nExpected: 1\nReceived: 1\n\nCall log:\n- Assert \"hasCount\" locator(\"span\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failZero2(Page page) {
       page.setContent("<div><span></span></div>");
       Locator locator = page.locator("span");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).not().hasCount(1, new LocatorAssertions.HasCountOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toHaveCount(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().hasCount(expected) failed\n" +
         "\n" +
-        "Locator:  locator('span')\n" +
+        "Locator:  locator(\"span\")\n" +
         "Expected: not 1\n" +
         "Received: 1\n" +
         "Timeout:  1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"not toHaveCount\" locator('span') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"not hasCount\" locator(\"span\") with timeout 1000ms"));
     }
   }
 
@@ -145,7 +143,6 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-189 fail")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo'\nExpected: {a=1, b=string, c=Wed Jul 28 13:26:32 PDT 2021}\nReceived: {a=1, b=string, c=Wed Jul 28 13:26:32 PDT 2021}\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void fail(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = { a: 1, b: 'string', c: new Date(1627503992000) }");
@@ -166,20 +163,19 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-191 fail string")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo'\nExpected: error\nReceived: string\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failString(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = 'string'");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasJSProperty("foo", "error", new LocatorAssertions.HasJSPropertyOptions().setTimeout(200)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveJSProperty(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasJSProperty(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: \"error\"\n" +
         "Received: \"string\"\n" +
         "Timeout:  200ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveJSProperty\" locator('div') with timeout 200ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms"));
     }
 
     @PlaywrightTest
@@ -193,20 +189,19 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-193 fail number")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo'\nExpected: 1\nReceived: 2021\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failNumber(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = 2021");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasJSProperty("foo", 1, new LocatorAssertions.HasJSPropertyOptions().setTimeout(200)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveJSProperty(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasJSProperty(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: 1\n" +
         "Received: 2021\n" +
         "Timeout:  200ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveJSProperty\" locator('div') with timeout 200ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms"));
     }
 
     @PlaywrightTest
@@ -220,20 +215,19 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-195 fail boolean")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo'\nExpected: true\nReceived: false\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failBoolean(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = false");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasJSProperty("foo", true, new LocatorAssertions.HasJSPropertyOptions().setTimeout(200)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveJSProperty(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasJSProperty(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: true\n" +
         "Received: false\n" +
         "Timeout:  200ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveJSProperty\" locator('div') with timeout 200ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms"));
     }
 
     @PlaywrightTest
@@ -247,20 +241,19 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-197 fail boolean 2")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo'\nExpected: true\nReceived: false\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failBoolean2(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = false");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasJSProperty("foo", true, new LocatorAssertions.HasJSPropertyOptions().setTimeout(200)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveJSProperty(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasJSProperty(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: true\n" +
         "Received: false\n" +
         "Timeout:  200ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveJSProperty\" locator('div') with timeout 200ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasJSProperty\" locator(\"div\") with timeout 200ms"));
     }
 
     @PlaywrightTest
@@ -296,7 +289,6 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-201 fail nested")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have JavaScript property 'foo.bar'\nExpected: {a=1, b=string, c=Wed Jul 28 13:26:32 PDT 2021}\nReceived: null\n\nCall log:\n- Assert \"hasJSProperty\" locator(\"div\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failNested(Page page) {
       page.setContent("<div></div>");
       page.evalOnSelector("div", "e => e.foo = { nested: { a: 1, b: 'string', c: new Date(1627503992000) } }");
@@ -331,21 +323,20 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-204 fail")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have class\nExpected: foo bar baz\nReceived: bar baz\n\nCall log:\n- Assert \"hasClass\" locator(\"div\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void fail(Page page) {
       page.setContent("<div class=\"bar baz\"></div>");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasClass("foo bar baz", new LocatorAssertions.HasClassOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveClass(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasClass(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: \"foo bar baz\"\n" +
         "Received: \"bar baz\"\n" +
         "Timeout:  1000ms\n" +
         "\n" +
         "Call log:\n"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveClass\" locator('div') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasClass\" locator(\"div\") with timeout 1000ms"));
     }
 
     // EX-205 pass with array: not ported, see upstream_not_ported.txt.
@@ -366,36 +357,34 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-209 fail")
-    @Fixme("java: the assertion error has another format: 'Locator expected to contain class\nExpected: does-not-exist\nReceived: bar baz\n\nCall log:\n- Assert \"containsClass\" locator(\"div\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void fail(Page page) {
       page.setContent("<div class=\"bar baz\"></div>");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).containsClass("does-not-exist", new LocatorAssertions.ContainsClassOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toContainClass(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).containsClass(expected) failed\n" +
         "\n" +
-        "Locator:  locator('div')\n" +
+        "Locator:  locator(\"div\")\n" +
         "Expected: \"does-not-exist\"\n" +
         "Received: \"bar baz\"\n" +
         "Timeout:  1000ms\n" +
         "\n" +
         "Call log:\n"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toContainClass\" locator('div') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"containsClass\" locator(\"div\") with timeout 1000ms"));
     }
 
     // EX-210 pass with array: not ported, see upstream_not_ported.txt.
 
     @PlaywrightTest
     @DisplayName("EX-211 fail with array")
-    @Fixme("java: the assertion error has another format: 'Locator expected to contain classes\nExpected: [foo, bar, baz]\nReceived: [foo, bar, bar]\n\nCall log:\n- Assert \"containsClass\" locator(\"div\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failWithArray(Page page) {
       page.setContent("<div class=\"foo\"></div><div class=\"bar\"></div><div class=\"bar\"></div>");
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).containsClass(Arrays.asList("foo", "bar", "baz"), new LocatorAssertions.ContainsClassOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toContainClass(expected) failed"));
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).containsClass(expected) failed"));
       assertTrue(stripAnsi(error.getMessage()).contains("Timeout: 1000ms"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toContainClass\" locator('div') with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"containsClass\" locator(\"div\") with timeout 1000ms"));
     }
   }
 
@@ -410,19 +399,18 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-213 fail")
-    @Fixme("java: the assertion error has another format: 'Page title expected to be\nExpected: Hello\nReceived: Bye\n\nCall log:\n- Assert \"hasTitle\" with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void fail(Page page) {
       page.setContent("<title>Bye</title>");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(page).hasTitle("Hello", new PageAssertions.HasTitleOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(page).toHaveTitle(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(page).hasTitle(expected) failed\n" +
         "\n" +
         "Expected: \"Hello\"\n" +
         "Received: \"Bye\"\n" +
         "Timeout:  1000ms\n" +
         "\n" +
         "Call log:\n"));
-      assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveTitle\" with timeout 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasTitle\" with timeout 1000ms"));
     }
   }
 
@@ -437,12 +425,11 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-215 fail string")
-    @Fixme("java: the assertion error has another format: 'Page URL expected to be\nExpected: wrong\nReceived: data:text/html,<div>A</div>\n\nCall log:\n- Assert \"hasURL\" with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void failString(Page page) {
       page.navigate("data:text/html,<div>A</div>");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(page).hasURL("wrong", new PageAssertions.HasURLOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("expect(page).toHaveURL(expected) failed\n" +
+      assertTrue(stripAnsi(error.getMessage()).contains("assertThat(page).hasURL(expected) failed\n" +
         "\n" +
         "Expected: \"wrong\"\n" +
         "Received: \"data:text/html,<div>A</div>\"\n" +
@@ -483,35 +470,34 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-224 should not match missing attribute")
-    @Fixme("java: the assertion error has another format: 'Locator expected to have attribute 'disabled'\nExpected:\nReceived: null\n\nCall log:\n- Assert \"hasAttribute\" locator(\"#node\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void shouldNotMatchMissingAttribute(Page page) {
       page.setContent("<div checked id=node>Text content</div>");
       Locator locator = page.locator("#node");
       {
         AssertionFailedError error = assertThrows(AssertionFailedError.class,
           () -> assertThat(locator).hasAttribute("disabled", "", new LocatorAssertions.HasAttributeOptions().setTimeout(1000)));
-        assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveAttribute(expected) failed\n" +
+        assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasAttribute(expected) failed\n" +
           "\n" +
-          "Locator:  locator('#node')\n" +
+          "Locator:  locator(\"#node\")\n" +
           "Expected: \"\"\n" +
           "Received: serializes to the same string\n" +
           "Timeout:  1000ms\n" +
           "\n" +
           "Call log:\n"));
-        assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveAttribute\" locator('#node') with timeout 1000ms"));
+        assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasAttribute\" locator(\"#node\") with timeout 1000ms"));
       }
       {
         AssertionFailedError error = assertThrows(AssertionFailedError.class,
           () -> assertThat(locator).hasAttribute("disabled", Pattern.compile(".*"), new LocatorAssertions.HasAttributeOptions().setTimeout(1000)));
-        assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveAttribute(expected) failed\n" +
+        assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasAttribute(expected) failed\n" +
           "\n" +
-          "Locator: locator('#node')\n" +
+          "Locator: locator(\"#node\")\n" +
           "Expected pattern: /.*/\n" +
           "Received string:  \"\"\n" +
           "Timeout: 1000ms\n" +
           "\n" +
           "Call log:\n"));
-        assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"toHaveAttribute\" locator('#node') with timeout 1000ms"));
+        assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"hasAttribute\" locator(\"#node\") with timeout 1000ms"));
       }
       assertThat(locator).not().hasAttribute("disabled", "");
       assertThat(locator).not().hasAttribute("disabled", Pattern.compile(".*"));
@@ -519,7 +505,6 @@ public class TestExpectMisc {
 
     @PlaywrightTest
     @DisplayName("EX-225 should match boolean attribute")
-    @Fixme("java: the assertion error has another format: 'Locator expected not to have attribute 'checked'\nExpected:\nReceived:\n\nCall log:\n- Assert \"hasAttribute\" locator(\"#node\") with timeout 1000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
     void shouldMatchBooleanAttribute(Page page) {
       page.setContent("<div checked id=node>Text content</div>");
       Locator locator = page.locator("#node");
@@ -528,26 +513,26 @@ public class TestExpectMisc {
       {
         AssertionFailedError error = assertThrows(AssertionFailedError.class,
           () -> assertThat(locator).not().hasAttribute("checked", "", new LocatorAssertions.HasAttributeOptions().setTimeout(1000)));
-        assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toHaveAttribute(expected) failed\n" +
+        assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().hasAttribute(expected) failed\n" +
           "\n" +
-          "Locator:  locator('#node')\n" +
+          "Locator:  locator(\"#node\")\n" +
           "Expected: not \"\"\n" +
           "Received: \"\"\n" +
           "Timeout:  1000ms\n" +
           "\n" +
           "Call log:\n"));
-        assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"not toHaveAttribute\" locator('#node') with timeout 1000ms"));
+        assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"not hasAttribute\" locator(\"#node\") with timeout 1000ms"));
       }
       {
         AssertionFailedError error = assertThrows(AssertionFailedError.class,
           () -> assertThat(locator).not().hasAttribute("checked", Pattern.compile(".*"), new LocatorAssertions.HasAttributeOptions().setTimeout(1000)));
-        assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).not.toHaveAttribute(expected) failed\n" +
+        assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).not().hasAttribute(expected) failed\n" +
           "\n" +
-          "Locator: locator('#node')\n" +
+          "Locator: locator(\"#node\")\n" +
           "Expected pattern: not /.*/\n" +
           "Received string: \"\"\n" +
           "Timeout: 1000ms"));
-        assertTrue(stripAnsi(error.getMessage()).contains("- Expect \"not toHaveAttribute\" locator('#node') with timeout 1000ms"));
+        assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"not hasAttribute\" locator(\"#node\") with timeout 1000ms"));
       }
     }
 
@@ -663,12 +648,11 @@ public class TestExpectMisc {
 
   @PlaywrightTest
   @DisplayName("EX-237 toHaveCount should not produce logs twice")
-  @Fixme("java: the assertion error has another format: 'Locator expected to have count\nExpected: 2\nReceived: 1\n\nCall log:\n- Assert \"hasCount\" locator(\"option\") with timeout 2000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
   void toHaveCountShouldNotProduceLogsTwice(Page page) {
     page.setContent("<select><option>One</option></select>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(page.locator("option")).hasCount(2, new LocatorAssertions.HasCountOptions().setTimeout(2000)));
-    String waitingForMessage = "waiting for locator('option')";
+    String waitingForMessage = "waiting for locator(\"option\")";
     assertTrue(error.getMessage().contains(waitingForMessage));
     assertTrue(error.getMessage().contains("locator resolved to 1 element"));
     assertTrue(error.getMessage().contains("unexpected value \"1\""));
@@ -677,12 +661,11 @@ public class TestExpectMisc {
 
   @PlaywrightTest
   @DisplayName("EX-238 toHaveText should not produce logs twice")
-  @Fixme("java: the assertion error has another format: 'Locator expected to have text\nExpected: world\nReceived: hello\n\nCall log:\n- Assert \"hasText\" locator(\"div\") with timeout 2000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
   void toHaveTextShouldNotProduceLogsTwice(Page page) {
     page.setContent("<div>hello</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(page.locator("div")).hasText("world", new LocatorAssertions.HasTextOptions().setTimeout(2000)));
-    String waitingForMessage = "waiting for locator('div')";
+    String waitingForMessage = "waiting for locator(\"div\")";
     assertTrue(error.getMessage().contains(waitingForMessage));
     assertTrue(error.getMessage().contains("locator resolved to <div>hello</div>"));
     assertTrue(error.getMessage().contains("unexpected value \"hello\""));
@@ -691,12 +674,11 @@ public class TestExpectMisc {
 
   @PlaywrightTest
   @DisplayName("EX-239 toHaveText that does not match should not produce logs twice")
-  @Fixme("java: the assertion error has another format: 'Locator expected to have text\nError: element(s) not found\nExpected: world\nReceived: - text: hello\n\nCall log:\n- Assert \"hasText\" locator(\"span\") with timeout 2000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
   void toHaveTextThatDoesNotMatchShouldNotProduceLogsTwice(Page page) {
     page.setContent("<div>hello</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(page.locator("span")).hasText("world", new LocatorAssertions.HasTextOptions().setTimeout(2000)));
-    String waitingForMessage = "waiting for locator('span')";
+    String waitingForMessage = "waiting for locator(\"span\")";
     assertTrue(error.getMessage().contains(waitingForMessage));
     assertFalse(error.getMessage().contains("locator resolved to"));
     assertFalse(error.getMessage().replace(waitingForMessage, "<redacted>").contains(waitingForMessage));
@@ -704,30 +686,28 @@ public class TestExpectMisc {
 
   @PlaywrightTest
   @DisplayName("EX-240 strict mode violation error format")
-  @Fixme("java: the assertion error has another format: 'Locator expected to have text\nError: strict mode violation: locator(\"div\") resolved to 2 elements:\n1) <div>a</div> aka getByText(\"a\")\n2) <div>b</div> aka getByText(\"b\")\nExpected: foo\n\nCall log:\n- Assert \"hasText\" locator(\"div\") with timeout 5000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
   void strictModeViolationErrorFormat(Page page) {
     page.setContent("<div>a</div><div>b</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(page.locator("div")).hasText("foo"));
-    assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toHaveText(expected) failed\n" +
+    assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).hasText(expected) failed\n" +
       "\n" +
-      "Locator: locator('div')\n" +
+      "Locator: locator(\"div\")\n" +
       "Expected: \"foo\"\n" +
-      "Error: strict mode violation: locator('div') resolved to 2 elements:\n" +
-      "    1) <div>a</div> aka getByText('a')\n" +
-      "    2) <div>b</div> aka getByText('b')\n" +
+      "Error: strict mode violation: locator(\"div\") resolved to 2 elements:\n" +
+      "    1) <div>a</div> aka getByText(\"a\")\n" +
+      "    2) <div>b</div> aka getByText(\"b\")\n" +
       "\n" +
       "Call log:\n"));
   }
 
   @PlaywrightTest
   @DisplayName("EX-241 invalid selector error format")
-  @Fixme("java: the assertion error has another format: 'Locator expected to be visible\nError: Unexpected token \"#\" while parsing css selector \"##\". Did you mean to CSS.escape it?\n\nCall log:\n- Assert \"isVisible\" ## with timeout 5000ms ...' (no 'expect(locator)... failed' header, no 'Locator:' line, unquoted values, double quoted locators)")
   void invalidSelectorErrorFormat(Page page) {
     page.setContent("<div>a</div><div>b</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class,
       () -> assertThat(page.locator("##")).isVisible());
-    assertTrue(stripAnsi(error.getMessage()).contains("expect(locator).toBeVisible() failed\n" +
+    assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).isVisible() failed\n" +
       "\n" +
       "Locator: ##\n" +
       "Expected: visible\n" +
