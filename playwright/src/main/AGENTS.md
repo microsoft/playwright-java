@@ -4,7 +4,8 @@ These rules say how to write `playwright/src/main/java/com/microsoft/playwright/
 `packages/playwright-core/src/client` in `microsoft/playwright`. Use them at each roll and for
 every fix, for every new or changed line of the client. The upstream code is in `.upstream/`,
 the checkout at the commit in `scripts/DRIVER_VERSION`. The steps of a roll are in the
-`playwright-roll` skill.
+`playwright-roll` skill. `ARCHITECTURE.md` at the repo root describes the driver, the protocol,
+the object model and the threading model that this code runs on.
 
 The port is line by line. A reviewer reads the `.ts` file and the `.java` file side by side.
 Each JavaScript statement maps to one Java statement, or to one of the fixed patterns in this
