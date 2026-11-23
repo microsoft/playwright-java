@@ -204,6 +204,21 @@ public class TestPopup {
   }
 
   @PlaywrightTest
+  @DisplayName("PO-029 should load subresources of an about:blank popup when the opener has routes")
+  @DisabledOnBrowser(value = BrowserName.CHROMIUM, reason = "fixme: Subresources of an about:blank popup are paused on the opener target and never continued")
+  void shouldLoadSubresourcesOfAnAboutBlankPopupWhenTheOpenerHasRoutes(Browser browser, TestServer server) {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    page.route("**/*", route -> route.resume());
+    page.navigate(server.EMPTY_PAGE);
+    Page popup = page.waitForPopup(() -> {
+      page.evaluate("url => window.open('').document.write(`<img src=\"${url}\">`)", server.PREFIX + "/pptr.png");
+    });
+    popup.waitForFunction("() => document.querySelector('img')?.naturalWidth > 0");
+    context.close();
+  }
+
+  @PlaywrightTest
   @DisplayName("PO-023 BrowserContext.addInitScript should apply to an in-process popup")
   void browserContextAddInitScriptShouldApplyToAnInProcessPopup(Browser browser, TestServer server) {
     BrowserContext context = browser.newContext();

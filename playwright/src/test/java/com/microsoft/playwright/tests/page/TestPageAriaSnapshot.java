@@ -958,38 +958,16 @@ public class TestPageAriaSnapshot {
   }
 
   @PlaywrightTest
-  @DisplayName("AR-046 should not include inert elements")
-  @Fixme("driver: the bundled driver does not skip inert elements, snapshot has - button \"Hello\", - button \"Yay\", - paragraph: Some text, - paragraph: Visible inert text, - button \"Save\"")
-  void shouldNotIncludeInertElements(Page page) {
+  @DisplayName("AR-171 should include inert elements and elements outside of a modal dialog")
+  void shouldIncludeInertElementsAndElementsOutsideOfAModalDialog(Page page) {
     page.setContent("\n" +
         "    <button>Hi</button>\n" +
         "    <button inert>Hello</button>\n" +
         "    <div inert>\n" +
         "      <button>Yay</button>\n" +
-        "      <p>Some text</p>\n" +
         "    </div>\n" +
-        "    <p>Visible <span inert>inert</span> text</p>\n" +
-        "    <button><span inert>Save</span></button>\n" +
-        "  ");
-
-    checkAndMatchSnapshot(page.locator("body"), "\n" +
-        "    - button \"Hi\"\n" +
-        "    - paragraph: Visible text\n" +
-        "    - button\n" +
-        "  ");
-  }
-
-  @PlaywrightTest
-  @DisplayName("AR-047 should only include the modal dialog content")
-  @Fixme("driver: the bundled driver does not limit the snapshot to the modal dialog, it also has - heading \"Title\", - button \"Outside\" and - button \"Inert inside\"")
-  void shouldOnlyIncludeTheModalDialogContent(Page page) {
-    page.setContent("\n" +
-        "    <h1>Title</h1>\n" +
-        "    <button>Outside</button>\n" +
         "    <dialog id=dialog>\n" +
-        "      <h2>Dialog</h2>\n" +
         "      <button>Inside</button>\n" +
-        "      <div inert><button>Inert inside</button></div>\n" +
         "    </dialog>\n" +
         "    <script>\n" +
         "      document.getElementById('dialog').showModal();\n" +
@@ -997,15 +975,11 @@ public class TestPageAriaSnapshot {
         "  ");
 
     checkAndMatchSnapshot(page.locator("body"), "\n" +
+        "    - button \"Hi\"\n" +
+        "    - button \"Hello\"\n" +
+        "    - button \"Yay\"\n" +
         "    - dialog:\n" +
-        "      - heading \"Dialog\" [level=2]\n" +
         "      - button \"Inside\"\n" +
-        "  ");
-
-    page.locator("#dialog").evaluate("e => e.close()");
-    checkAndMatchSnapshot(page.locator("body"), "\n" +
-        "    - heading \"Title\" [level=1]\n" +
-        "    - button \"Outside\"\n" +
         "  ");
   }
 }

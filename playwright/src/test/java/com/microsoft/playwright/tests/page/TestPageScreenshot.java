@@ -541,6 +541,25 @@ public class TestPageScreenshot {
 
     // SS-039 should take fullPage screenshots during navigation: not ported, see upstream_not_ported.txt.
 
+    @PlaywrightTest
+    @DisplayName("SS-096 should not wait for unused font face with failed local() source")
+    @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: Fixed upstream in https://commits.webkit.org/323883@main")
+    void shouldNotWaitForUnusedFontFaceWithFailedLocalSource(Page page, TestServer server) {
+      page.navigate(server.EMPTY_PAGE);
+      page.setContent("\n" +
+        "      <style>\n" +
+        "      @font-face {\n" +
+        "        font-family: 'pwtest-iconfont';\n" +
+        "        src: local('NoSuchFont'), url('" + server.PREFIX + "/webfont/iconfont.woff2') format('woff2');\n" +
+        "        unicode-range: U+0400-04FF;\n" +
+        "      }\n" +
+        "      </style>\n" +
+        "      <div style=\"font-family: 'pwtest-iconfont'\">hello</div>\n" +
+        "    ");
+      page.screenshot();
+      assertEquals("loaded", page.evaluate("() => document.fonts.status"));
+    }
+
     @Nested
     class MaskOption {
       @PlaywrightTest

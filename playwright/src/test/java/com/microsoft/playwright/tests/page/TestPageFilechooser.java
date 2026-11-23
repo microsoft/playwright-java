@@ -410,6 +410,7 @@ public class TestPageFilechooser {
     @DisplayName("FC-026 should not open file chooser without user activation")
     @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: WebKit opens the file chooser from input.click() without user activation")
     void shouldNotOpenFileChooserWithoutUserActivation(Page page, TestServer server, BrowserName browserName) {
+      assumeFalse("frozen".equals(System.getenv("PW_CLOCK")));
       AtomicInteger choosers = new AtomicInteger();
       page.onFileChooser(chooser -> choosers.incrementAndGet());
 

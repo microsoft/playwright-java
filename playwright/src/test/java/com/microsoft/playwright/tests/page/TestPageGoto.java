@@ -799,9 +799,34 @@ public class TestPageGoto {
   @PlaywrightTest
   @DisplayName("NA-051 should be able to navigate to a page controlled by service worker")
   void shouldBeAbleToNavigateToAPageControlledByServiceWorker(Page page, TestServer server) {
+    String transaction = "async function transaction(value) {\n" +
+      "  const db = await new Promise((resolve, reject) => {\n" +
+      "    const request = indexedDB.open('roundtrip', 1);\n" +
+      "    request.onupgradeneeded = () => request.result.createObjectStore('items');\n" +
+      "    request.onsuccess = () => resolve(request.result);\n" +
+      "    request.onerror = () => reject(request.error);\n" +
+      "  });\n" +
+      "  return new Promise((resolve, reject) => {\n" +
+      "    const tx = db.transaction('items', 'readwrite');\n" +
+      "    const request = tx.objectStore('items').get('name');\n" +
+      "    request.onsuccess = () => {\n" +
+      "      if (value)\n" +
+      "        tx.objectStore('items').put(value, 'name');\n" +
+      "    };\n" +
+      "    tx.oncomplete = () => resolve(request.result);\n" +
+      "    tx.onerror = tx.onabort = () => reject(tx.error);\n" +
+      "  });\n" +
+      "}";
+
     page.navigate(server.PREFIX + "/serviceworkers/fetch/sw.html");
     page.evaluate("() => window['activationPromise']");
     page.navigate(server.PREFIX + "/serviceworkers/fetch/sw.html");
+    page.waitForFunction("() => !!navigator.serviceWorker.controller");
+    page.evaluate(transaction, "value");
+    page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+    page.goBack();
+    page.waitForFunction("() => !!navigator.serviceWorker.controller");
+    assertEquals("value", page.evaluate(transaction, null));
   }
 
   @PlaywrightTest

@@ -16,6 +16,10 @@
 
 package com.microsoft.playwright.tests.library;
 
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.stream.Stream;
+import java.io.ByteArrayOutputStream;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.microsoft.playwright.Browser;
@@ -325,6 +329,49 @@ public class TestBrowsercontextHar {
     page2.navigate(server.PREFIX + "/one-style.html");
     assertTrue(page2.content().contains("hello, world!"));
     assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+
+    // Java: yazl.ZipFile is a ZipOutputStream over the chunks.
+    ByteArrayOutputStream chunks = new ByteArrayOutputStream();
+    try (ZipOutputStream zipFile = new ZipOutputStream(chunks)) {
+      List<String> entries;
+      try (Stream<Path> files = Files.list(harDir)) {
+        entries = files.map(file -> file.getFileName().toString()).sorted().collect(Collectors.toList());
+      }
+      for (String entry : entries) {
+        zipFile.putNextEntry(new ZipEntry(entry.equals("har.har") ? "Recording.HAR" : entry));
+        zipFile.write(Files.readAllBytes(harDir.resolve(entry)));
+        zipFile.closeEntry();
+      }
+    }
+    Path uppercaseHarPath = testInfo.outputPath("uppercase.har.zip");
+    Files.write(uppercaseHarPath, chunks.toByteArray());
+
+    // Java: unrouteAll() has no behavior option.
+    context2.unrouteAll();
+    context2.routeFromHAR(uppercaseHarPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+    page2.reload();
+    assertTrue(page2.content().contains("hello, world!"));
+    assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+  }
+
+  @PlaywrightTest
+  @DisplayName("HA-114 should reject a malformed har.zip")
+  void shouldRejectAMalformedHarZip(ContextFactory contextFactory, TestInfo testInfo) throws IOException {
+    // Java: yazl.ZipFile is a ZipOutputStream over the chunks.
+    ByteArrayOutputStream chunks = new ByteArrayOutputStream();
+    try (ZipOutputStream zipFile = new ZipOutputStream(chunks)) {
+      zipFile.putNextEntry(new ZipEntry("aa/x.har"));
+      zipFile.write("{}".getBytes(StandardCharsets.UTF_8));
+      zipFile.closeEntry();
+    }
+    // yauzl reports '..' in an entry name as an 'error' event while reading entries.
+    byte[] zip = new String(chunks.toByteArray(), StandardCharsets.ISO_8859_1).replace("aa/x.har", "../x.har").getBytes(StandardCharsets.ISO_8859_1);
+    Path harPath = testInfo.outputPath("malformed.har.zip");
+    Files.write(harPath, zip);
+
+    BrowserContext context = contextFactory.newContext();
+    PlaywrightException error = assertThrows(PlaywrightException.class, () -> context.routeFromHAR(harPath));
+    assertTrue(error.getMessage().contains("invalid relative path: ../x.har"));
   }
 
   @PlaywrightTest

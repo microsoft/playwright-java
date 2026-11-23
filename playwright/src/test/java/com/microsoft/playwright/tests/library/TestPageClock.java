@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -223,12 +224,15 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-012 throws for invalid format")
-    void throwsForInvalidFormat(Page page, Calls calls) {
+    void throwsForInvalidFormat(Page page, Calls calls, TestServer server) {
       page.evaluate("async () => {\n" +
         "      setInterval(window.stub, 10000);\n" +
         "    }");
       assertThrows(PlaywrightException.class, () -> page.clock().runFor("12:02:34:10"));
+      // Java: runFor(NaN) and fastForward(Infinity) are not ported, Clock.runFor() and Clock.fastForward() take a long or a String.
       assertEquals(Collections.emptyList(), calls);
+      page.navigate(server.EMPTY_PAGE);
+      assertEquals(1000, page.evaluate("() => Date.now()"));
     }
 
     @PlaywrightTest
@@ -263,15 +267,21 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-015 pushes back execution time for skipped timers")
-    void pushesBackExecutionTimeForSkippedTimers(Page page, Calls calls) {
+    void pushesBackExecutionTimeForSkippedTimers(Page page, Calls calls, TestServer server) {
+      page.navigate(server.EMPTY_PAGE);
       page.evaluate("async () => {\n" +
         "      setTimeout(() => {\n" +
         "        window.stub(Date.now());\n" +
         "      }, 1000);\n" +
         "    }");
 
-      page.clock().fastForward(2000);
-      assertEquals(Arrays.asList(Arrays.asList(1000 + 2000)), calls);
+      long fiftyDays = 50L * 24 * 60 * 60 * 1000;
+      page.clock().fastForward(fiftyDays);
+      // Java: a whole number that does not fit an int comes from the page as a Double.
+      assertEquals(Arrays.asList(Arrays.asList((double) (1000 + fiftyDays))), calls);
+      assertEquals((double) (1000 + fiftyDays), page.evaluate("() => Date.now()"));
+      page.reload();
+      assertEquals((double) (1000 + fiftyDays), page.evaluate("() => Date.now()"));
     }
 
     @PlaywrightTest
@@ -662,16 +672,24 @@ public class TestPageClock {
     @DisplayName("CK-045 should stay paused on the next page when an init script reads the time")
     void shouldStayPausedOnTheNextPageWhenAnInitScriptReadsTheTime(Page page, TestServer server) {
       // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43214' } }
+      // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43869' } }
+      server.setRoute("/timer.html", (req, res) -> {
+        res.setHeader("Content-Type", "text/html");
+        res.end("<script>setTimeout(() => document.documentElement.dataset.fired = 'true', 0);</script>");
+      });
       page.clock().install(new com.microsoft.playwright.Clock.InstallOptions().setTime(0));
       page.clock().pauseAt(1000);
       // Java: addInitScript() takes the script, not a function.
       page.addInitScript("Date.now()");
       page.navigate(server.EMPTY_PAGE);
       page.clock().runFor(1000);
-      page.navigate(server.PREFIX + "/title.html");
+      page.navigate(server.PREFIX + "/timer.html");
       assertEquals(2000, page.evaluate("() => Date.now()"));
       page.waitForTimeout(500);
       assertEquals(2000, page.evaluate("() => Date.now()"));
+      assertNull(page.evaluate("() => document.documentElement.dataset.fired"));
+      page.clock().runFor(0);
+      assertEquals("true", page.evaluate("() => document.documentElement.dataset.fired"));
     }
 
     @PlaywrightTest
@@ -682,6 +700,23 @@ public class TestPageClock {
       page.navigate(server.EMPTY_PAGE);
       page.waitForTimeout(500);
       assertEquals(Arrays.asList(0, 1000), page.evaluate("() => [performance.now(), Date.now()]"));
+    }
+
+    @PlaywrightTest
+    @DisplayName("CK-220 should keep timers scheduled during load pending when paused")
+    void shouldKeepTimersScheduledDuringLoadPendingWhenPaused(Page page, TestServer server) {
+      // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/43869' } }
+      server.setRoute("/timer.html", (req, res) -> {
+        res.setHeader("Content-Type", "text/html");
+        res.end("<script>setTimeout(() => document.documentElement.dataset.fired = 'true', 0);</script>");
+      });
+      page.clock().install(new com.microsoft.playwright.Clock.InstallOptions().setTime(0));
+      page.clock().pauseAt(1000);
+      page.navigate(server.PREFIX + "/timer.html");
+      page.waitForTimeout(500);
+      assertNull(page.evaluate("() => document.documentElement.dataset.fired"));
+      page.clock().runFor(0);
+      assertEquals("true", page.evaluate("() => document.documentElement.dataset.fired"));
     }
   }
 

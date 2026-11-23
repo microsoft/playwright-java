@@ -17,6 +17,8 @@
 
 package com.microsoft.playwright.tests.library.chromium;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -57,6 +59,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.fixtures.ChildProcessFactory.findFreePort;
 import static com.microsoft.playwright.fixtures.Utils.asset;
@@ -104,14 +107,20 @@ public class TestConnectOverCdp {
 
   @PlaywrightTest
   @DisplayName("CD-001 should connect to an existing cdp session")
-  void shouldConnectToAnExistingCdpSession(BrowserType browserType) {
-    int port = findFreePort();
-    Browser browserServer = browserType.launch(remoteDebuggingPort(port));
+  void shouldConnectToAnExistingCdpSession(BrowserType browserType, CreateUserDataDir createUserDataDir) throws IOException {
+    Path configHome = createUserDataDir.create();
+    Path userDataDir = configHome.resolve("google-chrome");
+    BrowserContext browserServer = browserType.launchPersistentContext(userDataDir, Env.launchPersistentContextOptions()
+      .setArgs(Arrays.asList("--remote-debugging-port=0")));
     try {
+      String port = new String(Files.readAllBytes(userDataDir.resolve("DevToolsActivePort")), StandardCharsets.UTF_8).split("\n")[0];
       Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
       List<BrowserContext> contexts = cdpBrowser.contexts();
       assertEquals(1, contexts.size());
       cdpBrowser.close();
+
+      // Java: the Linux part starts a Node.js client in a child process (connectOverCDP('chrome') with
+      // CHROME_USER_DATA_DIR, CHROME_CONFIG_HOME and XDG_CONFIG_HOME in its environment); it is not ported.
     } finally {
       browserServer.close();
     }
@@ -731,6 +740,68 @@ public class TestConnectOverCdp {
       browser.close();
     } finally {
       browserServer.close();
+    }
+  }
+
+  @PlaywrightTest
+  @DisplayName("CD-053 should connect when another client inspects a terminated shared worker")
+  void shouldConnectWhenAnotherClientInspectsATerminatedSharedWorker(BrowserType browserType, TestServer server) {
+    assumeFalse(true, "fixme: test.fixme() in the upstream file");
+    int port = findFreePort();
+    Browser browser = browserType.launch(remoteDebuggingPort(port));
+    try {
+      // Another client inspects the shared worker.
+      Page page = browser.newPage();
+      CDPSession inspector = browser.newBrowserCDPSession();
+      CompletableFuture<String> workerCreated = new CompletableFuture<>();
+      inspector.on("Target.targetCreated", event -> {
+        JsonObject targetInfo = event.getAsJsonObject("targetInfo");
+        if ("shared_worker".equals(targetInfo.get("type").getAsString()))
+          workerCreated.complete(targetInfo.get("targetId").getAsString());
+      });
+      JsonObject discoverParams = new JsonObject();
+      discoverParams.addProperty("discover", true);
+      inspector.send("Target.setDiscoverTargets", discoverParams);
+      page.navigate(server.PREFIX + "/shared-worker/shared-worker.html");
+      assertEquals("echo:hello", page.evaluate("window.sharedWorkerResponsePromise"));
+      page.waitForCondition(workerCreated::isDone);
+      String workerTargetId = workerCreated.getNow(null);
+      JsonObject attachParams = new JsonObject();
+      attachParams.addProperty("targetId", workerTargetId);
+      attachParams.addProperty("flatten", true);
+      inspector.send("Target.attachToTarget", attachParams);
+
+      // The last client of the shared worker goes away, so the worker is terminated.
+      // The inspector stays attached, so the worker target lingers without a browser context.
+      page.close();
+      // Java: expect.poll(...).toBe(false), with the intervals and timeout of expect.poll.
+      int[] intervals = {100, 250, 500, 1000};
+      long deadline = System.currentTimeMillis() + 5000;
+      boolean lingers;
+      for (int i = 0;; i++) {
+        lingers = false;
+        for (JsonElement info : inspector.send("Target.getTargets").getAsJsonArray("targetInfos")) {
+          if (workerTargetId.equals(info.getAsJsonObject().get("targetId").getAsString()))
+            lingers = true;
+        }
+        if (!lingers || System.currentTimeMillis() >= deadline)
+          break;
+        try {
+          Thread.sleep(intervals[Math.min(i, intervals.length - 1)]);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
+      }
+      assertFalse(lingers);
+
+      // A new client auto-attaches to the lingering worker target.
+      Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
+      Page page2 = cdpBrowser.contexts().get(0).newPage();
+      assertEquals(2, page2.evaluate("1 + 1"));
+      cdpBrowser.close();
+    } finally {
+      browser.close();
     }
   }
 }

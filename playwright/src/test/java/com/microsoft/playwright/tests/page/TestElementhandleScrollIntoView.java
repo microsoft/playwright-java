@@ -92,6 +92,34 @@ public class TestElementhandleScrollIntoView {
   }
 
   @PlaywrightTest
+  @DisplayName("EH-124 should scroll nested display:contents into view")
+  void shouldScrollNestedDisplayContentsIntoView(Page page) {
+    page.setContent("\n" +
+      "    <style>\n" +
+      "      html, body { margin: 0; padding: 0; width: 100%; height: 100%; }\n" +
+      "      ::-webkit-scrollbar { display: none; }\n" +
+      "      * { scrollbar-width: none; }\n" +
+      "    </style>\n" +
+      "    <div id=container style=\"width:200px;height:200px;overflow:scroll;border:1px solid black;\">\n" +
+      "      <div style=\"margin-top:500px;background:red;\">\n" +
+      "        <div id=outer style=\"display:contents\"><div style=\"display:contents\"><div id=target style=\"height:50px;width:100px;background:cyan;\">Hello</div></div><div style=\"height:2000px;\"></div><div>Sibling</div></div>\n" +
+      "      </div>\n" +
+      "    </div>\n" +
+      "  ");
+    ElementHandle div = page.querySelector("#outer");
+    div.scrollIntoViewIfNeeded();
+    // The first box in the flattened subtree of #outer is #target, two levels down,
+    // not the tall sibling. No whitespace text nodes inside #outer: in Firefox they
+    // get boxes of their own, which would hide a fallback that only looks one level down.
+    Object targetIsVisible = page.evalOnSelector("#target", "target => {\n" +
+      "  const container = document.getElementById('container').getBoundingClientRect();\n" +
+      "  const rect = target.getBoundingClientRect();\n" +
+      "  return rect.top >= container.top && rect.bottom <= container.bottom;\n" +
+      "}");
+    assertEquals(true, targetIsVisible);
+  }
+
+  @PlaywrightTest
   @DisplayName("EH-097 should work for visibility:hidden element")
   void shouldWorkForVisibilityHiddenElement(Page page) {
     page.setContent("<div style=\"visibility:hidden\">Hello</div>");

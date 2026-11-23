@@ -269,4 +269,21 @@ public class TestPageFocus {
     page.keyboard().press("Tab");
     assertThat(page.locator("#outer")).isFocused();
   }
+
+  @PlaywrightTest
+  @DisplayName("FO-013 should move focus from the parent into its iframe")
+  void shouldMoveFocusFromTheParentIntoItsIframe(Page page, TestServer server) {
+    server.setRoute("/frame.html", (req, res) -> {
+      res.setHeader("content-type", "text/html");
+      res.end("<input id=inner>");
+    });
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<iframe src=\"" + server.PREFIX + "/frame.html\"></iframe><input id=outer>");
+    page.locator("#outer").focus();
+    assertThat(page.locator("#outer")).isFocused();
+    // Call native focus() exactly once, locator.focus() would hide the bug by calling it twice.
+    page.evaluate("() => document.querySelector('iframe').contentDocument.querySelector('input').focus()");
+    assertThat(page.locator("iframe")).isFocused();
+    assertThat(page.frameLocator("iframe").locator("#inner")).isFocused();
+  }
 }

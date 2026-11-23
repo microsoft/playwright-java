@@ -74,7 +74,6 @@ CL-043      java: concurrent: page.evaluate while page.click is pending
 CL-044      java: concurrent: page.evaluate while page.click is pending
 CL-049      java: concurrent: page.evaluate while page.click is pending
 CL-050      java: concurrent: page.evaluate while page.click is pending
-CL-051      java: concurrent: page.evaluate while page.click is pending
 CL-052      java: concurrent: page.evaluate while page.click is pending
 CL-053      java: concurrent: page.evaluate while page.click is pending
 CL-055      java: concurrent: page.evaluate while page.click is pending
@@ -215,7 +214,7 @@ FI-020      java: concurrent: page.evaluate while page.fill is pending
 FI-021      java: concurrent: page.evaluate while page.fill is pending
 FI-022      java: concurrent: page.evaluate while page.fill is pending
 FI-034      java: concurrent: page.evaluate while page.fill is pending
-FI-035      java: concurrent: page.evaluate while page.fill is pending
+SO-034      java: concurrent: expect(locator).toHaveValue while locator.selectOption is pending
 # page/page-filechooser
 FC-003      page.prependListener() is a Node.js EventEmitter method; the Java event API has only onX() and offX().
 FC-006      page.addListener() and page.removeListener() are Node.js EventEmitter aliases of on() and off(); the Java event API has only onX() and offX() (covered by FC-005).
@@ -303,7 +302,7 @@ IS-021      page.addInitScript(script, arg, { exposeFunctions }) takes a functio
 IS-022      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
 IS-023      page.addInitScript(script, arg, { exposeFunctions }) takes a function argument and an options object; the Java addInitScript() takes only a String or a Path.
 # page/page-add-locator-handler
-LH-005      The never-settling handler (new Promise(() => {})) has no Java equivalent: handlers run on the thread that dispatches client messages, so a handler that never returns hangs the client for good (a handler waiting in page.waitForTimeout(9999999) hangs the run).
+LH-005      The handler that stays pending until the test releases it (await releaseHandler, resolved after the click has timed out) has no Java equivalent: handlers run on the thread that dispatches client messages, so a handler that does not return hangs the client (a handler waiting in page.waitForTimeout(9999999) hangs the run).
 LH-008      Uses expect(page).toHaveScreenshot(); it is not in the Java API.
 # page/page-set-input-files
 IF-009      TODO harness: needs formidable, a multipart/form-data parser for the request of the test server.
@@ -694,6 +693,7 @@ MC-016      TODO harness: needs startRemoteServer (the remoteServer fixture is b
 MC-017      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
 MC-018      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
 MC-019      Calls the internal context._startRecording() / _stopRecording() with JavaScript recorder callbacks.
+MC-020      TODO harness: needs startRemoteServer (the remoteServer fixture is browserType.launchServer({ _sharedBrowser: true }), which the Java API does not have; the harness has no remote server and childProcess to start the driver's launch-server).
 # library/network-timeout
 NE-128      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.
 NE-129      Calls utils.httpRequest() of the Node.js driver code, which the Java client does not have.

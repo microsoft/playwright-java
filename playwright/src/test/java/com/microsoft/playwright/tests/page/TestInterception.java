@@ -34,6 +34,7 @@ import org.junit.jupiter.api.DisplayName;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,6 +67,7 @@ public class TestInterception {
   }
 
   @PlaywrightTest
+  @SuppressWarnings("unchecked")
   @DisplayName("RO-152 should intercept after a service worker")
   void shouldInterceptAfterAServiceWorker(Page page, TestServer server, BrowserName browserName) {
     page.navigate(server.PREFIX + "/serviceworkers/fetchdummy/sw.html");
@@ -87,6 +89,21 @@ public class TestInterception {
     // Page route is applied after service worker fetch event.
     Object swResponse2 = page.evaluate("() => window['fetchDummy']('foo')");
     assertEquals("responseFromServiceWorker:foo", swResponse2);
+
+    // Frozen WebKit predates the header preservation fix.
+    {
+      Map<String, Object> headers = mapOf(
+        "cache-control", "max-age=12345",
+        "accept-language", "fr-CH",
+        "accept", "application/custom");
+      Map<String, Object> receivedHeaders = (Map<String, Object>) page.evaluate("async headers => {\n" +
+        "  const response = await fetch('headers', { headers });\n" +
+        "  return response.json();\n" +
+        "}", headers);
+      // Java: toMatchObject(headers) checks the entries of headers.
+      for (Map.Entry<String, Object> header : headers.entrySet())
+        assertEquals(header.getValue(), receivedHeaders.get(header.getKey()));
+    }
 
     // Page route is not applied to service worker initiated fetch.
     Object nonInterceptedResponse = page.evaluate("() => window['fetchDummy']('passthrough')");

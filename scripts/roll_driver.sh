@@ -52,6 +52,9 @@ echo $NEW_COMMIT > ./DRIVER_VERSION
 ./generate_api.sh
 ./update_readme.sh
 
+# The playwright module takes the driver from the local Maven repository.
+(cd .. && mvn -B clean install -D skipTests --no-transfer-progress -pl driver,driver-bundle)
+
 echo ""
 echo "Rolled the driver from $OLD_COMMIT to $NEW_COMMIT."
 echo "To list the upstream commits of the roll, run:"

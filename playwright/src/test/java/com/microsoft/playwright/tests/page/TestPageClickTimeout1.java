@@ -54,22 +54,4 @@ public class TestPageClickTimeout1 {
     assertTrue(error.getMessage().contains("element is inert"));
     assertTrue(error.getMessage().contains("retrying click action"));
   }
-
-  @PlaywrightTest
-  @DisplayName("CL-113 should timeout waiting for element outside of a modal dialog")
-  @Fixme("java: the error message has no 'page.click: ' prefix and the bundled driver 1.64.1 does not report 'element is inert' in the call log")
-  void shouldTimeoutWaitingForElementOutsideOfAModalDialog(Page page) {
-    page.setContent("\n" +
-      "    <button onclick=\"javascript:window.__CLICKED=true;\">Click target</button>\n" +
-      "    <dialog id=dialog><button>Inside</button></dialog>\n" +
-      "    <script>\n" +
-      "      document.getElementById('dialog').showModal();\n" +
-      "    </script>\n" +
-      "  ");
-    PlaywrightException error = assertThrows(PlaywrightException.class,
-      () -> page.click("text=Click target", new Page.ClickOptions().setTimeout(3000)));
-    assertNull(page.evaluate("window.__CLICKED"));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
-    assertTrue(error.getMessage().contains("element is inert"));
-  }
 }

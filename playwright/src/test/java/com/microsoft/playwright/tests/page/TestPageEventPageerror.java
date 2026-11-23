@@ -17,6 +17,7 @@
 
 package com.microsoft.playwright.tests.page;
 
+import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.fixtures.BrowserName;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -67,7 +69,7 @@ public class TestPageEventPageerror {
 
   @PlaywrightTest
   @DisplayName("ER-001 should fire")
-  void shouldFire(Page page, TestServer server, BrowserName browserName) {
+  void shouldFire(Page page, TestServer server, BrowserName browserName, Browser browser) {
     String url = server.PREFIX + "/error.html";
     PageError error = waitForPageError(page, () -> page.navigate(url));
     assertEquals("Error", error.name);
@@ -120,7 +122,7 @@ public class TestPageEventPageerror {
     });
     PageError crossOriginError = waitForPageError(page, () -> page.navigate(server.PREFIX + "/cross-origin-error.html"));
     assertEquals("Fancy error!", crossOriginError.message);
-    if (browserName == BrowserName.CHROMIUM) {
+    if (browserName == BrowserName.CHROMIUM && browserMajorVersion(browser) >= 155) {
       assertEquals("Uncaught Error: Fancy error!\n" +
         "    at c (" + crossOriginUrl + ":14:11)\n" +
         "    at b (" + crossOriginUrl + ":10:5)\n" +

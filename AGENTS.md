@@ -1,6 +1,6 @@
 # Playwright Java
 
-The Java client is a port of the JavaScript client in `~/code/playwright/packages/playwright-core/src/client/`. When implementing or changing a method, read the corresponding JS file first and mirror its logic.
+The Java client is a port of the JavaScript client in `~/code/playwright/packages/playwright-core/src/client/`. It is a line-by-line translation: when implementing or changing a method, read the corresponding JS file first and translate it statement by statement. `playwright/src/main/AGENTS.md` has the rules. `ARCHITECTURE.md` describes the driver, the wire protocol, the object model, the threading model and the test harness.
 
 Paths such as `~/code/playwright` in this file assume that you check the repos out in `~/code`. Use the `gh` cli to interact with GitHub.
 

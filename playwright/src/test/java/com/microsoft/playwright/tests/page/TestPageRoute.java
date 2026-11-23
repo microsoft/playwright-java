@@ -288,6 +288,7 @@ public class TestPageRoute {
   @DisplayName("RO-012 should pause intercepted XHR until continue")
   @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: Redirected request is not paused in WebKit")
   void shouldPauseInterceptedXHRUntilContinue(Page page, TestServer server) {
+    assumeFalse("frozen".equals(System.getenv("PW_CLOCK")));
     page.navigate(server.EMPTY_PAGE);
     Route[] routePromise = {null};
     page.route("**/global-var.html", route -> routePromise[0] = route);
@@ -1339,5 +1340,26 @@ public class TestPageRoute {
     page.evaluate("() => window['activationPromise']");
     page.navigate(URL);
     assertEquals(2, interceptions[0]);
+  }
+
+  @PlaywrightTest
+  @DisplayName("RO-202 should continue a request reported while interception was disabled")
+  void shouldContinueARequestReportedWhileInterceptionWasDisabled(Page page, TestServer server) {
+    page.navigate(server.PREFIX + "/serviceworkers/slow-fallback/sw.html");
+    page.evaluate("() => window['activationPromise']");
+
+    Consumer<Route> handler = route -> route.fulfill(new Route.FulfillOptions().setBody("mocked"));
+    page.route("**/never-requested", handler);
+    page.unroute("**/never-requested");
+    // The service worker holds the request, so it reaches the network
+    // after interception is enabled again.
+    // Java: the page keeps the promise of the fetch, a second evaluate awaits it.
+    page.waitForRequest("**/simple.json", () -> {
+      page.evaluate("() => {\n" +
+        "  window.__bodyPromise = fetch('/simple.json').then(response => response.text());\n" +
+        "}");
+    });
+    page.route("**/never-requested", handler);
+    assertEquals("{\"foo\": \"bar\"}\n", page.evaluate("() => window.__bodyPromise"));
   }
 }
