@@ -943,8 +943,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
         FrameExpectResult.ExpectReceived received = null;
         if (details.received != null) {
           received = new FrameExpectResult.ExpectReceived();
-          // java: an undefined value is JestGetType.UNDEFINED, null is the JavaScript null.
-          received.value = details.received.value != null && !"undefined".equals(details.received.value.v) ? parseResult(details.received.value) : JestGetType.UNDEFINED;
+          // java: an undefined value is MatcherUtils.UNDEFINED, null is the JavaScript null.
+          received.value = details.received.value != null && !"undefined".equals(details.received.value.v) ? parseResult(details.received.value) : MatcherUtils.UNDEFINED;
           received.ariaSnapshot = details.received.ariaSnapshot;
         }
         FrameExpectResult result = new FrameExpectResult();

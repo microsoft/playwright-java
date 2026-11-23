@@ -276,7 +276,9 @@ public class TestLocatorGenerators {
   void asLocatorDescriptionInvalidInput() {
     assertEquals("desc", asLocatorDescription("java", "body >> internal:describe=\"desc\""));
     assertEquals("locator(\"body\")", asLocatorDescription("java", "body >> internal:describe=12"));
-    assertEquals("following-sibling::*[1]", asLocatorDescription("java", "following-sibling::*[1]"));
+    assertEquals("div >> internal:has=bad", asLocatorDescription("java", "div >> internal:has=bad"));
+    // The client does not parse css, so an invalid css selector is not rejected.
+    assertEquals("locator(\"following-sibling::*[1]\")", asLocatorDescription("java", "following-sibling::*[1]"));
     assertEquals("locator(\"body\").locator(\"div\")", asLocatorDescription("java", "body >> internal:describe=\"desc\" >> div"));
   }
 

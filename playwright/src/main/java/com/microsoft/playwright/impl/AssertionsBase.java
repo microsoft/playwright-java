@@ -35,7 +35,7 @@ abstract class AssertionsBase {
     this.isNot = isNot;
   }
 
-  // java: the fields of ExpectMatcherStateInternal that the matchers read, utils is JestMatcherUtils.
+  // java: the fields of ExpectMatcherStateInternal that the matchers read, utils is MatcherUtils.
   static class ExpectMatcherState {
     boolean isNot;
     String promise;
@@ -63,7 +63,7 @@ abstract class AssertionsBase {
     if (result.pass == isNot) {
       // java: ExpectError is an AssertionFailedError with the expected and the actual value of the result.
       String message = result.message.get();
-      if (result.expected == null && (result.actual == null || result.actual == JestGetType.UNDEFINED))
+      if (result.expected == null && (result.actual == null || result.actual == MatcherUtils.UNDEFINED))
         throw new AssertionFailedError(message);
       throw new AssertionFailedError(message, formatValue(result.expected), formatValue(result.actual));
     }
@@ -82,7 +82,7 @@ abstract class AssertionsBase {
 
   // java: a helper with no counterpart upstream, the value of an AssertionFailedError.
   protected static ValueWrapper formatValue(Object value) {
-    if (value == JestGetType.UNDEFINED) {
+    if (value == MatcherUtils.UNDEFINED) {
       return ValueWrapper.create(null);
     }
     if (value == null || !value.getClass().isArray()) {

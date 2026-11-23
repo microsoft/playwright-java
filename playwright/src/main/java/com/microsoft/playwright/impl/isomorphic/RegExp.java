@@ -57,9 +57,9 @@ public final class RegExp {
           result.append("\\n");
         else if (escaped == '\r')
           result.append("\\r");
-        else if (escaped == ' ')
+        else if (escaped == '\u2028')
           result.append("\\u2028");
-        else if (escaped == ' ')
+        else if (escaped == '\u2029')
           result.append("\\u2029");
         else
           result.append(c).append(escaped);
@@ -75,9 +75,9 @@ public final class RegExp {
         result.append("\\n");
       else if (c == '\r')
         result.append("\\r");
-      else if (c == ' ')
+      else if (c == '\u2028')
         result.append("\\u2028");
-      else if (c == ' ')
+      else if (c == '\u2029')
         result.append("\\u2029");
       else
         result.append(c);

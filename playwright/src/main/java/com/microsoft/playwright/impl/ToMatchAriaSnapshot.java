@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.JestMatcherUtils.printDiffOrStringify;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printExpected;
+import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
 import static com.microsoft.playwright.impl.MatcherHint.printReceivedStringContainExpectedSubstring;
 
@@ -64,7 +64,7 @@ class ToMatchAriaSnapshot {
     Boolean timedOut = queryResult.timedOut;
     String errorMessage = queryResult.errorMessage;
     // java: MatcherReceived is the parsed object, a Map with raw and regex.
-    Map<String, Object> typedReceived = received == null || received.value == JestGetType.UNDEFINED ? null : (Map<String, Object>) received.value;
+    Map<String, Object> typedReceived = received == null || received.value == MatcherUtils.UNDEFINED ? null : (Map<String, Object>) received.value;
 
     String finalExpected = expected;
     MatcherResult result = new MatcherResult();
@@ -80,7 +80,7 @@ class ToMatchAriaSnapshot {
         printedExpected = "Expected: not " + printExpected(finalExpected);
         printedReceived = "Received: " + receivedString;
       } else {
-        printedDiff = printDiffOrStringify(finalExpected, typedReceived.get("raw"), "Expected", "Received", false);
+        printedDiff = printDiffOrStringify(finalExpected, typedReceived.get("raw"), "Expected", "Received");
       }
       MatcherMessageDetails details = new MatcherMessageDetails();
       details.isNot = state.isNot;

@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.JestMatcherUtils.printDiffOrStringify;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printExpected;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printReceived;
+import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
+import static com.microsoft.playwright.impl.MatcherUtils.printReceived;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
 
 class ToEqual {
@@ -53,7 +53,7 @@ class ToEqual {
     List<String> log = queryResult.log;
     Boolean timedOut = queryResult.timedOut;
     String errorMessage = queryResult.errorMessage;
-    Object receivedValue = received == null ? JestGetType.UNDEFINED : received.value;
+    Object receivedValue = received == null ? MatcherUtils.UNDEFINED : received.value;
 
     if (pass == !state.isNot) {
       MatcherResult result = new MatcherResult();
@@ -91,15 +91,13 @@ class ToEqual {
         normalizedExpected,
         receivedValue,
         EXPECTED_LABEL,
-        RECEIVED_LABEL,
-        false);
+        RECEIVED_LABEL);
     } else {
       printedDiff = printDiffOrStringify(
         expected,
         receivedValue,
         EXPECTED_LABEL,
-        RECEIVED_LABEL,
-        false);
+        RECEIVED_LABEL);
     }
     String finalPrintedExpected = printedExpected;
     String finalPrintedReceived = printedReceived;

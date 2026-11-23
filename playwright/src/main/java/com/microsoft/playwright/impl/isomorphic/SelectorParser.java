@@ -19,7 +19,7 @@ package com.microsoft.playwright.impl.isomorphic;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.microsoft.playwright.impl.isomorphic.CssParser.InvalidSelectorError;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.isomorphic.CssParser.parseCSS;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.JS_WHITESPACE;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.jsTrim;
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.jsonParse;
@@ -37,9 +36,17 @@ import static com.microsoft.playwright.impl.isomorphic.StringUtils.numberToStrin
 import static com.microsoft.playwright.impl.isomorphic.StringUtils.toNumber;
 
 // java: the types of the file are nested classes. kAnyFrameSelector, splitSelectorByFrame and visitAllSelectorParts
-// are not ported, the locator generators do not use them.
+// are not ported, the locator generators do not use them. There is no port of cssParser.ts and cssTokenizer.ts:
+// the body of a css part is its source, and a css selector that upstream rejects is not rejected here.
 public final class SelectorParser {
   private SelectorParser() {
+  }
+
+  // java: InvalidSelectorError of cssParser.ts.
+  public static class InvalidSelectorError extends PlaywrightException {
+    public InvalidSelectorError(String message) {
+      super(message);
+    }
   }
 
   public static class NestedSelectorBody {
@@ -50,7 +57,7 @@ public final class SelectorParser {
   private static final Set<String> kNestedSelectorNames = new HashSet<>(Arrays.asList("internal:has", "internal:has-not", "internal:and", "internal:or", "internal:chain", "left-of", "right-of", "above", "below", "near"));
   private static final Set<String> kNestedSelectorNamesWithDistance = new HashSet<>(Arrays.asList("left-of", "right-of", "above", "below", "near"));
 
-  // java: the body is an Object holding a String, a List<CssParser.CSSComplexSelector> or a NestedSelectorBody.
+  // java: the body is an Object holding a String or a NestedSelectorBody.
   public static class ParsedSelectorPart {
     public String name;
     public Object body;
@@ -88,7 +95,7 @@ public final class SelectorParser {
     Integer capture;
   }
 
-  public static final Set<String> customCSSNames = new HashSet<>(Arrays.asList("not", "is", "where", "has", "scope", "light", "visible", "text", "text-matches", "text-is", "has-text", "above", "below", "right-of", "left-of", "near", "nth-match"));
+  // java: no customCSSNames, parseCSS reads them.
 
   public static ParsedSelector parseSelector(String selector) {
     ParsedSelectorStrings parsedStrings = parseSelectorString(selector);
@@ -97,10 +104,10 @@ public final class SelectorParser {
       if (part.name.equals("css") || part.name.equals("css:light")) {
         if (part.name.equals("css:light"))
           part.body = ":light(" + part.body + ")";
-        CssParser.ParsedCSS parsedCSS = parseCSS(part.body, customCSSNames);
+        // java: no parseCSS, the body is the source.
         parts.add(new ParsedSelectorPart(
           "css",
-          parsedCSS.selector,
+          part.body,
           part.body
         ));
         continue;

@@ -27,10 +27,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.JestMatcherUtils.EXPECTED_COLOR;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printDiffOrStringify;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printExpected;
-import static com.microsoft.playwright.impl.JestMatcherUtils.printWithType;
+import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
 import static com.microsoft.playwright.impl.MatcherHint.printReceivedStringContainExpectedResult;
 import static com.microsoft.playwright.impl.MatcherHint.printReceivedStringContainExpectedSubstring;
@@ -53,7 +51,7 @@ class ToMatchText {
       !(expected instanceof String) &&
       !(expected instanceof Pattern)
     ) {
-      String errorMessage = "Error: " + EXPECTED_COLOR("expected") + " value must be a string or regular expression\n" + printWithType("Expected", expected, JestMatcherUtils::printExpected);
+      String errorMessage = "Error: expected value must be a string or regular expression\n" + "Expected has value: " + printExpected(expected);
       MatcherMessageDetails details = new MatcherMessageDetails();
       details.promise = state.promise;
       details.isNot = state.isNot;
@@ -85,7 +83,7 @@ class ToMatchText {
     String expectedSuffix = expected instanceof String ? (matchSubstring ? " substring" : "") : " pattern";
     String receivedSuffix = expected instanceof String ? (matchSubstring ? " string" : "") : " string";
     // java: a received value that is not a string keeps its text.
-    String receivedValue = received == null || received.value == null || received.value == JestGetType.UNDEFINED ? null : String.valueOf(received.value);
+    String receivedValue = received == null || received.value == null || received.value == MatcherUtils.UNDEFINED ? null : String.valueOf(received.value);
     String receivedString = receivedValue == null ? "" : receivedValue;
     String printedReceived = null;
     String printedExpected = null;
@@ -109,7 +107,7 @@ class ToMatchText {
       if (errorMessage != null)
         printedExpected = "Expected" + expectedSuffix + ": " + printExpected(expected);
       else
-        printedDiff = printDiffOrStringify(expected, receivedString, "Expected" + expectedSuffix, "Received" + receivedSuffix, false);
+        printedDiff = printDiffOrStringify(expected, receivedString, "Expected" + expectedSuffix, "Received" + receivedSuffix);
     }
 
     String finalPrintedExpected = printedExpected;

@@ -45,7 +45,7 @@ class ToBeTruthy {
     Boolean timedOut = queryResult.timedOut;
     FrameExpectResult.ExpectReceived received = queryResult.received;
     String errorMessage = queryResult.errorMessage;
-    Object receivedValue = received == null ? JestGetType.UNDEFINED : received.value;
+    Object receivedValue = received == null ? MatcherUtils.UNDEFINED : received.value;
 
     if (pass == !state.isNot) {
       MatcherResult result = new MatcherResult();

@@ -31,10 +31,12 @@ Java code around the place it goes to, and write the new lines the same way.
   `LocatorAssertionsImpl`, `PageAssertionsImpl` and `APIResponseAssertionsImpl`; `toBeTruthy.ts`,
   `toEqual.ts`, `toMatchText.ts`, `toMatchAriaSnapshot.ts` and `matcherHint.ts` are the classes
   of the same name; `AssertionsBase` is the call of a matcher from `expect.ts`. The `utils` of a
-  matcher are `JestMatcherUtils`, with `JestDiff`, `DiffSequences`, `PrettyFormat` and `JestGetType`: ports of
-  the jest packages in `.upstream/node_modules/`, without colors. A failure message is the
-  upstream message with the Java call: `assertThat(locator).not().hasText(expected) failed` for
+  matcher are `MatcherUtils`: jest is not ported, the values and the diff are printed in the same
+  layout without matching jest in every case. A failure message has the upstream layout with the
+  Java call: `assertThat(locator).not().hasText(expected) failed` for
   `expect(locator).not.toHaveText(expected) failed`, and the title `Assert "hasText"`.
+- `isomorphic/cssParser.ts` and `cssTokenizer.ts` are not ported: `SelectorParser` keeps the
+  source of a css part and does not reject an invalid css selector.
 - A class that implements a public interface is `<Name>Impl` (`Page` is `PageImpl`). A
   helper class keeps the upstream name (`Waiter`, `HarRouter`, `TimeoutSettings`).
 - The members keep the upstream order. A new upstream member goes where it is in the `.ts` file,
