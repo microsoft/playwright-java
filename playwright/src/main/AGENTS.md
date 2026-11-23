@@ -35,8 +35,8 @@ Java code around the place it goes to, and write the new lines the same way.
   layout without matching jest in every case. A failure message has the upstream layout with the
   Java call: `assertThat(locator).not().hasText(expected) failed` for
   `expect(locator).not.toHaveText(expected) failed`, and the title `Assert "hasText"`.
-- `isomorphic/cssParser.ts` and `cssTokenizer.ts` are not ported: `SelectorParser` keeps the
-  source of a css part and does not reject an invalid css selector.
+- `isomorphic/locatorGenerators.ts` and the selector parser are not ported: `Locator.toString()`
+  asks the driver (`LocalUtils.asLocatorDescription`, language `java`).
 - A class that implements a public interface is `<Name>Impl` (`Page` is `PageImpl`). A
   helper class keeps the upstream name (`Waiter`, `HarRouter`, `TimeoutSettings`).
 - The members keep the upstream order. A new upstream member goes where it is in the `.ts` file,

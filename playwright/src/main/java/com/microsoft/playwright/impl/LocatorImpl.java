@@ -34,8 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
-import static com.microsoft.playwright.impl.isomorphic.LocatorGenerators.asLocatorDescription;
-import static com.microsoft.playwright.impl.isomorphic.LocatorGenerators.locatorCustomDescription;
 import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
@@ -357,10 +355,19 @@ class LocatorImpl implements Locator {
     return new LocatorImpl(frame, selector + " >> internal:describe=" + gson().toJson(description));
   }
 
+  // java: there is no port of the selector parser; this matches the trailing internal:describe part
+  // that upstream locatorCustomDescription() reads.
   @Override
   public String description() {
-    String description = locatorCustomDescription(selector);
-    return description == null || description.isEmpty() ? null : description;
+    Matcher matcher = Pattern.compile(" >> internal:describe=(\"(?:[^\"\\\\]|\\\\.)*\")$").matcher(selector);
+    if (!matcher.find())
+      return null;
+    try {
+      String description = gson().fromJson(matcher.group(1), String.class);
+      return description == null || description.isEmpty() ? null : description;
+    } catch (RuntimeException e) {
+      return null;
+    }
   }
 
   @Override
@@ -699,10 +706,18 @@ class LocatorImpl implements Locator {
 
   // java: no _inspect, it serves inspect.custom.
 
-  // java: the language is java, not javascript: the Java client prints Java locator code.
+  // java: there is no port of the locator generators: the driver prints the Java locator code. When it cannot
+  // be asked (the connection is closed), the text is the description or Locator@<selector>.
   @Override
   public String toString() {
-    return asLocatorDescription("java", selector);
+    try {
+      return frame.connection.localUtils().asLocatorDescription(selector);
+    } catch (PlaywrightException e) {
+      String description = description();
+      if (description != null)
+        return description;
+      return "Locator@" + selector;
+    }
   }
 
   // java: the module-level _testIdAttributeName is SelectorsImpl.testIdAttributeName of the Playwright instance,

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
+import static com.microsoft.playwright.impl.MatcherUtils.numberToString;
 import static com.microsoft.playwright.impl.MatcherUtils.printReceived;
-import static com.microsoft.playwright.impl.isomorphic.StringUtils.numberToString;
 
 class MatcherHint {
   // java: no attachments, suggestedRebaseline, softError and shouldNotRetryTest, they belong to the test runner.

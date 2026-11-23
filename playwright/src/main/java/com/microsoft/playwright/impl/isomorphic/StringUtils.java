@@ -19,15 +19,8 @@ package com.microsoft.playwright.impl.isomorphic;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.Strictness;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.microsoft.playwright.PlaywrightException;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -321,56 +314,13 @@ public final class StringUtils {
     return gson.toJson(value);
   }
 
-  // java: JSON.parse; throws on malformed JSON.
-  public static JsonElement jsonParse(String text) {
-    try {
-      JsonReader reader = new JsonReader(new StringReader(text));
-      reader.setStrictness(Strictness.STRICT);
-      JsonElement result = gson.getAdapter(JsonElement.class).read(reader);
-      if (reader.peek() != JsonToken.END_DOCUMENT)
-        throw new PlaywrightException("Unexpected non-whitespace character after JSON");
-      return result;
-    } catch (IOException | IllegalStateException | JsonParseException e) {
-      throw new PlaywrightException("Malformed JSON: " + text, e);
-    }
-  }
-
-  // java: String.prototype.trim, which removes the \s characters of a JS RegExp.
-  public static String jsTrim(String text) {
-    return text.replaceAll("^" + JS_WHITESPACE + "+|" + JS_WHITESPACE + "+$", "");
-  }
-
-  // java: the unary plus on a string. A hexadecimal literal and a decimal literal are converted, anything else is NaN.
-  public static double toNumber(String text) {
-    String trimmed = jsTrim(text);
-    if (trimmed.isEmpty())
-      return 0;
-    if (trimmed.matches("0[xX][0-9a-fA-F]+"))
-      return new java.math.BigInteger(trimmed.substring(2), 16).doubleValue();
-    if (trimmed.matches("[+-]?(Infinity|(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?)"))
-      return Double.parseDouble(trimmed);
-    return Double.NaN;
-  }
-
-  // java: String(value) of a JS number. A whole number prints without a fraction; other numbers print as
-  // Double.toString() does, which differs from JS in the exponent form.
-  public static String numberToString(double value) {
-    if (Double.isNaN(value))
-      return "NaN";
-    if (Double.isInfinite(value))
-      return value > 0 ? "Infinity" : "-Infinity";
-    if (value == Math.rint(value) && Math.abs(value) < 1e15)
-      return String.valueOf((long) value);
-    return Double.toString(value);
-  }
-
   // java: String(re) of a JS RegExp.
   private static String toJsRegExp(Pattern pattern) {
     return "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
   }
 
   // java: the \s character class of a JS RegExp.
-  static final String JS_WHITESPACE = "[\\t\\n\\u000B\\f\\r \\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]";
+  private static final String JS_WHITESPACE = "[\\t\\n\\u000B\\f\\r \\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]";
 
   // java: String.prototype.replace with a global RegExp and a function that looks the match up in escaped.
   private static String replaceEach(String s, Pattern pattern) {

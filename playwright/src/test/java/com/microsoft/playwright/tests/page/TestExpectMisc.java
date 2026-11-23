@@ -709,8 +709,7 @@ public class TestExpectMisc {
       () -> assertThat(page.locator("##")).isVisible());
     assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).isVisible() failed\n" +
       "\n" +
-      // Java: the client does not parse css, so the locator is not printed as the raw selector.
-      "Locator: locator(\"##\")\n" +
+      "Locator: ##\n" +
       "Expected: visible\n" +
       "Error: Unexpected token \"#\" while parsing css selector \"##\". Did you mean to CSS.escape it?\n" +
       "\n" +

@@ -27,7 +27,6 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
-import static com.microsoft.playwright.impl.isomorphic.StringUtils.numberToString;
 
 // java: the utils of a matcher. Upstream they are jest-matcher-utils, which is not ported: these methods print the
 // Java values in the same format, without colors, and the diff is a plain line diff.
@@ -176,6 +175,16 @@ class MatcherUtils {
     if (value instanceof Date)
       return DateTimeFormatter.ISO_INSTANT.format(((Date) value).toInstant().truncatedTo(ChronoUnit.MILLIS)).replaceFirst("(:\\d\\d)Z$", "$1.000Z");
     return String.valueOf(value);
+  }
+
+  static String numberToString(double value) {
+    if (Double.isNaN(value))
+      return "NaN";
+    if (Double.isInfinite(value))
+      return value > 0 ? "Infinity" : "-Infinity";
+    if (value == Math.rint(value) && Math.abs(value) < 1e15)
+      return String.valueOf((long) value);
+    return Double.toString(value);
   }
 
   private static String quote(String value) {

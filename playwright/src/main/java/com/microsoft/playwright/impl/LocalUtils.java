@@ -85,6 +85,14 @@ public class LocalUtils extends ChannelOwner {
     return initializer.getAsJsonArray("deviceDescriptors");
   }
 
+  // java: the locator generators run on the driver, with the Java language.
+  String asLocatorDescription(String selector) {
+    LocalUtilsAsLocatorDescriptionParams params = new LocalUtilsAsLocatorDescriptionParams();
+    params.selector = selector;
+    params.sdkLanguage = "java";
+    return wrapApiCall(() -> channel.asLocatorDescription(params, NO_TIMEOUT).description, null, true);
+  }
+
   // java: the Java API matches globs on the driver.
   public Pattern globToRegex(String glob, String baseURL, boolean webSocketUrl) {
     LocalUtilsGlobToRegexParams params = new LocalUtilsGlobToRegexParams();
