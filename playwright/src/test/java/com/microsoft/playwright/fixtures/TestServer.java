@@ -715,6 +715,7 @@ public class TestServer implements AutoCloseable {
     private boolean headersSent;
     private boolean chunked;
     private boolean ended;
+    private final List<Runnable> finishListeners = new ArrayList<>();
     private final CountDownLatch endLatch = new CountDownLatch(1);
 
     Response(Request request, Connection connection) {
@@ -834,6 +835,10 @@ public class TestServer implements AutoCloseable {
         if (chunked) {
           connection.write("0\r\n\r\n");
         }
+        for (Runnable listener : finishListeners) {
+          listener.run();
+        }
+        finishListeners.clear();
       } finally {
         endLatch.countDown();
       }
@@ -845,6 +850,11 @@ public class TestServer implements AutoCloseable {
 
     public boolean finished() {
       return writableEnded();
+    }
+
+    /** Node's response 'finish' event, emitted after the last response bytes are written. */
+    public synchronized void onFinish(Runnable listener) {
+      finishListeners.add(listener);
     }
 
     private boolean hasBody() {
@@ -989,6 +999,15 @@ public class TestServer implements AutoCloseable {
 
     public boolean isClosed() {
       return closed;
+    }
+
+    /** Node's socket.setTimeout(), applied to the blocking reader of this connection. */
+    public void setTimeout(int timeout) {
+      try {
+        socket.setSoTimeout(timeout);
+      } catch (java.net.SocketException e) {
+        throw new IllegalStateException(e);
+      }
     }
 
     public void onClose(Runnable listener) {

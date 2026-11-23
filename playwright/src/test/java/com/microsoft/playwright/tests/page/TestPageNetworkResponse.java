@@ -338,6 +338,30 @@ public class TestPageNetworkResponse {
   }
 
   @PlaywrightTest
+  @DisplayName("NE-145 should return source for a module script loaded from cache")
+  void shouldReturnSourceForAModuleScriptLoadedFromCache(Page page, TestServer server) {
+    List<String> functions = new ArrayList<>();
+    for (int i = 0; i < 400; ++i) {
+      functions.add("export function f" + i + "() { return " + i + "; }");
+    }
+    String source = String.join("\n", functions);
+    server.setRoute("/module.js", (req, res) -> {
+      res.writeHead(200, "Content-Type", "text/javascript", "Cache-Control", "max-age=3600");
+      res.end(source);
+    });
+    server.setRoute("/module.html", (req, res) -> {
+      res.setHeader("Content-Type", "text/html");
+      res.end("<script type=\"module\" src=\"/module.js\"></script>");
+    });
+    // Firefox stores module bytecode in the HTTP cache after several loads.
+    for (int i = 0; i < 5; ++i) {
+      Response response = page.waitForResponse("**/module.js", () -> page.navigate(server.PREFIX + "/module.html"));
+      assertEquals(source, new String(response.body(), StandardCharsets.UTF_8));
+      page.waitForTimeout(500);
+    }
+  }
+
+  @PlaywrightTest
   @DisplayName("NE-052 should bypass disk cache when page interception is enabled")
   void shouldBypassDiskCacheWhenPageInterceptionIsEnabled(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/frames/one-frame.html");

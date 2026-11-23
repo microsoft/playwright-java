@@ -327,4 +327,22 @@ public class TestWebSocket {
     TestServer.Request req = reqPromise.get();
     assertEquals("bar", req.headers.get("foo"));
   }
+
+  @PlaywrightTest
+  @DisplayName("WS-041 should navigate while an iframe opens WebSockets")
+  void shouldNavigateWhileAnIframeOpensWebSockets(Page page, TestServer server) {
+    server.setRoute("/parent", (req, res) -> {
+      res.setHeader("Content-Type", "text/html");
+      res.end("<iframe src=\"/child\"></iframe>");
+    });
+    server.setRoute("/child", (req, res) -> {
+      res.setHeader("Content-Type", "text/html");
+      res.end("<script>setInterval(() => new WebSocket('ws://' + location.host + '/ws'), 5)</script>");
+    });
+    for (int i = 0; i < 20; ++i) {
+      page.navigate(server.PREFIX + "/parent");
+    }
+    assertEquals(2, page.frames().size());
+    assertEquals(2, page.evaluate("() => 1 + 1"));
+  }
 }

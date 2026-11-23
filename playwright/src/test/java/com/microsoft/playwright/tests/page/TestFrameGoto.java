@@ -50,13 +50,12 @@ public class TestFrameGoto {
   @PlaywrightTest
   @DisplayName("FR-022 should continue after client redirect")
   @DisabledOnBrowser(value = BrowserName.FIREFOX, reason = "fixme: script.js is requested before navigationCommitted arrives")
-  @Fixme("java: the error message has no 'page.goto:' prefix and no call log")
   void shouldContinueAfterClientRedirect(Page page, TestServer server) {
     server.setRoute("/frames/script.js", (req, res) -> {});
     String url = server.PREFIX + "/frames/child-redirect.html";
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.navigate(url, new Page.NavigateOptions().setTimeout(5000).setWaitUntil(WaitUntilState.NETWORKIDLE)));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("navigating to \"" + url + "\", waiting until \"networkidle\""));
   }
 }

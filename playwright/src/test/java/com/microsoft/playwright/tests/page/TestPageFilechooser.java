@@ -148,18 +148,26 @@ public class TestPageFilechooser {
   @PlaywrightTest
   @DisplayName("FC-008 should work when file input is not attached to DOM")
   void shouldWorkWhenFileInputIsNotAttachedToDOM(Page page) throws Exception {
-    // Java: the evaluate below blocks until the file is set, so the file chooser handler sets the file; it stands for the code that upstream runs after the pending evaluate.
-    page.onFileChooser(chooser -> chooser.setFiles(asset("file-to-upload.txt")));
-    Object content = page.evaluate("async () => {\n" +
-      "      const el = document.createElement('input');\n" +
-      "      el.type = 'file';\n" +
-      "      el.click();\n" +
-      "      await new Promise(x => el.oninput = x);\n" +
-      "      const reader = new FileReader();\n" +
-      "      const promise = new Promise(fulfill => reader.onload = fulfill);\n" +
-      "      reader.readAsText(el.files[0]);\n" +
-      "      return promise.then(() => reader.result);\n" +
-      "    }");
+    page.setContent("<button>Open</button>");
+    page.evaluate("() => {\n" +
+      "  document.querySelector('button').onclick = () => {\n" +
+      "    const input = document.createElement('input');\n" +
+      "    input.type = 'file';\n" +
+      "    window['events'] = [];\n" +
+      "    for (const type of ['cancel', 'input', 'change'])\n" +
+      "      input.addEventListener(type, () => window['events'].push(`${type} ${input.files.length}`));\n" +
+      "    input.click();\n" +
+      "  };\n" +
+      "}");
+    FileChooser chooser = page.waitForFileChooser(() -> page.click("button"));
+    chooser.setFiles(asset("file-to-upload.txt"));
+    assertEquals(java.util.Arrays.asList("input 1", "change 1"), page.evaluate("() => window['events']"));
+    Object content = chooser.element().evaluate("input => {\n" +
+      "  const reader = new FileReader();\n" +
+      "  const promise = new Promise(fulfill => reader.onload = fulfill);\n" +
+      "  reader.readAsText(input.files[0]);\n" +
+      "  return promise.then(() => reader.result);\n" +
+      "}");
     assertEquals("contents of the file", content);
   }
 

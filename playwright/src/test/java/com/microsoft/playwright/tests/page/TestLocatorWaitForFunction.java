@@ -17,6 +17,7 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Port of tests/page/locator-wait-for-function.spec.ts. */
 public class TestLocatorWaitForFunction {
@@ -61,8 +63,18 @@ public class TestLocatorWaitForFunction {
   @PlaywrightTest
   @DisplayName("LO-187 should resolve a promise returned by the predicate")
   void shouldResolveAPromiseReturnedByThePredicate(Page page) {
-    page.setContent("<div id=target>yes</div>");
-    page.locator("#target").waitForFunction("async element => element.textContent === 'yes'");
+    page.setContent("<div id=target>no</div>");
+    Locator target = page.locator("#target");
+    PlaywrightException error = assertThrows(PlaywrightException.class, () ->
+      target.waitForFunction("async element => element.textContent === 'yes'", null, new Locator.WaitForFunctionOptions().setTimeout(250)));
+    assertTrue(error.getMessage().contains("Timeout 250ms exceeded"));
+    target.waitForFunction("async element => {\n" +
+      "  await new Promise(resolve => window.builtins.setTimeout(resolve, 10));\n" +
+      "  const result = element.textContent === 'yes';\n" +
+      "  element.textContent = 'yes';\n" +
+      "  return result;\n" +
+      "}");
+    assertEquals("yes", target.textContent());
   }
 
   @PlaywrightTest
@@ -97,6 +109,17 @@ public class TestLocatorWaitForFunction {
       "  throw new Error('oh my');\n" +
       "}"));
     assertTrue(error.getMessage().contains("oh my"));
+  }
+
+  @PlaywrightTest
+  @DisplayName("LO-200 should throw when predicate rejects")
+  void shouldThrowWhenPredicateRejects(Page page) {
+    page.setContent("<div id=target>no</div>");
+    PlaywrightException error = assertThrows(PlaywrightException.class, () ->
+      page.locator("#target").waitForFunction("async () => {\n" +
+        "  throw new Error('async oh my');\n" +
+        "}"));
+    assertTrue(error.getMessage().contains("async oh my"));
   }
 
   @PlaywrightTest

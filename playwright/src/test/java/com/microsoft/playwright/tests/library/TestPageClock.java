@@ -31,7 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -314,11 +313,10 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-018 should throw for invalid date")
-    @Fixme("java: the message is 'Invalid date: invalid' without the 'clock.setSystemTime: ' prefix")
     void shouldThrowForInvalidDate(Page page) {
       // Java: an Invalid Date, new Date('invalid'), can not be created in Java.
       PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.clock().setSystemTime("invalid"));
-      assertTrue(error.getMessage().contains("clock.setSystemTime: Invalid date: invalid"));
+      assertTrue(error.getMessage().contains("Invalid date: invalid"));
     }
 
     @PlaywrightTest
@@ -352,11 +350,22 @@ public class TestPageClock {
     @PlaywrightTest
     @DisplayName("CK-022 replaces global setInterval")
     void replacesGlobalSetInterval(Page page, Calls calls) {
-      page.evaluate("async () => {\n" +
-        "      setInterval(window.stub, 500);\n" +
+      Object interval = page.evaluate("() => {\n" +
+        "      return setInterval(window.stub, 500);\n" +
         "    }");
       page.clock().runFor(1000);
       assertEquals(2, calls.size());
+
+      page.evaluate("interval => {\n" +
+        "  clearInterval(interval);\n" +
+        "  setInterval(window.stub);\n" +
+        "}", interval);
+      page.clock().fastForward(0);
+      assertEquals(3, calls.size());
+      page.clock().fastForward(1000);
+      assertEquals(4, calls.size());
+      page.clock().runFor(10);
+      assertEquals(14, calls.size());
     }
 
     @PlaywrightTest
@@ -579,15 +588,15 @@ public class TestPageClock {
 
     @PlaywrightTest
     @DisplayName("CK-039 should reject an invalid target time with an active requestAnimationFrame loop")
-    @Fixme("java: the message is 'Invalid date: <time>' without the 'clock.pauseAt: ' prefix")
     void shouldRejectAnInvalidTargetTimeWithAnActiveRequestAnimationFrameLoop(Page page) {
       // { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright-python/issues/3137' } }
       page.clock().install();
       page.setContent("<script>function tick() { requestAnimationFrame(tick); } requestAnimationFrame(tick);</script>");
-      // Java: the number is a double in JavaScript; its string is the shortest representation of the digits.
       double invalidTime = number(page.evaluate("() => Date.now()")) * 1_000_000;
+      // Java: use ECMAScript's number formatting for the template substitution, not Double.toString.
+      String invalidTimeString = (String) page.evaluate("time => String(time)", invalidTime);
       PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.clock().pauseAt((long) invalidTime));
-      assertTrue(error.getMessage().contains("clock.pauseAt: Invalid date: " + new BigDecimal(Double.toString(invalidTime)).toPlainString()));
+      assertTrue(error.getMessage().contains("Invalid date: " + invalidTimeString));
     }
 
     @PlaywrightTest

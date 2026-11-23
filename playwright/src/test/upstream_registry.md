@@ -49,7 +49,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `CM` | Console messages | `page/page-event-console` |
 | `CN` | Channels | `library/channels` |
 | `CO` | Cookies | `library/{browsercontext-cookies, browsercontext-add-cookies, browsercontext-clearcookies, browsercontext-cookies-third-party}` |
-| `CR` | Chromium | `library/chromium/{chromium, launcher, extensions, bfcache, connect-to-worker, disable-web-security}` |
+| `CR` | Chromium | `library/chromium/{chromium, launcher, extensions, bfcache, disable-web-security}` |
 | `CS` | CSP | `library/browsercontext-csp` |
 | `CV` | Coverage | `library/chromium/{js-coverage, css-coverage}`<br>`library/coverage` |
 | `DB` | Debug | `library/{debugger, debug-controller}` |
@@ -477,6 +477,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `BC-081` | `library/browsercontext-reuse.spec.ts` | reuse {launch, connect} › should continue issuing events after closing the reused page *(2 copies)* |
 | `BC-082` | `library/browsercontext-reuse.spec.ts` | reuse {launch, connect} › should work with routeWebSocket *(2 copies)* |
 | `BC-083` | `library/browsercontext-reuse.spec.ts` | reuse {launch, connect} › should update viewport and media *(2 copies)* |
+| `BC-084` | `library/browsercontext-basic.spec.ts` | should locate only visible elements when configured |
 
 ### BP — Browsers path
 
@@ -582,7 +583,6 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `BT-076` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › should upload large file *(2 copies)* |
 | `BT-077` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › should upload a folder *(2 copies)* |
 | `BT-078` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › setInputFiles should preserve lastModified timestamp *(2 copies)* |
-| `BT-079` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › should connect over http *(2 copies)* |
 | `BT-080` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › socks proxy › should forward non-forwarded requests *(2 copies)* |
 | `BT-081` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › socks proxy › should proxy localhost requests @smoke *(2 copies)* |
 | `BT-082` | `library/browsertype-connect.spec.ts` | {launchServer, run-server} › socks proxy › should proxy ipv6 localhost requests @smoke *(2 copies)* |
@@ -598,16 +598,16 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `BT-092` | `library/browsertype-connect.spec.ts` | launchServer only › cannot launch another browser |
 | `BT-093` | `library/browsertype-connect.spec.ts` | should refuse connecting when versions do not match |
 | `BT-094` | `library/browsertype-connect.spec.ts` | should filter local paths from unsafe launch options |
-| `BT-095` | `library/browsertype-connect.spec.ts` | should timeout after redirect when connecting over http |
 | `BT-096` | `library/browsertype-connect.spec.ts` | should not retain closed browsers in launch mode |
 | `BT-097` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 3.141.59 standalone chromium |
 | `BT-098` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 3.141.59 hub + node chromium |
-| `BT-099` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.8.3 standalone chromium |
-| `BT-100` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.8.3 hub + node chromium |
-| `BT-101` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.8.3 standalone chromium broken driver |
+| `BT-099` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.11.0 standalone chromium |
+| `BT-100` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.11.0 hub + node chromium |
+| `BT-101` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 4.11.0 standalone chromium broken driver |
 | `BT-102` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 3.141.59 standalone non-chromium |
 | `BT-103` | `library/browsertype-launch-selenium.spec.ts` | selenium grid 3.141.59 standalone chromium through run-driver |
 | `BT-104` | `library/browsertype-launch-server.spec.ts` | launch server › should handle timeout |
+| `BT-105` | `library/browsertype-connect.spec.ts` | run-server should exit when stdin closes |
 
 ### BU — Before unload
 
@@ -765,6 +765,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `CD-051` | `library/chromium/session.spec.ts` | should emit close event when page closes |
 | `CD-052` | `library/chromium/session.spec.ts` | should work with newBrowserCDPSession |
 | `CD-053` | `library/chromium/connect-over-cdp.spec.ts` | should connect when another client inspects a terminated shared worker |
+| `CD-054` | `library/chromium/connect-over-cdp.spec.ts` | should not wait for a busy page longer than maxPageAttachTime |
 
 ### CF — Code frame
 
@@ -1501,8 +1502,6 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `CR-040` | `library/chromium/extensions.spec.ts` | MV3 › should report console messages from content script |
 | `CR-041` | `library/chromium/extensions.spec.ts` | MV3 › should use custom userAgent in service worker fetch requests |
 | `CR-042` | `library/chromium/bfcache.spec.ts` | bindings should work after restoring from bfcache |
-| `CR-043` | `library/chromium/connect-to-worker.spec.ts` | should connect, evaluate, receive console and disconnect |
-| `CR-044` | `library/chromium/connect-to-worker.spec.ts` | should receive close when node process exits |
 | `CR-045` | `library/chromium/disable-web-security.spec.ts` | test utility world in popup w/ --disable-web-security |
 | `CR-046` | `library/chromium/disable-web-security.spec.ts` | test init script w/ --disable-web-security |
 
@@ -2036,6 +2035,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `EM-025` | `library/emulation-coop.spec.ts` | emulation with COOP › should preserve context options |
 | `EM-026` | `library/emulation-coop.spec.ts` | emulation with COOP › should preserve page.emulateMedia |
 | `EM-027` | `library/emulation-coop.spec.ts` | emulation with COOP › should preserve mobile emulation |
+| `EM-028` | `library/emulation-focus.spec.ts` | should keep mouse drag when interacting with another page/context |
 
 ### ER — Page errors and crashes
 
@@ -2062,6 +2062,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `ER-019` | `library/page-event-crash.spec.ts` | should be able to close context when page crashes |
 | `ER-020` | `library/page-event-crash.spec.ts` | should be able to close page after crash |
 | `ER-021` | `library/page-event-crash.spec.ts` | should reject in-flight worker.evaluate when page crashes |
+| `ER-022` | `page/page-event-pageerror.spec.ts` | should not fire for a caught fetch rejected by a pending navigation |
 
 ### ES — Eval on selector
 
@@ -3718,6 +3719,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `LO-197` | `library/locator-highlight.spec.ts` | Page.hideHighlight clears all locator highlights |
 | `LO-198` | `library/locator-highlight.spec.ts` | highlight should work with a custom selector engine that runs in the main world |
 | `LO-199` | `library/locator-highlight.spec.ts` | highlight should resolve relative to the frame of the locator |
+| `LO-200` | `page/locator-wait-for-function.spec.ts` | should throw when predicate rejects |
 
 ### MC — Multiple clients
 
@@ -4020,6 +4022,8 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `NE-141` | `library/ignorehttpserrors.spec.ts` | should fail with WebSocket if not ignored |
 | `NE-142` | `library/ignorehttpserrors.spec.ts` | serviceWorker should intercept document request |
 | `NE-143` | `page/page-event-network.spec.ts` | should resolve responses after a same-process navigation |
+| `NE-144` | `library/browsercontext-network-event.spec.ts` | should not wait for navigation after background cache revalidation |
+| `NE-145` | `page/page-network-response.spec.ts` | should return source for a module script loaded from cache |
 
 ### OO — OOPIF
 
@@ -4115,6 +4119,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `PA-054` | `library/page-close.spec.ts` | should reject response.finished if page closes |
 | `PA-055` | `library/page-close.spec.ts` | should not throw when continuing while page is closing |
 | `PA-056` | `library/page-close.spec.ts` | should not throw when continuing after page is closed |
+| `PA-057` | `page/page-basic.spec.ts` | should prefix the error message with the api name |
 
 ### PC — Playwright client
 
@@ -4190,6 +4195,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `PO-027` | `library/popup.spec.ts` | should not throttle rAF in the opener page |
 | `PO-028` | `library/popup.spec.ts` | should not throw when click closes popup |
 | `PO-029` | `library/popup.spec.ts` | should load subresources of an about:blank popup when the opener has routes |
+| `PO-030` | `page/page-event-popup.spec.ts` | should finish loading after opening a popup while a cross-site iframe is loading |
 
 ### PR — Proxy
 
@@ -4996,6 +5002,8 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `SS-094` | `library/screenshot.spec.ts` | element screenshot › page screenshot should capture css transform with device pixels |
 | `SS-095` | `page/page-screenshot.spec.ts` | page screenshot › should capture webgl canvas after its drawing buffer is resized |
 | `SS-096` | `page/page-screenshot.spec.ts` | page screenshot › should not wait for unused font face with failed local() source |
+| `SS-097` | `page/page-screenshot.spec.ts` | page screenshot › should take fullPage screenshots of SVG documents |
+| `SS-098` | `page/page-screenshot.spec.ts` | page screenshot animations › should preserve scroll animation progress during screenshots |
 
 ### ST — Storage
 
@@ -5249,6 +5257,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `TV-134` | `library/snapshot-renderer.spec.ts` | stripAnsiEscapes should not exhibit polynomial backtracking |
 | `TV-135` | `library/snapshot-renderer.spec.ts` | stripAnsiEscapes handles common ANSI sequences after fix |
 | `TV-136` | `library/snapshot-renderer.spec.ts` | snapshot renderer selects the nearest out-of-order screencast frame |
+| `TV-137` | `library/snapshot-renderer.spec.ts` | snapshot renderer neutralizes declarative shadow roots |
 
 ### TZ — Timezone
 
@@ -5527,6 +5536,7 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `WO-029` | `library/browsercontext-service-worker-policy.spec.ts` | block › blocks service worker registration |
 | `WO-030` | `library/browsercontext-service-worker-policy.spec.ts` | block › should not throw error on about:blank |
 | `WO-031` | `library/browsercontext-service-worker-policy.spec.ts` | block › should not throw error in opaque sandboxed iframe |
+| `WO-032` | `page/workers.spec.ts` | should run a shared worker after redirected dedicated workers |
 
 ### WS — WebSocket
 
@@ -5572,3 +5582,4 @@ subsystem, add a row to the Subsystems table. Then update this file:
 | `WS-038` | `library/route-web-socket.spec.ts` | should work with baseURL regardless of scheme casing |
 | `WS-039` | `library/route-web-socket.spec.ts` | should expose protocols to the route handler |
 | `WS-040` | `library/route-web-socket.spec.ts` | should expose protocols on server-side route |
+| `WS-041` | `library/web-socket.spec.ts` | should navigate while an iframe opens WebSockets |

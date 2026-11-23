@@ -36,8 +36,4 @@ public class BrowserTypeChannel {
   public BrowserTypeConnectOverCDPResult connectOverCDP(BrowserTypeConnectOverCDPParams params, Double timeout) {
     return owner.sendMessage("connectOverCDP", params, BrowserTypeConnectOverCDPResult.class, timeout);
   }
-
-  public BrowserTypeConnectToWorkerResult connectToWorker(BrowserTypeConnectToWorkerParams params, Double timeout) {
-    return owner.sendMessage("connectToWorker", params, BrowserTypeConnectToWorkerResult.class, timeout);
-  }
 }

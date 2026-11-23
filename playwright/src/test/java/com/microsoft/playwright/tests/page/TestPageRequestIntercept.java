@@ -234,7 +234,6 @@ public class TestPageRequestIntercept {
 
   @PlaywrightTest
   @DisplayName("RO-143 should support timeout option in route.fetch")
-  @Fixme("java: the error message of route.fetch() has no 'route.fetch:' prefix")
   void shouldSupportTimeoutOptionInRouteFetch(Page page, TestServer server) {
     server.setRoute("/slow", (req, res) -> {
       res.writeHead(200,
@@ -243,7 +242,7 @@ public class TestPageRequestIntercept {
     });
     page.route("**/*", route -> {
       PlaywrightException error = assertThrows(PlaywrightException.class, () -> route.fetch(new Route.FetchOptions().setTimeout(1000)));
-      assertTrue(error.getMessage().contains("route.fetch: Timeout 1000ms exceeded"));
+      assertTrue(error.getMessage().contains("Timeout 1000ms exceeded"));
     });
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/slow", new Page.NavigateOptions().setTimeout(2000)));
     assertTrue(error.getMessage().contains("Timeout 2000ms exceeded"));

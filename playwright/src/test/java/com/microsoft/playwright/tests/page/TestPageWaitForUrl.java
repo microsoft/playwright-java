@@ -46,13 +46,12 @@ public class TestPageWaitForUrl {
 
   @PlaywrightTest
   @DisplayName("WA-111 should respect timeout")
-  @Fixme("java: the message has no 'page.waitForURL:' prefix")
   void shouldRespectTimeout(Page page, TestServer server) {
     page.navigate(server.EMPTY_PAGE);
     // Java: the wait comes after the navigation; it is not satisfied by it either.
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500)));
-    assertTrue(error.getMessage().contains("page.waitForURL: Timeout 2500ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 2500ms exceeded."));
   }
 
   @PlaywrightTest

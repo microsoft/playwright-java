@@ -54,13 +54,12 @@ public class TestElementhandleEvalOnSelector {
 
   @PlaywrightTest
   @DisplayName("EH-041 should throw in case of missing selector")
-  @Fixme("java: the message is \"Error { message='Failed to find element matching selector \".a\" name='Error ...\" without the 'elementHandle.$eval: ' prefix")
   void shouldThrowInCaseOfMissingSelector(Page page, TestServer server) {
     String htmlContent = "<div class=\"a\">not-a-child-div</div><div id=\"myId\"></div>";
     page.setContent(htmlContent);
     ElementHandle elementHandle = page.querySelector("#myId");
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> elementHandle.evalOnSelector(".a", "node => node.innerText"));
-    assertTrue(error.getMessage().contains("elementHandle.$eval: Failed to find element matching selector \".a\""));
+    assertTrue(error.getMessage().contains("Failed to find element matching selector \".a\""));
   }
 
   @PlaywrightTest

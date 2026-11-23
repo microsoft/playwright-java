@@ -441,6 +441,14 @@ public final class TestChildProcess {
     }
   }
 
+  public void endInput() {
+    try {
+      process.getOutputStream().close();
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
   static int countTimes(String s, String sub) {
     int result = 0;
     for (int index = 0; index != -1;) {

@@ -518,47 +518,43 @@ public class TestPageGoto {
 
   @PlaywrightTest
   @DisplayName("NA-030 should fail when exceeding maximum navigation timeout")
-  @Fixme("java: the message is 'Timeout 1ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldFailWhenExceedingMaximumNavigationTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.navigate(server.PREFIX + "/empty.html", new Page.NavigateOptions().setTimeout(1)));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("NA-031 should fail when exceeding default maximum navigation timeout")
-  @Fixme("java: the message is 'Timeout 1ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldFailWhenExceedingDefaultMaximumNavigationTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
     page.context().setDefaultNavigationTimeout(2);
     page.setDefaultNavigationTimeout(1);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("NA-032 should fail when exceeding browser context navigation timeout")
-  @Fixme("java: the message is 'Timeout 2ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldFailWhenExceedingBrowserContextNavigationTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
     page.context().setDefaultNavigationTimeout(2);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 2ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 2ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("NA-033 should fail when exceeding default maximum timeout")
-  @Fixme("java: the message is 'Timeout 1ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldFailWhenExceedingDefaultMaximumTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
@@ -567,14 +563,13 @@ public class TestPageGoto {
     page.context().setDefaultTimeout(2);
     page.setDefaultTimeout(1);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("NA-034 should fail when exceeding browser context timeout")
-  @Fixme("java: the message is 'Timeout 2ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldFailWhenExceedingBrowserContextTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
@@ -582,21 +577,20 @@ public class TestPageGoto {
     // Java: the Java harness does not set a default navigation timeout, there is nothing to undo.
     page.context().setDefaultTimeout(2);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 2ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 2ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
 
   @PlaywrightTest
   @DisplayName("NA-035 should prioritize default navigation timeout over default timeout")
-  @Fixme("java: the message is 'Timeout 1ms exceeded.' and the call log, without the 'page.goto: ' prefix")
   void shouldPrioritizeDefaultNavigationTimeoutOverDefaultTimeout(Page page, TestServer server) {
     // Hang for request to the empty.html
     server.setRoute("/empty.html", (req, res) -> {});
     page.setDefaultTimeout(0);
     page.setDefaultNavigationTimeout(1);
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.navigate(server.PREFIX + "/empty.html"));
-    assertTrue(error.getMessage().contains("page.goto: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
     assertTrue(error.getMessage().contains(server.PREFIX + "/empty.html"));
     assertTrue(error instanceof TimeoutError);
   }
@@ -619,7 +613,6 @@ public class TestPageGoto {
 
   @PlaywrightTest
   @DisplayName("NA-038 js redirect overrides url bar navigation ")
-  @Fixme(value = "java: the message has no 'page.goto: ' prefix: 'Navigation to \"...\" is interrupted by another navigation to \"...\"'", browsers = BrowserName.WEBKIT)
   void jsRedirectOverridesUrlBarNavigation(Page page, TestServer server, BrowserName browserName) {
     server.setRoute("/a", (req, res) -> {
       res.writeHead(200, "content-type", "text/html");
@@ -665,7 +658,7 @@ public class TestPageGoto {
       assertNull(error);
       assertThat(page).hasURL(server.PREFIX + "/b");
     } else if (browserName == BrowserName.WEBKIT) {
-      assertTrue(error.getMessage().contains("page.goto: Navigation to \"" + server.PREFIX + "/b\" is interrupted by another navigation to \"" + server.PREFIX + "/c\""));
+      assertTrue(error.getMessage().contains("Navigation to \"" + server.PREFIX + "/b\" is interrupted by another navigation to \"" + server.PREFIX + "/c\""));
       assertThat(page).hasURL(server.PREFIX + "/c");
     } else if (browserName == BrowserName.FIREFOX) {
       assertTrue(error.getMessage().contains("NS_BINDING_ABORTED"));

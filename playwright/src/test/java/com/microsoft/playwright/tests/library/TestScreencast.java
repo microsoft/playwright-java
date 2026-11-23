@@ -51,6 +51,8 @@ public class TestScreencast {
   private static void ensureSomeFrames(Page page) {
     rafraf(page, 100);
     page.screenshot();
+    // The screenshot forces a screencast frame. Give it time to arrive before the caller stops recording.
+    rafraf(page);
   }
 
   // Java: lists the *.webm files of a directory, `fs.readdirSync(dir).filter(f => f.endsWith('.webm'))`.
@@ -81,13 +83,12 @@ public class TestScreencast {
       // Java: bytes are signed.
       assertEquals(0xff, frame[0] & 0xff);
       assertEquals(0xd8, frame[1] & 0xff);
-      int[] dimensions = jpegDimensions(frame);
-      int width = dimensions[0];
-      int height = dimensions[1];
-      // Frame should be scaled down to fit the maximum size.
-      assertEquals(500, width);
-      assertEquals(200, height);
     }
+    // Chromium scales the first frame against the window size it had before the viewport
+    // was applied, so only the last frame is reliably scaled down to fit the maximum size.
+    int[] dimensions = jpegDimensions(frames.get(frames.size() - 1));
+    assertEquals(500, dimensions[0]);
+    assertEquals(200, dimensions[1]);
 
     context.close();
   }

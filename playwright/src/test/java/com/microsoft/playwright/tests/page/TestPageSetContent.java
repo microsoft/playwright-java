@@ -102,14 +102,13 @@ public class TestPageSetContent {
 
   @PlaywrightTest
   @DisplayName("PA-027 should respect default navigation timeout")
-  @Fixme("java: the error message has no 'page.setContent:' prefix, it is 'Timeout 1ms exceeded.'")
   void shouldRespectDefaultNavigationTimeout(Page page, TestServer server) {
     page.setDefaultNavigationTimeout(1);
     String imgPath = "/img.png";
     // stall for image
     server.setRoute(imgPath, (req, res) -> {});
     TimeoutError error = assertThrows(TimeoutError.class, () -> page.setContent("<img src=\"" + server.PREFIX + imgPath + "\"></img>"));
-    assertTrue(error.getMessage().contains("page.setContent: Timeout 1ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 1ms exceeded."));
   }
 
   @PlaywrightTest

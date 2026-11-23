@@ -88,8 +88,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       // java: LaunchOptions has no logger, so options.logger and _defaultLaunchOptions?.logger are always unset.
       Object logger = null;
       LaunchOptions launchOptions = withDefaults(playwright.defaultLaunchOptions, userOptions, LaunchOptions.class);
-      // java: ignoreDefaultArgs and ignoreAllDefaultArgs are separate options and env is serialized as a name/value array.
-      BrowserTypeLaunchParams params = toProtocol(launchOptions, BrowserTypeLaunchParams.class);
+      BrowserTypeLaunchParams params = toLaunchParams(launchOptions);
       BrowserImpl browser = channel.launch(params, new TimeoutSettings().launchTimeout(launchOptions.timeout)).browser;
       browser.connectToBrowserType(this, launchOptions, logger);
       return browser;
@@ -154,6 +153,7 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   // java: _connect is connectImpl, connect(endpoint, options) is the public method; upstream's params is one
   // ConnectOptions object with the endpoint in it.
   BrowserImpl connectImpl(String endpoint, ConnectOptions params) {
+    // java: launchOptions is JS-only in docs/src/api/class-browsertype.md.
     BrowserImpl browser = Connect.connectToBrowser(playwright, name(), endpoint, params);
     browser.connectToBrowserType(this, new LaunchOptions(), null);
     return browser;
@@ -185,15 +185,9 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     return browser;
   }
 
-  // java: the { timeout } options are a plain parameter.
-  WorkerImpl connectToWorker(String endpoint, Double timeout) {
-    if (!"chromium".equals(name())) {
-      throw new PlaywrightException("Connecting to workers is only supported in Chromium.");
-    }
-    BrowserTypeConnectToWorkerParams params = new BrowserTypeConnectToWorkerParams();
-    params.endpoint = endpoint;
-    BrowserTypeConnectToWorkerResult result = channel.connectToWorker(params, new TimeoutSettings().timeout(timeout));
-    return result.worker;
+  // java: ignoreDefaultArgs and ignoreAllDefaultArgs are separate options and env is serialized as a name/value array.
+  private static BrowserTypeLaunchParams toLaunchParams(LaunchOptions options) {
+    return toProtocol(options, BrowserTypeLaunchParams.class);
   }
 
   // java: isConnectionTransport is not ported, it is a JS typing check (typeof value.send === 'function') for an

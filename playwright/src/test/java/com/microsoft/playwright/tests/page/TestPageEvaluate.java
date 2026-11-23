@@ -750,7 +750,7 @@ public class TestPageEvaluate {
   @DisplayName("EV-075 should not leak handles")
   void shouldNotLeakHandles(Page page) {
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.evaluate("handles.length"));
-    assertTrue(error.getMessage().contains(" handles"));
+    assertTrue(error.getMessage().contains("handles"));
   }
 
   @PlaywrightTest

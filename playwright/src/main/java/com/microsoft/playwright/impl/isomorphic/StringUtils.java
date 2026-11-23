@@ -230,12 +230,59 @@ public final class StringUtils {
     escaped.put("'", "&#39;");
   }
 
-  public static String escapeHTMLAttribute(String s) {
+  private static String escapeHTMLAttribute(String s) {
     return replaceEach(s, Pattern.compile("[&<>\"']"));
   }
 
   public static String escapeHTML(String s) {
     return replaceEach(s, Pattern.compile("[&<]"));
+  }
+
+  public static class HtmlBuilder {
+    private final List<String> chunks = new ArrayList<>();
+
+    public void text(String text) {
+      chunks.add(escapeHTML(text));
+    }
+
+    public boolean openTag(String name) {
+      if (!isSafeName(name)) {
+        return false;
+      }
+      chunks.add("<");
+      chunks.add(name);
+      return true;
+    }
+
+    public void attribute(String name, String value) {
+      if (!isSafeName(name)) {
+        return;
+      }
+      chunks.add(" ");
+      chunks.add(name);
+      chunks.add("=\"");
+      chunks.add(escapeHTMLAttribute(value));
+      chunks.add("\"");
+    }
+
+    public void endOpenTag() {
+      chunks.add(">");
+    }
+
+    public void closeTag(String name) {
+      chunks.add("</");
+      chunks.add(name);
+      chunks.add(">");
+    }
+
+    @Override
+    public String toString() {
+      return String.join("", chunks);
+    }
+  }
+
+  private static boolean isSafeName(String name) {
+    return !name.isEmpty() && !Pattern.compile(JS_WHITESPACE + "|[=<>/\"']").matcher(name).find();
   }
 
   public static String longestCommonSubstring(String s1, String s2) {

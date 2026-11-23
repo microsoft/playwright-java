@@ -26,6 +26,7 @@ import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.Fixme;
+import com.microsoft.playwright.fixtures.ImageComparator;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 import com.microsoft.playwright.fixtures.TestInfo;
 import com.microsoft.playwright.fixtures.TestServer;
@@ -54,6 +55,8 @@ import static com.microsoft.playwright.fixtures.Utils.verifyViewport;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
@@ -236,6 +239,22 @@ public class TestPageScreenshot {
       page.navigate(server.PREFIX + "/grid.html");
       byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
       testInfo.expectToMatchSnapshot(screenshot, "screenshot-grid-fullpage.png");
+    }
+
+    @PlaywrightTest
+    @DisplayName("SS-097 should take fullPage screenshots of SVG documents")
+    void shouldTakeFullPageScreenshotsOfSVGDocuments(Page page, TestServer server) {
+      page.setViewportSize(500, 500);
+      server.setRoute("/full-page.svg", (request, response) -> {
+        response.setHeader("Content-Type", "image/svg+xml");
+        response.end("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"1000\"><rect width=\"800\" height=\"1000\" fill=\"orange\"/></svg>");
+      });
+      page.navigate(server.PREFIX + "/full-page.svg");
+      // Java: PNG.sync.read is ImageComparator.decode, whose data is RGBA.
+      ImageComparator.Image svgScreenshot = ImageComparator.decode(page.screenshot(new Page.ScreenshotOptions().setFullPage(true)));
+      assertEquals(800, svgScreenshot.width);
+      assertEquals(1000, svgScreenshot.height);
+      assertArrayEquals(new int[]{255, 165, 0, 255}, svgScreenshot.pixel(svgScreenshot.width - 1, svgScreenshot.height - 1));
     }
 
     @PlaywrightTest
@@ -703,6 +722,28 @@ public class TestPageScreenshot {
 
   @Nested
   class PageScreenshotAnimations {
+    @PlaywrightTest
+    @DisplayName("SS-098 should preserve scroll animation progress during screenshots")
+    void shouldPreserveScrollAnimationProgressDuringScreenshots(Page page) {
+      page.setContent("\n" +
+        "      <style>\n" +
+        "        @keyframes reveal { from { opacity: 0 } to { opacity: 1 } }\n" +
+        "        body { timeline-scope: --progress; }\n" +
+        "        #scroller { width: 100px; overflow-x: auto; scroll-timeline: --progress x; }\n" +
+        "        #content { width: 200px; height: 20px; }\n" +
+        "        #indicator { width: 40px; height: 40px; background: red;\n" +
+        "          animation: reveal linear both; animation-timeline: --progress; }\n" +
+        "      </style>\n" +
+        "      <div id=\"scroller\"><div id=\"content\"></div></div>\n" +
+        "      <div id=\"indicator\"></div>\n" +
+        "    ");
+      rafraf(page);
+      byte[] expected = page.screenshot(new Page.ScreenshotOptions().setAnimations(ScreenshotAnimations.ALLOW));
+      byte[] actual = page.screenshot(new Page.ScreenshotOptions().setAnimations(ScreenshotAnimations.DISABLED));
+      assertNull(ImageComparator.comparePNGs(actual, expected, 0));
+      assertTrue(Arrays.equals(page.screenshot(new Page.ScreenshotOptions().setAnimations(ScreenshotAnimations.ALLOW)), expected));
+    }
+
     @PlaywrightTest
     @DisplayName("SS-052 should not capture infinite css animation")
     void shouldNotCaptureInfiniteCssAnimation(Page page, TestServer server) {

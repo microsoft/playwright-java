@@ -16,10 +16,13 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.fixtures.BrowserName;
+import com.microsoft.playwright.fixtures.Env;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
 
 import static com.microsoft.playwright.options.WaitUntilState.NETWORKIDLE;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class TestFrameNavigate {
 
@@ -39,7 +42,9 @@ public class TestFrameNavigate {
   }
 
   @PlaywrightTest
-  void shouldContinueAfterClientRedirect(Page page, Server server) {
+  void shouldContinueAfterClientRedirect(Page page, Server server, BrowserName browserName) {
+    assumeFalse(browserName == BrowserName.FIREFOX && !Env.isBidi(),
+      "fixme: script.js is requested before navigationCommitted arrives");
     server.setRoute("/frames/script.js", (httpExchange) -> {});
     String url = server.PREFIX + "/frames/child-redirect.html";
     TimeoutError e = assertThrows(TimeoutError.class, () ->  {

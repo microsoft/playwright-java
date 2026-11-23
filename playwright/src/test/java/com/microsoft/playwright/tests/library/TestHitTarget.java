@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestHitTarget {
   @PlaywrightTest
   @DisplayName("HT-001 should block all events when hit target is wrong")
-  @Fixme("java: the error message is 'Timeout 3000ms exceeded.' and the call log, without the 'page.click: ' prefix of the Node.js client")
   void shouldBlockAllEventsWhenHitTargetIsWrong(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
@@ -59,7 +58,7 @@ public class TestHitTarget {
       "}");
 
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.click("button", new Page.ClickOptions().setTimeout(3000)));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
 
     // Give it some time, just in case.
     page.waitForTimeout(1000);
@@ -109,7 +108,6 @@ public class TestHitTarget {
 
   @PlaywrightTest
   @DisplayName("HT-004 should block all events when hit target is wrong and element detaches")
-  @Fixme("java: the error message is 'Timeout 3000ms exceeded.' and the call log, without the 'page.click: ' prefix of the Node.js client")
   void shouldBlockAllEventsWhenHitTargetIsWrongAndElementDetaches(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
@@ -132,7 +130,7 @@ public class TestHitTarget {
       "}");
 
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.click("button", new Page.ClickOptions().setTimeout(3000)));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
 
     // Give it some time, just in case.
     page.waitForTimeout(1000);

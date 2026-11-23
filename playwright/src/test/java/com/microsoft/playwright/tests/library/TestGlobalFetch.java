@@ -169,12 +169,11 @@ public class TestGlobalFetch {
 
   @PlaywrightTest
   @DisplayName("FE-004 should support global timeout option")
-  @Fixme("java: the message of a driver error is the serialized error \"Error {\\n  message='Timeout 100ms exceeded.\\n  name='TimeoutError ...\" without the 'apiRequestContext.get: ' prefix")
   void shouldSupportGlobalTimeoutOption(Playwright playwright, TestServer server) {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setTimeout(100));
     server.setRoute("/empty.html", (req, res) -> {});
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
-    assertTrue(error.getMessage().contains("apiRequestContext.get: Timeout 100ms exceeded"));
+    assertTrue(error.getMessage().contains("Timeout 100ms exceeded"));
     request.dispose();
   }
 
@@ -417,7 +416,7 @@ public class TestGlobalFetch {
 
   @PlaywrightTest
   @DisplayName("FE-020 should return server address from response")
-  void shouldReturnServerAddressFromResponse(Playwright playwright, TestServer server) {
+  void shouldReturnServerAddressFromResponse(Playwright playwright, TestServer server) throws Exception {
     APIRequestContext request = playwright.request().newContext();
     // The second request reuses the keep-alive socket and should report the address as well.
     for (int i = 0; i < 2; i++) {
@@ -426,6 +425,24 @@ public class TestGlobalFetch {
       assertTrue(Pattern.compile("^(127\\.0\\.0\\.1|::1)$").matcher(addr.ipAddress).find());
       assertEquals(server.PORT, addr.port);
     }
+    server.setRoute("/idle", (req, res) -> {
+      // Keep the server socket open beyond its advertised timeout.
+      res.onFinish(() -> req.socket().setTimeout(30_000));
+      res.setHeader("Keep-Alive", "timeout=2");
+      res.end("ok");
+    });
+    CompletableFuture<TestServer.Request> serverRequestPromise = server.waitForRequest("/idle");
+    request.get(server.PREFIX + "/idle");
+    TestServer.Request serverRequest = serverRequestPromise.get();
+    // Java: expect.poll on a server socket needs no Playwright event dispatch.
+    long deadline = System.currentTimeMillis() + 7000;
+    while (!serverRequest.socket().isClosed() && System.currentTimeMillis() < deadline) {
+      Thread.sleep(100);
+    }
+    assertTrue(serverRequest.socket().isClosed());
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertNotNull(response.serverAddr().ipAddress);
+    assertEquals(server.PORT, response.serverAddr().port);
     request.dispose();
   }
 

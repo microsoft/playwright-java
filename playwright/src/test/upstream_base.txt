@@ -5,4 +5,4 @@
 #   git log <commit>..main --oneline -- tests/page tests/library tests/registry.md
 #   git diff <commit>..main -- tests/page tests/library tests/registry.md
 # and move this line forward together with the registry copy and the ports.
-26137face0500cacddf90c767dc1364da7262559 2026-11-04 docs(release-notes): update Chromium version for 1.65 (#43914)
+61775c1ae65409859ebc4e60dec3a4a3a9cc3f92 2026-11-23 fix(tests): update Selenium to fix option loading race (#44312)

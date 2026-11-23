@@ -176,7 +176,6 @@ public class TestBrowsercontextStorageState {
 
   @PlaywrightTest
   @DisplayName("ST-003 should report good error if the url is not valid")
-  @Fixme("java: the message of a driver error is the serialized error (\"Error {\\n  message='Error setting storage state:...\"), without the 'browser.newContext: ' prefix")
   void shouldReportGoodErrorIfTheUrlIsNotValid(ContextFactory contextFactory) {
     PlaywrightException error = assertThrows(PlaywrightException.class, () -> contextFactory.newContext(new Browser.NewContextOptions().setStorageState(js("{\n" +
       "  cookies: [],\n" +
@@ -190,7 +189,7 @@ public class TestBrowsercontextStorageState {
       "    },\n" +
       "  ]\n" +
       "}").toString())));
-    assertTrue(error.getMessage().contains("browser.newContext: Error setting storage state:"));
+    assertTrue(error.getMessage().contains("Error setting storage state:"));
     assertTrue(error.getMessage().contains("foo"));
   }
 

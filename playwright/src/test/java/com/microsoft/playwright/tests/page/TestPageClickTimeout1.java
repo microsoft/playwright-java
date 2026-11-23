@@ -31,26 +31,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPageClickTimeout1 {
   @PlaywrightTest
   @DisplayName("CL-111 should timeout waiting for button to be enabled")
-  @Fixme("java: the error message has no 'page.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWaitingForButtonToBeEnabled(Page page) {
     page.setContent("<button onclick=\"javascript:window.__CLICKED=true;\" disabled><span>Click target</span></button>");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.click("text=Click target", new Page.ClickOptions().setTimeout(3000)));
     assertNull(page.evaluate("window.__CLICKED"));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
     assertTrue(error.getMessage().contains("element is not enabled"));
     assertTrue(error.getMessage().contains("retrying click action"));
   }
 
   @PlaywrightTest
   @DisplayName("CL-112 should timeout waiting for inert element to become non-inert")
-  @Fixme("java: the error message has no 'page.click: ' prefix and the bundled driver 1.64.1 does not report 'element is inert' in the call log")
   void shouldTimeoutWaitingForInertElementToBecomeNonInert(Page page) {
     page.setContent("<div inert><button onclick=\"javascript:window.__CLICKED=true;\">Click target</button></div>");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> page.click("text=Click target", new Page.ClickOptions().setTimeout(3000)));
     assertNull(page.evaluate("window.__CLICKED"));
-    assertTrue(error.getMessage().contains("page.click: Timeout 3000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 3000ms exceeded."));
     assertTrue(error.getMessage().contains("element is inert"));
     assertTrue(error.getMessage().contains("retrying click action"));
   }

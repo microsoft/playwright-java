@@ -301,14 +301,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
   }
 
-  // java: assertMaxArguments is a JS typing check; isFunction is left out, the expression is a String.
-  Object evaluateExposeUtilityScript(String expression, Object arg) {
-    FrameEvaluateExpressionParams params = new FrameEvaluateExpressionParams();
-    params.expression = expression;
-    params.arg = serializeArgument(arg);
-    return deserialize(channel.evaluateExpression(params, NO_TIMEOUT).value);
-  }
-
   @Override
   public ElementHandleImpl querySelector(String selector, QuerySelectorOptions options) {
     FrameQuerySelectorParams params = toProtocol(options, FrameQuerySelectorParams.class);

@@ -19,6 +19,7 @@ package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitUntilState;
 import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.Env;
@@ -34,6 +35,8 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.fixtures.Utils.attachFrame;
 import static com.microsoft.playwright.fixtures.Utils.detachFrame;
+import static com.microsoft.playwright.impl.isomorphic.StringUtils.jsonStringify;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -164,6 +167,34 @@ public class TestFrameHierarchy {
     assertEquals(0, attachedFrames.size());
     assertEquals(4, detachedFrames.size());
     assertEquals(1, navigatedFrames.size());
+
+    for (String[] redirect : new String[][]{{"/redirect1.html", "/redirect2.html"}, {"/redirect2.html", "/empty.html"}}) {
+      String path = redirect[0];
+      String next = redirect[1];
+      server.setRoute(path, (req, res) -> {
+        res.writeHead(200, "Content-Type", "text/html");
+        res.end("\n" +
+          "        <script>\n" +
+          "          addEventListener('message', () => location.href = " + jsonStringify(server.PREFIX + next) + ", { once: true });\n" +
+          "        </script>\n" +
+          "        <iframe src=\"" + server.CROSS_PROCESS_PREFIX + "/navigating-child.html\"></iframe>\n" +
+          "      ");
+      });
+    }
+    server.setRoute("/navigating-child.html", (req, res) -> {
+      res.writeHead(200, "Content-Type", "text/html");
+      res.end("\n" +
+        "      <iframe src=\"/frames/frame.html\"></iframe>\n" +
+        "      <script>\n" +
+        "        parent.postMessage('redirect', '*');\n" +
+        "        location.href = '/frames/two-frames.html';\n" +
+        "      </script>\n" +
+        "    ");
+    });
+    page.navigate(server.PREFIX + "/redirect1.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.COMMIT));
+    page.waitForURL(server.EMPTY_PAGE);
+    assertEquals(Arrays.asList(page.mainFrame()), page.frames());
+    assertThat(page.locator("iframe")).hasCount(0);
   }
 
   @PlaywrightTest

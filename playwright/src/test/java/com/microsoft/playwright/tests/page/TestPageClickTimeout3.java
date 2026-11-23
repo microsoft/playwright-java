@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPageClickTimeout3 {
   @PlaywrightTest
   @DisplayName("CL-117 should timeout waiting for hit target")
-  @Fixme("java: the error message has no 'elementHandle.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldTimeoutWaitingForHitTarget(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
@@ -49,7 +48,7 @@ public class TestPageClickTimeout3 {
       "}");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> button.click(new ElementHandle.ClickOptions().setTimeout(5000)));
-    assertTrue(error.getMessage().contains("elementHandle.click: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("<div id=\"blocker\"></div> intercepts pointer events"));
     assertTrue(error.getMessage().contains("retrying click action"));
     assertTrue(error.getMessage().contains("waiting 500ms"));
@@ -76,7 +75,6 @@ public class TestPageClickTimeout3 {
 
   @PlaywrightTest
   @DisplayName("CL-119 should report wrong hit target subtree")
-  @Fixme("java: the error message has no 'elementHandle.click: ' prefix (it starts with 'Error {' and the serialized error)")
   void shouldReportWrongHitTargetSubtree(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
@@ -103,7 +101,7 @@ public class TestPageClickTimeout3 {
       "}");
     PlaywrightException error = assertThrows(PlaywrightException.class,
       () -> button.click(new ElementHandle.ClickOptions().setTimeout(5000)));
-    assertTrue(error.getMessage().contains("elementHandle.click: Timeout 5000ms exceeded."));
+    assertTrue(error.getMessage().contains("Timeout 5000ms exceeded."));
     assertTrue(error.getMessage().contains("<div id=\"inner\"></div> from <div id=\"blocker\">…</div> subtree intercepts pointer events"));
     assertTrue(error.getMessage().contains("retrying click action"));
   }
