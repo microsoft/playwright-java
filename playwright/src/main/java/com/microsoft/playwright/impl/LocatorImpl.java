@@ -34,6 +34,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.ChannelOwner.NO_TIMEOUT;
+import static com.microsoft.playwright.impl.isomorphic.LocatorGenerators.asLocatorDescription;
+import static com.microsoft.playwright.impl.isomorphic.LocatorGenerators.locatorCustomDescription;
 import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
@@ -355,18 +357,10 @@ class LocatorImpl implements Locator {
     return new LocatorImpl(frame, selector + " >> internal:describe=" + gson().toJson(description));
   }
 
-  // java: there is no port of the selector parser; this matches the trailing internal:describe part
-  // that upstream locatorCustomDescription() reads.
   @Override
   public String description() {
-    Matcher matcher = Pattern.compile(" >> internal:describe=(\"(?:[^\"\\\\]|\\\\.)*\")$").matcher(selector);
-    if (!matcher.find())
-      return null;
-    try {
-      return gson().fromJson(matcher.group(1), String.class);
-    } catch (RuntimeException e) {
-      return null;
-    }
+    String description = locatorCustomDescription(selector);
+    return description == null || description.isEmpty() ? null : description;
   }
 
   @Override
@@ -420,16 +414,12 @@ class LocatorImpl implements Locator {
     return frame.queryCount(selector);
   }
 
-  // java: sends sdkLanguage so that toString() prints the Java locator code the server returns.
   @Override
   public Locator normalize() {
     FrameResolveSelectorParams params = new FrameResolveSelectorParams();
     params.selector = selector;
-    params.sdkLanguage = "java";
     FrameResolveSelectorResult result = frame.channel.resolveSelector(params, NO_TIMEOUT);
-    LocatorImpl locator = new LocatorImpl(frame, result.resolvedSelector);
-    locator.stringRepresentation = result.locatorCode;
-    return locator;
+    return new LocatorImpl(frame, result.resolvedSelector);
   }
 
   @Override
@@ -709,16 +699,10 @@ class LocatorImpl implements Locator {
 
   // java: no _inspect, it serves inspect.custom.
 
-  // java: there is no port of the locator generators. The text of the old Java client is kept,
-  // tests pin it: the server's Java locator code after normalize(), the description, or Locator@<selector>.
+  // java: the language is java, not javascript: the Java client prints Java locator code.
   @Override
   public String toString() {
-    if (stringRepresentation != null)
-      return stringRepresentation;
-    String description = description();
-    if (description != null)
-      return description;
-    return "Locator@" + selector;
+    return asLocatorDescription("java", selector);
   }
 
   // java: the module-level _testIdAttributeName is SelectorsImpl.testIdAttributeName of the Playwright instance,
@@ -754,8 +738,6 @@ class LocatorImpl implements Locator {
   }
 
   // java: helpers and members with no upstream counterpart.
-  private String stringRepresentation;
-
   private Frame.SelectOptionOptions frameSelectOptionOptions(SelectOptionOptions options) {
     if (options == null)
       options = new SelectOptionOptions();

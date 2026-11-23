@@ -577,7 +577,7 @@ public class TestLocatorAnyFrame {
 
   @PlaywrightTest
   @DisplayName("LO-041 should render frameLocator() in the locator description")
-  @Fixme("java: Locator.toString() is 'Locator@internal:control=any-frame >> #x >> internal:control=enter-frame >> button', not \"frameLocator().locator('#x').contentFrame().locator('button')\"")
+  @Fixme("java: Locator.toString() prints Java code, frameLocator().locator(\"#x\").contentFrame().locator(\"button\"), not the JavaScript frameLocator().locator('#x').contentFrame().locator('button')")
   void shouldRenderFrameLocatorInTheLocatorDescription(Page page) {
     assertEquals("frameLocator().locator('#x').contentFrame().locator('button')", String.valueOf(page.frameLocator().frameLocator("#x").locator("button")));
     assertEquals("frameLocator().locator('section').locator('iframe').contentFrame().getByText('foo')", String.valueOf(page.frameLocator().locator("section").frameLocator("iframe").getByText("foo")));

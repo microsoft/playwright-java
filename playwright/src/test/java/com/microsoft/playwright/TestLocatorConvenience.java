@@ -30,10 +30,10 @@ public class TestLocatorConvenience {
     Locator check = page.locator("#check");
     JSHandle text = inner.evaluateHandle("e => e.firstChild");
     page.evaluate("() => 1");  // Give them a chance to calculate the preview.
-    assertEquals("Locator@#outer", outer.toString());
-    assertEquals("Locator@#outer >> #inner", inner.toString());
+    assertEquals("locator(\"#outer\")", outer.toString());
+    assertEquals("locator(\"#outer\").locator(\"#inner\")", inner.toString());
     assertEquals("JSHandle@#text=Text,↵more text", text.toString());
-    assertEquals("Locator@#check", check.toString());
+    assertEquals("locator(\"#check\")", check.toString());
   }
 
   @PlaywrightTest
@@ -226,7 +226,7 @@ public class TestLocatorConvenience {
   void toStringShouldReturnFormattedLocator(Page page) {
     page.setContent("<div>Hello</div>");
     Locator locator = page.locator("div");
-    assertTrue(locator.toString().startsWith("Locator@"));
+    assertEquals("locator(\"div\")", locator.toString());
   }
 
   @PlaywrightTest
