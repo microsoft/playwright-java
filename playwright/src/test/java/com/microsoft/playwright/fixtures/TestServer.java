@@ -928,6 +928,9 @@ public class TestServer implements AutoCloseable {
       this.socket = socket;
       OutputStream out;
       try {
+        // Node's http server sets TCP_NODELAY on its sockets. Without it the body, written after
+        // the headers, waits for the delayed ACK of the browser: 40 ms per response on Linux.
+        socket.setTcpNoDelay(true);
         out = socket.getOutputStream();
       } catch (IOException e) {
         out = null;
