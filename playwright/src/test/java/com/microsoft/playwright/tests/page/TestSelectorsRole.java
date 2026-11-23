@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.fixtures.Utils.browserMajorVersion;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -110,6 +111,34 @@ public class TestSelectorsRole {
 
     assertEquals(Arrays.asList("<input type=\"checkbox\" indeterminate=\"\">"), page.locator("role=checkbox[checked=\"mixed\"]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(Arrays.asList("<input type=\"checkbox\">", "<input type=\"checkbox\" checked=\"\">", "<input type=\"checkbox\" indeterminate=\"\">", "<div role=\"checkbox\" aria-checked=\"true\">Hi</div>", "<div role=\"checkbox\" aria-checked=\"false\">Hello</div>", "<div role=\"checkbox\">Unknown</div>"), page.locator("role=checkbox").evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    page.setContent("\n" +
+      "    <div role=\"checkbox\" aria-checked=\"True\" aria-readonly=\"True\"\n" +
+      "      onclick=\"this.setAttribute('aria-checked', String(this.getAttribute('aria-checked').toLowerCase() !== 'true'))\">Remember me</div>\n" +
+      "    <button aria-pressed=\"True\">Bold</button>\n" +
+      "    <button aria-expanded=\"True\">Menu</button>\n" +
+      "    <div role=\"Button\" tabindex=\"0\">Save</div>\n" +
+      "  ");
+    Locator checkbox = page.getByRole(AriaRole.CHECKBOX);
+    assertEquals(1, page.getByRole(AriaRole.CHECKBOX, new Page.GetByRoleOptions().setChecked(true)).count());
+    assertEquals(1, page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setPressed(true)).count());
+    assertEquals(1, page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setExpanded(true)).count());
+    assertEquals(1, page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save")).count());
+    assertThat(checkbox).isChecked();
+    assertThat(checkbox).not().isEditable();
+    assertThat(page.locator("body")).matchesAriaSnapshot("\n" +
+      "    - checkbox \"Remember me\" [checked]\n" +
+      "    - button \"Bold\" [pressed]\n" +
+      "    - button \"Menu\" [expanded]\n" +
+      "    - button \"Save\"\n" +
+      "  ");
+    checkbox.check();
+    assertThat(checkbox).hasAttribute("aria-checked", "True");
+
+    checkbox.evaluate("element => element.setAttribute('aria-checked', 'Mixed')");
+    page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Bold")).evaluate("element => element.setAttribute('aria-pressed', 'Mixed')");
+    assertEquals(1, page.locator("role=checkbox[checked=mixed]").count());
+    assertEquals(1, page.locator("role=button[pressed=mixed]").count());
   }
 
   @PlaywrightTest
@@ -318,14 +347,21 @@ public class TestSelectorsRole {
 
   @PlaywrightTest
   @DisplayName("SE-060 should support name")
-  void shouldSupportName(Page page) {
+  void shouldSupportName(Page page, BrowserName browserName, Browser browser) {
     page.setContent("\n" +
       "    <div role=\"button\" aria-label=\" Hello \"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hallo\"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>\n" +
       "    <div role=\"button\" aria-label=\"123\" aria-hidden=\"true\"></div>\n" +
       "    <div role=\"button\" aria-label='foo\"bar' aria-hidden=\"true\"></div>\n" +
+      "\n" +
+      "    <span id=\"title\">Chosen name</span>\n" +
+      "    <div role=\"group\" aria-labelledby=\"title\"></div>\n" +
       "  ");
+
+    Locator group = page.getByRole(AriaRole.GROUP);
+    assertThat(group).hasAccessibleName("Chosen name");
+
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\" Hello \"></div>"), page.locator("role=button[name=\"Hello\"]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\" Hello \"></div>"), page.locator("role=button[name=\" \n Hello \"]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\" Hello \"></div>"), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Hello")).evaluateAll("els => els.map(e => e.outerHTML)"));
@@ -345,6 +381,15 @@ public class TestSelectorsRole {
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\" Hello \"></div>"), page.locator("role=button[name=Hello]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\"123\" aria-hidden=\"true\"></div>"), page.locator("role=button[name=123][include-hidden]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(Arrays.asList("<div role=\"button\" aria-label=\"123\" aria-hidden=\"true\"></div>"), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("123").setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    // Old electron/android do not have this API.
+    boolean isMissingAriaLabelledByElements = browserName == BrowserName.CHROMIUM && browserMajorVersion(browser) < 135;
+    if (!isMissingAriaLabelledByElements) {
+      group.evaluate("element => {\n" +
+        "  element.ariaLabelledByElements = [document.querySelector('#title')];\n" +
+        "}");
+      assertEquals(Arrays.asList("<div role=\"group\" aria-labelledby=\"\"></div>"), page.getByRole(AriaRole.GROUP, new Page.GetByRoleOptions().setName("Chosen name").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+    }
   }
 
   @PlaywrightTest
@@ -441,140 +486,4 @@ public class TestSelectorsRole {
     assertThat(children).hasCount(2);
     assertThat(children).hasText(new String[] {"child 1", "child 2"});
   }
-
-  @PlaywrightTest
-  @DisplayName("SE-066 should not match inert elements, unless explicitly asked for")
-  @Fixme("driver: the driver 1.64.1 does not skip inert elements in role selectors: getByRole(BUTTON) returns <button>Hi</button>, <button inert=\"\">Hello</button>, ... instead of the three visible buttons")
-  void shouldNotMatchInertElementsUnlessExplicitlyAskedFor(Page page) {
-    page.setContent("\n" +
-      "    <button>Hi</button>\n" +
-      "    <button inert>Hello</button>\n" +
-      "    <div inert id=container>\n" +
-      "      <button>Yay</button>\n" +
-      "      <div><button>Nay</button></div>\n" +
-      "    </div>\n" +
-      "    <button><span inert>Save</span></button>\n" +
-      "    <div id=host></div>\n" +
-      "    <div inert id=inert-host></div>\n" +
-      "    <script>\n" +
-      "      function addButton(host, text) {\n" +
-      "        const root = host.attachShadow({ mode: 'open' });\n" +
-      "        const button = document.createElement('button');\n" +
-      "        button.textContent = text;\n" +
-      "        root.appendChild(button);\n" +
-      "      }\n" +
-      "      addButton(document.getElementById('host'), 'Shadow1');\n" +
-      "      addButton(document.getElementById('inert-host'), 'Shadow2');\n" +
-      "    </script>\n" +
-      "  ");
-    assertEquals(Arrays.asList("<button>Hi</button>", "<button><span inert=\"\">Save</span></button>", "<button>Shadow1</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(Arrays.asList("<button>Hi</button>", "<button inert=\"\">Hello</button>", "<button>Yay</button>", "<button>Nay</button>", "<button><span inert=\"\">Save</span></button>", "<button>Shadow1</button>", "<button>Shadow2</button>"), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Yay"))).hasCount(0);
-    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Yay").setIncludeHidden(true))).hasCount(1);
-
-    // Inert content does not contribute to the accessible name.
-    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save"))).hasCount(0);
-    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save").setIncludeHidden(true))).hasCount(1);
-
-    page.locator("#container").evaluate("e => e.removeAttribute('inert')");
-    assertEquals(Arrays.asList("<button>Hi</button>", "<button>Yay</button>", "<button>Nay</button>", "<button><span inert=\"\">Save</span></button>", "<button>Shadow1</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("SE-067 should not match elements outside of a modal dialog")
-  @Fixme("driver: the driver 1.64.1 does not skip elements outside of a modal dialog in role selectors: expected <[<button>Inside</button>]> but was <[<button>Outside</button>, <button>Inside</button>, <button>Inert inside</button>, <button>Non-modal</button>]>")
-  void shouldNotMatchElementsOutsideOfAModalDialog(Page page) {
-    page.setContent("\n" +
-      "    <button>Outside</button>\n" +
-      "    <dialog id=dialog>\n" +
-      "      <button>Inside</button>\n" +
-      "      <div inert><button>Inert inside</button></div>\n" +
-      "    </dialog>\n" +
-      "    <dialog id=non-modal><button>Non-modal</button></dialog>\n" +
-      "    <script>\n" +
-      "      document.getElementById('dialog').showModal();\n" +
-      "      document.getElementById('non-modal').show();\n" +
-      "    </script>\n" +
-      "  ");
-    assertEquals(Arrays.asList("<button>Inside</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(Arrays.asList("<button>Outside</button>", "<button>Inside</button>", "<button>Inert inside</button>", "<button>Non-modal</button>"), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertThat(page.getByRole(AriaRole.DIALOG)).hasCount(1);
-    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Outside"))).hasCount(0);
-
-    page.locator("#dialog").evaluate("e => e.close()");
-    assertEquals(Arrays.asList("<button>Outside</button>", "<button>Non-modal</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("SE-068 should match the topmost modal dialog")
-  @Fixme("driver: the driver 1.64.1 does not skip elements outside of the topmost modal dialog in role selectors: expected <[<button>Inner</button>]> but was <[<button>Outside</button>, <button>Outer</button>, <button>Inner</button>]>")
-  void shouldMatchTheTopmostModalDialog(Page page) {
-    page.setContent("\n" +
-      "    <button>Outside</button>\n" +
-      "    <dialog id=outer>\n" +
-      "      <button>Outer</button>\n" +
-      "      <dialog id=inner><button>Inner</button></dialog>\n" +
-      "    </dialog>\n" +
-      "    <div inert>\n" +
-      "      <dialog id=escaping><button>Escaping</button></dialog>\n" +
-      "    </div>\n" +
-      "    <script>\n" +
-      "      document.getElementById('outer').showModal();\n" +
-      "      document.getElementById('inner').showModal();\n" +
-      "    </script>\n" +
-      "  ");
-    assertEquals(Arrays.asList("<button>Inner</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-
-    page.locator("#inner").evaluate("e => e.close()");
-    assertEquals(Arrays.asList("<button>Outer</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-
-    // Modal dialog inside an inert subtree is not inert.
-    page.locator("#outer").evaluate("e => e.close()");
-    page.locator("#escaping").evaluate("e => e.showModal()");
-    assertEquals(Arrays.asList("<button>Escaping</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("SE-069 should respect PLAYWRIGHT_SKIP_INERT_CHECK")
-  void shouldRespectPLAYWRIGHTSKIPINERTCHECK(TestServer server, BrowserName browserName) {
-    // Java: process.env of the in-process driver is the env of the driver process that a new Playwright starts.
-    try (Playwright playwright = Playwright.create(new Playwright.CreateOptions().setEnv(Collections.singletonMap("PLAYWRIGHT_SKIP_INERT_CHECK", "1")));
-         Browser browser = browserName.browserType(playwright).launch(Env.launchOptions())) {
-      Page page = browser.newPage();
-      // Navigation creates a fresh injected script that reads the env variable.
-      page.navigate(server.EMPTY_PAGE);
-      page.setContent("\n" +
-        "      <button>Outside</button>\n" +
-        "      <div inert><button>Inert</button></div>\n" +
-        "      <dialog id=dialog><button>Inside</button></dialog>\n" +
-        "      <script>\n" +
-        "        document.getElementById('dialog').showModal();\n" +
-        "      </script>\n" +
-        "    ");
-      assertEquals(Arrays.asList("<button>Outside</button>", "<button>Inert</button>", "<button>Inside</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-    }
-  }
-
-  @PlaywrightTest
-  @DisplayName("SE-070 should respect PLAYWRIGHT_SKIP_DIALOG_CHECK")
-  @Fixme("driver: the driver 1.64.1 does not skip inert elements in role selectors, so <button>Inert</button> is returned: expected <[<button>Outside</button>, <button>Inside</button>]> but was <[<button>Outside</button>, <button>Inert</button>, <button>Inside</button>]>")
-  void shouldRespectPLAYWRIGHTSKIPDIALOGCHECK(TestServer server, BrowserName browserName) {
-    // Java: process.env of the in-process driver is the env of the driver process that a new Playwright starts.
-    try (Playwright playwright = Playwright.create(new Playwright.CreateOptions().setEnv(Collections.singletonMap("PLAYWRIGHT_SKIP_DIALOG_CHECK", "1")));
-         Browser browser = browserName.browserType(playwright).launch(Env.launchOptions())) {
-      Page page = browser.newPage();
-      // Navigation creates a fresh injected script that reads the env variable.
-      page.navigate(server.EMPTY_PAGE);
-      page.setContent("\n" +
-        "      <button>Outside</button>\n" +
-        "      <div inert><button>Inert</button></div>\n" +
-        "      <dialog id=dialog><button>Inside</button></dialog>\n" +
-        "      <script>\n" +
-        "        document.getElementById('dialog').showModal();\n" +
-        "      </script>\n" +
-        "    ");
-      assertEquals(Arrays.asList("<button>Outside</button>", "<button>Inside</button>"), page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
-    }
-  }
-
 }

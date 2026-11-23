@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.tests.library;
 
+import java.util.stream.Collectors;
+import java.util.List;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.JSHandle;
@@ -41,6 +43,7 @@ public class TestTap {
   }
 
   @PlaywrightTest
+  @SuppressWarnings("unchecked")
   @DisplayName("TA-001 should send all of the correct events @smoke")
   void shouldSendAllOfTheCorrectEvents(Page page) {
     page.setContent("\n" +
@@ -58,6 +61,14 @@ public class TestTap {
       "mouseover", "mouseenter",
       "mousemove", "mousedown",
       "mouseup", "click"), eventsHandle.jsonValue());
+
+    eventsHandle.evaluate("events => events.length = 0");
+    page.locator("#b").evaluate("target => {\n" +
+      "  target.addEventListener('pointerdown', event => event.preventDefault(), { once: true });\n" +
+      "}");
+    page.tap("#b");
+    List<Object> events = ((List<Object>) eventsHandle.jsonValue()).stream().filter(event -> asList("pointerdown", "pointerup", "mousedown", "mouseup", "click").contains(event)).collect(Collectors.toList());
+    assertEquals(asList("pointerdown", "pointerup", "click"), events);
   }
 
   @PlaywrightTest

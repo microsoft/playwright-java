@@ -17,6 +17,7 @@
 
 package com.microsoft.playwright.tests.library.chromium;
 
+import static com.microsoft.playwright.fixtures.Utils.rafraf;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -220,6 +221,7 @@ public class TestOopif {
     page.navigate(server.PREFIX + "/dynamic-oopif.html");
     assertEquals(2, page.frames().size());
     assertOOPIFCount(browser, 1);
+    rafraf(page.frames().get(1));
     testInfo.expectToMatchSnapshot(page.screenshot(), "screenshot-oopif.png");
   }
 

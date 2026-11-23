@@ -17,6 +17,8 @@
 
 package com.microsoft.playwright.tests.page;
 
+import java.util.Collections;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
@@ -34,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -153,9 +156,8 @@ public class TestPageEventNetwork {
   }
 
   @PlaywrightTest
-  @DisplayName("NE-090 should resolve responses after a navigation")
-  @DisabledOnBrowser(value = BrowserName.CHROMIUM, reason = "fixme")
-  void shouldResolveResponsesAfterANavigation(Page page, TestServer server) throws Exception {
+  @DisplayName("NE-090 should resolve responses after a cross-process navigation")
+  void shouldResolveResponsesAfterACrossProcessNavigation(Page page, TestServer server, BrowserName browserName) throws Exception {
     CompletableFuture<TestServer.Response> responseFromServerPromise = new CompletableFuture<>();
     server.setRoute("/foo", (message, response) -> {
       responseFromServerPromise.complete(response);
@@ -166,6 +168,11 @@ public class TestPageEventNetwork {
       page.evaluate("url => void fetch(url)", server.PREFIX + "/foo");
     });
     TestServer.Response responseFromServer = responseFromServerPromise.get();
+    Request[] failedPromise = {null};
+    page.onRequestFailed(r -> {
+      if (failedPromise[0] == null)
+        failedPromise[0] = r;
+    });
     // navigate, which should cancel the request
     page.navigate(server.CROSS_PROCESS_PREFIX);
     // make sure we aren't stalling this request on the server
@@ -173,5 +180,56 @@ public class TestPageEventNetwork {
     // the response should resolve to null, because the page navigated.
     // Java: request.response() keeps its result once the page has navigated, so it runs after the navigation.
     assertNull(request.response());
+    // the request should fail with the browser's "canceled" error.
+    page.waitForCondition(() -> failedPromise[0] != null);
+    assertEquals(request, failedPromise[0]);
+    assertTrue(request.failure().contains(browserName == BrowserName.CHROMIUM ? "net::ERR_ABORTED" : browserName == BrowserName.FIREFOX ? "NS_BINDING_ABORTED" : "cancelled"));
+  }
+
+  @PlaywrightTest
+  @DisplayName("NE-143 should resolve responses after a same-process navigation")
+  void shouldResolveResponsesAfterASameProcessNavigation(Page page, TestServer server, BrowserName browserName) throws Exception {
+    CompletableFuture<TestServer.Response> responseFromServerPromise = new CompletableFuture<>();
+    server.setRoute("/foo", (message, response) -> {
+      responseFromServerPromise.complete(response);
+    });
+    server.setRoute("/streaming", (message, response) -> {
+      response.writeHead(200, "Content-Type", "text/plain");
+      response.write("partial body");
+    });
+    page.navigate(server.EMPTY_PAGE);
+    Request[] requestPromise = {null};
+    Response streamingResponse = page.waitForResponse(server.PREFIX + "/streaming", () -> {
+      requestPromise[0] = page.waitForRequest(server.PREFIX + "/foo", () -> {
+        // start a long running request and wait until it hits the server
+        page.evaluate("url => void fetch(url)", server.PREFIX + "/foo");
+      });
+      // start a request that never finishes streaming its body
+      page.evaluate("url => void fetch(url)", server.PREFIX + "/streaming");
+    });
+    TestServer.Response responseFromServer = responseFromServerPromise.get();
+    Request request = requestPromise[0];
+    List<Request> failedRequests = new ArrayList<>();
+    page.onRequestFailed(r -> failedRequests.add(r));
+    // navigate within the same process, which should cancel the requests
+    page.navigate(server.PREFIX + "/title.html");
+    // make sure we aren't stalling this request on the server
+    responseFromServer.end("done");
+    // the response should resolve to null, because the page navigated.
+    // Java: request.response() keeps its result once the page has navigated, so it runs after the navigation.
+    assertNull(request.response());
+    // both requests should fail with the browser's "canceled" error.
+    String errorText = browserName == BrowserName.CHROMIUM ? "net::ERR_ABORTED" : browserName == BrowserName.FIREFOX ? "NS_BINDING_ABORTED" : "cancelled";
+    List<String> failedUrls = new ArrayList<>();
+    for (Request r : failedRequests)
+      failedUrls.add(r.url());
+    Collections.sort(failedUrls);
+    assertEquals(asList(server.PREFIX + "/foo", server.PREFIX + "/streaming"), failedUrls);
+    assertTrue(request.failure().contains(errorText));
+    assertTrue(streamingResponse.request().failure().contains(errorText));
+    // the partial body should not be available anymore.
+    // Java: streamingResponse.text() runs after the navigation, it cannot be pending while the page navigates on the same thread.
+    PlaywrightException streamingTextError = assertThrows(PlaywrightException.class, () -> streamingResponse.text());
+    assertTrue(streamingTextError.getMessage().contains("navigated away"));
   }
 }

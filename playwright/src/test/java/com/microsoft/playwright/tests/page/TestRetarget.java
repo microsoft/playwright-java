@@ -192,6 +192,8 @@ public class TestRetarget {
       {domInLink("<input id=target disabled>"), false, "input"},
       {domInButton("<input id=target disabled>", disabled()), false, "input"},
       {domInLabel("<li role=menuitem id=target aria-disabled=true></li>"), false, "li"},
+      {domInLabel("<select><option disabled>Other employees</option><option>Alex</option></select>"), false, "option >> nth=0"},
+      {domInLabel("<select><optgroup disabled label=\"Other employees\"><option>Alex</option></optgroup></select>"), false, "optgroup"},
     };
     for (Object[] c : cases) {
       String dom = (String) c[0];

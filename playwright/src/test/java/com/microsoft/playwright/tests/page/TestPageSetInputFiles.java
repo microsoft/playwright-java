@@ -17,6 +17,8 @@
 
 package com.microsoft.playwright.tests.page;
 
+import com.microsoft.playwright.fixtures.DisabledOnBrowser;
+import com.microsoft.playwright.fixtures.BrowserName;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Locator;
@@ -39,6 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static com.microsoft.playwright.fixtures.Utils.mapOf;
 import static com.microsoft.playwright.fixtures.Utils.asset;
 import static com.microsoft.playwright.fixtures.Utils.relativeToCwd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -328,5 +331,33 @@ public class TestPageSetInputFiles {
       assertTrue(Math.abs(((Number) timestamps.get(i)).doubleValue() - expectedTimestamps.get(i)) <= 1000,
         "expected: " + expectedTimestamps + "; actual: " + timestamps);
     }
+  }
+
+  @PlaywrightTest
+  @DisplayName("IF-022 should store an uploaded file in IndexedDB")
+  @DisabledOnBrowser(value = BrowserName.WEBKIT, reason = "fixme: WebKit does not support storing files in IndexedDB in private browsing.")
+  void shouldStoreAnUploadedFileInIndexedDB(Page page, TestServer server) {
+    page.navigate(server.PREFIX + "/input/fileupload.html");
+    Locator input = page.locator("input[type=file]");
+    input.setInputFiles(asset("file-to-upload.txt"));
+    Object storedFile = input.evaluate("async input => {\n" +
+      "  const db = await new Promise((resolve, reject) => {\n" +
+      "    const request = indexedDB.open('file-upload');\n" +
+      "    request.onupgradeneeded = () => request.result.createObjectStore('files');\n" +
+      "    request.onsuccess = () => resolve(request.result);\n" +
+      "    request.onerror = () => reject(request.error);\n" +
+      "  });\n" +
+      "  const file = await new Promise((resolve, reject) => {\n" +
+      "    const transaction = db.transaction('files', 'readwrite');\n" +
+      "    const store = transaction.objectStore('files');\n" +
+      "    store.put(input.files[0], 'file');\n" +
+      "    const request = store.get('file');\n" +
+      "    transaction.oncomplete = () => resolve(request.result);\n" +
+      "    transaction.onabort = () => reject(transaction.error);\n" +
+      "  });\n" +
+      "  db.close();\n" +
+      "  return { name: file.name, text: await file.text() };\n" +
+      "}");
+    assertEquals(mapOf("name", "file-to-upload.txt", "text", "contents of the file"), storedFile);
   }
 }

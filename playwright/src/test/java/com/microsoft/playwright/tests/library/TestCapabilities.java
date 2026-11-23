@@ -549,12 +549,25 @@ public class TestCapabilities {
 
   @PlaywrightTest
   @DisplayName("CA-029 should not crash on feature detection for PublicKeyCredential")
-  void shouldNotCrashOnFeatureDetectionForPublicKeyCredential(Page page, TestServer server) {
+  void shouldNotCrashOnFeatureDetectionForPublicKeyCredential(Page page, TestServer server, BrowserContext context) {
     page.navigate(server.EMPTY_PAGE);
+    assertEquals("function", page.evaluate("() => typeof PublicKeyCredential"));
+    assertEquals("PublicKeyCredential", page.evaluate("() => PublicKeyCredential.name"));
+    assertEquals(false, page.evaluate("() => ({}) instanceof PublicKeyCredential"));
+    assertEquals(true, page.evaluate("() => {\n" +
+      "  try {\n" +
+      "    new PublicKeyCredential();\n" +
+      "    return false;\n" +
+      "  } catch (e) {\n" +
+      "    return e instanceof TypeError;\n" +
+      "  }\n" +
+      "}"));
     page.evaluate("async () => {\n" +
       "  await PublicKeyCredential.getClientCapabilities();\n" +
       "  await PublicKeyCredential.isConditionalMediationAvailable();\n" +
       "  await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();\n" +
       "}");
+    context.credentials().install();
+    assertEquals("function", page.evaluate("() => typeof PublicKeyCredential"));
   }
 }

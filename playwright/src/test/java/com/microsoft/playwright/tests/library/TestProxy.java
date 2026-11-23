@@ -43,12 +43,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,8 +66,16 @@ public class TestProxy {
     });
     Browser browser = browserType.launch(Env.launchOptions().setProxy(new Proxy(server.HOST)));
     Page page = browser.newPage();
-    page.navigate("http://non-existent.test/target.html");
+    String url = "http://staging.example.org/target.html";
+    List<String> requests = new ArrayList<>();
+    page.onRequest(request -> {
+      if (request.isNavigationRequest())
+        requests.add(request.url());
+    });
+    page.navigate(url);
     assertEquals("Served by the proxy", page.title());
+    assertEquals(url, page.url());
+    assertEquals(asList(url), requests);
     browser.close();
   }
 

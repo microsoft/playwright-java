@@ -631,6 +631,7 @@ public class TestPageEvaluate {
   @PlaywrightTest
   @DisplayName("EV-063 should throw a nice error after a navigation")
   void shouldThrowANiceErrorAfterANavigation(Page page) {
+    assumeFalse("frozen".equals(System.getenv("PW_CLOCK")));
     PlaywrightException[] error = {null};
     page.waitForNavigation(() -> {
       error[0] = assertThrows(PlaywrightException.class, () -> page.evaluate("() => new Promise(f => setTimeout(() => {\n" +

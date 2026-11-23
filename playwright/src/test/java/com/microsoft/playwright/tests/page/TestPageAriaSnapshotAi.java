@@ -181,6 +181,12 @@ public class TestPageAriaSnapshotAi {
       PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.getByRef("e1000").normalize());
       assertTrue(error.getMessage().contains("No element matching aria-ref=e1000"));
     }
+
+    page.locator("iframe").evaluateAll("iframes => {\n" +
+      "  for (const iframe of iframes)\n" +
+      "    iframe.textContent = 'Your browser does not support frames';\n" +
+      "}");
+    assertEquals(snapshot, snapshotForAI(page));
   }
 
   @PlaywrightTest
@@ -414,13 +420,34 @@ public class TestPageAriaSnapshotAi {
   void shouldOmitNamesThatJustRepeatPrintedDescendantNodes(Page page) {
     page.setContent("\n" +
         "    <h3><a style=\"cursor: pointer\" href=\"/issues/1\">Clipboard API</a></h3>\n" +
+        "    <dialog open aria-labelledby=\"title\">\n" +
+        "      <h2 id=\"title\">Delete item?</h2>\n" +
+        "      <button>OK</button>\n" +
+        "    </dialog>\n" +
+        "    <nav aria-labelledby=\"nav-title\"><h2 id=\"nav-title\">Account</h2></nav>\n" +
+        "    <table>\n" +
+        "      <caption>Monthly totals</caption>\n" +
+        "      <tr><th scope=\"col\"><button>Price</button></th></tr>\n" +
+        "    </table>\n" +
         "  ");
 
     String snapshot = snapshotForAI(page);
     expectToContainYaml(snapshot, "\n" +
-        "    - heading [level=3] [ref=e2]:\n" +
-        "      - link \"Clipboard API\" [ref=e3] [cursor=pointer]:\n" +
-        "        - /url: /issues/1\n" +
+        "    - generic [active] [ref=e1]:\n" +
+        "      - heading [level=3] [ref=e2]:\n" +
+        "        - link \"Clipboard API\" [ref=e3] [cursor=pointer]:\n" +
+        "          - /url: /issues/1\n" +
+        "      - dialog \"Delete item?\" [ref=e4]:\n" +
+        "        - heading \"Delete item?\" [level=2] [ref=e5]\n" +
+        "        - button \"OK\" [ref=e6]\n" +
+        "      - navigation \"Account\" [ref=e7]:\n" +
+        "        - heading \"Account\" [level=2] [ref=e8]\n" +
+        "      - table \"Monthly totals\" [ref=e9]:\n" +
+        "        - caption [ref=e10]: Monthly totals\n" +
+        "        - rowgroup [ref=e11]:\n" +
+        "          - row [ref=e12]:\n" +
+        "            - columnheader \"Price\" [ref=e13]:\n" +
+        "              - button \"Price\" [ref=e14]\n" +
         "  ");
   }
 
@@ -1119,50 +1146,5 @@ public class TestPageAriaSnapshotAi {
         "  ");
     assertFalse(snapshot.contains("Hidden"));
     assertFalse(snapshot.contains("None"));
-  }
-
-  @PlaywrightTest
-  @DisplayName("AR-094 should not generate refs for inert elements")
-  @Fixme("driver: the bundled driver generates refs for inert elements, snapshot has - button \"no-ref\" [ref=e3] and - button \"no-ref\" [ref=e5]")
-  void shouldNotGenerateRefsForInertElements(Page page) {
-    page.setContent("\n" +
-        "    <button>with-ref</button>\n" +
-        "    <button inert>no-ref</button>\n" +
-        "    <div inert>\n" +
-        "      <button>no-ref</button>\n" +
-        "    </div>\n" +
-        "  ");
-
-    String snapshot = snapshotForAI(page);
-    expectToContainYaml(snapshot, "\n" +
-        "    - generic [active] [ref=e1]:\n" +
-        "      - button \"with-ref\" [ref=e2]\n" +
-        "      - button: no-ref\n" +
-        "      - generic:\n" +
-        "        - button: no-ref\n" +
-        "  ");
-  }
-
-  @PlaywrightTest
-  @DisplayName("AR-095 should not generate refs for elements outside of a modal dialog")
-  @Fixme("driver: the bundled driver generates refs for elements outside of the modal dialog, snapshot has - generic [ref=e1], - button \"Outside\" [ref=e2], - dialog [ref=e3]")
-  void shouldNotGenerateRefsForElementsOutsideOfAModalDialog(Page page) {
-    page.setContent("\n" +
-        "    <button>Outside</button>\n" +
-        "    <dialog id=dialog>\n" +
-        "      <button>Inside</button>\n" +
-        "    </dialog>\n" +
-        "    <script>\n" +
-        "      document.getElementById('dialog').showModal();\n" +
-        "    </script>\n" +
-        "  ");
-
-    String snapshot = snapshotForAI(page);
-    expectToContainYaml(snapshot, "\n" +
-        "    - generic:\n" +
-        "      - button: Outside\n" +
-        "      - dialog [ref=e1]:\n" +
-        "        - button \"Inside\" [active] [ref=e2]\n" +
-        "  ");
   }
 }

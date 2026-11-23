@@ -3,15 +3,20 @@
 set -e
 set +x
 
-trap "cd $(pwd -P)" EXIT
+trap 'cd $(pwd -P)' EXIT
+cd "$(dirname "$0")/.."
 
-cd "$(dirname $0)/.."
+DRIVER_VERSION=$(head -1 ./scripts/DRIVER_VERSION)
 
-# Remove artifacts from previous driver (for local builds).
-mvn clean
-
-# Built from source and do local install.
-mvn install --no-transfer-progress -D skipTests
+if [[ -n "$PW_SRC_DIR" ]]; then
+  UPSTREAM_DIR="$PW_SRC_DIR"
+else
+  UPSTREAM_DIR="./.upstream"
+  if [[ "$(git -C "$UPSTREAM_DIR" rev-parse HEAD 2> /dev/null)" != "$DRIVER_VERSION" ]]; then
+    echo ".upstream/ is not at $DRIVER_VERSION, the commit in scripts/DRIVER_VERSION. Run: scripts/build_driver.sh"
+    exit 1
+  fi
+fi
 
 echo "Updating browser versions in README.md"
-mvn compile exec:java --f ./tools/update-docs-version -D exec.mainClass=com.microsoft.playwright.tools.UpdateBrowserVersions
+node ./scripts/update_readme.js "$UPSTREAM_DIR"

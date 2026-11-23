@@ -17,6 +17,8 @@
 
 package com.microsoft.playwright.tests.library;
 
+import com.microsoft.playwright.Route;
+import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
@@ -55,6 +57,23 @@ public class TestBrowsercontextUserAgent {
       assertEquals("foobar", request.headers.get("user-agent"));
       context.close();
     }
+  }
+
+  @PlaywrightTest
+  @DisplayName("UA-007 should preserve custom user agent in route.fetch")
+  void shouldPreserveCustomUserAgentInRouteFetch(ContextFactory contextFactory, TestServer server) throws Exception {
+    BrowserContext context = contextFactory.newContext(new Browser.NewContextOptions().setUserAgent("my-custom-user-agent"));
+    Page page = context.newPage();
+    page.route("**/empty.html", route -> {
+      route.fulfill(new Route.FulfillOptions().setResponse(route.fetch()));
+    });
+    CompletableFuture<TestServer.Request> serverRequestFuture = server.waitForRequest("/empty.html");
+    Request request = page.waitForRequest(server.EMPTY_PAGE, () -> {
+      page.navigate(server.EMPTY_PAGE);
+    });
+    TestServer.Request serverRequest = serverRequestFuture.get();
+    assertEquals("my-custom-user-agent", request.headers().get("user-agent"));
+    assertEquals("my-custom-user-agent", serverRequest.headers.get("user-agent"));
   }
 
   @PlaywrightTest

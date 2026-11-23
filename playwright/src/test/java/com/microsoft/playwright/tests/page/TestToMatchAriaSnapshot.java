@@ -1112,10 +1112,14 @@ public class TestToMatchAriaSnapshot {
     page.setContent("\n" +
         "    <input type=\"text\" aria-label=\"Bio\" aria-invalid=\"grammar\">\n" +
         "    <input type=\"text\" aria-label=\"Note\" aria-invalid=\"spelling\">\n" +
+        "    <input type=\"text\" aria-label=\"Mixed-case grammar\" aria-invalid=\"Grammar\">\n" +
+        "    <input type=\"text\" aria-label=\"Mixed-case spelling\" aria-invalid=\"Spelling\">\n" +
         "  ");
     assertThat(page).matchesAriaSnapshot("\n" +
         "    - textbox \"Bio\" [invalid=grammar]\n" +
         "    - textbox \"Note\" [invalid=spelling]\n" +
+        "    - textbox \"Mixed-case grammar\" [invalid=grammar]\n" +
+        "    - textbox \"Mixed-case spelling\" [invalid=spelling]\n" +
         "  ");
 
     // A `grammar` value is distinct from a plain `true` invalid state.
