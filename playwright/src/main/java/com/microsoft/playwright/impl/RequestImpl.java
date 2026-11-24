@@ -306,7 +306,6 @@ public class RequestImpl extends ChannelOwner implements Request {
     }
   }
 
-  // java: the URL without the fallback overrides.
   String originalUrl() {
     return requestInitializer.url;
   }

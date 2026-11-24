@@ -62,11 +62,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     return routeInitializer.request;
   }
 
-  // java: takes the pending reply of a message sent with sendMessageAsync and does not wait for it. Waiting
-  // pumps the connection, which dispatches the next route event on this stack, and a burst of requests
-  // overflows it. An error in the reply is lost; innerContinue() runs the check of the driver itself.
-  private void raceWithTargetClose(WaitableResult<JsonElement> promise) {
-  }
+  // java: _raceWithTargetClose is not ported, route actions do not wait for the reply.
 
   WaitableResult<Boolean> startHandling() {
     handlingPromise = new WaitableResult<>();
@@ -96,7 +92,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     handleRoute(() -> {
       RouteAbortParams params = new RouteAbortParams();
       params.errorCode = errorCode;
-      raceWithTargetClose(sendMessageAsync("abort", params));
+      sendMessageAsync("abort", params);
     });
   }
 
@@ -104,7 +100,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     handleRoute(() -> {
       RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
       params.url = url;
-      raceWithTargetClose(sendMessageAsync("redirectNavigationRequest", params));
+      sendMessageAsync("redirectNavigationRequest", params);
     });
   }
 
@@ -225,12 +221,12 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.body = (String) body;
     params.isBase64 = isBase64;
     params.fetchResponseUid = fetchResponseUid;
-    // java: the check of fulfill() in server/webkit/wkInterceptableRequest.ts, its error would be lost with the reply.
+    // java: the check of wkInterceptableRequest.ts.
     if (context != null && context.browser() != null && "webkit".equals(context.browser().browserName)
         && 300 <= params.status && params.status < 400) {
       throw new PlaywrightException("Cannot fulfill with redirect status: " + params.status);
     }
-    raceWithTargetClose(sendMessageAsync("fulfill", params));
+    sendMessageAsync("fulfill", params);
   }
 
   // java: resume() is continue() of the Node.js API.
@@ -263,13 +259,13 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.headers = options.headers != null ? headersObjectToArray(options.headers) : null;
     params.postData = options.postDataBuffer;
     params.isFallback = isFallback;
-    // java: the check of Route.continue() in server/network.ts, its error would be lost with the reply.
+    // java: the check of server/network.ts.
     if (options.url != null && !options.url.isEmpty()) {
       if (!protocol(request().originalUrl()).equals(protocol(options.url))) {
         throw new PlaywrightException("New URL must have same protocol as overridden URL");
       }
     }
-    raceWithTargetClose(sendMessageAsync("continue", params));
+    sendMessageAsync("continue", params);
   }
 
   // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
