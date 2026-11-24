@@ -425,6 +425,39 @@ public class TestPageRoute {
   }
 
   @PlaywrightTest
+  void shouldResumeABurstOfRequests(Page page, Server server) {
+    // https://github.com/microsoft/playwright-java/issues/2068
+    page.navigate(server.EMPTY_PAGE);
+    int[] handled = {0};
+    page.route("**/*", route -> {
+      ++handled[0];
+      route.resume();
+    });
+    assertEquals(3000, page.evaluate("() => Promise.allSettled(" +
+      "Array.from({length: 3000}, (_, i) => fetch('/empty.html?i=' + i)))" +
+      ".then(results => results.length)"));
+    assertEquals(3000, handled[0]);
+  }
+
+  @PlaywrightTest
+  void shouldAbortAndFulfillABurstOfRequests(Page page, Server server) {
+    // https://github.com/microsoft/playwright-java/issues/2068
+    page.navigate(server.EMPTY_PAGE);
+    int[] handled = {0};
+    page.route("**/*", route -> {
+      if (++handled[0] % 2 == 0) {
+        route.abort();
+      } else {
+        route.fulfill(new Route.FulfillOptions().setBody("ok"));
+      }
+    });
+    assertEquals(1500, page.evaluate("() => Promise.allSettled(" +
+      "Array.from({length: 3000}, (_, i) => fetch('/empty.html?i=' + i)))" +
+      ".then(results => results.filter(r => r.status === 'fulfilled').length)"));
+    assertEquals(3000, handled[0]);
+  }
+
+  @PlaywrightTest
   void shouldWorkWithEqualRequests(Page page, Server server) {
     page.navigate(server.EMPTY_PAGE);
     AtomicInteger responseCount = new AtomicInteger(1);

@@ -306,6 +306,10 @@ public class RequestImpl extends ChannelOwner implements Request {
     }
   }
 
+  String originalUrl() {
+    return requestInitializer.url;
+  }
+
   SerializedFallbackOverrides fallbackOverridesForContinue() {
     return fallbackOverrides;
   }

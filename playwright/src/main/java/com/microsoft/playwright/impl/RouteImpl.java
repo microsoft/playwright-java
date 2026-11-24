@@ -30,6 +30,8 @@ import com.microsoft.playwright.impl.protocol.RouteInitializer;
 import com.microsoft.playwright.impl.protocol.RouteRedirectNavigationRequestParams;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,13 +62,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     return routeInitializer.request;
   }
 
-  // java: takes the pending reply of a message sent with sendMessageAsync.
-  private void raceWithTargetClose(WaitableResult<JsonElement> promise) {
-    // When page closes or crashes, we catch any potential rejects from this Route.
-    // Note that page could be missing when routing popup's initial request that
-    // does not have a Page initialized just yet.
-    request().targetClosedScope().safeRace(promise);
-  }
+  // java: _raceWithTargetClose is not ported, route actions do not wait for the reply.
 
   WaitableResult<Boolean> startHandling() {
     handlingPromise = new WaitableResult<>();
@@ -96,7 +92,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     handleRoute(() -> {
       RouteAbortParams params = new RouteAbortParams();
       params.errorCode = errorCode;
-      raceWithTargetClose(sendMessageAsync("abort", params));
+      sendMessageAsync("abort", params);
     });
   }
 
@@ -104,7 +100,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     handleRoute(() -> {
       RouteRedirectNavigationRequestParams params = new RouteRedirectNavigationRequestParams();
       params.url = url;
-      raceWithTargetClose(sendMessageAsync("redirectNavigationRequest", params));
+      sendMessageAsync("redirectNavigationRequest", params);
     });
   }
 
@@ -225,7 +221,12 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.body = (String) body;
     params.isBase64 = isBase64;
     params.fetchResponseUid = fetchResponseUid;
-    raceWithTargetClose(sendMessageAsync("fulfill", params));
+    // java: the check of wkInterceptableRequest.ts.
+    if (context != null && context.browser() != null && "webkit".equals(context.browser().browserName)
+        && 300 <= params.status && params.status < 400) {
+      throw new PlaywrightException("Cannot fulfill with redirect status: " + params.status);
+    }
+    sendMessageAsync("fulfill", params);
   }
 
   // java: resume() is continue() of the Node.js API.
@@ -258,7 +259,13 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.headers = options.headers != null ? headersObjectToArray(options.headers) : null;
     params.postData = options.postDataBuffer;
     params.isFallback = isFallback;
-    raceWithTargetClose(sendMessageAsync("continue", params));
+    // java: the check of server/network.ts.
+    if (options.url != null && !options.url.isEmpty()) {
+      if (!protocol(request().originalUrl()).equals(protocol(options.url))) {
+        throw new PlaywrightException("New URL must have same protocol as overridden URL");
+      }
+    }
+    sendMessageAsync("continue", params);
   }
 
   // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
@@ -272,6 +279,17 @@ public class RouteImpl extends ChannelOwner implements Route {
     overrides.headers = headers;
     overrides.postData = postData;
     return overrides;
+  }
+
+  private static String protocol(String url) {
+    try {
+      String scheme = new URI(url).getScheme();
+      if (scheme != null) {
+        return scheme.toLowerCase();
+      }
+    } catch (URISyntaxException e) {
+    }
+    throw new PlaywrightException("Invalid URL");
   }
 
   private static byte[] readFile(Path path) {
