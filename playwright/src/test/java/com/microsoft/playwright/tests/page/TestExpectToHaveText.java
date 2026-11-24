@@ -375,7 +375,7 @@ public class TestExpectToHaveText {
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).containsText(new String[]{"Text 2"}, new LocatorAssertions.ContainsTextOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("-   \"Text 2\""));
+      assertTrue(stripAnsi(error.getMessage()).contains("Expected: [\"Text 2\"]"));
     }
   }
 }

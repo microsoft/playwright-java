@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpectedAndReceived;
 import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
 import static com.microsoft.playwright.impl.MatcherHint.printReceivedStringContainExpectedResult;
@@ -106,8 +106,11 @@ class ToMatchText {
     } else {
       if (errorMessage != null)
         printedExpected = "Expected" + expectedSuffix + ": " + printExpected(expected);
-      else
-        printedDiff = printDiffOrStringify(expected, receivedString, "Expected" + expectedSuffix, "Received" + receivedSuffix);
+      else {
+        String[] printed = printExpectedAndReceived(expected, receivedString, "Expected" + expectedSuffix, "Received" + receivedSuffix);
+        printedExpected = printed[0];
+        printedReceived = printed[1];
+      }
     }
 
     String finalPrintedExpected = printedExpected;

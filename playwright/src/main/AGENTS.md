@@ -31,8 +31,8 @@ Java code around the place it goes to, and write the new lines the same way.
   `LocatorAssertionsImpl`, `PageAssertionsImpl` and `APIResponseAssertionsImpl`; `toBeTruthy.ts`,
   `toEqual.ts`, `toMatchText.ts`, `toMatchAriaSnapshot.ts` and `matcherHint.ts` are the classes
   of the same name; `AssertionsBase` is the call of a matcher from `expect.ts`. The `utils` of a
-  matcher are `MatcherUtils`: jest is not ported, the values and the diff are printed in the same
-  layout without matching jest in every case. A failure message has the upstream layout with the
+  matcher are `MatcherUtils`: jest is not ported: the values are printed in the same layout, and
+  where upstream prints a diff both values are printed in full. A failure message has the upstream layout with the
   Java call: `assertThat(locator).not().hasText(expected) failed` for
   `expect(locator).not.toHaveText(expected) failed`, and the title `Assert "hasText"`.
 - `isomorphic/locatorGenerators.ts` and the selector parser are not ported: `Locator.toString()`

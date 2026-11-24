@@ -158,6 +158,8 @@ handler of the request has returned, as in the Node.js server, so a response sto
   log is `Assert "not hasText"`. A locator in that text is Java code: `locator('div')` is
   `locator("div")`. The upstream test config sets the expect timeout to 10000ms, the Java default is
   5000ms: `with timeout 10000ms` of a matcher without a timeout is `with timeout 5000ms`.
+  The Java client prints no diff: where upstream pins `- expected` and `+ received` diff lines, the Java
+  test pins the same content in the `Expected:` and `Received:` values.
 - `await expect(promise).rejects.toThrow('text')` and `const error = await promise.catch(e => e);
   expect(error.message).toContain('text')` are
   `PlaywrightException error = assertThrows(PlaywrightException.class, () -> ...)` then

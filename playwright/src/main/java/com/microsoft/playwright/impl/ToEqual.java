@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpectedAndReceived;
 import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
 import static com.microsoft.playwright.impl.MatcherUtils.printReceived;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
@@ -87,17 +87,21 @@ class ToEqual {
 
         normalizedExpected.add(exp);
       }
-      printedDiff = printDiffOrStringify(
+      String[] printed = printExpectedAndReceived(
         normalizedExpected,
         receivedValue,
         EXPECTED_LABEL,
         RECEIVED_LABEL);
+      printedExpected = printed[0];
+      printedReceived = printed[1];
     } else {
-      printedDiff = printDiffOrStringify(
+      String[] printed = printExpectedAndReceived(
         expected,
         receivedValue,
         EXPECTED_LABEL,
         RECEIVED_LABEL);
+      printedExpected = printed[0];
+      printedReceived = printed[1];
     }
     String finalPrintedExpected = printedExpected;
     String finalPrintedReceived = printedReceived;

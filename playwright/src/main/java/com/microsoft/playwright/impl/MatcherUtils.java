@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 // java: the utils of a matcher. Upstream they are jest-matcher-utils, which is not ported: these methods print the
-// Java values in the same format, without colors, and the diff is a plain line diff.
+// Java values in the same format, without colors, and there is no diff.
 class MatcherUtils {
   // java: the undefined value: Frame.expect returns it for a received value that is undefined.
   static final Object UNDEFINED = new Object() {
@@ -38,8 +38,6 @@ class MatcherUtils {
       return "undefined";
     }
   };
-
-  private static final int MAX_DIFF_LINES = 2000;
 
   static String printExpected(Object value) {
     return stringify(value);
@@ -65,95 +63,15 @@ class MatcherUtils {
     return formatBasicValue(value);
   }
 
-  static String printDiffOrStringify(Object expected, Object received, String expectedLabel, String receivedLabel) {
-    List<String> expectedLines = null;
-    List<String> receivedLines = null;
-    if (expected instanceof String && received instanceof String) {
-      String expectedString = (String) expected;
-      String receivedString = (String) received;
-      if (!expectedString.isEmpty() && !receivedString.isEmpty() && (expectedString.contains("\n") || receivedString.contains("\n"))) {
-        expectedLines = split(expectedString);
-        receivedLines = split(receivedString);
-      }
-    } else if (isArray(expected) && isArray(received) || expected instanceof Map && received instanceof Map) {
-      expectedLines = format(expected);
-      receivedLines = format(received);
-    }
-    if (expectedLines != null && !expectedLines.equals(receivedLines) && expectedLines.size() <= MAX_DIFF_LINES && receivedLines.size() <= MAX_DIFF_LINES)
-      return diffLines(expectedLines, receivedLines, expectedLabel, receivedLabel);
+  // java: where upstream prints a diff (printDiffOrStringify of jest), both values are printed in full.
+  static String[] printExpectedAndReceived(Object expected, Object received, String expectedLabel, String receivedLabel) {
     int width = Math.max(expectedLabel.length(), receivedLabel.length());
-    String expectedLine = pad(expectedLabel + ":", width + 2) + printExpected(expected);
-    String receivedLine = pad(receivedLabel + ":", width + 2) + (stringify(expected).equals(stringify(received)) ? "serializes to the same string" : printReceived(received));
-    return expectedLine + "\n" + receivedLine;
-  }
-
-  private static String diffLines(List<String> a, List<String> b, String aLabel, String bLabel) {
-    int[][] lcs = new int[a.size() + 1][b.size() + 1];
-    for (int i = a.size() - 1; i >= 0; i--) {
-      for (int j = b.size() - 1; j >= 0; j--)
-        lcs[i][j] = a.get(i).equals(b.get(j)) ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
-    }
-    List<String> lines = new ArrayList<>();
-    int removed = 0;
-    int added = 0;
-    int i = 0;
-    int j = 0;
-    while (i < a.size() || j < b.size()) {
-      if (i < a.size() && j < b.size() && a.get(i).equals(b.get(j))) {
-        lines.add(a.get(i).isEmpty() ? "" : "  " + a.get(i));
-        i++;
-        j++;
-      } else if (i < a.size() && (j == b.size() || lcs[i + 1][j] >= lcs[i][j + 1])) {
-        lines.add(a.get(i).isEmpty() ? "-" : "- " + a.get(i));
-        removed++;
-        i++;
-      } else {
-        lines.add(b.get(j).isEmpty() ? "+" : "+ " + b.get(j));
-        added++;
-        j++;
-      }
-    }
-    int labelWidth = Math.max(aLabel.length(), bLabel.length());
-    int countWidth = Math.max(String.valueOf(removed).length(), String.valueOf(added).length());
-    return "- " + pad(aLabel, labelWidth) + "  - " + padStart(String.valueOf(removed), countWidth) + "\n"
-      + "+ " + pad(bLabel, labelWidth) + "  + " + padStart(String.valueOf(added), countWidth) + "\n\n"
-      + String.join("\n", lines);
-  }
-
-  private static List<String> format(Object value) {
-    List<String> lines = new ArrayList<>();
-    format(value, "", "", lines);
-    String last = lines.get(lines.size() - 1);
-    lines.set(lines.size() - 1, last.substring(0, last.length() - 1));
-    return lines;
-  }
-
-  private static void format(Object value, String indent, String key, List<String> lines) {
-    if (isArray(value)) {
-      List<Object> items = toList(value);
-      if (items.isEmpty()) {
-        lines.add(indent + key + "Array [],");
-        return;
-      }
-      lines.add(indent + key + "Array [");
-      for (Object item : items)
-        format(item, indent + "  ", "", lines);
-      lines.add(indent + "],");
-      return;
-    }
-    if (value instanceof Map) {
-      Map<String, Object> entries = sortedEntries((Map<?, ?>) value);
-      if (entries.isEmpty()) {
-        lines.add(indent + key + "Object {},");
-        return;
-      }
-      lines.add(indent + key + "Object {");
-      for (Map.Entry<String, Object> entry : entries.entrySet())
-        format(entry.getValue(), indent + "  ", quote(entry.getKey()) + ": ", lines);
-      lines.add(indent + "},");
-      return;
-    }
-    lines.add(indent + key + formatBasicValue(value) + ",");
+    String printedExpected = printExpected(expected);
+    String printedReceived = printReceived(received);
+    return new String[] {
+      pad(expectedLabel + ":", width + 2) + printedExpected,
+      pad(receivedLabel + ":", width + 2) + (printedExpected.equals(printedReceived) ? "serializes to the same string" : printedReceived)
+    };
   }
 
   private static Map<String, Object> sortedEntries(Map<?, ?> map) {
@@ -205,13 +123,6 @@ class MatcherUtils {
     return result;
   }
 
-  private static List<String> split(String value) {
-    List<String> result = new ArrayList<>();
-    for (String line : value.split("\n", -1))
-      result.add(line);
-    return result;
-  }
-
   private static String pad(String value, int width) {
     StringBuilder result = new StringBuilder(value);
     while (result.length() < width)
@@ -219,10 +130,4 @@ class MatcherUtils {
     return result.toString();
   }
 
-  private static String padStart(String value, int width) {
-    StringBuilder result = new StringBuilder(value);
-    while (result.length() < width)
-      result.insert(0, ' ');
-    return result.toString();
-  }
 }

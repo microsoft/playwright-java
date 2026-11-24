@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.MatcherUtils.printDiffOrStringify;
+import static com.microsoft.playwright.impl.MatcherUtils.printExpectedAndReceived;
 import static com.microsoft.playwright.impl.MatcherUtils.printExpected;
 import static com.microsoft.playwright.impl.MatcherHint.formatMatcherMessage;
 import static com.microsoft.playwright.impl.MatcherHint.printReceivedStringContainExpectedSubstring;
@@ -80,7 +80,9 @@ class ToMatchAriaSnapshot {
         printedExpected = "Expected: not " + printExpected(finalExpected);
         printedReceived = "Received: " + receivedString;
       } else {
-        printedDiff = printDiffOrStringify(finalExpected, typedReceived.get("raw"), "Expected", "Received");
+        String[] printed = printExpectedAndReceived(finalExpected, typedReceived.get("raw"), "Expected", "Received");
+        printedExpected = printed[0];
+        printedReceived = printed[1];
       }
       MatcherMessageDetails details = new MatcherMessageDetails();
       details.isNot = state.isNot;

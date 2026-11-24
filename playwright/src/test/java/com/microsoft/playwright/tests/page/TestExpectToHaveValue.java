@@ -117,8 +117,8 @@ public class TestExpectToHaveValue {
       locator.selectOption(new String[]{"RR", "GG"});
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasValues(new String[]{"R", "G"}, new LocatorAssertions.HasValuesOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("-   \"R\""));
-      assertTrue(stripAnsi(error.getMessage()).contains("+   \"RR\""));
+      assertTrue(stripAnsi(error.getMessage()).contains("Expected: [\"R\", \"G\"]"));
+      assertTrue(stripAnsi(error.getMessage()).contains("Received: [\"RR\", \"GG\"]"));
     }
 
     @PlaywrightTest
@@ -150,7 +150,7 @@ public class TestExpectToHaveValue {
       locator.selectOption(new String[]{"B"});
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasValues(new Pattern[]{Pattern.compile("R"), Pattern.compile("G")}, new LocatorAssertions.HasValuesOptions().setTimeout(1000)));
-      assertTrue(stripAnsi(error.getMessage()).contains("+   \"B\""));
+      assertTrue(stripAnsi(error.getMessage()).contains("Received: [\"B\"]"));
     }
 
     @PlaywrightTest

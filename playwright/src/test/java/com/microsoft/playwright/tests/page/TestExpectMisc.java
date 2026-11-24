@@ -149,7 +149,7 @@ public class TestExpectMisc {
       Locator locator = page.locator("div");
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).hasJSProperty("foo", mapOf("a", 1, "b", "string", "c", new Date(1627503992001L)), new LocatorAssertions.HasJSPropertyOptions().setTimeout(1000)));
-      assertTrue(error.getMessage().contains("-   \"c\""));
+      assertTrue(error.getMessage().contains("\"c\": 2021-07-28T20:26:32.001Z}"));
     }
 
     @PlaywrightTest
@@ -383,7 +383,7 @@ public class TestExpectMisc {
       AssertionFailedError error = assertThrows(AssertionFailedError.class,
         () -> assertThat(locator).containsClass(Arrays.asList("foo", "bar", "baz"), new LocatorAssertions.ContainsClassOptions().setTimeout(1000)));
       assertTrue(stripAnsi(error.getMessage()).contains("assertThat(locator).containsClass(expected) failed"));
-      assertTrue(stripAnsi(error.getMessage()).contains("Timeout: 1000ms"));
+      assertTrue(stripAnsi(error.getMessage()).contains("Timeout:  1000ms"));
       assertTrue(stripAnsi(error.getMessage()).contains("- Assert \"containsClass\" locator(\"div\") with timeout 1000ms"));
     }
   }

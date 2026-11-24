@@ -222,7 +222,7 @@ public class TestLocatorAssertions {
     assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
     assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
     assertTrue(e.getMessage().contains("assertThat(locator).hasText(expected) failed"), e.getMessage());
-    assertTrue(e.getMessage().contains("-   \"Extra\","), e.getMessage());
+    assertTrue(e.getMessage().contains("Expected: [\"Text 1\", \"Text 3\", \"Extra\"]"), e.getMessage());
   }
 
   @PlaywrightTest
