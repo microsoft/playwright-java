@@ -30,6 +30,8 @@ import com.microsoft.playwright.impl.protocol.RouteInitializer;
 import com.microsoft.playwright.impl.protocol.RouteRedirectNavigationRequestParams;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,12 +62,10 @@ public class RouteImpl extends ChannelOwner implements Route {
     return routeInitializer.request;
   }
 
-  // java: takes the pending reply of a message sent with sendMessageAsync.
+  // java: takes the pending reply of a message sent with sendMessageAsync and does not wait for it. Waiting
+  // pumps the connection, which dispatches the next route event on this stack, and a burst of requests
+  // overflows it. An error in the reply is lost; innerContinue() runs the check of the driver itself.
   private void raceWithTargetClose(WaitableResult<JsonElement> promise) {
-    // When page closes or crashes, we catch any potential rejects from this Route.
-    // Note that page could be missing when routing popup's initial request that
-    // does not have a Page initialized just yet.
-    request().targetClosedScope().safeRace(promise);
   }
 
   WaitableResult<Boolean> startHandling() {
@@ -225,6 +225,11 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.body = (String) body;
     params.isBase64 = isBase64;
     params.fetchResponseUid = fetchResponseUid;
+    // java: the check of fulfill() in server/webkit/wkInterceptableRequest.ts, its error would be lost with the reply.
+    if (context != null && context.browser() != null && "webkit".equals(context.browser().browserName)
+        && 300 <= params.status && params.status < 400) {
+      throw new PlaywrightException("Cannot fulfill with redirect status: " + params.status);
+    }
     raceWithTargetClose(sendMessageAsync("fulfill", params));
   }
 
@@ -258,15 +263,13 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.headers = options.headers != null ? headersObjectToArray(options.headers) : null;
     params.postData = options.postDataBuffer;
     params.isFallback = isFallback;
-    WaitableResult<JsonElement> promise = sendMessageAsync("continue", params);
-    // java: waiting for the reply pumps the connection, which dispatches the next route event on this stack, and
-    // a burst of requests overflows it. The driver rejects a continue only for its overrides, and the callers of
-    // a fallback ignore the error, so the reply is awaited only for a continue() with overrides.
-    boolean hasOverrides = params.url != null || params.method != null || params.headers != null || params.postData != null;
-    if (isFallback || !hasOverrides) {
-      return;
+    // java: the check of Route.continue() in server/network.ts, its error would be lost with the reply.
+    if (options.url != null && !options.url.isEmpty()) {
+      if (!protocol(request().originalUrl()).equals(protocol(options.url))) {
+        throw new PlaywrightException("New URL must have same protocol as overridden URL");
+      }
     }
-    raceWithTargetClose(promise);
+    raceWithTargetClose(sendMessageAsync("continue", params));
   }
 
   // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
@@ -280,6 +283,17 @@ public class RouteImpl extends ChannelOwner implements Route {
     overrides.headers = headers;
     overrides.postData = postData;
     return overrides;
+  }
+
+  private static String protocol(String url) {
+    try {
+      String scheme = new URI(url).getScheme();
+      if (scheme != null) {
+        return scheme.toLowerCase();
+      }
+    } catch (URISyntaxException e) {
+    }
+    throw new PlaywrightException("Invalid URL");
   }
 
   private static byte[] readFile(Path path) {
