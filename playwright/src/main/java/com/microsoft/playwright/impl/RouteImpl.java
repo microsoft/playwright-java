@@ -258,7 +258,15 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.headers = options.headers != null ? headersObjectToArray(options.headers) : null;
     params.postData = options.postDataBuffer;
     params.isFallback = isFallback;
-    raceWithTargetClose(sendMessageAsync("continue", params));
+    WaitableResult<JsonElement> promise = sendMessageAsync("continue", params);
+    // java: waiting for the reply pumps the connection, which dispatches the next route event on this stack, and
+    // a burst of requests overflows it. The driver rejects a continue only for its overrides, and the callers of
+    // a fallback ignore the error, so the reply is awaited only for a continue() with overrides.
+    boolean hasOverrides = params.url != null || params.method != null || params.headers != null || params.postData != null;
+    if (isFallback || !hasOverrides) {
+      return;
+    }
+    raceWithTargetClose(promise);
   }
 
   // java: members with no counterpart upstream; handlerReturned is set by RouteHandler when the handler
