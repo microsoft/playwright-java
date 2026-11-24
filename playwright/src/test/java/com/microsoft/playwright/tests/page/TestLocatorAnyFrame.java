@@ -200,7 +200,6 @@ public class TestLocatorAnyFrame {
 
   @PlaywrightTest
   @DisplayName("LO-010 should fail toHaveCount when elements match in multiple frames")
-  @Fixme("java: the assertion message has no 'Locator: frameLocator().locator(...)' line, only the call log: Assert \"hasCount\" frameLocator().locator(\"span\")")
   void shouldFailToHaveCountWhenElementsMatchInMultipleFrames(Page page, TestServer server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe><iframe src=\"b.html\"></iframe>");
     routePage(page, "a.html", "<span>one</span>");
@@ -209,7 +208,7 @@ public class TestLocatorAnyFrame {
     waitForAllFrames(page, 3, "span");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page.frameLocator().locator("span")).hasCount(2, new LocatorAssertions.HasCountOptions().setTimeout(3000)));
     assertTrue(error.getMessage().contains("frameLocator() matched elements in multiple frames"));
-    assertTrue(error.getMessage().contains("Locator: frameLocator().locator('span')"));
+    assertTrue(error.getMessage().contains("Locator: frameLocator().locator(\"span\")"));
   }
 
   @PlaywrightTest
@@ -232,7 +231,6 @@ public class TestLocatorAnyFrame {
 
   @PlaywrightTest
   @DisplayName("LO-013 should fail toHaveText when elements match in multiple frames")
-  @Fixme("java: the assertion message has no 'Locator: frameLocator().locator(...)' line, only the call log: Assert \"hasCount\" frameLocator().locator(\"span\")")
   void shouldFailToHaveTextWhenElementsMatchInMultipleFrames(Page page, TestServer server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe><iframe src=\"b.html\"></iframe>");
     routePage(page, "a.html", "<div>one</div>");
@@ -241,7 +239,7 @@ public class TestLocatorAnyFrame {
     waitForAllFrames(page, 3, "div");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page.frameLocator().locator("div")).hasText("one", new LocatorAssertions.HasTextOptions().setTimeout(3000)));
     assertTrue(error.getMessage().contains("frameLocator() matched elements in multiple frames"));
-    assertTrue(error.getMessage().contains("Locator: frameLocator().locator('div')"));
+    assertTrue(error.getMessage().contains("Locator: frameLocator().locator(\"div\")"));
   }
 
   @PlaywrightTest
@@ -258,7 +256,6 @@ public class TestLocatorAnyFrame {
 
   @PlaywrightTest
   @DisplayName("LO-015 should fail toHaveText upon strict mode violation inside a single frame")
-  @Fixme("java: the assertion message has no 'Locator: frameLocator().locator(...)' line, only the call log: Assert \"hasCount\" frameLocator().locator(\"span\")")
   void shouldFailToHaveTextUponStrictModeViolationInsideASingleFrame(Page page, TestServer server) {
     routePage(page, "empty.html", "<iframe src=\"a.html\"></iframe>");
     routePage(page, "a.html", "<div>one</div><div>two</div>");
@@ -266,7 +263,7 @@ public class TestLocatorAnyFrame {
     waitForAllFrames(page, 2, "div");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page.frameLocator().locator("div")).hasText("one", new LocatorAssertions.HasTextOptions().setTimeout(3000)));
     assertTrue(error.getMessage().contains("strict mode violation"));
-    assertTrue(error.getMessage().contains("Locator: frameLocator().locator('div')"));
+    assertTrue(error.getMessage().contains("Locator: frameLocator().locator(\"div\")"));
   }
 
   @PlaywrightTest
@@ -577,7 +574,7 @@ public class TestLocatorAnyFrame {
 
   @PlaywrightTest
   @DisplayName("LO-041 should render frameLocator() in the locator description")
-  @Fixme("java: Locator.toString() is 'Locator@internal:control=any-frame >> #x >> internal:control=enter-frame >> button', not \"frameLocator().locator('#x').contentFrame().locator('button')\"")
+  @Fixme("java: Locator.toString() prints Java code, frameLocator().locator(\"#x\").contentFrame().locator(\"button\"), not the JavaScript frameLocator().locator('#x').contentFrame().locator('button')")
   void shouldRenderFrameLocatorInTheLocatorDescription(Page page) {
     assertEquals("frameLocator().locator('#x').contentFrame().locator('button')", String.valueOf(page.frameLocator().frameLocator("#x").locator("button")));
     assertEquals("frameLocator().locator('section').locator('iframe').contentFrame().getByText('foo')", String.valueOf(page.frameLocator().locator("section").frameLocator("iframe").getByText("foo")));

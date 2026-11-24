@@ -30,7 +30,7 @@ public class TestExpectMisc {
     page.setContent(" <div>hello</div><div>hi</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () ->
       assertThat(page.locator("div")).isVisible());
-    assertTrue(error.getMessage().contains("Locator expected to be visible"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isVisible() failed"), error.getMessage());
     assertTrue(error.getMessage().contains("Error: strict mode violation: locator(\"div\") resolved to 2 elements:"), error.getMessage());
   }
 
@@ -39,7 +39,7 @@ public class TestExpectMisc {
     page.setContent("<div>hello</div><div>hi</div>");
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () ->
       assertThat(page.locator("##")).isVisible());
-    assertTrue(error.getMessage().contains("Locator expected to be visible"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).isVisible() failed"), error.getMessage());
     assertTrue(error.getMessage().contains("Error: Unexpected token \"#\" while parsing css selector \"##\"."), error.getMessage());
   }
 

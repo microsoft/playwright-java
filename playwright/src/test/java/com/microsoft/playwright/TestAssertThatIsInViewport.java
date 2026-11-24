@@ -58,7 +58,7 @@ public class TestAssertThatIsInViewport {
   void shouldHaveGoodStack(Page page) {
     AssertionFailedError error = assertThrows(AssertionFailedError.class, () -> assertThat(page.locator("body")).not().isInViewport(new LocatorAssertions.IsInViewportOptions().setTimeout(100)));
     assertNotNull(error);
-    assertTrue(error.getMessage().contains("Locator expected not to be in viewport"), error.getMessage());
+    assertTrue(error.getMessage().contains("assertThat(locator).not().isInViewport() failed"), error.getMessage());
   }
 
   @PlaywrightTest

@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
+// Port of expect.ts.
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.*;
+import com.microsoft.playwright.impl.MatcherHint.MatcherResult;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.ValueWrapper;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.util.Arrays.asList;
 
+// java: only the call of a matcher is ported: callMatcherAsStep and invokeMatcher. The expect function, its
+// configuration, the custom, soft, poll and promise matchers and the steps belong to the test runner.
 abstract class AssertionsBase {
   final boolean isNot;
 
@@ -36,83 +35,61 @@ abstract class AssertionsBase {
     this.isNot = isNot;
   }
 
-  void expectImpl(String expression, ExpectedTextValue textValue, Object expected, String message, FrameExpectOptions options, String title) {
-    expectImpl(expression, asList(textValue), expected, message, options, title);
+  // java: the fields of ExpectMatcherStateInternal that the matchers read, utils is MatcherUtils.
+  static class ExpectMatcherState {
+    boolean isNot;
+    String promise;
+    double timeout;
+    String title;
   }
 
-  void expectImpl(String expression, List<ExpectedTextValue> expectedText, Object expected, String message, FrameExpectOptions options, String title) {
-    if (options == null) {
-      options = new FrameExpectOptions();
-    }
-    options.expectedText = expectedText;
-    expectImpl(expression, options, expected, message, title);
+  // java: the type of a matcher bound to its receiver and arguments.
+  interface RawMatcherFn {
+    MatcherResult call(ExpectMatcherState state);
   }
 
-  void expectImpl(String expression, FrameExpectOptions expectOptions, Object expected, String message, String title) {
-    if (expectOptions.timeout == null) {
-      expectOptions.timeout = AssertionsTimeout.defaultTimeout;
-    }
-    expectOptions.isNot = isNot;
-    if (isNot) {
-      message = message.replace("expected to", "expected not to");
-    }
-    FrameExpectResult result = doExpect(expression, expectOptions, title);
-    if (result.matches == isNot) {
-      Object actual;
-      if (result.received == null) {
-        actual = null;
-      } else if (result.received.value != null) {
-        actual = Serialization.deserialize(result.received.value);
-      } else {
-        actual = result.received.ariaSnapshot;
-      }
-      String log = (result.log == null) ? "" : String.join("\n", result.log);
-      if (!log.isEmpty()) {
-        log = "\nCall log:\n" + log;
-      }
-      if (result.errorMessage != null) {
-        message += "\n" + result.errorMessage;
-      }
-      if (expected == null) {
-        throw new AssertionFailedError(message + log);
-      }
-      ValueWrapper expectedValue = formatValue(expected);
-      ValueWrapper actualValue = formatValue(actual);
-      message += "\nExpected: " + expectedValue.getStringRepresentation() + "\nReceived: " + actualValue.getStringRepresentation() + "\n";
-      throw new AssertionFailedError(message + log, expectedValue, actualValue);
+  // java: the type of the query argument of toBeTruthy, toEqual and toMatchText.
+  interface Query {
+    FrameExpectResult query(boolean isNot, double timeout);
+  }
+
+  void callMatcherAsStep(String matcherName, RawMatcherFn matcher) {
+    // java: no custom message and no title suffix, escapeWithQuotes has nothing to escape in a matcher name.
+    String defaultTitle = (isNot ? "not " : "") + matcherName;
+    // java: the title of the Java client is Assert, with the Java name of the matcher.
+    String title = "Assert \"" + defaultTitle + "\"";
+
+    MatcherResult result = invokeMatcher(matcherName, matcher, title);
+    if (result.pass == isNot) {
+      // java: ExpectError is an AssertionFailedError with the expected and the actual value of the result.
+      String message = result.message.get();
+      if (result.expected == null && (result.actual == null || result.actual == MatcherUtils.UNDEFINED))
+        throw new AssertionFailedError(message);
+      throw new AssertionFailedError(message, formatValue(result.expected), formatValue(result.actual));
     }
   }
 
-  abstract FrameExpectResult doExpect(String expression, FrameExpectOptions expectOptions, String title);
+  private MatcherResult invokeMatcher(String matcherName, RawMatcherFn matcher, String title) {
+    double timeout = AssertionsTimeout.defaultTimeout;
+    ExpectMatcherState matcherContext = new ExpectMatcherState();
+    matcherContext.isNot = isNot;
+    matcherContext.promise = "";
+    matcherContext.timeout = timeout;
+    matcherContext.title = title;
 
+    return matcher.call(matcherContext);
+  }
+
+  // java: a helper with no counterpart upstream, the value of an AssertionFailedError.
   protected static ValueWrapper formatValue(Object value) {
+    if (value == MatcherUtils.UNDEFINED) {
+      return ValueWrapper.create(null);
+    }
     if (value == null || !value.getClass().isArray()) {
       return ValueWrapper.create(value);
     }
     Collection<String> values = asList((Object[]) value).stream().map(e -> e.toString()).collect(Collectors.toList());
     String stringRepresentation = "[" + String.join(", ", values) + "]";
     return ValueWrapper.create(value, stringRepresentation);
-  }
-
-  static ExpectedTextValue expectedRegex(Pattern pattern) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    if (pattern.flags() != 0) {
-      expected.regexFlags = toJsRegexFlags(pattern);
-    }
-    return expected;
-  }
-
-  static Boolean shouldIgnoreCase(Object options) {
-    if (options == null) {
-      return null;
-    }
-    try {
-      Field fromField = options.getClass().getDeclaredField("ignoreCase");
-      Object value = fromField.get(options);
-      return (Boolean) value;
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      return null;
-    }
   }
 }

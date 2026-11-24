@@ -17,20 +17,20 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.impl.protocol.ExpectedTextValue;
-import com.microsoft.playwright.impl.protocol.SerializedArgument;
 import com.microsoft.playwright.options.PseudoElement;
 
 import java.util.List;
 
-// java: the options of Frame._expect, FrameExpectParams of types.ts.
+// java: the options of Frame._expect: FrameExpectParams of types.ts with the timeout and the title.
 class FrameExpectOptions {
   Object expressionArg;
   List<ExpectedTextValue> expectedText;
   String selector;
   Double expectedNumber;
-  SerializedArgument expectedValue;
+  Object expectedValue;
   Boolean useInnerText;
   PseudoElement pseudo;
   boolean isNot;
-  Double timeout;
+  double timeout;
+  String title;
 }

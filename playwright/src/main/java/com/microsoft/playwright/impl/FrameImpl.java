@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.isomorphic.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.parseResult;
 import static com.microsoft.playwright.impl.Serialization.assertEvaluateOptions;
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Serialization.serializeArgumentWithCallbacks;
@@ -907,25 +908,42 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return channel.title(NO_TIMEOUT).value;
   }
 
-  // java: the title is a parameter, the options are the seed FrameExpectOptions, the result the seed FrameExpectResult.
-  FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
+  // java: the options are FrameExpectOptions, the result is FrameExpectResult.
+  FrameExpectResult expect(String expression, FrameExpectOptions options) {
+    double timeout = options.timeout;
+    String title = options.title;
     return wrapApiCall(() -> {
-      FrameExpectParams params = toProtocol(this, options, FrameExpectParams.class);
+      // java: ...rest is one assignment per field, expectedValue is not a protocol value before it is serialized.
+      FrameExpectParams params = new FrameExpectParams();
       params.expression = expression;
+      params.selector = options.selector;
+      params.expressionArg = options.expressionArg == null ? null : gson().toJsonTree(options.expressionArg);
+      params.pseudo = options.pseudo == null ? null : gson().toJsonTree(options.pseudo).getAsString();
+      params.expectedText = options.expectedText;
+      params.expectedNumber = options.expectedNumber;
+      params.useInnerText = options.useInnerText;
       params.isNot = options.isNot;
-      // java: expectedValue is serialized by the assertion classes.
-      FrameExpectResult result = new FrameExpectResult();
+      params.expectedValue = serializeArgument(options.expectedValue);
       try {
-        channel.expect(params, options.timeout);
+        channel.expect(params, timeout);
+        FrameExpectResult result = new FrameExpectResult();
         result.matches = !params.isNot;
         return result;
       } catch (ServerErrorWithDetails e) {
-        // java: no AbortSignal, so no AbortError branch; only errors with details are expect mismatches.
+        // java: no AbortSignal, so no AbortError branch; only an error with details is a PlaywrightError of the server.
         FrameExpectErrorDetails details = gson().fromJson(e.errorDetails(), FrameExpectErrorDetails.class);
+        FrameExpectResult.ExpectReceived received = null;
+        if (details.received != null) {
+          received = new FrameExpectResult.ExpectReceived();
+          // java: an undefined value is MatcherUtils.UNDEFINED, null is the JavaScript null.
+          received.value = details.received.value != null && !"undefined".equals(details.received.value.v) ? parseResult(details.received.value) : MatcherUtils.UNDEFINED;
+          received.ariaSnapshot = details.received.ariaSnapshot;
+        }
+        FrameExpectResult result = new FrameExpectResult();
         result.matches = params.isNot;
-        // java: AssertionsBase parses the received value, FrameExpectResult has no timedOut.
-        result.received = details.received;
+        result.received = received;
         result.log = e.log();
+        result.timedOut = details.timedOut;
         result.errorMessage = details.customErrorMessage != null ? "Error: " + details.customErrorMessage : null;
         return result;
       }

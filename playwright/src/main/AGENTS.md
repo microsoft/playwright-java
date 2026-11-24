@@ -27,6 +27,16 @@ Java code around the place it goes to, and write the new lines the same way.
   One upstream file can have several Java files, one per class (`network.ts` is `RequestImpl`,
   `ResponseImpl`, `RouteImpl`, `WebSocketImpl`, ...). A new upstream file is a new Java file
   with that header.
+- The assertions are the port of `packages/playwright/src/matchers`: `matchers.ts` is
+  `LocatorAssertionsImpl`, `PageAssertionsImpl` and `APIResponseAssertionsImpl`; `toBeTruthy.ts`,
+  `toEqual.ts`, `toMatchText.ts`, `toMatchAriaSnapshot.ts` and `matcherHint.ts` are the classes
+  of the same name; `AssertionsBase` is the call of a matcher from `expect.ts`. The `utils` of a
+  matcher are `MatcherUtils`: jest is not ported: the values are printed in the same layout, and
+  where upstream prints a diff both values are printed in full. A failure message has the upstream layout with the
+  Java call: `assertThat(locator).not().hasText(expected) failed` for
+  `expect(locator).not.toHaveText(expected) failed`, and the title `Assert "hasText"`.
+- `isomorphic/locatorGenerators.ts` and the selector parser are not ported: `Locator.toString()`
+  asks the driver (`LocalUtils.asLocatorDescription`, language `java`).
 - A class that implements a public interface is `<Name>Impl` (`Page` is `PageImpl`). A
   helper class keeps the upstream name (`Waiter`, `HarRouter`, `TimeoutSettings`).
 - The members keep the upstream order. A new upstream member goes where it is in the `.ts` file,

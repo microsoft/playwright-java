@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestLocatorConvenience {
   @PlaywrightTest
   @DisplayName("LO-057 should have a nice preview")
-  @Fixme("java: Locator.toString() is 'Locator@#outer', not \"locator('#outer')\"; the JSHandle preview is 'JSHandle@node'")
+  @Fixme("java: Locator.toString() prints Java code, locator(\"#outer\"), not the JavaScript locator('#outer'); the JSHandle preview is 'JSHandle@node'")
   void shouldHaveANicePreview(Page page, TestServer server) {
     page.navigate(server.PREFIX + "/dom.html");
     Locator outer = page.locator("#outer");
@@ -290,7 +290,7 @@ public class TestLocatorConvenience {
 
   @PlaywrightTest
   @DisplayName("LO-077 toString() returns formatted locator")
-  @Fixme("java: Locator.toString() is 'Locator@internal:role=button[name=\"Submit\"i]', not \"getByRole('button', { name: 'Submit' })\"")
+  @Fixme("java: Locator.toString() prints Java code, getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"Submit\")), not the JavaScript getByRole('button', { name: 'Submit' })")
   void toStringReturnsFormattedLocator(Page page) {
     Locator locator = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit"));
     assertEquals("getByRole('button', { name: 'Submit' })", locator.toString());

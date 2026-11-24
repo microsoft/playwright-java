@@ -16,14 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.impl.protocol.FrameExpectErrorDetails;
-
 import java.util.List;
 
-// java: ExpectResult of frame.ts; the command has no result, a mismatch arrives as an error with FrameExpectErrorDetails.
+// java: ExpectResult and ExpectReceived of frame.ts.
 class FrameExpectResult {
   boolean matches;
-  FrameExpectErrorDetails.FrameExpectErrorDetailsReceived received;
-  String errorMessage;
+  ExpectReceived received;
   List<String> log;
+  Boolean timedOut;
+  String errorMessage;
+
+  static class ExpectReceived {
+    Object value;
+    String ariaSnapshot;
+  }
 }

@@ -40,7 +40,7 @@ public class TestPageAssertions {
     });
     assertEquals("foo", e.getExpected().getValue());
     assertEquals("data:text/html,<div>B</div>", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Page URL expected to be"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(page).hasURL(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -78,7 +78,7 @@ public class TestPageAssertions {
     });
     assertEquals(".*foo.*", e.getExpected().getStringRepresentation());
     assertEquals(server.EMPTY_PAGE, e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Page URL expected to match regex"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(page).hasURL(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -107,7 +107,7 @@ public class TestPageAssertions {
     });
     assertEquals("foo", e.getExpected().getValue());
     assertEquals("Woof-Woof", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Page title expected to be\nExpected: foo\nReceived: Woof-Woof"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(page).hasTitle(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest
@@ -124,7 +124,7 @@ public class TestPageAssertions {
     });
     assertEquals("^foo[AB]", e.getExpected().getStringRepresentation());
     assertEquals("Woof-Woof", e.getActual().getValue());
-    assertTrue(e.getMessage().contains("Page title expected to match regex\nExpected: ^foo[AB]\nReceived: Woof-Woof"), e.getMessage());
+    assertTrue(e.getMessage().contains("assertThat(page).hasTitle(expected) failed"), e.getMessage());
   }
 
   @PlaywrightTest

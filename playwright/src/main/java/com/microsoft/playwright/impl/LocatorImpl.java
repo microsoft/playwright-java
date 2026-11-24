@@ -363,7 +363,8 @@ class LocatorImpl implements Locator {
     if (!matcher.find())
       return null;
     try {
-      return gson().fromJson(matcher.group(1), String.class);
+      String description = gson().fromJson(matcher.group(1), String.class);
+      return description == null || description.isEmpty() ? null : description;
     } catch (RuntimeException e) {
       return null;
     }
@@ -420,16 +421,12 @@ class LocatorImpl implements Locator {
     return frame.queryCount(selector);
   }
 
-  // java: sends sdkLanguage so that toString() prints the Java locator code the server returns.
   @Override
   public Locator normalize() {
     FrameResolveSelectorParams params = new FrameResolveSelectorParams();
     params.selector = selector;
-    params.sdkLanguage = "java";
     FrameResolveSelectorResult result = frame.channel.resolveSelector(params, NO_TIMEOUT);
-    LocatorImpl locator = new LocatorImpl(frame, result.resolvedSelector);
-    locator.stringRepresentation = result.locatorCode;
-    return locator;
+    return new LocatorImpl(frame, result.resolvedSelector);
   }
 
   @Override
@@ -702,23 +699,25 @@ class LocatorImpl implements Locator {
   }
 
   // java: upstream options.title is the separate title parameter, as in FrameImpl.expect.
-  FrameExpectResult expect(String expression, FrameExpectOptions options, String title) {
+  FrameExpectResult expect(String expression, FrameExpectOptions options) {
     options.selector = selector;
-    return frame.expect(expression, options, title);
+    return frame.expect(expression, options);
   }
 
   // java: no _inspect, it serves inspect.custom.
 
-  // java: there is no port of the locator generators. The text of the old Java client is kept,
-  // tests pin it: the server's Java locator code after normalize(), the description, or Locator@<selector>.
+  // java: there is no port of the locator generators: the driver prints the Java locator code. When it cannot
+  // be asked (the connection is closed), the text is the description or Locator@<selector>.
   @Override
   public String toString() {
-    if (stringRepresentation != null)
-      return stringRepresentation;
-    String description = description();
-    if (description != null)
-      return description;
-    return "Locator@" + selector;
+    try {
+      return frame.connection.localUtils().asLocatorDescription(selector);
+    } catch (PlaywrightException e) {
+      String description = description();
+      if (description != null)
+        return description;
+      return "Locator@" + selector;
+    }
   }
 
   // java: the module-level _testIdAttributeName is SelectorsImpl.testIdAttributeName of the Playwright instance,
@@ -754,8 +753,6 @@ class LocatorImpl implements Locator {
   }
 
   // java: helpers and members with no upstream counterpart.
-  private String stringRepresentation;
-
   private Frame.SelectOptionOptions frameSelectOptionOptions(SelectOptionOptions options) {
     if (options == null)
       options = new SelectOptionOptions();
