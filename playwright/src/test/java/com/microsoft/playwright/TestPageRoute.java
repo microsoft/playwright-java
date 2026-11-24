@@ -426,6 +426,7 @@ public class TestPageRoute {
 
   @PlaywrightTest
   void shouldWorkWithEqualRequests(Page page, Server server) {
+    // https://github.com/microsoft/playwright-java/issues/2068
     page.navigate(server.EMPTY_PAGE);
     AtomicInteger responseCount = new AtomicInteger(1);
     server.setRoute("/zzz", exchange -> {
@@ -436,8 +437,10 @@ public class TestPageRoute {
     });
 
     boolean[] spinner = {false};
+    int[] intercepted = {0};
     // Cancel 2nd request.
     page.route("**/*", route -> {
+      ++intercepted[0];
       if (spinner[0]) {
         route.abort();
       } else {
@@ -450,6 +453,9 @@ public class TestPageRoute {
       results.add(page.evaluate("() => fetch('/zzz').then(response => response.text()).catch(e => 'FAILED')"));
     }
     assertEquals(asList("11", "FAILED", "22"), results);
+    assertEquals(3000, page.evaluate("() => Promise.allSettled(Array.from({length: 3000}, " +
+      "() => fetch('/zzz').then(response => response.text()))).then(results => results.length)"));
+    assertEquals(3003, intercepted[0]);
   }
 
   @PlaywrightTest

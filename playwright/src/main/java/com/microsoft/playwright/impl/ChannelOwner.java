@@ -362,11 +362,16 @@ public class ChannelOwner extends EventEmitter {
 
   // java: pumps the connection until the waitable is done; upstream awaits promises.
   <T> T runUntil(Runnable code, Waitable<T> waitable) {
+    return runUntil(code, waitable, true);
+  }
+
+  // java: a route action waits for its reply without entering another route handler.
+  <T> T runUntil(Runnable code, Waitable<T> waitable, boolean dispatchRoutes) {
     try {
       code.run();
       while (!waitable.isDone()) {
         try {
-          connection.processOneMessage();
+          connection.processOneMessage(dispatchRoutes);
         } catch (PlaywrightException e) {
           // java: a closed pipe throws from the pump right after it dispatched the close events; the outcome
           // of the waitable wins, as the promise settled by those events does upstream.

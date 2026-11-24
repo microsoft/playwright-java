@@ -65,7 +65,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     // When page closes or crashes, we catch any potential rejects from this Route.
     // Note that page could be missing when routing popup's initial request that
     // does not have a Page initialized just yet.
-    request().targetClosedScope().safeRace(promise);
+    // java: waiting for an acknowledgment must not dispatch the next route on this stack.
+    request().targetClosedScope().safeRaceWithoutRouteEvents(promise);
   }
 
   WaitableResult<Boolean> startHandling() {

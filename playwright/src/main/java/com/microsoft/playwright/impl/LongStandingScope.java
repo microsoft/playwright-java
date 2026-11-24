@@ -90,6 +90,11 @@ class LongStandingScope {
     return await(race(Collections.singletonList(promise), true, defaultValue));
   }
 
+  // java: route actions keep synchronous replies and close races, but must not recursively dispatch routes.
+  <T> T safeRaceWithoutRouteEvents(Waitable<T> promise) {
+    return await(race(Collections.singletonList(promise), true, null), false);
+  }
+
   private <T> Waitable<T> race(List<Waitable<T>> promises, boolean safe, T defaultValue) {
     WaitableResult<PlaywrightException> terminatePromise = new WaitableResult<>();
     StackTraceElement[] frames = new Exception().getStackTrace();
@@ -135,8 +140,12 @@ class LongStandingScope {
 
   // java: await of a race; the finally block of _race disposes it.
   private <T> T await(Waitable<T> race) {
+    return await(race, true);
+  }
+
+  private <T> T await(Waitable<T> race, boolean dispatchRoutes) {
     try {
-      return owner.runUntil(() -> {}, race);
+      return owner.runUntil(() -> {}, race, dispatchRoutes);
     } finally {
       race.dispose();
     }

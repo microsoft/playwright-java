@@ -33,9 +33,11 @@ import com.microsoft.playwright.TimeoutError;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -116,6 +118,7 @@ public class Connection extends EventEmitter {
 
   // java: everything below has no counterpart in connection.ts.
   private final Transport transport;
+  private final Deque<Message> deferredRouteEvents = new ArrayDeque<>();
   private final StackTraceCollector stackTraceCollector;
   private final Gson protocolGson = gson().newBuilder()
     .registerTypeAdapterFactory(new ChannelOwnerAdapterFactory())
@@ -557,13 +560,26 @@ public class Connection extends EventEmitter {
 
   // java: upstream receives messages through onmessage(); here the pump polls the transport.
   boolean processOneMessage() {
+    return processOneMessage(true);
+  }
+
+  // java: route-action waits defer route events so queued requests do not nest on the Java stack.
+  boolean processOneMessage(boolean dispatchRoutes) {
+    if (dispatchRoutes && !deferredRouteEvents.isEmpty()) {
+      dispatch(deferredRouteEvents.removeFirst());
+      return true;
+    }
     JsonObject message = transport.poll(Duration.ofMillis(10));
     if (message == null) {
       return false;
     }
     Gson gson = gson();
     Message messageObj = gson.fromJson(message, Message.class);
-    dispatch(messageObj);
+    if (!dispatchRoutes && messageObj.id == null && "route".equals(messageObj.method)) {
+      deferredRouteEvents.addLast(messageObj);
+    } else {
+      dispatch(messageObj);
+    }
     return true;
   }
 
