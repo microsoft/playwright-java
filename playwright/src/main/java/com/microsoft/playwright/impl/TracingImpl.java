@@ -161,15 +161,15 @@ public class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   @Override
-  public AutoCloseable startHar(Path path, StartHarOptions options) {
+  public AutoCloseable startHar(Path harPath, StartHarOptions options) {
     StartHarOptions o = options == null ? new StartHarOptions() : options;
     return wrapApiCall(() -> {
       if (harId != null) {
         throw new PlaywrightException("HAR recording has already been started");
       }
       // java: StartHarOptions has no resourcesDir, so there is no check of resourcesDir with a .zip har file.
-      HarContentPolicy defaultContent = isZip(path) ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
-      harId = recordIntoHAR(path, null,
+      HarContentPolicy defaultContent = isZip(harPath) ? HarContentPolicy.ATTACH : HarContentPolicy.EMBED;
+      harId = recordIntoHAR(harPath, null,
         o.urlFilter,
         o.content != null ? o.content : defaultContent,
         o.mode != null ? o.mode : HarMode.FULL,
@@ -192,6 +192,8 @@ public class TracingImpl extends ChannelOwner implements Tracing {
 
   // java: the options object of upstream is positional, url is a String glob or a Pattern.
   String recordIntoHAR(Path har, PageImpl page, Object url, HarContentPolicy updateContent, HarMode updateMode, Path resourcesDir) {
+    har = har.toAbsolutePath().normalize();
+    resourcesDir = resourcesDir != null ? resourcesDir.toAbsolutePath().normalize() : null;
     boolean isZip = isZip(har);
     TracingHarStartParams params = new TracingHarStartParams();
     params.page = page;
@@ -309,6 +311,7 @@ public class TracingImpl extends ChannelOwner implements Tracing {
       throw new PlaywrightException("Cannot save trace in thin clients");
     }
 
+    filePath = filePath.toAbsolutePath().normalize();
     boolean isLocal = !connection.isRemote();
 
     if (isLocal) {

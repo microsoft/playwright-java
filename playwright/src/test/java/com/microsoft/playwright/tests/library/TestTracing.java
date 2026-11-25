@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -473,19 +474,20 @@ public class TestTracing {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
     page.click("\"Click\"");
-    Path path = testInfo.outputPath("trace1.zip");
-    context.tracing().stop(new Tracing.StopOptions().setPath(path));
+    Path tracePath = testInfo.outputPath("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(tracePath));
     {
-      Trace trace = parseTraceRaw(path);
+      Trace trace = parseTraceRaw(tracePath);
       List<String> names = new ArrayList<>(trace.resources.keySet());
       assertEquals(1, count(names, n -> n.endsWith(".html")));
     }
 
     context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true).setSources(true));
-    context.tracing().stop(new Tracing.StopOptions().setPath(path));
+    // A relative path resolves against the current directory.
+    context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get("").toAbsolutePath().relativize(tracePath)));
 
     {
-      Trace trace = parseTraceRaw(path);
+      Trace trace = parseTraceRaw(tracePath);
       List<String> names = new ArrayList<>(trace.resources.keySet());
       assertEquals(0, count(names, n -> n.endsWith(".html")));
     }

@@ -180,9 +180,9 @@ public class TestBrowsercontextAddCookies {
     if (!(browserName == BrowserName.CHROMIUM || (browserName == BrowserName.WEBKIT && (Env.isLinux || "webkit-wsl".equals(Env.channel()))) || Env.isBidi()))
       expected.add(cookie("same-site-none", "1", "foo.com", "/", -1.0, false, false, SameSiteAttribute.NONE));
     expected.add(cookie("same-site-lax", "1", "foo.com", "/", -1.0, false, false,
-      (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX));
+      SameSiteAttribute.LAX));
     expected.add(cookie("same-site-strict", "1", "foo.com", "/", -1.0, false, false,
-      (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.STRICT));
+      SameSiteAttribute.STRICT));
     assertCookiesAnyOrder(expected, cookies);
   }
 
@@ -378,11 +378,17 @@ public class TestBrowsercontextAddCookies {
     List<Cookie> cookies = context.cookies();
     cookies.sort((a, b) -> a.name.compareTo(b.name));
     assertCookies(Arrays.asList(cookie("defaults", "123456", server.HOSTNAME, "/", -1.0, false, false, defaultSameSiteCookieValue)), cookies);
+
+    context.addCookies(Arrays.asList(
+      new Cookie("default-path", "test").setUrl(server.PREFIX + "/foo/bar")));
+    assertEquals("/foo", context.cookies().stream().filter(cookie -> cookie.name.equals("default-path")).findFirst().get().path);
+    assertEquals(Arrays.asList("default-path", "defaults"),
+      context.cookies(server.PREFIX + "/foo").stream().map(cookie -> cookie.name).sorted().collect(java.util.stream.Collectors.toList()));
   }
 
   @PlaywrightTest
   @DisplayName("CO-033 should set a cookie with a path")
-  void shouldSetACookieWithAPath(BrowserContext context, Page page, TestServer server, BrowserName browserName) {
+  void shouldSetACookieWithAPath(BrowserContext context, Page page, TestServer server) {
     page.navigate(server.PREFIX + "/grid.html");
     context.addCookies(Arrays.asList(
       new Cookie("gridcookie", "GRID")
@@ -391,7 +397,7 @@ public class TestBrowsercontextAddCookies {
         .setSameSite(SameSiteAttribute.LAX)));
     assertCookies(Arrays.asList(
       cookie("gridcookie", "GRID", server.HOSTNAME, "/grid.html", -1.0, false, false,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)),
+        SameSiteAttribute.LAX)),
       context.cookies());
     assertEquals("gridcookie=GRID", page.evaluate("document.cookie"));
     page.navigate(server.EMPTY_PAGE);
@@ -450,7 +456,7 @@ public class TestBrowsercontextAddCookies {
 
   @PlaywrightTest
   @DisplayName("CO-038 should set a cookie on a different domain")
-  void shouldSetACookieOnADifferentDomain(BrowserContext context, Page page, TestServer server, BrowserName browserName) {
+  void shouldSetACookieOnADifferentDomain(BrowserContext context, Page page, TestServer server) {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(Arrays.asList(
       new Cookie("example-cookie", "best")
@@ -459,7 +465,7 @@ public class TestBrowsercontextAddCookies {
     assertEquals("", page.evaluate("document.cookie"));
     assertCookies(Arrays.asList(
       cookie("example-cookie", "best", "www.example.com", "/", -1.0, false, true,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)),
+        SameSiteAttribute.LAX)),
       context.cookies("https://www.example.com"));
   }
 

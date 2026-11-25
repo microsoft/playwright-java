@@ -197,9 +197,7 @@ public class TestBrowsercontextCookies {
 
   @PlaywrightTest
   @DisplayName("CO-006 should properly report \"Strict\" sameSite cookie")
-  void shouldProperlyReportStrictSameSiteCookie(BrowserContext context, Page page, TestServer server, BrowserName browserName) {
-    assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("win32") && !"webkit-wsl".equals(Env.channel()), "fail: webkit on Windows reports the sameSite attribute differently");
-
+  void shouldProperlyReportStrictSameSiteCookie(BrowserContext context, Page page, TestServer server) {
     server.setRoute("/empty.html", (req, res) -> {
       res.setHeader("Set-Cookie", "name=value;SameSite=Strict");
       res.end();
@@ -212,9 +210,7 @@ public class TestBrowsercontextCookies {
 
   @PlaywrightTest
   @DisplayName("CO-007 should properly report \"Lax\" sameSite cookie")
-  void shouldProperlyReportLaxSameSiteCookie(BrowserContext context, Page page, TestServer server, BrowserName browserName) {
-    assumeFalse(browserName == BrowserName.WEBKIT && Env.platform().equals("win32") && !"webkit-wsl".equals(Env.channel()), "fail: webkit on Windows reports the sameSite attribute differently");
-
+  void shouldProperlyReportLaxSameSiteCookie(BrowserContext context, Page page, TestServer server) {
     server.setRoute("/empty.html", (req, res) -> {
       res.setHeader("Set-Cookie", "name=value;SameSite=Lax");
       res.end();
@@ -244,7 +240,7 @@ public class TestBrowsercontextCookies {
 
   @PlaywrightTest
   @DisplayName("CO-009 should get cookies from multiple urls")
-  void shouldGetCookiesFromMultipleUrls(BrowserContext context, BrowserName browserName) {
+  void shouldGetCookiesFromMultipleUrls(BrowserContext context) {
     context.addCookies(Arrays.asList(
       new Cookie("doggo", "woofs").setUrl("https://foo.com").setSameSite(SameSiteAttribute.NONE),
       new Cookie("catto", "purrs").setUrl("https://bar.com").setSameSite(SameSiteAttribute.LAX),
@@ -252,13 +248,13 @@ public class TestBrowsercontextCookies {
     List<Cookie> cookies = context.cookies(Arrays.asList("https://foo.com", "https://baz.com"));
     assertCookiesAnyOrder(Arrays.asList(
       cookie("birdo", "tweets", "baz.com", "/", -1.0, false, true,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX),
+        SameSiteAttribute.LAX),
       cookie("doggo", "woofs", "foo.com", "/", -1.0, false, true, SameSiteAttribute.NONE)), cookies);
   }
 
   @PlaywrightTest
   @DisplayName("CO-010 should work with subdomain cookie")
-  void shouldWorkWithSubdomainCookie(BrowserContext context, BrowserName browserName) {
+  void shouldWorkWithSubdomainCookie(BrowserContext context) {
     context.addCookies(Arrays.asList(
       new Cookie("doggo", "woofs")
         .setDomain(".foo.com")
@@ -267,11 +263,11 @@ public class TestBrowsercontextCookies {
         .setSecure(true)));
     assertCookies(Arrays.asList(
       cookie("doggo", "woofs", ".foo.com", "/", -1.0, false, true,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)),
+        SameSiteAttribute.LAX)),
       context.cookies("https://foo.com"));
     assertCookies(Arrays.asList(
       cookie("doggo", "woofs", ".foo.com", "/", -1.0, false, true,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)),
+        SameSiteAttribute.LAX)),
       context.cookies("https://sub.foo.com"));
   }
 
@@ -311,19 +307,19 @@ public class TestBrowsercontextCookies {
 
   @PlaywrightTest
   @DisplayName("CO-013 should return secure cookies based on HTTP(S) protocol")
-  void shouldReturnSecureCookiesBasedOnHTTPSProtocol(BrowserContext context, BrowserName browserName) {
+  void shouldReturnSecureCookiesBasedOnHTTPSProtocol(BrowserContext context) {
     context.addCookies(Arrays.asList(
       new Cookie("doggo", "woofs").setUrl("https://foo.com").setSameSite(SameSiteAttribute.LAX).setSecure(true),
       new Cookie("catto", "purrs").setUrl("http://foo.com").setSameSite(SameSiteAttribute.LAX).setSecure(false)));
     List<Cookie> cookies = context.cookies("https://foo.com");
     assertCookiesAnyOrder(Arrays.asList(
       cookie("catto", "purrs", "foo.com", "/", -1.0, false, false,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX),
+        SameSiteAttribute.LAX),
       cookie("doggo", "woofs", "foo.com", "/", -1.0, false, true,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)), cookies);
+        SameSiteAttribute.LAX)), cookies);
     assertCookies(Arrays.asList(
       cookie("catto", "purrs", "foo.com", "/", -1.0, false, false,
-        (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX)),
+        SameSiteAttribute.LAX)),
       context.cookies("http://foo.com/"));
   }
 

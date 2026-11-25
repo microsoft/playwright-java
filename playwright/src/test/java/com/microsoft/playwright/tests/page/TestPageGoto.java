@@ -18,6 +18,7 @@
 package com.microsoft.playwright.tests.page;
 
 import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
@@ -1034,6 +1035,45 @@ public class TestPageGoto {
     String url = "http://admin:admin@" + "localhost" + ":" + server.PORT + "/empty.html";
     page.navigate(url);
     assertEquals(url, page.url());
+  }
+
+  @PlaywrightTest
+  @DisplayName("NA-097 should navigate while a new service worker takes over")
+  @DisabledOnBrowser(value = BrowserName.CHROMIUM, reason = "fixme: https://issues.chromium.org/issues/589233823")
+  void shouldNavigateWhileANewServiceWorkerTakesOver(Page page, TestServer server) {
+    int[] version = {0};
+    server.setRoute("/sw.js", (req, res) -> {
+      res.setHeader("Content-Type", "text/javascript");
+      res.end("\n" +
+        "      // version " + (++version[0]) + "\n" +
+        "      let release;\n" +
+        "      self.addEventListener('install', () => self.skipWaiting());\n" +
+        "      self.addEventListener('fetch', event => event.respondWith(fetch(event.request)));\n" +
+        "      self.addEventListener('message', event => {\n" +
+        "        if (event.data === 'hold') {\n" +
+        "          event.waitUntil(new Promise(f => release = f));\n" +
+        "          return;\n" +
+        "        }\n" +
+        "        // Block the worker, so that the navigation starts before the worker becomes idle.\n" +
+        "        const end = Date.now() + 500;\n" +
+        "        while (Date.now() < end) {}\n" +
+        "        release();\n" +
+        "      });\n" +
+        "    ");
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    JSHandle registration = page.evaluateHandle("async () => {\n" +
+      "  await navigator.serviceWorker.register('/sw.js');\n" +
+      "  const registration = await navigator.serviceWorker.ready;\n" +
+      "  registration.active.postMessage('hold');\n" +
+      "  return registration;\n" +
+      "}");
+    registration.evaluate("r => r.update()");
+    page.waitForFunction("r => r.waiting", registration);
+    registration.evaluate("r => r.active.postMessage('release')");
+    page.navigate(server.PREFIX + "/title.html");
+    assertThat(page).hasTitle("Woof-Woof");
   }
 
   private static java.util.Map<String, String> mapOfStrings(String key, String value) {

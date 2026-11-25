@@ -81,13 +81,16 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public BrowserImpl launch(LaunchOptions options) {
-    LaunchOptions userOptions = options == null ? new LaunchOptions() : options;
+    LaunchOptions userOptions = options == null ? new LaunchOptions() : Utils.clone(options);
     return wrapApiCall(() -> {
       // java: the userDataDir and port asserts are not ported, LaunchOptions has no such fields.
 
       // java: LaunchOptions has no logger, so options.logger and _defaultLaunchOptions?.logger are always unset.
       Object logger = null;
       LaunchOptions launchOptions = withDefaults(playwright.defaultLaunchOptions, userOptions, LaunchOptions.class);
+      if (launchOptions.tracesDir != null) {
+        launchOptions.tracesDir = launchOptions.tracesDir.toAbsolutePath().normalize();
+      }
       BrowserTypeLaunchParams params = toLaunchParams(launchOptions);
       BrowserImpl browser = channel.launch(params, new TimeoutSettings().launchTimeout(launchOptions.timeout)).browser;
       browser.connectToBrowserType(this, launchOptions, logger);
@@ -108,11 +111,14 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public BrowserContextImpl launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
-    LaunchPersistentContextOptions userOptions = options == null ? new LaunchPersistentContextOptions() : options;
+    LaunchPersistentContextOptions userOptions = options == null ? new LaunchPersistentContextOptions() : Utils.clone(options);
     return wrapApiCall(() -> {
       // java: the port assert is not ported, LaunchPersistentContextOptions has no such field.
       // java: _withSelectorOptions, the Java options have no selector fields, so they are set on the params below.
       LaunchPersistentContextOptions persistentOptions = withDefaults(playwright.defaultLaunchOptions, userOptions, LaunchPersistentContextOptions.class);
+      if (persistentOptions.tracesDir != null) {
+        persistentOptions.tracesDir = persistentOptions.tracesDir.toAbsolutePath().normalize();
+      }
       instrumentation.runBeforeCreateBrowserContext(persistentOptions);
 
       // java: LaunchPersistentContextOptions has no logger, so options.logger and _defaultLaunchOptions?.logger are always unset.

@@ -528,7 +528,7 @@ public class TestBrowsercontextFetch {
 
   @PlaywrightTest
   @DisplayName("FE-116 should handle cookies on redirects")
-  void shouldHandleCookiesOnRedirects(BrowserContext context, TestServer server, BrowserName browserName) throws Exception {
+  void shouldHandleCookiesOnRedirects(BrowserContext context, TestServer server) throws Exception {
     server.setRoute("/redirect1", (req, res) -> {
       res.setHeader("Set-Cookie", "r1=v1;SameSite=Lax");
       res.writeHead(301, "location", "/a/b/redirect2");
@@ -564,10 +564,9 @@ public class TestBrowsercontextFetch {
       assertEquals("r1=v1", req3.headers.get("cookie"));
     }
     List<Cookie> cookies = context.cookies();
-    SameSiteAttribute sameSite = (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? SameSiteAttribute.NONE : SameSiteAttribute.LAX;
     assertEquals(new HashSet<>(Arrays.asList(
-      mapOf("sameSite", sameSite, "name", "r2", "value", "v2", "domain", server.HOSTNAME, "path", "/a/b", "expires", -1.0, "httpOnly", false, "secure", false),
-      mapOf("sameSite", sameSite, "name", "r1", "value", "v1", "domain", server.HOSTNAME, "path", "/", "expires", -1.0, "httpOnly", false, "secure", false))),
+      mapOf("sameSite", SameSiteAttribute.LAX, "name", "r2", "value", "v2", "domain", server.HOSTNAME, "path", "/a/b", "expires", -1.0, "httpOnly", false, "secure", false),
+      mapOf("sameSite", SameSiteAttribute.LAX, "name", "r1", "value", "v1", "domain", server.HOSTNAME, "path", "/", "expires", -1.0, "httpOnly", false, "secure", false))),
       cookies.stream().map(TestBrowsercontextFetch::cookieFields).collect(Collectors.toSet()));
   }
 
@@ -1261,7 +1260,7 @@ public class TestBrowsercontextFetch {
 
   @PlaywrightTest
   @DisplayName("FE-170 should support SameSite cookie attribute over https")
-  void shouldSupportSameSiteCookieAttributeOverHttps(ContextFactory contextFactory, HttpsTestServer httpsServer, BrowserName browserName) {
+  void shouldSupportSameSiteCookieAttributeOverHttps(ContextFactory contextFactory, HttpsTestServer httpsServer) {
     // Cookies with SameSite=None must also specify the Secure attribute. WebKit navigation
     // to HTTP url will fail if the response contains a cookie with Secure attribute, so
     // we do HTTPS navigation.
@@ -1275,11 +1274,7 @@ public class TestBrowsercontextFetch {
       });
       page.request().get(httpsServer.EMPTY_PAGE);
       Cookie cookie = first(page.context().cookies());
-      if (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) {
-        assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
-      } else {
-        assertEquals(SameSiteAttribute.valueOf(value.toUpperCase()), cookie.sameSite);
-      }
+      assertEquals(SameSiteAttribute.valueOf(value.toUpperCase()), cookie.sameSite);
     }
   }
 
@@ -1324,8 +1319,6 @@ public class TestBrowsercontextFetch {
         assertNull(cookie);
       } else if (browserName == BrowserName.WEBKIT && (Env.isLinux || "webkit-wsl".equals(Env.channel())) && value.equals("None")) {
         assertNull(cookie);
-      } else if (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) {
-        assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
       } else {
         assertEquals(SameSiteAttribute.valueOf(value.toUpperCase()), cookie.sameSite);
       }

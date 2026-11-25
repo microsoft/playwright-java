@@ -171,6 +171,14 @@ public class TestBrowsercontextStorageState {
     Object localStorage2 = page.evaluate("window.localStorage");
     assertEquals(mapOf("name2", "value2"), localStorage2);
 
+    BrowserContext disabledContext = contextFactory.newContext(new Browser.NewContextOptions()
+      .setJavaScriptEnabled(false)
+      .setStorageState(context.storageState()));
+    Page disabledPage = disabledContext.newPage();
+    disabledPage.route("**/*", route -> route.fulfill(new Route.FulfillOptions().setBody("<script>localStorage.clear()</script>")));
+    disabledPage.navigate("https://www.example.com");
+    assertEquals(mapOf("name2", "value2"), disabledPage.evaluate("window.localStorage"));
+
     context.close();
   }
 

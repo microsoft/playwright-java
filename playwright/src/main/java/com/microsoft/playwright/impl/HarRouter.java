@@ -32,6 +32,7 @@ import com.microsoft.playwright.options.HarNotFound;
 import com.microsoft.playwright.options.HttpHeader;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ class HarRouter {
 
   static HarRouter create(LocalUtils localUtils, String file, HarNotFound notFoundAction, Object urlMatch) {
     LocalUtilsHarOpenParams params = new LocalUtilsHarOpenParams();
-    params.file = file;
+    params.file = Paths.get(file).toAbsolutePath().normalize().toString();
     LocalUtilsHarOpenResult result = localUtils.harOpen(params);
     if (result.error != null) {
       throw new PlaywrightException(result.error);
