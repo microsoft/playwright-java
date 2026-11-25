@@ -26,6 +26,7 @@ import com.microsoft.playwright.options.ClientCertificate;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,8 @@ class APIRequestImpl implements APIRequest {
     }
     PlaywrightNewRequestParams.PlaywrightNewRequestParamsStorageState storageState = storageStateJson == null ? null :
       gson().fromJson(storageStateJson, PlaywrightNewRequestParams.PlaywrightNewRequestParamsStorageState.class);
+    Path defaultTracesDir = playwright.defaultLaunchOptions != null ? playwright.defaultLaunchOptions.tracesDir : null;
+    Path tracesDir = defaultTracesDir != null ? defaultTracesDir.toAbsolutePath().normalize() : null;
     Map<String, String> extraHTTPHeaders = options.extraHTTPHeaders;
     List<ClientCertificate> clientCertificates = options.clientCertificates;
     Object httpCredentials = options.httpCredentials;
@@ -69,15 +72,14 @@ class APIRequestImpl implements APIRequest {
     PlaywrightNewRequestParams params = Utils.toProtocol(options, PlaywrightNewRequestParams.class);
     params.extraHTTPHeaders = extraHTTPHeaders != null ? Headers.headersObjectToArray(extraHTTPHeaders) : null;
     params.storageState = storageState;
-    // We do not expose tracesDir in the API, so do not allow options to accidentally override it.
-    params.tracesDir = playwright.defaultLaunchOptions != null && playwright.defaultLaunchOptions.tracesDir != null ? playwright.defaultLaunchOptions.tracesDir.toString() : null;
+    params.tracesDir = tracesDir != null ? tracesDir.toString() : null;
     params.clientCertificates = BrowserContextImpl.toClientCertificatesProtocol(clientCertificates);
     params.httpCredentials = BrowserContextImpl.toHttpCredentialsProtocol(httpCredentials);
     APIRequestContextImpl context = playwright.channel.newRequest(params, NO_TIMEOUT).request;
     contexts.add(context);
     context.request = this;
     context.timeoutSettings.setDefaultTimeout(options.timeout != null ? options.timeout : playwright.defaultContextTimeout);
-    context.tracing.tracesDir = playwright.defaultLaunchOptions != null ? playwright.defaultLaunchOptions.tracesDir : null;
+    context.tracing.tracesDir = tracesDir;
     context.instrumentation.runAfterCreateRequestContext(context);
     return context;
   }

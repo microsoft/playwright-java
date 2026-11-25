@@ -115,7 +115,7 @@ public class TestDefaultbrowsercontext1 {
 
   @PlaywrightTest
   @DisplayName("DC-002 context.addCookies() should work")
-  void contextAddCookiesShouldWork(TestServer server, LaunchPersistent launchPersistent, BrowserName browserName) {
+  void contextAddCookiesShouldWork(TestServer server, LaunchPersistent launchPersistent) {
     Page page = launchPersistent.launch().page;
     page.navigate(server.EMPTY_PAGE);
     page.context().addCookies(Arrays.asList(new Cookie("username", "John Doe")
@@ -130,7 +130,7 @@ public class TestDefaultbrowsercontext1 {
       "expires", -1.0,
       "httpOnly", false,
       "secure", false,
-      "sameSite", (browserName == BrowserName.WEBKIT && Env.isWindows && !"webkit-wsl".equals(Env.channel())) ? "None" : "Lax")),
+      "sameSite", "Lax")),
       cookieMaps(maybeFilterCookies(Env.channel(), page.context().cookies())));
   }
 

@@ -34,8 +34,8 @@ class LongStandingScope {
   private final ChannelOwner owner;
   private PlaywrightException terminateError;
   private PlaywrightException closeError;
-  // java: the frames are a Java stack trace.
-  private final Map<WaitableResult<PlaywrightException>, StackTraceElement[]> terminatePromises = new LinkedHashMap<>();
+  // java: captured errors hold a Java stack trace.
+  private final Map<WaitableResult<PlaywrightException>, Exception> terminatePromises = new LinkedHashMap<>();
   private boolean isClosed = false;
 
   LongStandingScope(ChannelOwner owner) {
@@ -52,7 +52,7 @@ class LongStandingScope {
   void close(PlaywrightException error) {
     isClosed = true;
     closeError = error;
-    for (Map.Entry<WaitableResult<PlaywrightException>, StackTraceElement[]> entry : new ArrayList<>(terminatePromises.entrySet()))
+    for (Map.Entry<WaitableResult<PlaywrightException>, Exception> entry : new ArrayList<>(terminatePromises.entrySet()))
       entry.getKey().complete(cloneError(error, entry.getValue()));
   }
 
@@ -92,12 +92,12 @@ class LongStandingScope {
 
   private <T> Waitable<T> race(List<Waitable<T>> promises, boolean safe, T defaultValue) {
     WaitableResult<PlaywrightException> terminatePromise = new WaitableResult<>();
-    StackTraceElement[] frames = new Exception().getStackTrace();
+    Exception capturedError = new Exception();
     if (terminateError != null)
       terminatePromise.complete(terminateError);
     if (closeError != null)
-      terminatePromise.complete(cloneError(closeError, frames));
-    terminatePromises.put(terminatePromise, frames);
+      terminatePromise.complete(cloneError(closeError, capturedError));
+    terminatePromises.put(terminatePromise, capturedError);
     List<Waitable<T>> race = new ArrayList<>();
     // java: the promises go first, a settled promise wins over a closed scope as its reaction runs first upstream.
     race.addAll(promises);
@@ -125,7 +125,8 @@ class LongStandingScope {
   // java: no signalToPromise, it serves AbortSignal.
 
   // java: a new exception of the same type, with the frames of the race as its stack trace.
-  private static PlaywrightException cloneError(PlaywrightException error, StackTraceElement[] frames) {
+  private static PlaywrightException cloneError(PlaywrightException error, Exception capturedError) {
+    StackTraceElement[] frames = capturedError.getStackTrace();
     PlaywrightException clone = error instanceof TargetClosedError ? new TargetClosedError(error.getMessage()) : new PlaywrightException(error.getMessage());
     clone.setStackTrace(frames);
     return clone;

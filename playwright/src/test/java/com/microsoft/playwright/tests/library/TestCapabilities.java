@@ -331,6 +331,20 @@ public class TestCapabilities {
       "  return result;\n" +
       "}");
     assertEquals(false, page.evaluate("() => !!document.fullscreenElement"));
+
+    Page popup = page.waitForPopup(() -> page.evaluate("url => window.open(url, 'popup', 'popup')", server.EMPTY_PAGE));
+    popup.waitForLoadState();
+    popup.evaluate("() => {\n" +
+      "  document.addEventListener('keydown', event => {\n" +
+      "    if (event.key === 'f')\n" +
+      "      document.documentElement.requestFullscreen().then(() => window['fullscreenResult'] = 'success', error => window['fullscreenResult'] = String(error));\n" +
+      "  });\n" +
+      "}");
+    popup.keyboard().press("f");
+    // Java: waitForCondition polls the value like expect.poll.
+    popup.waitForCondition(() -> "success".equals(popup.evaluate("() => window['fullscreenResult']")));
+    assertEquals("success", popup.evaluate("() => window['fullscreenResult']"));
+    assertEquals(true, popup.evaluate("() => document.fullscreenElement === document.documentElement"));
   }
 
   @PlaywrightTest
