@@ -69,6 +69,19 @@ public class SelectorsImpl extends LoggingSupport implements Selectors {
     selectorEngines.add(engine);
   }
 
+  void registerOnContext(BrowserContextImpl context) {
+    for (SelectorEngine selectorEngine : selectorEngines) {
+      BrowserContextRegisterSelectorEngineParams params = new BrowserContextRegisterSelectorEngineParams();
+      params.selectorEngine = selectorEngine;
+      context.channel.registerSelectorEngine(params, NO_TIMEOUT);
+    }
+    if (testIdAttributeName != null) {
+      BrowserContextSetTestIdAttributeNameParams params = new BrowserContextSetTestIdAttributeNameParams();
+      params.testIdAttributeName = testIdAttributeName;
+      context.channel.setTestIdAttributeName(params, NO_TIMEOUT);
+    }
+  }
+
   @Override
   public void setTestIdAttribute(String attributeName) {
     if (attributeName == null) {

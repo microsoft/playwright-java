@@ -18,6 +18,7 @@ package com.microsoft.playwright.tests.library;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Locator;
@@ -30,14 +31,18 @@ import com.microsoft.playwright.fixtures.ContextFactory;
 import com.microsoft.playwright.fixtures.DisabledOnBrowser;
 import com.microsoft.playwright.fixtures.EnabledOnBrowser;
 import com.microsoft.playwright.fixtures.Env;
+import com.microsoft.playwright.fixtures.Fixture;
 import com.microsoft.playwright.fixtures.HttpsTestServer;
 import com.microsoft.playwright.fixtures.PlaywrightTest;
+import com.microsoft.playwright.fixtures.Scope;
 import com.microsoft.playwright.fixtures.TestServer;
 import com.microsoft.playwright.options.BoundingBox;
 import org.junit.jupiter.api.DisplayName;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -51,6 +56,20 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /** Port of tests/library/capabilities.spec.ts. */
 public class TestCapabilities {
+  @Fixture(scope = Scope.WORKER)
+  static BrowserType.LaunchOptions launchOptions(BrowserType.LaunchOptions launchOptions, BrowserName browserName) {
+    if (browserName == BrowserName.FIREFOX) {
+      Map<String, Object> firefoxUserPrefs = new HashMap<>();
+      if (launchOptions.firefoxUserPrefs != null) {
+        firefoxUserPrefs.putAll(launchOptions.firefoxUserPrefs);
+      }
+      // Test DOM fullscreen without requiring a window manager under Xvfb.
+      firefoxUserPrefs.put("full-screen-api.ignore-widgets", true);
+      return com.microsoft.playwright.impl.Utils.clone(launchOptions).setFirefoxUserPrefs(firefoxUserPrefs);
+    }
+    return launchOptions;
+  }
+
   @PlaywrightTest
   @DisplayName("CA-001 SharedArrayBuffer should work @smoke")
   void sharedArrayBufferShouldWork(ContextFactory contextFactory, HttpsTestServer httpsServer) {
@@ -316,8 +335,7 @@ public class TestCapabilities {
 
   @PlaywrightTest
   @DisplayName("CA-020 requestFullscreen")
-  @DisabledOnBrowser(value = BrowserName.FIREFOX, headed = true, reason = "fixme: Error: Request for fullscreen was denied because requesting element is not in the currently focused tab")
-  void requestFullscreen(Page page, TestServer server) {
+  void requestFullscreen(Page page, TestServer server, BrowserName browserName) {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => {\n" +
       "  const result = new Promise(resolve => document.addEventListener('fullscreenchange', resolve));\n" +
@@ -332,6 +350,8 @@ public class TestCapabilities {
       "}");
     assertEquals(false, page.evaluate("() => !!document.fullscreenElement"));
 
+    assumeFalse(browserName == BrowserName.WEBKIT && !Env.isLinux,
+      "fixme: requestFullscreen() in a popup rejects with InvalidStateError on Windows and hangs the context teardown on macOS");
     Page popup = page.waitForPopup(() -> page.evaluate("url => window.open(url, 'popup', 'popup')", server.EMPTY_PAGE));
     popup.waitForLoadState();
     popup.evaluate("() => {\n" +
