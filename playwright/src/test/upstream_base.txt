@@ -5,4 +5,4 @@
 #   git log <commit>..main --oneline -- tests/page tests/library tests/registry.md
 #   git diff <commit>..main -- tests/page tests/library tests/registry.md
 # and move this line forward together with the registry copy and the ports.
-b0e0b7b555e637cc8c0ce94dd98c3be153861333 2026-11-24 fix(test): watch external dependencies of test directories (#44317)
+a804c193562095b0da20e5d4679fa87e4c8e5563 2026-11-27 docs(python): fix async/sync mistakes in Python code snippets (#44410)

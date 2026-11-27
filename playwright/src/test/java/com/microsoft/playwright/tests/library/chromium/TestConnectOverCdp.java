@@ -473,6 +473,46 @@ public class TestConnectOverCdp {
   }
 
   @PlaywrightTest
+  @DisplayName("CD-055 should work with registered selector engines")
+  void shouldWorkWithRegisteredSelectorEngines(Playwright playwright, BrowserType browserType) {
+    int port = findFreePort();
+    Browser browserServer = browserType.launch(remoteDebuggingPort(port));
+    try {
+      // Java: invoke the factory, since register accepts script source rather than a JavaScript function.
+      playwright.selectors().register("cdpTag", "(() => ({\n" +
+        "  query: (root, selector) => root.querySelector(selector),\n" +
+        "  queryAll: (root, selector) => Array.from(root.querySelectorAll(selector)),\n" +
+        "}))()");
+      Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
+      Page page = cdpBrowser.contexts().get(0).newPage();
+      page.setContent("<div>hello</div>");
+      assertEquals("hello", page.locator("cdpTag=div").textContent());
+      cdpBrowser.close();
+    } finally {
+      browserServer.close();
+    }
+  }
+
+  @PlaywrightTest
+  @DisplayName("CD-056 should respect the test id attribute in strict mode errors")
+  void shouldRespectTheTestIdAttributeInStrictModeErrors(Playwright playwright, BrowserType browserType) {
+    int port = findFreePort();
+    Browser browserServer = browserType.launch(remoteDebuggingPort(port));
+    try {
+      playwright.selectors().setTestIdAttribute("data-foo");
+      Browser cdpBrowser = browserType.connectOverCDP("http://127.0.0.1:" + port + "/");
+      Page page = cdpBrowser.contexts().get(0).newPage();
+      page.setContent("<button data-foo=\"a\">x</button><button data-foo=\"b\">x</button>");
+      PlaywrightException error = assertThrows(PlaywrightException.class, () -> page.locator("button").click());
+      assertTrue(error.getMessage().contains("aka getByTestId(\"a\")"));
+      cdpBrowser.close();
+    } finally {
+      playwright.selectors().setTestIdAttribute("data-testid");
+      browserServer.close();
+    }
+  }
+
+  @PlaywrightTest
   @DisplayName("CD-020 should report an expected error when the endpointURL returns a non-expected status code")
   void shouldReportAnExpectedErrorWhenTheEndpointURLReturnsANonExpectedStatusCode(BrowserType browserType, TestServer server) {
     server.setRoute("/json/version/", (req, resp) -> {

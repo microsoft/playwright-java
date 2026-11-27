@@ -721,6 +721,7 @@ public class TestPageScreenshot {
   }
 
   @Nested
+  @DisabledOnBrowser(value = BrowserName.FIREFOX, headed = true, reason = "Firefox headed produces a different image: https://github.com/microsoft/playwright-browsers/issues/2714")
   class PageScreenshotAnimations {
     @PlaywrightTest
     @DisplayName("SS-098 should preserve scroll animation progress during screenshots")

@@ -186,7 +186,9 @@ public class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     BrowserImpl browser = result.browser;
     browser.connectToBrowserType(this, new LaunchOptions(), null);
     if (result.defaultContext != null) {
-      instrumentation.runAfterCreateBrowserContext(result.defaultContext);
+      BrowserContextImpl context = result.defaultContext;
+      playwright.selectors.registerOnContext(context);
+      instrumentation.runAfterCreateBrowserContext(context);
     }
     return browser;
   }
